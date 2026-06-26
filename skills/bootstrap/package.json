@@ -1,8 +1,0 @@
-{
-  "name": "@aimarchirico/core-skill-bootstrap",
-  "version": "0.0.1",
-  "private": false,
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  }
-}
