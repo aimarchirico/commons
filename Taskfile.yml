@@ -16,9 +16,6 @@ includes:
   "frontend:core-openapi":
     taskfile: ./packages/core-openapi/Taskfile.yml
     dir: ./packages/core-openapi
-  "frontend:bootstrap":
-    taskfile: ./skills/bootstrap/Taskfile.yml
-    dir: ./skills/bootstrap
   "frontend:commit":
     taskfile: ./skills/commit/Taskfile.yml
     dir: ./skills/commit
