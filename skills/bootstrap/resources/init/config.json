@@ -1,0 +1,14 @@
+{
+  "name": "Template",
+  "modules": {
+    "frontend": {
+      "name": "Template",
+      "package": "no.chirico.template"
+    },
+    "backend": {
+      "name": "Template",
+      "package": "no.chirico.template",
+      "image": "ghcr.io/aimarchirico/template"
+    }
+  }
+}

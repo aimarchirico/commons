@@ -11,7 +11,7 @@ Use when the user asks to bootstrap or initalize the project, initialize documen
 
 ### 1. Preflight
 
-Verify that the `init/` directory and `CONTRIBUTING.md` exist in the repository root. If any are missing, halt execution and notify the user.
+Check if the `init/` directory and `CONTRIBUTING.md` exist in the repository root. If they are missing, copy them from the skill's own `resources/init` and `resources/CONTRIBUTING.md` to the repository root before proceeding.
 
 ### 2. Parse Flags
 
