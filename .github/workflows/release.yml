@@ -1,8 +1,16 @@
 name: Release
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - 'core-security-v*'
+      - 'core-test-v*'
+      - 'core-build-logic-v*'
+      - 'core-eslint-v*'
+      - 'core-markdown-v*'
+      - 'core-openapi-v*'
+      - 'core-typescript-v*'
+      - 'core-docs-v*'
   workflow_dispatch:
 
 permissions:
@@ -10,9 +18,84 @@ permissions:
   packages: write
 
 jobs:
-  publish-npm:
-    name: Publish npm packages
+  # ==========================================
+  # MAVEN / GRADLE MODULES
+  # ==========================================
+
+  publish-core-security:
+    name: Publish core-security
     runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/core-security-v') || github.event_name == 'workflow_dispatch'
+    env:
+      GITHUB_ACTOR: ${{ github.actor }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v4
+
+      - name: Set Up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 25
+          cache: gradle
+
+      - name: Publish Security Module
+        working-directory: modules
+        run: bash gradlew :security:publish
+
+  publish-core-test:
+    name: Publish core-test
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/core-test-v') || github.event_name == 'workflow_dispatch'
+    env:
+      GITHUB_ACTOR: ${{ github.actor }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v4
+
+      - name: Set Up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 25
+          cache: gradle
+
+      - name: Publish Test Module
+        working-directory: modules
+        run: bash gradlew :test:publish
+
+  publish-core-build-logic:
+    name: Publish core-build-logic
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/core-build-logic-v') || github.event_name == 'workflow_dispatch'
+    env:
+      GITHUB_ACTOR: ${{ github.actor }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v4
+
+      - name: Set Up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 25
+          cache: gradle
+
+      - name: Publish Convention Plugins
+        working-directory: modules
+        run: bash gradlew -p build-logic publish
+
+  # ==========================================
+  # NPM MODULES
+  # ==========================================
+
+  publish-core-eslint:
+    name: Publish core-eslint
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/core-eslint-v') || github.event_name == 'workflow_dispatch'
     steps:
       - name: Check Out Repo
         uses: actions/checkout@v4
@@ -29,32 +112,107 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Publish
-        run: npm publish --workspaces
+      - name: Publish core-eslint
+        run: npm publish -w @aimarchirico/core-eslint
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  publish-maven:
-    name: Publish Maven artifacts
+  publish-core-markdown:
+    name: Publish core-markdown
     runs-on: ubuntu-latest
-    env:
-      GITHUB_ACTOR: ${{ github.actor }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    if: startsWith(github.ref, 'refs/tags/core-markdown-v') || github.event_name == 'workflow_dispatch'
     steps:
       - name: Check Out Repo
         uses: actions/checkout@v4
 
-      - name: Set Up Java
-        uses: actions/setup-java@v5
+      - name: Set Up Node
+        uses: actions/setup-node@v4
         with:
-          distribution: temurin
-          java-version: 25
-          cache: gradle
+          node-version: 20
+          registry-url: https://npm.pkg.github.com
+          scope: '@aimarchirico'
+          cache: npm
+          cache-dependency-path: package-lock.json
 
-      - name: Publish Convention Plugin
-        working-directory: modules
-        run: bash gradlew -p build-logic publish
+      - name: Install Dependencies
+        run: npm ci
 
-      - name: Publish Modules
-        working-directory: modules
-        run: bash gradlew :security:publish :test:publish
+      - name: Publish core-markdown
+        run: npm publish -w @aimarchirico/core-markdown
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-core-openapi:
+    name: Publish core-openapi
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/core-openapi-v') || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v4
+
+      - name: Set Up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://npm.pkg.github.com
+          scope: '@aimarchirico'
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Publish core-openapi
+        run: npm publish -w @aimarchirico/core-openapi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-core-typescript:
+    name: Publish core-typescript
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/core-typescript-v') || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v4
+
+      - name: Set Up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://npm.pkg.github.com
+          scope: '@aimarchirico'
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Publish core-typescript
+        run: npm publish -w @aimarchirico/core-typescript
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-core-docs:
+    name: Publish core-docs
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/core-docs-v') || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v4
+
+      - name: Set Up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://npm.pkg.github.com
+          scope: '@aimarchirico'
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Publish core-docs
+        run: npm publish -w @aimarchirico/core-docs
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
