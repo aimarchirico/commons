@@ -19,7 +19,8 @@ jobs:
     name: Detect Changed Paths
     runs-on: ubuntu-latest
     outputs:
-      code: ${{ steps.filter.outputs.code }}
+      modules: ${{ steps.filter.outputs.modules }}
+      packages: ${{ steps.filter.outputs.packages }}
       docs: ${{ steps.filter.outputs.docs }}
     steps:
       - name: Check Out Repo
@@ -30,26 +31,25 @@ jobs:
         id: filter
         with:
           filters: |
-            code:
+            modules:
               - 'modules/**'
+              - '.github/workflows/ci.yml'
+            packages:
               - 'packages/**'
-              - 'Taskfile.yml'
               - 'package.json'
               - 'package-lock.json'
               - '.github/workflows/ci.yml'
             docs:
               - '**/*.md'
               - '.github/workflows/ci.yml'
-              - 'package.json'
-              - 'package-lock.json'
 
   # ==========================================
-  # CODE CI JOB (BUILD, TEST, LINT, TYPECHECK)
+  # MODULES CI JOB (JAVA / GRADLE / KOTLIN)
   # ==========================================
-  code:
-    name: Code Check
+  modules:
+    name: JVM Modules Check
     needs: changes
-    if: needs.changes.outputs.code == 'true' || github.event_name == 'workflow_dispatch'
+    if: needs.changes.outputs.modules == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Repo
@@ -61,6 +61,26 @@ jobs:
           distribution: temurin
           java-version: 25
           cache: gradle
+
+      - name: Set Up Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
+
+      - name: Run JVM Checks
+        run: task check:modules
+
+  # ==========================================
+  # PACKAGES CI JOB (NODE / ESLINT / TSC)
+  # ==========================================
+  packages:
+    name: NPM Packages Check
+    needs: changes
+    if: needs.changes.outputs.packages == 'true' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v4
 
       - name: Set Up Node
         uses: actions/setup-node@v4
@@ -77,16 +97,17 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Run Checks
-        run: task check
+      - name: Run Package Checks
+        run: task check:packages
 
   # ==========================================
-  # DOCUMENTATION CI JOB (LIGHTWEIGHT LINTER)
+  # DOCUMENTATION CI JOB (LINT)
   # ==========================================
   docs:
     name: Docs Check
     needs: changes
-    if: needs.changes.outputs.docs == 'true' && needs.changes.outputs.code != 'true' && github.event_name != 'workflow_dispatch'
+    # Only run standalone if code changes aren't already triggering full checks
+    if: needs.changes.outputs.docs == 'true' && needs.changes.outputs.modules != 'true' && needs.changes.outputs.packages != 'true' && github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Repo
@@ -99,10 +120,15 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
 
+      - name: Set Up Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
+
       - name: Install Dependencies
         run: npm ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Lint Markdown
-        run: npx markdownlint-cli2
+      - name: Run Docs Checks
+        run: task check:docs

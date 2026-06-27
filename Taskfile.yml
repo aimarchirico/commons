@@ -14,13 +14,28 @@ tasks:
       - bash modules/gradlew -p modules build
 
   check:
-    desc: Run tests, quality checks, and Markdown lint
+    desc: Run all checks (modules, packages, and docs)
+    cmds:
+      - task: check:modules
+      - task: check:packages
+      - task: check:docs
+
+  "check:modules":
+    desc: Run JVM and Gradle check tasks
     cmds:
       - bash modules/gradlew -p modules/build-logic check
       - bash modules/gradlew -p modules check
-      - npx markdownlint-cli2
+
+  "check:packages":
+    desc: Run ESLint and TypeScript checks on packages
+    cmds:
       - npx eslint
       - npx tsc
+
+  "check:docs":
+    desc: Lint Markdown documentation files
+    cmds:
+      - npx markdownlint-cli2
 
   fix:
     desc: Format Kotlin and auto-fix Markdown
