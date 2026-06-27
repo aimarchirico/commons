@@ -9,18 +9,6 @@ const http = require('http');
 
 const packageRoot = path.resolve(__dirname, '..');
 
-// Find repository root dynamically
-function findRepoRoot() {
-  let dir = process.cwd();
-  while (dir && dir !== path.parse(dir).root) {
-    if (fs.existsSync(path.join(dir, '.git')) || fs.existsSync(path.join(dir, 'package.json'))) {
-      return dir;
-    }
-    dir = path.dirname(dir);
-  }
-  return path.resolve(packageRoot, '../../..');
-}
-
 const apiUrl = process.env.API_URL;
 if (!apiUrl) {
   console.log('API_URL not set, skipping API generation.');
@@ -29,8 +17,6 @@ if (!apiUrl) {
 
 const cfClientId = process.env.CF_ACCESS_CLIENT_ID;
 const cfClientSecret = process.env.CF_ACCESS_CLIENT_SECRET;
-
-const repoRoot = findRepoRoot();
 
 async function fetchSpec() {
   const specUrl = `${apiUrl}/v3/api-docs`;
@@ -67,7 +53,7 @@ function generateClient(specPath) {
 
 function generateDocs(specPath) {
   console.log('Generating API documentation...');
-  const docsDir = process.env.API_DOCS_OUTPUT_DIR || path.resolve(repoRoot, 'docs');
+  const docsDir = process.env.API_DOCS_OUTPUT_DIR || path.resolve(process.cwd(), 'docs');
   if (!fs.existsSync(docsDir)) {
     fs.mkdirSync(docsDir, { recursive: true });
   }
