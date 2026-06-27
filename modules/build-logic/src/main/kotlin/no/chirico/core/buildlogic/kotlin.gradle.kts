@@ -1,4 +1,4 @@
-package no.chirico.core
+package no.chirico.core.buildlogic
 
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
