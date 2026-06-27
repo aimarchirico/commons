@@ -1,0 +1,15 @@
+version: '3'
+
+tasks:
+  build:
+    cmds:
+      - echo "No build step for markdown config"
+  check:
+    cmds:
+      - echo "Checking config format"
+  fix:
+    cmds:
+      - echo "No fix needed for markdown config"
+  run:
+    cmds:
+      - echo "No run command for markdown config"

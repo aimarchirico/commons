@@ -1,0 +1,14 @@
+{
+  "name": "@aimarchirico/core-markdown",
+  "version": "0.0.1",
+  "private": false,
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "exports": {
+    "./markdownlint.json": "./markdownlint.json"
+  },
+  "dependencies": {
+    "markdownlint-cli2": "^0.13.0"
+  }
+}
