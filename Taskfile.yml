@@ -16,10 +16,10 @@ tasks:
     cmds:
       - bash modules/gradlew -p modules/build-logic check
       - bash modules/gradlew -p modules check
-      - npx markdownlint-cli2
+      - npx core-markdown
 
   fix:
     desc: Format Kotlin and auto-fix Markdown
     cmds:
       - bash modules/gradlew -p modules ktfmtFormat
-      - npx markdownlint-cli2 --fix
+      - npx core-markdown --fix

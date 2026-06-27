@@ -8,6 +8,13 @@
   "exports": {
     "./tsconfig.json": "./tsconfig.json"
   },
+  "bin": {
+    "core-typescript": "bin/cli.js"
+  },
+  "files": [
+    "bin",
+    "tsconfig.json"
+  ],
   "dependencies": {
     "typescript": "^5.0.0"
   }

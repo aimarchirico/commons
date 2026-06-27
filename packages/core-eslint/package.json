@@ -9,6 +9,14 @@
   "exports": {
     "./eslint.config.mjs": "./eslint.config.mjs"
   },
+  "bin": {
+    "core-eslint": "bin/cli.js"
+  },
+  "files": [
+    "bin",
+    "eslint.config.mjs",
+    ".prettierrc"
+  ],
   "dependencies": {
     "eslint": "^9.39.2",
     "eslint-config-expo": "~56.0.4",

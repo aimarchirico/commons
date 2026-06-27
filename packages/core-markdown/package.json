@@ -8,6 +8,13 @@
   "exports": {
     "./markdownlint.json": "./markdownlint.json"
   },
+  "bin": {
+    "core-markdown": "bin/cli.js"
+  },
+  "files": [
+    "bin",
+    "markdownlint.json"
+  ],
   "dependencies": {
     "markdownlint-cli2": "^0.13.0"
   }

@@ -9,19 +9,14 @@ const http = require('http');
 
 const packageRoot = path.resolve(__dirname, '..');
 
-// Find frontend/.env by searching up the directory tree
-function findFrontendEnv() {
+// Find .env by searching up the directory tree from the current working directory
+function findEnvFile() {
   let dir = process.cwd();
   while (dir && dir !== path.parse(dir).root) {
-    const envPath = path.join(dir, 'frontend/.env');
+    const envPath = path.join(dir, '.env');
     if (fs.existsSync(envPath)) return envPath;
-    if (path.basename(dir) === 'frontend' && fs.existsSync(path.join(dir, '.env'))) return path.join(dir, '.env');
-    const siblingPath = path.join(dir, 'template/frontend/.env');
-    if (fs.existsSync(siblingPath)) return siblingPath;
     dir = path.dirname(dir);
   }
-  const fallback = path.resolve(__dirname, '../../../template/frontend/.env');
-  if (fs.existsSync(fallback)) return fallback;
   return null;
 }
 
@@ -37,7 +32,7 @@ function findRepoRoot() {
   return path.resolve(packageRoot, '../../..');
 }
 
-const envPath = findFrontendEnv();
+const envPath = findEnvFile();
 if (envPath) {
   console.log(`Loading environment variables from ${envPath}`);
   try {
