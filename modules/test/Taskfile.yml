@@ -4,12 +4,12 @@ tasks:
   build:
     desc: Build test library module
     cmds:
-      - ../gradlew :test:build
+      - bash ../gradlew :test:build
   check:
     desc: Run tests and quality checks for test module
     cmds:
-      - ../gradlew :test:check
+      - bash ../gradlew :test:check
   fix:
     desc: Format test module code
     cmds:
-      - ../gradlew :test:ktfmtFormat
+      - bash ../gradlew :test:ktfmtFormat

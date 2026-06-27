@@ -4,12 +4,12 @@ tasks:
   build:
     desc: Build security library module
     cmds:
-      - ../gradlew :security:build
+      - bash ../gradlew :security:build
   check:
     desc: Run tests and quality checks for security module
     cmds:
-      - ../gradlew :security:check
+      - bash ../gradlew :security:check
   fix:
     desc: Format security module code
     cmds:
-      - ../gradlew :security:ktfmtFormat
+      - bash ../gradlew :security:ktfmtFormat

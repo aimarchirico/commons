@@ -4,8 +4,8 @@ tasks:
   build:
     desc: Build Gradle convention plugins
     cmds:
-      - ../gradlew -p . build
+      - bash ../gradlew -p . build
   check:
     desc: Run quality checks on Gradle convention plugins
     cmds:
-      - ../gradlew -p . check
+      - bash ../gradlew -p . check
