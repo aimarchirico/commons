@@ -1,19 +1,14 @@
 version: '3'
 
+# Package Taskfiles are imported from the installed core packages -- the same
+# path a consumer uses after `npm install` (npm workspaces symlink them into
+# node_modules). They are marked optional so `task` still works before
+# dependencies are installed.
+#
+# The Gradle modules have no per-module Taskfiles: those would never ship (a
+# module is consumed as a published jar, not as source), and Gradle already
+# aggregates subproject tasks, so the wrapper is invoked directly below.
 includes:
-  "backend:build-logic":
-    taskfile: ./modules/build-logic/Taskfile.yml
-    dir: ./modules/build-logic
-  "backend:security":
-    taskfile: ./modules/security/Taskfile.yml
-    dir: ./modules/security
-  "backend:test":
-    taskfile: ./modules/test/Taskfile.yml
-    dir: ./modules/test
-  # Imported from the installed package, exactly as a consumer repo would after
-  # `npm install @aimarchirico/core-openapi`. npm workspaces symlink the package
-  # into node_modules, so this path resolves identically in core and consumers.
-  # Marked optional so `task` still works before dependencies are installed.
   "frontend:core-openapi":
     taskfile: ./node_modules/@aimarchirico/core-openapi/Taskfile.yml
     optional: true
@@ -30,23 +25,20 @@ tasks:
       - task --list
 
   build:
-    desc: Build all active core components (modules)
+    desc: Build the convention plugin and modules
     cmds:
-      - task: backend:build-logic:build
-      - task: backend:security:build
-      - task: backend:test:build
+      - bash modules/gradlew -p modules/build-logic build
+      - bash modules/gradlew -p modules build
 
   check:
-    desc: Run tests and lint checks on all active components
+    desc: Run tests, quality checks, and Markdown lint
     cmds:
-      - task: backend:build-logic:check
-      - task: backend:security:check
-      - task: backend:test:check
+      - bash modules/gradlew -p modules/build-logic check
+      - bash modules/gradlew -p modules check
       - task: docs:core-markdown:lint
 
   fix:
-    desc: Format/fix all active components
+    desc: Format Kotlin and auto-fix Markdown
     cmds:
-      - task: backend:security:fix
-      - task: backend:test:fix
+      - bash modules/gradlew -p modules ktfmtFormat
       - task: docs:core-markdown:fix
