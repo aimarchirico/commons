@@ -12,13 +12,13 @@ java {
 }
 
 dependencies {
-    implementation(libs.kotlin.gradlePlugin)
+    implementation(libs.kotlin.gradle.plugin)
     implementation(libs.kotlin.allopen)
     implementation(libs.kotlin.noarg)
-    implementation(libs.spring.boot.gradlePlugin) {
+    implementation(libs.spring.boot.gradle.plugin) {
         exclude(group = "io.spring.gradle", module = "dependency-management-plugin")
     }
-    implementation(libs.ktfmt.gradlePlugin)
+    implementation(libs.ktfmt.gradle.plugin)
 }
 
 publishing {
