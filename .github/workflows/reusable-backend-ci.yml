@@ -28,3 +28,6 @@ jobs:
 
       - name: Run Checks
         run: task check
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

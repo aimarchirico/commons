@@ -18,13 +18,10 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install Dependencies
+        run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set Up Task
-        uses: arduino/setup-task@v2
-        with:
-          version: 3.x
-
-      - name: Run Markdown Lint
-        run: task check
+      - name: Lint Markdown
+        run: npx markdownlint-cli2
