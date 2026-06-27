@@ -1,7 +1,23 @@
-name: Reusable Docs CI
+name: Docs - CI
 
 on:
-  workflow_call:
+  workflow_dispatch:
+  push:
+    branches: [main, dev]
+    paths:
+      - "**/*.md"
+      - ".github/workflows/docs-ci.yml"
+      - "Taskfile.yml"
+      - "package.json"
+      - "package-lock.json"
+  pull_request:
+    branches: [main, dev]
+    paths:
+      - "**/*.md"
+      - ".github/workflows/docs-ci.yml"
+      - "Taskfile.yml"
+      - "package.json"
+      - "package-lock.json"
 
 jobs:
   check:
