@@ -17,6 +17,9 @@ includes:
   "frontend:core-openapi":
     taskfile: ./node_modules/@aimarchirico/core-openapi/Taskfile.yml
     optional: true
+  "docs:core-markdown":
+    taskfile: ./node_modules/@aimarchirico/core-markdown/Taskfile.yml
+    optional: true
 
 tasks:
   default:
@@ -36,9 +39,11 @@ tasks:
       - task: backend:build-logic:check
       - task: backend:security:check
       - task: backend:test:check
+      - task: docs:core-markdown:lint
 
   fix:
     desc: Format/fix all active components
     cmds:
       - task: backend:security:fix
       - task: backend:test:fix
+      - task: docs:core-markdown:fix

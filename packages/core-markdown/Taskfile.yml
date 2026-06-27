@@ -1,0 +1,16 @@
+version: '3'
+
+# Self-contained: runs markdownlint-cli2 in the caller's working directory,
+# where it auto-discovers the consumer's .markdownlint-cli2.cjs re-exporting
+# @aimarchirico/core-markdown/markdownlint.json (the single source of rules,
+# globs and ignores). Works identically in core and any consumer repo.
+tasks:
+  lint:
+    desc: Lint Markdown using the shared core-markdown config
+    cmds:
+      - npx markdownlint-cli2
+
+  fix:
+    desc: Auto-fix Markdown using the shared core-markdown config
+    cmds:
+      - npx markdownlint-cli2 --fix
