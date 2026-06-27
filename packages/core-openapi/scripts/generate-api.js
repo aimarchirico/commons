@@ -9,17 +9,6 @@ const http = require('http');
 
 const packageRoot = path.resolve(__dirname, '..');
 
-// Find .env by searching up the directory tree from the current working directory
-function findEnvFile() {
-  let dir = process.cwd();
-  while (dir && dir !== path.parse(dir).root) {
-    const envPath = path.join(dir, '.env');
-    if (fs.existsSync(envPath)) return envPath;
-    dir = path.dirname(dir);
-  }
-  return null;
-}
-
 // Find repository root dynamically
 function findRepoRoot() {
   let dir = process.cwd();
@@ -30,16 +19,6 @@ function findRepoRoot() {
     dir = path.dirname(dir);
   }
   return path.resolve(packageRoot, '../../..');
-}
-
-const envPath = findEnvFile();
-if (envPath) {
-  console.log(`Loading environment variables from ${envPath}`);
-  try {
-    require('dotenv').config({ path: envPath });
-  } catch (e) {
-    console.error('Failed to load dotenv:', e);
-  }
 }
 
 const apiUrl = process.env.API_URL;

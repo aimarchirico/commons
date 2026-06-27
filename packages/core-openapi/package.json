@@ -13,7 +13,6 @@
   ],
   "dependencies": {
     "@openapitools/openapi-generator-cli": "^2.39.0",
-    "dotenv": "^17.4.2",
     "widdershins": "^4.0.1"
   }
 }
