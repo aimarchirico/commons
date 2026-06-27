@@ -38,8 +38,23 @@ tasks:
       - npx markdownlint-cli2
 
   fix:
-    desc: Format Kotlin and auto-fix Markdown
+    desc: Auto-fix formatting and linting issues (modules, packages, and docs)
+    cmds:
+      - task: "fix:modules"
+      - task: "fix:packages"
+      - task: "fix:docs"
+
+  "fix:modules":
+    desc: Format Kotlin code with ktfmt
     cmds:
       - bash modules/gradlew -p modules ktfmtFormat
-      - npx markdownlint-cli2 --fix
+
+  "fix:packages":
+    desc: Auto-fix ESLint issues on packages
+    cmds:
       - npx eslint --fix
+
+  "fix:docs":
+    desc: Auto-fix Markdown documentation linting issues
+    cmds:
+      - npx markdownlint-cli2 --fix
