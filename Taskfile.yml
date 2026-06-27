@@ -8,7 +8,7 @@ tasks:
       - task --list
 
   build:
-    desc: Build the modules (automatically compiles build-logic)
+    desc: Build the modules 
     cmds:
       - bash modules/gradlew -p modules build
 
