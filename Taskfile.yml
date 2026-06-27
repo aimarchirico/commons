@@ -17,9 +17,12 @@ tasks:
       - bash modules/gradlew -p modules/build-logic check
       - bash modules/gradlew -p modules check
       - npx core-markdown
+      - npx core-eslint
+      - npx core-typescript
 
   fix:
     desc: Format Kotlin and auto-fix Markdown
     cmds:
       - bash modules/gradlew -p modules ktfmtFormat
       - npx core-markdown --fix
+      - npx core-eslint --fix

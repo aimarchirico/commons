@@ -20,6 +20,7 @@ const cfClientSecret = process.env.CF_ACCESS_CLIENT_SECRET;
 
 async function fetchSpec() {
   const specUrl = `${apiUrl}/v3/api-docs`;
+  /** @type {Record<string, string>} */
   const headers = {};
   
   if (cfClientId && cfClientSecret) {
@@ -43,6 +44,9 @@ async function fetchSpec() {
   });
 }
 
+/**
+ * @param {string} specPath
+ */
 function generateClient(specPath) {
   console.log('Generating API client...');
   const outputDir = process.env.API_CLIENT_OUTPUT_DIR || path.resolve(process.cwd(), 'src/generated');
@@ -51,6 +55,9 @@ function generateClient(specPath) {
   console.log(`OpenAPI client generated at ${outputDir}`);
 }
 
+/**
+ * @param {string} specPath
+ */
 function generateDocs(specPath) {
   console.log('Generating API documentation...');
   const docsDir = process.env.API_DOCS_OUTPUT_DIR || path.resolve(process.cwd(), 'docs');
@@ -77,7 +84,8 @@ async function main() {
     fs.unlinkSync(specPath);
     console.log('Done.');
   } catch (e) {
-    console.error('API generation failed:', e.message || e);
+    const errorMsg = e instanceof Error ? e.message : String(e);
+    console.error('API generation failed:', errorMsg);
     process.exit(2);
   }
 }

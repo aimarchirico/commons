@@ -4,5 +4,10 @@
   "private": true,
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "devDependencies": {
+    "@aimarchirico/core-eslint": "*",
+    "@aimarchirico/core-markdown": "*",
+    "@aimarchirico/core-typescript": "*"
+  }
 }
