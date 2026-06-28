@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "no.chirico.core"
-version = "0.0.2"
+version = "0.0.3"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_25
