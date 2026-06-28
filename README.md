@@ -8,16 +8,19 @@ service template.
 
 The repository is a monorepo with three roots:
 
-- **`modules/`** — Gradle/Kotlin backend components published as Maven
+- **`kotlin/`** — Gradle/Kotlin backend components published as Maven
   artifacts (`core-security`, `core-test`) plus the shared convention plugin
   (`core-build-logic`, applied as `id("core.kotlin")`).
-- **`packages/`** — npm packages published to GitHub Packages:
-  - `@aimarchirico/core-eslint` — shared ESLint configuration.
-  - `@aimarchirico/core-typescript` — shared TypeScript configuration.
-  - `@aimarchirico/core-markdown` — shared markdownlint configuration.
-  - `@aimarchirico/core-openapi` — OpenAPI client/documentation generator CLI.
-  - `@aimarchirico/core-docs` — single source of truth for the contributing
-    guide and GitHub templates.
+- **`typescript/packages/`** — npm packages published to GitHub Packages. Each
+  is an atomic CLI that owns its tooling logic and bundles its config, so
+  consumers call a single command instead of re-spelling long invocations:
+  - `@aimarchirico/core-ts` — `core-ts check`/`fix` (ESLint + TypeScript);
+    also exports the shared `eslint` config and `tsconfig.json`.
+  - `@aimarchirico/core-api` — `core-api` generates the OpenAPI client and docs.
+  - `@aimarchirico/core-docs` — `core-docs check`/`fix`/`init` (Markdown lint
+    plus the contributing guide and GitHub templates); also exports the shared
+    `markdownlint` config. Each package ships a `Taskfile.yml` that consumers
+    include from `node_modules` for cross-repo Task reuse.
 - **`skills/`** — agent skills (`commit`, `docs`, `implement`, `issues`,
   `pr`) added to a consumer via `npx skills add aimarchirico/core --skill
   <name>`.
@@ -39,8 +42,10 @@ Frontend packages expose configs (extended in eslint/tsconfig/markdownlint)
 and CLIs:
 
 ```sh
-npx core-openapi   # generate the OpenAPI client and docs
-npx core-docs      # write CONTRIBUTING.md and .github templates into the repo
+npx core-ts check    # lint and type-check (strict when CI=1)
+npx core-api         # generate the OpenAPI client and docs
+npx core-docs check  # lint Markdown
+npx core-docs init   # write CONTRIBUTING.md and .github templates into the repo
 ```
 
 ## Development

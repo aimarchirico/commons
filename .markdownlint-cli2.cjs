@@ -1,4 +1,4 @@
-const baseConfig = require('@aimarchirico/core-markdown/.markdownlint-cli2.cjs');
+const baseConfig = require('@aimarchirico/core-docs/markdownlint');
 
 module.exports = {
   ...baseConfig,

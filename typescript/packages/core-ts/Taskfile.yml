@@ -1,0 +1,20 @@
+version: '3'
+
+# Reusable TypeScript tasks. Consumers include this from
+# node_modules/@aimarchirico/core-ts/Taskfile.yml and set `dir` to the package
+# root so core-ts runs against the consuming project. Override the lint target
+# with the TARGET var (defaults to "src").
+tasks:
+  check:
+    desc: Run ESLint and TypeScript checks
+    vars:
+      TARGET: '{{.TARGET | default "src"}}'
+    cmds:
+      - npx core-ts check {{.TARGET}}
+
+  fix:
+    desc: Auto-fix ESLint issues
+    vars:
+      TARGET: '{{.TARGET | default "src"}}'
+    cmds:
+      - npx core-ts fix {{.TARGET}}

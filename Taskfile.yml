@@ -9,6 +9,9 @@ includes:
   typescript:
     taskfile: ./typescript/Taskfile.yml
     dir: ./typescript
+  docs:
+    taskfile: ./node_modules/@aimarchirico/core-docs/Taskfile.yml
+    dir: .
 
 tasks:
   default:
@@ -23,43 +26,13 @@ tasks:
   check:
     desc: Run all checks (modules, packages, and docs)
     cmds:
-      - task: check:modules
-      - task: check:packages
-      - task: check:docs
-
-  check:modules:
-    desc: Run JVM and Gradle checks
-    cmds:
       - task: kotlin:check
-
-  check:packages:
-    desc: Run ESLint and TypeScript checks
-    cmds:
       - task: typescript:check
-
-  check:docs:
-    desc: Lint Markdown documentation files
-    cmds:
-      - npx markdownlint-cli2
+      - task: docs:check
 
   fix:
     desc: Auto-fix formatting and linting issues
     cmds:
-      - task: fix:modules
-      - task: fix:packages
-      - task: fix:docs
-
-  fix:modules:
-    desc: Format Kotlin code
-    cmds:
       - task: kotlin:fix
-
-  fix:packages:
-    desc: Auto-fix ESLint issues
-    cmds:
       - task: typescript:fix
-
-  fix:docs:
-    desc: Auto-fix Markdown issues
-    cmds:
-      - npx markdownlint-cli2 --fix
+      - task: docs:fix

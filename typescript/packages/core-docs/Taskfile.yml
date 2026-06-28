@@ -1,0 +1,20 @@
+version: '3'
+
+# Reusable documentation tasks. Consumers include this from
+# node_modules/@aimarchirico/core-docs/Taskfile.yml and set `dir` to the repo
+# root so core-docs runs against the consuming project.
+tasks:
+  check:
+    desc: Lint Markdown documentation files
+    cmds:
+      - npx core-docs check
+
+  fix:
+    desc: Auto-fix Markdown documentation issues
+    cmds:
+      - npx core-docs fix
+
+  init:
+    desc: Materialize shared CONTRIBUTING.md and .github templates
+    cmds:
+      - npx core-docs init

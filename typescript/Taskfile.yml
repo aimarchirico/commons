@@ -1,13 +1,19 @@
 version: '3'
 
+includes:
+  ts:
+    taskfile: ./node_modules/@aimarchirico/core-ts/Taskfile.yml
+    dir: .
+
 tasks:
   check:
     desc: Run ESLint and TypeScript checks on packages
     cmds:
-      - npx eslint . --no-error-on-unmatched-pattern
-      - npx tsc
+      - task: ts:check
+        vars: {TARGET: '.'}
 
   fix:
     desc: Auto-fix ESLint issues on packages
     cmds:
-      - npx eslint . --fix --no-error-on-unmatched-pattern
+      - task: ts:fix
+        vars: {TARGET: '.'}

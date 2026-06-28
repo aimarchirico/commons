@@ -1,13 +1,14 @@
-import coreConfig from "@aimarchirico/core-eslint";
+import coreConfig from "@aimarchirico/core-ts/eslint";
 
 export default [
   {
     ignores: [
       'node_modules/**',
-      'packages/core-docs/scripts/materialize.js',
-      'packages/core-openapi/scripts/generate-api.js',
-      'packages/core-markdown/.markdownlint-cli2.cjs',
-      'packages/core-eslint/eslint.config.mjs',
+      'packages/core-ts/eslint.config.mjs',
+      'packages/core-ts/bin/cli.js',
+      'packages/core-docs/bin/cli.js',
+      'packages/core-docs/markdownlint.cjs',
+      'packages/core-api/bin/cli.js',
       'eslint.config.mjs'
     ],
   },

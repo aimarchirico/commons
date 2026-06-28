@@ -1,0 +1,10 @@
+version: '3'
+
+# Reusable API generation task. Consumers include this from
+# node_modules/@aimarchirico/core-api/Taskfile.yml and set `dir` to the package
+# root so core-api writes the client and docs into the consuming project.
+tasks:
+  generate:
+    desc: Generate the OpenAPI client and docs
+    cmds:
+      - npx core-api

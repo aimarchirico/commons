@@ -1,16 +1,24 @@
 {
   "name": "@aimarchirico/core-docs",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": false,
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
   "bin": {
-    "core-docs": "scripts/materialize.js"
+    "core-docs": "bin/cli.js"
+  },
+  "exports": {
+    "./markdownlint": "./markdownlint.cjs"
   },
   "files": [
     "CONTRIBUTING.md",
     "github",
-    "scripts"
-  ]
+    "bin",
+    "markdownlint.cjs",
+    "Taskfile.yml"
+  ],
+  "dependencies": {
+    "markdownlint-cli2": "^0.13.0"
+  }
 }

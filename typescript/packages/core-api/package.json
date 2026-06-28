@@ -1,15 +1,16 @@
 {
-  "name": "@aimarchirico/core-openapi",
-  "version": "0.0.2",
+  "name": "@aimarchirico/core-api",
+  "version": "0.0.1",
   "private": false,
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
   "bin": {
-    "core-openapi": "scripts/generate-api.js"
+    "core-api": "bin/cli.js"
   },
   "files": [
-    "scripts"
+    "bin",
+    "Taskfile.yml"
   ],
   "dependencies": {
     "@openapitools/openapi-generator-cli": "^2.39.0",
