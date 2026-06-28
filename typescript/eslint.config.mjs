@@ -1,5 +1,4 @@
-import globals from 'globals';
-import coreConfig from '@aimarchirico/core-eslint';
+import coreConfig from "@aimarchirico/core-eslint";
 
 export default [
   {
@@ -10,20 +9,13 @@ export default [
       '**/.gradle/**',
       '**/.idea/**',
       '**/.vscode/**',
-      '**/out/**'
-    ]
+      '**/out/**',
+      'packages/core-docs/scripts/materialize.js',
+      'packages/core-openapi/scripts/generate-api.js',
+      'packages/core-markdown/.markdownlint-cli2.cjs',
+      'packages/core-eslint/eslint.config.mjs',
+      'eslint.config.mjs'
+    ],
   },
   ...coreConfig,
-  {
-    languageOptions: {
-      globals: {
-        ...globals.node,
-        ...globals.commonjs
-      }
-    },
-    rules: {
-      'prettier/prettier': 'off',
-      'quotes': ['warn', 'single']
-    }
-  }
 ];

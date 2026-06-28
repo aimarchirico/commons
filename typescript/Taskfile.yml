@@ -4,10 +4,10 @@ tasks:
   check:
     desc: Run ESLint and TypeScript checks on packages
     cmds:
-      - npx eslint
+      - npx eslint . --no-error-on-unmatched-pattern
       - npx tsc
 
   fix:
     desc: Auto-fix ESLint issues on packages
     cmds:
-      - npx eslint --fix
+      - npx eslint . --fix --no-error-on-unmatched-pattern
