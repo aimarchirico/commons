@@ -1,0 +1,8 @@
+{
+  "typescript/packages/core-ts": "0.0.1",
+  "typescript/packages/core-api": "0.0.1",
+  "typescript/packages/core-docs": "0.0.3",
+  "kotlin/security": "0.0.3",
+  "kotlin/test": "0.0.3",
+  "kotlin/build-logic": "0.0.3"
+}

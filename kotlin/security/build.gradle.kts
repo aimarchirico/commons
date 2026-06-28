@@ -5,7 +5,7 @@ plugins {
 
 group = "no.chirico.core"
 
-version = "0.0.3"
+version = "0.0.3" // x-release-please-version
 
 dependencies {
   implementation(platform(libs.spring.boot.dependencies))
@@ -19,7 +19,7 @@ publishing {
       from(components["java"])
       groupId = "no.chirico.core"
       artifactId = "core-security"
-      version = "0.0.3"
+      version = project.version.toString()
     }
   }
   repositories {

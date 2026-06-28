@@ -1,0 +1,27 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "separate-pull-requests": true,
+  "packages": {
+    "typescript/packages/core-ts": {
+      "release-type": "node"
+    },
+    "typescript/packages/core-api": {
+      "release-type": "node"
+    },
+    "typescript/packages/core-docs": {
+      "release-type": "node"
+    },
+    "kotlin/security": {
+      "release-type": "simple",
+      "extra-files": ["build.gradle.kts"]
+    },
+    "kotlin/test": {
+      "release-type": "simple",
+      "extra-files": ["build.gradle.kts"]
+    },
+    "kotlin/build-logic": {
+      "release-type": "simple",
+      "extra-files": ["build.gradle.kts"]
+    }
+  }
+}

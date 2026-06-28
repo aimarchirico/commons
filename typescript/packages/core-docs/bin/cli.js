@@ -18,6 +18,18 @@ function runMarkdownlint(args) {
   execFileSync(process.execPath, [bin, ...args], {stdio: 'inherit', cwd});
 }
 
+/**
+ * Resolve and run the commitlint CLI, forwarding any extra args
+ * (e.g. --from/--to) through to it.
+ * @param {string[]} args
+ */
+function runCommitlint(args) {
+  const bin = require.resolve('@commitlint/cli/cli.js', {
+    paths: [cwd, packageRoot],
+  });
+  execFileSync(process.execPath, [bin, ...args], {stdio: 'inherit', cwd});
+}
+
 function init() {
   fs.copyFileSync(
     path.join(packageRoot, 'CONTRIBUTING.md'),
@@ -26,7 +38,13 @@ function init() {
   fs.cpSync(path.join(packageRoot, 'github'), path.join(cwd, '.github'), {
     recursive: true,
   });
-  console.log('Materialized CONTRIBUTING.md and .github templates.');
+  fs.writeFileSync(
+    path.join(cwd, 'commitlint.config.js'),
+    "module.exports = {extends: ['@aimarchirico/core-docs/commitlint']};\n",
+  );
+  console.log(
+    'Materialized CONTRIBUTING.md, .github templates, and commitlint.config.js.',
+  );
 }
 
 switch (command) {
@@ -36,6 +54,9 @@ switch (command) {
   case 'fix':
     runMarkdownlint(['--fix']);
     break;
+  case 'commitlint':
+    runCommitlint(process.argv.slice(3));
+    break;
   case 'init':
     init();
     break;
@@ -43,7 +64,7 @@ switch (command) {
     console.error(
       'core-docs: unknown command "' +
         (command || '') +
-        '". Expected "check", "fix", or "init".',
+        '". Expected "check", "fix", "commitlint", or "init".',
     );
     process.exit(1);
 }

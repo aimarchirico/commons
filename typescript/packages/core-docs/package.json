@@ -9,15 +9,19 @@
     "core-docs": "bin/cli.js"
   },
   "exports": {
-    "./markdownlint": "./markdownlint.cjs"
+    "./markdownlint": "./markdownlint.cjs",
+    "./commitlint": "./commitlint.cjs"
   },
   "files": [
     "CONTRIBUTING.md",
     "github",
     "bin",
-    "markdownlint.cjs"
+    "markdownlint.cjs",
+    "commitlint.cjs"
   ],
   "dependencies": {
+    "@commitlint/cli": "^19.0.0",
+    "@commitlint/config-conventional": "^19.0.0",
     "markdownlint-cli2": "^0.13.0"
   }
 }
