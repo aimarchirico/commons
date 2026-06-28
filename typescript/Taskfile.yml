@@ -1,0 +1,13 @@
+version: '3'
+
+tasks:
+  check:
+    desc: Run ESLint and TypeScript checks on packages
+    cmds:
+      - npx eslint
+      - npx tsc
+
+  fix:
+    desc: Auto-fix ESLint issues on packages
+    cmds:
+      - npx eslint --fix

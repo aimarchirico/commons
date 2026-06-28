@@ -2,6 +2,14 @@ version: '3'
 
 dotenv: ['.env']
 
+includes:
+  kotlin:
+    taskfile: ./kotlin/Taskfile.yml
+    dir: ./kotlin
+  typescript:
+    taskfile: ./typescript/Taskfile.yml
+    dir: ./typescript
+
 tasks:
   default:
     cmds:
@@ -9,33 +17,28 @@ tasks:
 
   build:
     desc: Build the Kotlin modules (automatically compiles build-logic)
-    dir: kotlin
     cmds:
-      - bash gradlew build
+      - task: kotlin:build
 
   check:
     desc: Run all checks (modules, packages, and docs)
     cmds:
-      - task: check:modules
-      - task: check:packages
-      - task: check:docs
+      - task: "check:modules"
+      - task: "check:packages"
+      - task: "check:docs"
 
   "check:modules":
     desc: Run JVM and Gradle check tasks
-    dir: kotlin
     cmds:
-      - bash gradlew check
+      - task: kotlin:check
 
   "check:packages":
     desc: Run ESLint and TypeScript checks on packages
-    dir: typescript
     cmds:
-      - npx eslint
-      - npx tsc
+      - task: typescript:check
 
   "check:docs":
     desc: Lint Markdown documentation files
-    dir: typescript
     cmds:
       - npx markdownlint-cli2
 
@@ -48,18 +51,15 @@ tasks:
 
   "fix:modules":
     desc: Format Kotlin code with ktfmt
-    dir: kotlin
     cmds:
-      - bash gradlew ktfmtFormat
+      - task: kotlin:fix
 
   "fix:packages":
     desc: Auto-fix ESLint issues on packages
-    dir: typescript
     cmds:
-      - npx eslint --fix
+      - task: typescript:fix
 
   "fix:docs":
     desc: Auto-fix Markdown documentation linting issues
-    dir: typescript
     cmds:
       - npx markdownlint-cli2 --fix
