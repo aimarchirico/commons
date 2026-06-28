@@ -19,8 +19,8 @@ jobs:
     name: Detect Changed Paths
     runs-on: ubuntu-latest
     outputs:
-      modules: ${{ steps.filter.outputs.modules }}
-      packages: ${{ steps.filter.outputs.packages }}
+      kotlin: ${{ steps.filter.outputs.kotlin }}
+      typescript: ${{ steps.filter.outputs.typescript }}
       docs: ${{ steps.filter.outputs.docs }}
     steps:
       - name: Check Out Repo
@@ -31,25 +31,23 @@ jobs:
         id: filter
         with:
           filters: |
-            modules:
-              - 'modules/**'
+            kotlin:
+              - 'kotlin/**'
               - '.github/workflows/ci.yml'
-            packages:
-              - 'packages/**'
-              - 'package.json'
-              - 'package-lock.json'
+            typescript:
+              - 'typescript/**'
               - '.github/workflows/ci.yml'
             docs:
               - '**/*.md'
               - '.github/workflows/ci.yml'
 
   # ==========================================
-  # MODULES CI JOB (JAVA / GRADLE / KOTLIN)
+  # KOTLIN CI JOB (JAVA / GRADLE / KOTLIN)
   # ==========================================
-  modules:
-    name: JVM Modules Check
+  kotlin:
+    name: Kotlin Modules Check
     needs: changes
-    if: needs.changes.outputs.modules == 'true' || github.event_name == 'workflow_dispatch'
+    if: needs.changes.outputs.kotlin == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Repo
@@ -71,12 +69,12 @@ jobs:
         run: task check:modules
 
   # ==========================================
-  # PACKAGES CI JOB (NODE / ESLINT / TSC)
+  # TYPESCRIPT CI JOB (NODE / ESLINT / TSC)
   # ==========================================
-  packages:
-    name: NPM Packages Check
+  typescript:
+    name: TypeScript Packages Check
     needs: changes
-    if: needs.changes.outputs.packages == 'true' || github.event_name == 'workflow_dispatch'
+    if: needs.changes.outputs.typescript == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Repo
@@ -87,7 +85,7 @@ jobs:
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: package-lock.json
+          cache-dependency-path: typescript/package-lock.json
 
       - name: Set Up Task
         uses: arduino/setup-task@v2
@@ -96,6 +94,7 @@ jobs:
 
       - name: Install Dependencies
         run: npm ci
+        working-directory: typescript
 
       - name: Run Package Checks
         run: task check:packages
@@ -107,7 +106,7 @@ jobs:
     name: Docs Check
     needs: changes
     # Only run standalone if code changes aren't already triggering full checks
-    if: needs.changes.outputs.docs == 'true' && needs.changes.outputs.modules != 'true' && needs.changes.outputs.packages != 'true' && github.event_name != 'workflow_dispatch'
+    if: needs.changes.outputs.docs == 'true' && needs.changes.outputs.kotlin != 'true' && needs.changes.outputs.typescript != 'true' && github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Repo
@@ -118,7 +117,7 @@ jobs:
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: package-lock.json
+          cache-dependency-path: typescript/package-lock.json
 
       - name: Set Up Task
         uses: arduino/setup-task@v2
@@ -127,6 +126,7 @@ jobs:
 
       - name: Install Dependencies
         run: npm ci
+        working-directory: typescript
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

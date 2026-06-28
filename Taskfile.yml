@@ -8,9 +8,10 @@ tasks:
       - task --list
 
   build:
-    desc: Build the modules 
+    desc: Build the Kotlin modules (automatically compiles build-logic)
+    dir: kotlin
     cmds:
-      - bash modules/gradlew -p modules build
+      - bash gradlew build
 
   check:
     desc: Run all checks (modules, packages, and docs)
@@ -21,17 +22,20 @@ tasks:
 
   "check:modules":
     desc: Run JVM and Gradle check tasks
+    dir: kotlin
     cmds:
-      - bash modules/gradlew -p modules check
+      - bash gradlew check
 
   "check:packages":
     desc: Run ESLint and TypeScript checks on packages
+    dir: typescript
     cmds:
       - npx eslint
       - npx tsc
 
   "check:docs":
     desc: Lint Markdown documentation files
+    dir: typescript
     cmds:
       - npx markdownlint-cli2
 
@@ -44,15 +48,18 @@ tasks:
 
   "fix:modules":
     desc: Format Kotlin code with ktfmt
+    dir: kotlin
     cmds:
-      - bash modules/gradlew -p modules ktfmtFormat
+      - bash gradlew ktfmtFormat
 
   "fix:packages":
     desc: Auto-fix ESLint issues on packages
+    dir: typescript
     cmds:
       - npx eslint --fix
 
   "fix:docs":
     desc: Auto-fix Markdown documentation linting issues
+    dir: typescript
     cmds:
       - npx markdownlint-cli2 --fix

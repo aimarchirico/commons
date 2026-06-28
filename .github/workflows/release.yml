@@ -41,7 +41,7 @@ jobs:
           cache: gradle
 
       - name: Publish Security Module
-        working-directory: modules
+        working-directory: kotlin
         run: bash gradlew :security:publish
 
   publish-core-test:
@@ -63,7 +63,7 @@ jobs:
           cache: gradle
 
       - name: Publish Test Module
-        working-directory: modules
+        working-directory: kotlin
         run: bash gradlew :test:publish
 
   publish-core-build-logic:
@@ -85,7 +85,7 @@ jobs:
           cache: gradle
 
       - name: Publish Convention Plugins
-        working-directory: modules
+        working-directory: kotlin
         run: bash gradlew -p build-logic publish
 
   # ==========================================
@@ -107,13 +107,15 @@ jobs:
           registry-url: https://npm.pkg.github.com
           scope: '@aimarchirico'
           cache: npm
-          cache-dependency-path: package-lock.json
+          cache-dependency-path: typescript/package-lock.json
 
       - name: Install Dependencies
         run: npm ci
+        working-directory: typescript
 
       - name: Publish core-eslint
         run: npm publish -w @aimarchirico/core-eslint
+        working-directory: typescript
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -132,13 +134,15 @@ jobs:
           registry-url: https://npm.pkg.github.com
           scope: '@aimarchirico'
           cache: npm
-          cache-dependency-path: package-lock.json
+          cache-dependency-path: typescript/package-lock.json
 
       - name: Install Dependencies
         run: npm ci
+        working-directory: typescript
 
       - name: Publish core-markdown
         run: npm publish -w @aimarchirico/core-markdown
+        working-directory: typescript
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -157,13 +161,15 @@ jobs:
           registry-url: https://npm.pkg.github.com
           scope: '@aimarchirico'
           cache: npm
-          cache-dependency-path: package-lock.json
+          cache-dependency-path: typescript/package-lock.json
 
       - name: Install Dependencies
         run: npm ci
+        working-directory: typescript
 
       - name: Publish core-openapi
         run: npm publish -w @aimarchirico/core-openapi
+        working-directory: typescript
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -182,13 +188,15 @@ jobs:
           registry-url: https://npm.pkg.github.com
           scope: '@aimarchirico'
           cache: npm
-          cache-dependency-path: package-lock.json
+          cache-dependency-path: typescript/package-lock.json
 
       - name: Install Dependencies
         run: npm ci
+        working-directory: typescript
 
       - name: Publish core-typescript
         run: npm publish -w @aimarchirico/core-typescript
+        working-directory: typescript
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -207,12 +215,14 @@ jobs:
           registry-url: https://npm.pkg.github.com
           scope: '@aimarchirico'
           cache: npm
-          cache-dependency-path: package-lock.json
+          cache-dependency-path: typescript/package-lock.json
 
       - name: Install Dependencies
         run: npm ci
+        working-directory: typescript
 
       - name: Publish core-docs
         run: npm publish -w @aimarchirico/core-docs
+        working-directory: typescript
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
