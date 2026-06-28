@@ -1,0 +1,7 @@
+packages:
+  - 'packages/*'
+
+allowBuilds:
+  '@openapitools/openapi-generator-cli': true
+  core-js: true
+  unrs-resolver: true

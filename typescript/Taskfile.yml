@@ -3,20 +3,19 @@ version: '3'
 tasks:
   install:
     internal: true
-    desc: Install workspace dependencies (CI only; run manually for local dev)
+    desc: Install dependencies
     cmds:
-      - npm ci
-    status:
-      - '[ -z "$CI" ]'
+      - pnpm install
+    if: '[ -n "$CI" ]'
 
   check:
-    desc: Run ESLint and TypeScript checks on packages
+    desc: Run check script
     cmds:
       - task: install
-      - npx core-ts check .
+      - pnpm check
 
   fix:
-    desc: Auto-fix ESLint issues on packages
+    desc: Run fix script
     cmds:
       - task: install
-      - npx core-ts fix .
+      - pnpm fix

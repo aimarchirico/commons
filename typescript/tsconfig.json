@@ -1,18 +1,11 @@
 {
+  "extends": "@aimarchirico/core-ts/tsconfig.json",
   "compilerOptions": {
-    "target": "es2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "allowJs": true,
-    "checkJs": true,
     "noEmit": true
   },
   "include": [
-    "packages/**/*.js"
+    "packages/**/*.js",
+    "packages/**/*.ts"
   ],
   "exclude": [
     "**/node_modules",
