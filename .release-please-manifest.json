@@ -1,7 +1,7 @@
 {
   "pnpm/packages/core-ts": "0.0.1",
   "pnpm/packages/core-expo": "0.0.1",
-  "pnpm/packages/core-api": "0.0.1",
+  "pnpm/packages/core-openapi": "0.0.1",
   "pnpm/packages/core-tools": "0.0.3",
   "pnpm/packages/core-docs": "0.0.1",
   "gradle/security": "0.0.3",

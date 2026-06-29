@@ -8,7 +8,7 @@
     "pnpm/packages/core-expo": {
       "release-type": "node"
     },
-    "pnpm/packages/core-api": {
+    "pnpm/packages/core-openapi": {
       "release-type": "node"
     },
     "pnpm/packages/core-tools": {

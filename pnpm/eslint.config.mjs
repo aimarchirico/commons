@@ -9,7 +9,7 @@ export default [
       'packages/core-docs/bin/cli.js',
       'packages/core-tools/.markdownlint-cli2.cjs',
       'packages/core-tools/commitlint.cjs',
-      'packages/core-api/bin/cli.js',
+      'packages/core-openapi/bin/cli.js',
       'eslint.config.mjs'
     ],
   },

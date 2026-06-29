@@ -10,7 +10,7 @@ the `@aimarchirico` scope and managed as a pnpm workspace.
 - **TypeScript** 5
 - **ESLint** 9
 - **Turborepo** 2
-- **openapi-generator-cli** 2.39 and **widdershins** 4 (used by `core-api`)
+- **openapi-generator-cli** 2.39 and **widdershins** 4 (used by `core-openapi`)
 
 ## Folder Structure
 
@@ -21,7 +21,7 @@ pnpm/
 │   ├── core-expo/         # shared Expo / React Native ESLint + tsconfig
 │   ├── core-tools/        # shared markdownlint + commitlint configs
 │   ├── core-docs/         # documentation templates and materializer CLI
-│   └── core-api/          # OpenAPI client/docs generator CLI
+│   └── core-openapi/      # OpenAPI client/docs generator CLI
 ├── pnpm-workspace.yaml    # workspace globs (packages/*)
 └── turbo.json             # check/fix task pipeline
 ```
@@ -32,9 +32,9 @@ pnpm/
 | `@aimarchirico/core-expo`        | `./eslint`, `./tsconfig.json` — Expo / React Native config.                                 |
 | `@aimarchirico/core-tools`       | `./markdownlint`, `./commitlint` configs.                                                  |
 | `@aimarchirico/core-docs`        | `core-docs` CLI (`bin/cli.js`) materializing `CONTRIBUTING.md` and GitHub templates.        |
-| `@aimarchirico/core-api`         | `core-api` CLI (`bin/cli.js`) generating the OpenAPI client and docs.                       |
+| `@aimarchirico/core-openapi`     | `core-openapi` CLI (`bin/cli.js`) generating the OpenAPI client and docs.                   |
 
-`core-expo`, `core-tools`, `core-docs`, and `core-api` extend `core-ts` as a
+`core-expo`, `core-tools`, `core-docs`, and `core-openapi` extend `core-ts` as a
 `workspace:*` dependency, so `core-ts` is the base every other package builds on.
 
 ## Environment Variables

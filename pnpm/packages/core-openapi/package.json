@@ -1,12 +1,12 @@
 {
-  "name": "@aimarchirico/core-api",
+  "name": "@aimarchirico/core-openapi",
   "version": "0.0.1",
   "private": false,
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
   "bin": {
-    "core-api": "bin/cli.js"
+    "core-openapi": "bin/cli.js"
   },
   "files": [
     "bin",

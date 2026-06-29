@@ -127,10 +127,10 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: task pnpm:publish
 
-  publish-core-api:
-    name: Publish core-api
+  publish-core-openapi:
+    name: Publish core-openapi
     needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'pnpm/packages/core-api')
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'pnpm/packages/core-openapi')
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Repo
@@ -138,10 +138,10 @@ jobs:
 
       - name: Set Up PNPM
         uses: ./.github/actions/setup-pnpm
-
+    
       - name: Publish Package
         env:
-          PACKAGE: '@aimarchirico/core-api'
+          PACKAGE: '@aimarchirico/core-openapi'
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: task pnpm:publish
 
