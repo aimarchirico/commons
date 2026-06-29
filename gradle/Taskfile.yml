@@ -1,0 +1,29 @@
+version: '3'
+
+tasks:
+  build:
+    desc: Build modules
+    cmds:
+      - bash gradlew build
+
+  check:
+    desc: Run tests
+    cmds:
+      - bash gradlew check
+
+  fix:
+    desc: Run ktfmtFormat task
+    cmds:
+      - bash gradlew ktfmtFormat
+
+  publish:
+    desc: Publish a module (requires MODULE var, e.g. MODULE=security)
+    cmds:
+      - bash gradlew {{.GRADLE_TARGET}}
+    vars:
+      GRADLE_TARGET:
+        sh: |
+          case "{{.MODULE}}" in
+            build-logic) echo "-p build-logic publish" ;;
+            *) echo ":{{.MODULE}}:publish" ;;
+          esac

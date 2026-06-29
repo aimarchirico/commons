@@ -19,3 +19,9 @@ tasks:
     cmds:
       - task: install
       - pnpm fix
+
+  publish:
+    desc: Publish a package
+    cmds:
+      - task: install
+      - pnpm publish --filter {{.PACKAGE}} --no-git-checks
