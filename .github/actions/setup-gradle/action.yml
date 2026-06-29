@@ -1,4 +1,5 @@
-name: Setup Gradle
+name: Set Up Gradle
+description: Set Up Gradle
 runs:
   using: composite
   steps:

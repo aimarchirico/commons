@@ -1,4 +1,5 @@
-name: Setup Node
+name: Set Up Node
+description:  Set Up PNPM
 inputs:
   cache-dependency-path:
     required: false

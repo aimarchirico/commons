@@ -1,4 +1,5 @@
-name: Setup PNPM
+name: Set Up PNPM
+description: Set Up PNPM
 runs:
   using: composite
   steps:
