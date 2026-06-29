@@ -29,9 +29,9 @@ on GitHub Packages._
 
 Implementation-level setup and usage live in each subsystem's README:
 
-- [`gradle/`](gradle/README.md) — Kotlin backend modules and the convention
-  plugin.
-- [`pnpm/`](pnpm/README.md) — frontend configuration packages and the API CLI.
+- [`maven/`](maven/README.md) — Kotlin backend modules and the convention plugin.
+- [`npm/`](npm/README.md) — frontend configuration packages and the API CLI.
+- [`tools/`](tools/README.md) — shared linting configs and release tooling.
 - [`skills/`](skills/README.md) — agent skills.
 
 ## Documentation
