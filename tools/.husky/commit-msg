@@ -1,0 +1,1 @@
+EDIT_FILE="$1" task commit:check
