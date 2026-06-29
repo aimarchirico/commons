@@ -6,7 +6,7 @@ plugins {
 
 group = "no.chirico.core"
 
-version = "0.0.3" // x-release-please-version
+version = "0.1.0" // x-release-please-version
 
 dependencies {
   implementation(platform(libs.spring.boot.dependencies))
