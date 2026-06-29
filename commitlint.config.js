@@ -1,1 +1,1 @@
-module.exports = {extends: ['@aimarchirico/core-conventions/commitlint']};
+module.exports = {extends: ['@aimarchirico/core-tools/commitlint']};

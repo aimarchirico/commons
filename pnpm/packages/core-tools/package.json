@@ -1,21 +1,15 @@
 {
-  "name": "@aimarchirico/core-conventions",
+  "name": "@aimarchirico/core-tools",
   "version": "0.0.3",
   "private": false,
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
-  },
-  "bin": {
-    "core-conventions": "bin/cli.js"
   },
   "exports": {
     "./markdownlint": "./.markdownlint-cli2.cjs",
     "./commitlint": "./commitlint.cjs"
   },
   "files": [
-    "CONTRIBUTING.md",
-    "github",
-    "bin",
     ".markdownlint-cli2.cjs",
     "commitlint.cjs"
   ],

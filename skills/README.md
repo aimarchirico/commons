@@ -21,7 +21,7 @@ skills/
 ```
 
 Each skill is a self-contained directory holding a single `SKILL.md`. Skills
-rely on the conventions materialized by `@aimarchirico/core-conventions`
+rely on the conventions materialized by `@aimarchirico/core-docs`
 (`CONTRIBUTING.md` and the GitHub templates) rather than on each other.
 
 ## Environment Variables

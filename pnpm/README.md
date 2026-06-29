@@ -19,7 +19,8 @@ pnpm/
 ├── packages/
 │   ├── core-ts/           # shared ESLint + tsconfig (base config)
 │   ├── core-expo/         # shared Expo / React Native ESLint + tsconfig
-│   ├── core-conventions/  # shared markdownlint + commitlint configs and templates
+│   ├── core-tools/        # shared markdownlint + commitlint configs
+│   ├── core-docs/         # documentation templates and materializer CLI
 │   └── core-api/          # OpenAPI client/docs generator CLI
 ├── pnpm-workspace.yaml    # workspace globs (packages/*)
 └── turbo.json             # check/fix task pipeline
@@ -29,10 +30,11 @@ pnpm/
 | :------------------------------- | :----------------------------------------------------------------------------------------- |
 | `@aimarchirico/core-ts`          | `./eslint`, `./tsconfig.json` — base TypeScript config.                                     |
 | `@aimarchirico/core-expo`        | `./eslint`, `./tsconfig.json` — Expo / React Native config.                                 |
-| `@aimarchirico/core-conventions` | `./markdownlint`, `./commitlint` configs; ships `CONTRIBUTING.md` and GitHub templates.     |
+| `@aimarchirico/core-tools`       | `./markdownlint`, `./commitlint` configs.                                                  |
+| `@aimarchirico/core-docs`        | `core-docs` CLI (`bin/cli.js`) materializing `CONTRIBUTING.md` and GitHub templates.        |
 | `@aimarchirico/core-api`         | `core-api` CLI (`bin/cli.js`) generating the OpenAPI client and docs.                       |
 
-`core-expo`, `core-conventions`, and `core-api` extend `core-ts` as a
+`core-expo`, `core-tools`, `core-docs`, and `core-api` extend `core-ts` as a
 `workspace:*` dependency, so `core-ts` is the base every other package builds on.
 
 ## Environment Variables

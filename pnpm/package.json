@@ -8,7 +8,8 @@
     "fix": "turbo run fix"
   },
   "devDependencies": {
-    "@aimarchirico/core-conventions": "workspace:*",
+    "@aimarchirico/core-docs": "workspace:*",
+    "@aimarchirico/core-tools": "workspace:*",
     "@aimarchirico/core-ts": "workspace:*",
     "@types/node": "^26.0.1",
     "eslint": "^9.39.2",

@@ -11,7 +11,10 @@
     "pnpm/packages/core-api": {
       "release-type": "node"
     },
-    "pnpm/packages/core-conventions": {
+    "pnpm/packages/core-tools": {
+      "release-type": "node"
+    },
+    "pnpm/packages/core-docs": {
       "release-type": "node"
     },
     "gradle/security": {

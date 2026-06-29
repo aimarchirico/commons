@@ -145,10 +145,10 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: task pnpm:publish
 
-  publish-core-conventions:
-    name: Publish core-conventions
+  publish-core-tools:
+    name: Publish core-tools
     needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'pnpm/packages/core-conventions')
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'pnpm/packages/core-tools')
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Repo
@@ -159,6 +159,24 @@ jobs:
 
       - name: Publish Package
         env:
-          PACKAGE: '@aimarchirico/core-conventions'
+          PACKAGE: '@aimarchirico/core-tools'
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: task pnpm:publish
+
+  publish-core-docs:
+    name: Publish core-docs
+    needs: release-please
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'pnpm/packages/core-docs')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v4
+
+      - name: Set Up PNPM
+        uses: ./.github/actions/setup-pnpm
+
+      - name: Publish Package
+        env:
+          PACKAGE: '@aimarchirico/core-docs'
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: task pnpm:publish

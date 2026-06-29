@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "devDependencies": {
-    "@aimarchirico/core-conventions": "file:pnpm/packages/core-conventions",
+    "@aimarchirico/core-docs": "file:pnpm/packages/core-docs",
+    "@aimarchirico/core-tools": "file:pnpm/packages/core-tools",
     "@commitlint/cli": "^19.0.0",
     "markdownlint-cli2": "^0.13.0"
   }
