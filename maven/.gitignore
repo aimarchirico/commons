@@ -1,8 +1,5 @@
-# Gradle
+*.env*
 .gradle/
 .kotlin/
 bin/
 build/
-
-# Environment
-*.env*
