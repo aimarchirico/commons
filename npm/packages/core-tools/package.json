@@ -18,7 +18,7 @@
     "fix": "eslint . --no-error-on-unmatched-pattern --fix"
   },
   "dependencies": {
-    "@commitlint/config-conventional": "^19.0.0"
+    "@commitlint/config-conventional": "^21.1.0"
   },
   "devDependencies": {
     "@aimarchirico/core-ts": "workspace:*",
