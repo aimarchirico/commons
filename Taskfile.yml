@@ -12,29 +12,9 @@ includes:
   tools:
     taskfile: ./tools/Taskfile.yml
     dir: ./tools
+    flatten: true
 
 tasks:
   default:
     cmds:
       - task --list
-
-  docs:check:
-    desc: Lint Markdown files
-    cmds:
-      - task: tools:docs:check
-        vars:
-          CLI_ARGS: '{{.CLI_ARGS}}'
-
-  docs:fix:
-    desc: Fix Markdown issues
-    cmds:
-      - task: tools:docs:fix
-        vars:
-          CLI_ARGS: '{{.CLI_ARGS}}'
-
-  commit:check:
-    desc: Lint commit messages
-    cmds:
-      - task: tools:commit:check
-        vars:
-          CLI_ARGS: '{{.CLI_ARGS}}'

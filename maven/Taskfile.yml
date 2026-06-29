@@ -1,11 +1,6 @@
 version: '3'
 
 tasks:
-  build:
-    desc: Build modules
-    cmds:
-      - bash gradlew build
-
   check:
     desc: Run tests and lint
     cmds:
@@ -15,6 +10,11 @@ tasks:
     desc: Format Kotlin files
     cmds:
       - bash gradlew ktfmtFormat
+
+  build:
+    desc: Build modules
+    cmds:
+      - bash gradlew build
 
   publish:
     desc: Publish a module

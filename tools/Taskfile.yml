@@ -2,27 +2,31 @@ version: '3'
 
 tasks:
   install:
-    desc: Install tools dependencies
+    internal: true
+    desc: Install npm dependencies
     cmds:
       - pnpm install
-    status:
-      - test -d node_modules
+    if: '[ -n "$CI" ]'
 
   docs:check:
     desc: Lint Markdown files
     cmds:
       - task: install
-      - pnpm exec markdownlint-cli2 {{.CLI_ARGS}}
+      - pnpm exec markdownlint-cli2
 
   docs:fix:
     desc: Fix Markdown issues
     cmds:
-      - task: install
-      - pnpm exec markdownlint-cli2 --fix {{.CLI_ARGS}}
+      - pnpm exec markdownlint-cli2 --fix
 
   commit:check:
     desc: Lint commit messages
     vars:
+      EDIT:
+        sh: |
+          if [ -n "$EDIT_FILE" ]; then
+            echo "--edit $EDIT_FILE"
+          fi
       COMMIT_RANGE:
         sh: |
           if [ -n "$FROM_SHA" ] && [ -n "$TO_SHA" ]; then
@@ -30,4 +34,4 @@ tasks:
           fi
     cmds:
       - task: install
-      - pnpm exec commitlint {{.COMMIT_RANGE}} {{.CLI_ARGS}}
+      - pnpm exec commitlint {{.COMMIT_RANGE}} {{.EDIT}}

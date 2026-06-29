@@ -1,11 +1,10 @@
 {
-  "name": "core-tools-runner",
+  "name": "tools",
   "version": "1.0.0",
   "private": true,
   "devDependencies": {
+    "@aimarchirico/core-tools": "^0.1.0",
     "@commitlint/cli": "^19.0.0",
-    "@commitlint/config-conventional": "^19.0.0",
-    "markdownlint-cli2": "^0.13.0",
-    "turbo": "^2.0.0"
+    "markdownlint-cli2": "^0.13.0"
   }
 }
