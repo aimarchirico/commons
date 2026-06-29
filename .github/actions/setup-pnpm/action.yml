@@ -1,0 +1,23 @@
+name: Set Up PNPM
+description: Set Up PNPM
+runs:
+  using: composite
+  steps:
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 11.9.0
+
+    - name: Set Up Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
+        registry-url: https://npm.pkg.github.com
+        scope: '@aimarchirico'
+        cache: pnpm
+        cache-dependency-path: pnpm/pnpm-lock.yaml
+
+    - name: Set Up Task
+      uses: arduino/setup-task@v2
+      with:
+        version: 3.x

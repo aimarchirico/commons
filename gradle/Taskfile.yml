@@ -1,0 +1,29 @@
+version: '3'
+
+tasks:
+  build:
+    desc: Build modules
+    cmds:
+      - bash gradlew build
+
+  check:
+    desc: Run tests and lint
+    cmds:
+      - bash gradlew check
+
+  fix:
+    desc: Format Kotlin files
+    cmds:
+      - bash gradlew ktfmtFormat
+
+  publish:
+    desc: Publish a module
+    cmds:
+      - bash gradlew {{.GRADLE_TARGET}}
+    vars:
+      GRADLE_TARGET:
+        sh: |
+          case "{{.MODULE}}" in
+            build-logic) echo "-p build-logic publish" ;;
+            *) echo ":{{.MODULE}}:publish" ;;
+          esac

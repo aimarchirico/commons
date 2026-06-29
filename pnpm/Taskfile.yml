@@ -1,0 +1,26 @@
+version: '3'
+
+tasks:
+  install:
+    internal: true
+    desc: Install dependencies
+    cmds:
+      - pnpm install
+    if: '[ -n "$CI" ]'
+
+  check:
+    desc: Run lint and type check
+    cmds:
+      - task: install
+      - pnpm check
+
+  fix:
+    desc: Fix lint issues
+    cmds:
+      - pnpm fix
+
+  publish:
+    desc: Publish a package
+    cmds:
+      - task: install
+      - pnpm publish --filter {{.PACKAGE}} --no-git-checks

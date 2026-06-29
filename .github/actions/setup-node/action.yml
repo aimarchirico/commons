@@ -1,0 +1,25 @@
+name: Set Up Node
+description:  Set Up PNPM
+inputs:
+  cache-dependency-path:
+    required: false
+    default: pnpm-lock.yaml
+runs:
+  using: composite
+  steps:
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 11.9.0
+
+    - name: Set Up Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
+        cache: pnpm
+        cache-dependency-path: ${{ inputs.cache-dependency-path }}
+
+    - name: Set Up Task
+      uses: arduino/setup-task@v2
+      with:
+        version: 3.x

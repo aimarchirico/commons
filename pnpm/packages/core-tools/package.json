@@ -1,0 +1,29 @@
+{
+  "name": "@aimarchirico/core-tools",
+  "version": "0.0.3",
+  "private": false,
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "exports": {
+    "./markdownlint": "./.markdownlint-cli2.cjs",
+    "./commitlint": "./commitlint.cjs"
+  },
+  "files": [
+    ".markdownlint-cli2.cjs",
+    "commitlint.cjs"
+  ],
+  "scripts": {
+    "check": "eslint . --no-error-on-unmatched-pattern",
+    "fix": "eslint . --no-error-on-unmatched-pattern --fix"
+  },
+  "dependencies": {
+    "@commitlint/config-conventional": "^19.0.0"
+  },
+  "devDependencies": {
+    "@aimarchirico/core-ts": "workspace:*",
+    "@types/node": "^26.0.1",
+    "eslint": "^9.39.2",
+    "typescript": "^5.0.0"
+  }
+}

@@ -1,0 +1,16 @@
+name: Set Up Gradle
+description: Set Up Gradle
+runs:
+  using: composite
+  steps:
+    - name: Set Up Java
+      uses: actions/setup-java@v5
+      with:
+        distribution: temurin
+        java-version: 25
+        cache: gradle
+
+    - name: Set Up Task
+      uses: arduino/setup-task@v2
+      with:
+        version: 3.x

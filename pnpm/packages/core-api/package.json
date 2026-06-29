@@ -1,0 +1,29 @@
+{
+  "name": "@aimarchirico/core-api",
+  "version": "0.0.1",
+  "private": false,
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "bin": {
+    "core-api": "bin/cli.js"
+  },
+  "files": [
+    "bin",
+    "tsconfig.json"
+  ],
+  "scripts": {
+    "check": "eslint . --no-error-on-unmatched-pattern && tsc",
+    "fix": "eslint . --no-error-on-unmatched-pattern --fix"
+  },
+  "dependencies": {
+    "@openapitools/openapi-generator-cli": "^2.39.0",
+    "widdershins": "^4.0.1"
+  },
+  "devDependencies": {
+    "@aimarchirico/core-ts": "workspace:*",
+    "@types/node": "^26.0.1",
+    "eslint": "^9.39.2",
+    "typescript": "^5.0.0"
+  }
+}

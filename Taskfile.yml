@@ -3,12 +3,12 @@ version: '3'
 dotenv: ['.env']
 
 includes:
-  kotlin:
-    taskfile: ./kotlin/Taskfile.yml
-    dir: ./kotlin
-  typescript:
-    taskfile: ./typescript/Taskfile.yml
-    dir: ./typescript
+  gradle:
+    taskfile: ./gradle/Taskfile.yml
+    dir: ./gradle
+  pnpm:
+    taskfile: ./pnpm/Taskfile.yml
+    dir: ./pnpm
 
 tasks:
   default:
@@ -17,54 +17,33 @@ tasks:
 
   install:
     internal: true
-    desc: Install root dependencies (CI only; run manually for local dev)
+    desc: Install dependencies
     cmds:
-      - npm ci
-    status:
-      - '[ -z "$CI" ]'
-
-  build:
-    desc: Build the Kotlin modules
-    cmds:
-      - task: kotlin:build
-
-  check:
-    desc: Run all checks (modules, packages, and docs)
-    cmds:
-      - task: kotlin:check
-      - task: typescript:check
-      - task: docs:check
-
-  fix:
-    desc: Auto-fix formatting and linting issues
-    cmds:
-      - task: kotlin:fix
-      - task: typescript:fix
-      - task: docs:fix
+      - pnpm install
+    if: '[ -n "$CI" ]'
 
   docs:check:
-    desc: Lint Markdown documentation files
+    desc: Lint Markdown files
     cmds:
       - task: install
-      - task: typescript:install
-      - npx core-conventions check
+      - pnpm exec markdownlint-cli2
 
   docs:fix:
-    desc: Auto-fix Markdown documentation issues
+    desc: Fix Markdown issues
     cmds:
-      - task: install
-      - task: typescript:install
-      - npx core-conventions fix
+      - pnpm exec markdownlint-cli2 --fix
 
-  docs:init:
-    desc: Materialize shared CONTRIBUTING.md and .github templates
+  commit:check:
+    desc: Lint commit messages
+    vars:
+      COMMIT_RANGE:
+        sh: |
+          if [ -n "$FROM_SHA" ] && [ -n "$TO_SHA" ]; then
+            echo "--from $FROM_SHA --to $TO_SHA"
+          fi
     cmds:
       - task: install
-      - npx core-conventions init
+      - pnpm exec commitlint {{.COMMIT_RANGE}} {{.CLI_ARGS}}
 
-  commit:lint:
-    desc: Lint commit messages with commitlint (forwards args, e.g. --from/--to)
-    cmds:
-      - task: install
-      - task: typescript:install
-      - npx core-conventions commitlint {{.CLI_ARGS}}
+    skills:
+      - gh skill install aimarchirico/core --all --agent antigravity --scope project 

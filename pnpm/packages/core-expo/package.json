@@ -1,0 +1,37 @@
+{
+  "name": "@aimarchirico/core-expo",
+  "version": "0.0.1",
+  "private": false,
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "exports": {
+    "./eslint": "./eslint.config.mjs",
+    "./tsconfig.json": "./tsconfig.json"
+  },
+  "files": [
+    "eslint.config.mjs",
+    "tsconfig.json"
+  ],
+  "scripts": {
+    "check": "eslint . --no-error-on-unmatched-pattern",
+    "fix": "eslint . --no-error-on-unmatched-pattern --fix"
+  },
+  "dependencies": {
+    "eslint-config-expo": "~56.0.4"
+  },
+  "devDependencies": {
+    "@aimarchirico/core-ts": "workspace:*",
+    "@types/node": "^26.0.1",
+    "eslint": "^9.39.2",
+    "expo": "*",
+    "react": "*",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "@aimarchirico/core-ts": "workspace:*",
+    "eslint": "^9.39.2",
+    "react": "*",
+    "typescript": "^5.0.0"
+  }
+}

@@ -2,7 +2,7 @@ name: Release
 
 on:
   push:
-    branches: [dev]
+    branches: [main]
 
 permissions:
   contents: write
@@ -31,7 +31,7 @@ jobs:
   publish-core-security:
     name: Publish core-security
     needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'kotlin/security')
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'gradle/security')
     runs-on: ubuntu-latest
     env:
       GITHUB_ACTOR: ${{ github.actor }}
@@ -40,21 +40,18 @@ jobs:
       - name: Check Out Repo
         uses: actions/checkout@v4
 
-      - name: Set Up Java
-        uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: 25
-          cache: gradle
+      - name: Set Up Gradle
+        uses: ./.github/actions/setup-gradle
 
-      - name: Publish Security Module
-        working-directory: kotlin
-        run: bash gradlew :security:publish
+      - name: Publish Module
+        env:
+          MODULE: security
+        run: task gradle:publish
 
   publish-core-test:
     name: Publish core-test
     needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'kotlin/test')
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'gradle/test')
     runs-on: ubuntu-latest
     env:
       GITHUB_ACTOR: ${{ github.actor }}
@@ -63,21 +60,18 @@ jobs:
       - name: Check Out Repo
         uses: actions/checkout@v4
 
-      - name: Set Up Java
-        uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: 25
-          cache: gradle
+      - name: Set Up Gradle
+        uses: ./.github/actions/setup-gradle
 
-      - name: Publish Test Module
-        working-directory: kotlin
-        run: bash gradlew :test:publish
+      - name: Publish Module
+        env:
+          MODULE: test
+        run: task gradle:publish
 
   publish-core-build-logic:
     name: Publish core-build-logic
     needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'kotlin/build-logic')
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'gradle/build-logic')
     runs-on: ubuntu-latest
     env:
       GITHUB_ACTOR: ${{ github.actor }}
@@ -86,16 +80,13 @@ jobs:
       - name: Check Out Repo
         uses: actions/checkout@v4
 
-      - name: Set Up Java
-        uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: 25
-          cache: gradle
+      - name: Set Up Gradle
+        uses: ./.github/actions/setup-gradle
 
-      - name: Publish Convention Plugins
-        working-directory: kotlin
-        run: bash gradlew -p build-logic publish
+      - name: Publish Module
+        env:
+          MODULE: build-logic
+        run: task gradle:publish
 
   # ==========================================
   # NPM MODULES
@@ -103,83 +94,89 @@ jobs:
   publish-core-ts:
     name: Publish core-ts
     needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'typescript/packages/core-ts')
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'pnpm/packages/core-ts')
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Repo
         uses: actions/checkout@v4
 
-      - name: Set Up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          registry-url: https://npm.pkg.github.com
-          scope: '@aimarchirico'
-          cache: npm
-          cache-dependency-path: typescript/package-lock.json
+      - name: Set Up PNPM
+        uses: ./.github/actions/setup-pnpm
 
-      - name: Install Dependencies
-        run: npm ci
-        working-directory: typescript
-
-      - name: Publish core-ts
-        run: npm publish -w @aimarchirico/core-ts
-        working-directory: typescript
+      - name: Publish Package
         env:
+          PACKAGE: '@aimarchirico/core-ts'
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: task pnpm:publish
+
+  publish-core-expo:
+    name: Publish core-expo
+    needs: release-please
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'pnpm/packages/core-expo')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v4
+
+      - name: Set Up PNPM
+        uses: ./.github/actions/setup-pnpm
+
+      - name: Publish Package
+        env:
+          PACKAGE: '@aimarchirico/core-expo'
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: task pnpm:publish
 
   publish-core-api:
     name: Publish core-api
     needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'typescript/packages/core-api')
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'pnpm/packages/core-api')
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Repo
         uses: actions/checkout@v4
 
-      - name: Set Up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          registry-url: https://npm.pkg.github.com
-          scope: '@aimarchirico'
-          cache: npm
-          cache-dependency-path: typescript/package-lock.json
+      - name: Set Up PNPM
+        uses: ./.github/actions/setup-pnpm
 
-      - name: Install Dependencies
-        run: npm ci
-        working-directory: typescript
-
-      - name: Publish core-api
-        run: npm publish -w @aimarchirico/core-api
-        working-directory: typescript
+      - name: Publish Package
         env:
+          PACKAGE: '@aimarchirico/core-api'
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: task pnpm:publish
 
-  publish-core-conventions:
-    name: Publish core-conventions
+  publish-core-tools:
+    name: Publish core-tools
     needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'typescript/packages/core-conventions')
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'pnpm/packages/core-tools')
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Repo
         uses: actions/checkout@v4
 
-      - name: Set Up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          registry-url: https://npm.pkg.github.com
-          scope: '@aimarchirico'
-          cache: npm
-          cache-dependency-path: typescript/package-lock.json
+      - name: Set Up PNPM
+        uses: ./.github/actions/setup-pnpm
 
-      - name: Install Dependencies
-        run: npm ci
-        working-directory: typescript
-
-      - name: Publish core-conventions
-        run: npm publish -w @aimarchirico/core-conventions
-        working-directory: typescript
+      - name: Publish Package
         env:
+          PACKAGE: '@aimarchirico/core-tools'
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: task pnpm:publish
+
+  publish-core-docs:
+    name: Publish core-docs
+    needs: release-please
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'pnpm/packages/core-docs')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v4
+
+      - name: Set Up PNPM
+        uses: ./.github/actions/setup-pnpm
+
+      - name: Publish Package
+        env:
+          PACKAGE: '@aimarchirico/core-docs'
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: task pnpm:publish

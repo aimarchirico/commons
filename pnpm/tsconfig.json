@@ -1,0 +1,15 @@
+{
+  "extends": "@aimarchirico/core-ts/tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": [
+    "packages/**/*.js",
+    "packages/**/*.ts"
+  ],
+  "exclude": [
+    "**/node_modules",
+    "**/build",
+    "**/dist"
+  ]
+}

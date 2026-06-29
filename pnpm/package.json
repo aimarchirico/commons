@@ -1,0 +1,19 @@
+{
+  "name": "@aimarchirico/core",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@11.9.0",
+  "scripts": {
+    "check": "turbo run check",
+    "fix": "turbo run fix"
+  },
+  "devDependencies": {
+    "@aimarchirico/core-docs": "workspace:*",
+    "@aimarchirico/core-tools": "workspace:*",
+    "@aimarchirico/core-ts": "workspace:*",
+    "@types/node": "^26.0.1",
+    "eslint": "^9.39.2",
+    "turbo": "^2.0.4",
+    "typescript": "^5.0.0"
+  }
+}

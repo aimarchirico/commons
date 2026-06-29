@@ -9,7 +9,7 @@ Use when the user asks to implement an issue.
 
 ## Execution Steps
 
-1. Preflight: Verify that `CONTRIBUTING.md` exists in the repository root. If it is missing, run `npx @aimarchirico/core-conventions` to materialize the documentation.
+1. Preflight: Verify that `CONTRIBUTING.md` exists in the repository root. If it is missing, run `npx @aimarchirico/core-docs` to materialize the documentation.
 2. Parse the `--issue` flag to extract the `<issue-id>`. Prompt the user if the flag is missing.
 3. Execute `gh issue view <issue-id> --json title,labels` to fetch the issue details.
 4. Execute `git checkout -b <branch-name>` following the naming rules in `CONTRIBUTING.md`.

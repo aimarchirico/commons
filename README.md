@@ -1,65 +1,47 @@
 # Core
 
-Reusable foundation for Chirico services: shared backend modules, frontend
-packages, and agent skills consumed by downstream repositories such as the
-service template.
+## Introduction
 
-## What's Inside
+Core is the reusable foundation for Chirico services. It centralizes the shared
+backend modules, frontend configuration packages, and agent skills that
+downstream repositories — such as the service template — depend on, so every
+project inherits the same conventions instead of re-implementing them. The
+audience is developers building or maintaining Chirico services.
 
-The repository is a monorepo with three roots:
+## Demo
 
-- **`kotlin/`** — Gradle/Kotlin backend components published as Maven
-  artifacts (`core-security`, `core-test`) plus the shared convention plugin
-  (`core-build-logic`, applied as `id("core.kotlin")`).
-- **`typescript/packages/`** — npm packages published to GitHub Packages. Each
-  is an atomic CLI that owns its tooling logic and bundles its config, so
-  consumers call a single command instead of re-spelling long invocations:
-  - `@aimarchirico/core-ts` — `core-ts check`/`fix` (ESLint + TypeScript);
-    also exports the shared `eslint` config and `tsconfig.json`.
-  - `@aimarchirico/core-api` — `core-api` generates the OpenAPI client and docs.
-  - `@aimarchirico/core-conventions` — `core-conventions check`/`fix`/`init` (Markdown lint
-    plus the contributing guide and GitHub templates); also exports the shared
-    `markdownlint` config.
-- **`skills/`** — agent skills (`commit`, `docs`, `implement`, `issues`,
-  `pr`) added to a consumer via `npx skills add aimarchirico/core --skill
-  <name>`.
+_Not applicable — Core is a collection of published libraries, configuration
+packages, and agent skills with no runnable UI. Released artifacts are available
+on GitHub Packages._
 
-## Usage
+## Features
 
-Backend modules apply the convention plugin and depend on the libraries:
+- **Backend libraries** — published Maven artifacts for security and test
+  support, plus a shared Gradle/Kotlin convention plugin.
+- **Frontend configs** — shared ESLint and TypeScript configuration for
+  TypeScript and Expo / React Native projects.
+- **Project conventions** — shared Markdown and commit lint rules, the
+  contributing guide, and GitHub issue/PR templates.
+- **API tooling** — a CLI that generates the OpenAPI client and docs.
+- **Agent skills** — reusable skills covering the development lifecycle.
 
-```kotlin
-plugins { id("core.kotlin") }
+## Getting Started
 
-dependencies {
-  implementation("no.chirico.core:core-security")
-  testImplementation("no.chirico.core:core-test")
-}
-```
+Implementation-level setup and usage live in each subsystem's README:
 
-Frontend packages expose configs (extended in eslint/tsconfig/markdownlint)
-and CLIs:
+- [`gradle/`](gradle/README.md) — Kotlin backend modules and the convention
+  plugin.
+- [`pnpm/`](pnpm/README.md) — frontend configuration packages and the API CLI.
+- [`skills/`](skills/README.md) — agent skills.
 
-```sh
-npx core-ts check    # lint and type-check (strict when CI=1)
-npx core-api         # generate the OpenAPI client and docs
-npx core-conventions check  # lint Markdown
-npx core-conventions init   # write CONTRIBUTING.md and .github templates into the repo
-```
+## Documentation
 
-## Development
+Extended, system-level documentation lives in [`docs/`](docs):
 
-Requires Java 25, Node 20+, and [Task](https://taskfile.dev).
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — data flow, infrastructure
+  overview, and project structure.
 
-```sh
-npm install
-task check
-```
+## Workflow
 
-- `task build` — build the backend modules.
-- `task check` — run module tests, quality checks, and Markdown lint.
-- `task fix` — format and auto-fix.
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+See [CONTRIBUTING.md](CONTRIBUTING.md) for documentation, issue, branch, commit,
+and pull request conventions.

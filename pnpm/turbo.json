@@ -1,0 +1,17 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "check": {
+      "cache": true,
+      "inputs": [
+        "src/**/*",
+        "eslint.config.mjs",
+        "tsconfig.json",
+        "package.json"
+      ]
+    },
+    "fix": {
+      "cache": false
+    }
+  }
+}

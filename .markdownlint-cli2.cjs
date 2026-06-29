@@ -1,13 +1,5 @@
-const baseConfig = require('@aimarchirico/core-conventions/markdownlint');
+const baseConfig = require('@aimarchirico/core-tools/markdownlint');
 
 module.exports = {
   ...baseConfig,
-  ignores: [
-    '**/node_modules/**',
-    '**/build/**',
-    '**/dist/**',
-    '**/.gradle/**',
-    '**/.git/**',
-    '**/tmp/**'
-  ]
 };
