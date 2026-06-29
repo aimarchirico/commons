@@ -1,5 +1,5 @@
 name: Set Up Node
-description: Set Up Node and PNPM
+description: Set Up PNPM, Node and Task
 inputs:
   cache-dependency-path:
     required: false
@@ -13,7 +13,7 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Install pnpm
+    - name: Set Up PNPM
       uses: pnpm/action-setup@v4
       with:
         version: 11.9.0
