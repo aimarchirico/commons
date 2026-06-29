@@ -19,14 +19,17 @@
     },
     "gradle/security": {
       "release-type": "simple",
+      "package-name": "core-security",
       "extra-files": ["build.gradle.kts"]
     },
     "gradle/test": {
       "release-type": "simple",
+      "package-name": "core-test",
       "extra-files": ["build.gradle.kts"]
     },
     "gradle/build-logic": {
       "release-type": "simple",
+      "package-name": "core-build-logic",
       "extra-files": ["build.gradle.kts"]
     }
   }
