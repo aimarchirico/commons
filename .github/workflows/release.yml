@@ -24,14 +24,16 @@ jobs:
         uses: googleapis/release-please-action@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          config-file: tools/release-please-config.json
+          manifest-file: tools/.release-please-manifest.json
 
   # ==========================================
-  # MAVEN / GRADLE MODULES
+  # MAVEN MODULES
   # ==========================================
   publish-core-security:
     name: Publish core-security
     needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'gradle/security')
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'maven/security')
     runs-on: ubuntu-latest
     env:
       GITHUB_ACTOR: ${{ github.actor }}
@@ -40,18 +42,21 @@ jobs:
       - name: Check Out Repo
         uses: actions/checkout@v4
 
-      - name: Set Up Gradle
-        uses: ./.github/actions/setup-gradle
+      - name: Set Up Java
+        uses: ./.github/actions/setup-java
 
       - name: Publish Module
         env:
           MODULE: security
-        run: task gradle:publish
+        run: task maven:publish
 
+  # ==========================================
+  # MAVEN MODULES
+  # ==========================================
   publish-core-test:
     name: Publish core-test
     needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'gradle/test')
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'maven/test')
     runs-on: ubuntu-latest
     env:
       GITHUB_ACTOR: ${{ github.actor }}
@@ -60,18 +65,21 @@ jobs:
       - name: Check Out Repo
         uses: actions/checkout@v4
 
-      - name: Set Up Gradle
-        uses: ./.github/actions/setup-gradle
+      - name: Set Up Java
+        uses: ./.github/actions/setup-java
 
       - name: Publish Module
         env:
           MODULE: test
-        run: task gradle:publish
+        run: task maven:publish
 
+  # ==========================================
+  # MAVEN MODULES
+  # ==========================================
   publish-core-build-logic:
     name: Publish core-build-logic
     needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'gradle/build-logic')
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'maven/build-logic')
     runs-on: ubuntu-latest
     env:
       GITHUB_ACTOR: ${{ github.actor }}
@@ -80,13 +88,13 @@ jobs:
       - name: Check Out Repo
         uses: actions/checkout@v4
 
-      - name: Set Up Gradle
-        uses: ./.github/actions/setup-gradle
+      - name: Set Up Java
+        uses: ./.github/actions/setup-java
 
       - name: Publish Module
         env:
           MODULE: build-logic
-        run: task gradle:publish
+        run: task maven:publish
 
   # ==========================================
   # NPM MODULES
@@ -94,89 +102,99 @@ jobs:
   publish-core-ts:
     name: Publish core-ts
     needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'pnpm/packages/core-ts')
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/core-ts')
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Repo
         uses: actions/checkout@v4
 
-      - name: Set Up PNPM
-        uses: ./.github/actions/setup-pnpm
+      - name: Set Up Node
+        uses: ./.github/actions/setup-node
+        with:
+          cache-dependency-path: npm/pnpm-lock.yaml
 
       - name: Publish Package
         env:
           PACKAGE: '@aimarchirico/core-ts'
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: task pnpm:publish
+        run: task npm:publish
 
   publish-core-expo:
     name: Publish core-expo
     needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'pnpm/packages/core-expo')
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/core-expo')
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Repo
         uses: actions/checkout@v4
 
-      - name: Set Up PNPM
-        uses: ./.github/actions/setup-pnpm
+      - name: Set Up Node
+        uses: ./.github/actions/setup-node
+        with:
+          cache-dependency-path: npm/pnpm-lock.yaml
 
       - name: Publish Package
         env:
           PACKAGE: '@aimarchirico/core-expo'
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: task pnpm:publish
+        run: task npm:publish
 
   publish-core-openapi:
     name: Publish core-openapi
     needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'pnpm/packages/core-openapi')
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/core-openapi')
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Repo
         uses: actions/checkout@v4
 
-      - name: Set Up PNPM
-        uses: ./.github/actions/setup-pnpm
-    
+      - name: Set Up Node
+        uses: ./.github/actions/setup-node
+        with:
+          cache-dependency-path: npm/pnpm-lock.yaml
+
       - name: Publish Package
         env:
           PACKAGE: '@aimarchirico/core-openapi'
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: task pnpm:publish
+        run: task npm:publish
 
   publish-core-tools:
     name: Publish core-tools
     needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'pnpm/packages/core-tools')
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/core-tools')
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Repo
         uses: actions/checkout@v4
 
-      - name: Set Up PNPM
-        uses: ./.github/actions/setup-pnpm
+      - name: Set Up Node
+        uses: ./.github/actions/setup-node
+        with:
+          cache-dependency-path: npm/pnpm-lock.yaml
 
       - name: Publish Package
         env:
           PACKAGE: '@aimarchirico/core-tools'
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: task pnpm:publish
+        run: task npm:publish
 
   publish-core-docs:
     name: Publish core-docs
     needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'pnpm/packages/core-docs')
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/core-docs')
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Repo
         uses: actions/checkout@v4
 
-      - name: Set Up PNPM
-        uses: ./.github/actions/setup-pnpm
+      - name: Set Up Node
+        uses: ./.github/actions/setup-node
+        with:
+          cache-dependency-path: npm/pnpm-lock.yaml
 
       - name: Publish Package
         env:
           PACKAGE: '@aimarchirico/core-docs'
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: task pnpm:publish
+        run: task npm:publish

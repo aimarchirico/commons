@@ -1,21 +1,21 @@
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
 
   - package-ecosystem: "gradle"
-    directory: "/kotlin"
+    directory: "/maven"
     schedule:
       interval: "weekly"
   
   - package-ecosystem: "npm"
-    directory: "/typescript"
+    directory: "/npm"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "npm"
+    directory: "/tools"
     schedule:
       interval: "weekly"
