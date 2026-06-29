@@ -1,6 +1,10 @@
-node_modules/
+# Gradle
 .gradle/
 build/
 .kotlin/
-.DS_Store
-.env
+
+# PNPM
+node_modules/
+
+# Enviroment
+*.env*
