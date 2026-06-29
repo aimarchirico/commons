@@ -1,6 +1,6 @@
 {
   "name": "@aimarchirico/core-tools",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": false,
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"

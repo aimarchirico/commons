@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/aimarchirico/core/compare/core-ts-v0.1.0...core-ts-v0.1.1) (2026-06-29)
+
+
+### Bug Fixes
+
+* **npm:** correct dependency classification and align package versions ([b636543](https://github.com/aimarchirico/core/commit/b636543192de6f137874416481794044f023e0e7))
+
 ## [0.1.0](https://github.com/aimarchirico/core/compare/core-ts-v0.0.1...core-ts-v0.1.0) (2026-06-29)
 
 
