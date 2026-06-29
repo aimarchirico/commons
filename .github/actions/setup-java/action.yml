@@ -1,5 +1,5 @@
-name: Set Up Gradle
-description: Set Up Gradle
+name: Set Up Java
+description: Set Up Java and Task
 runs:
   using: composite
   steps:

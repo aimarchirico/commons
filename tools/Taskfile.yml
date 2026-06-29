@@ -1,0 +1,33 @@
+version: '3'
+
+tasks:
+  install:
+    desc: Install tools dependencies
+    cmds:
+      - pnpm install
+    status:
+      - test -d node_modules
+
+  docs:check:
+    desc: Lint Markdown files
+    cmds:
+      - task: install
+      - pnpm exec markdownlint-cli2 {{.CLI_ARGS}}
+
+  docs:fix:
+    desc: Fix Markdown issues
+    cmds:
+      - task: install
+      - pnpm exec markdownlint-cli2 --fix {{.CLI_ARGS}}
+
+  commit:check:
+    desc: Lint commit messages
+    vars:
+      COMMIT_RANGE:
+        sh: |
+          if [ -n "$FROM_SHA" ] && [ -n "$TO_SHA" ]; then
+            echo "--from $FROM_SHA --to $TO_SHA"
+          fi
+    cmds:
+      - task: install
+      - pnpm exec commitlint {{.COMMIT_RANGE}} {{.CLI_ARGS}}

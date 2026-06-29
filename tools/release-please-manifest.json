@@ -1,0 +1,10 @@
+{
+  "npm/packages/core-ts": "0.0.1",
+  "npm/packages/core-expo": "0.0.1",
+  "npm/packages/core-openapi": "0.0.1",
+  "npm/packages/core-tools": "0.0.3",
+  "npm/packages/core-docs": "0.0.1",
+  "maven/security": "0.0.3",
+  "maven/test": "0.0.3",
+  "maven/build-logic": "0.0.3"
+}

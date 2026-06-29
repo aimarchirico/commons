@@ -3,47 +3,38 @@ version: '3'
 dotenv: ['.env']
 
 includes:
-  gradle:
-    taskfile: ./gradle/Taskfile.yml
-    dir: ./gradle
-  pnpm:
-    taskfile: ./pnpm/Taskfile.yml
-    dir: ./pnpm
+  maven:
+    taskfile: ./maven/Taskfile.yml
+    dir: ./maven
+  npm:
+    taskfile: ./npm/Taskfile.yml
+    dir: ./npm
+  tools:
+    taskfile: ./tools/Taskfile.yml
+    dir: ./tools
 
 tasks:
   default:
     cmds:
       - task --list
 
-  install:
-    internal: true
-    desc: Install dependencies
-    cmds:
-      - pnpm install
-    if: '[ -n "$CI" ]'
-
   docs:check:
     desc: Lint Markdown files
     cmds:
-      - task: install
-      - pnpm exec markdownlint-cli2
+      - task: tools:docs:check
+        vars:
+          CLI_ARGS: '{{.CLI_ARGS}}'
 
   docs:fix:
     desc: Fix Markdown issues
     cmds:
-      - pnpm exec markdownlint-cli2 --fix
+      - task: tools:docs:fix
+        vars:
+          CLI_ARGS: '{{.CLI_ARGS}}'
 
   commit:check:
     desc: Lint commit messages
-    vars:
-      COMMIT_RANGE:
-        sh: |
-          if [ -n "$FROM_SHA" ] && [ -n "$TO_SHA" ]; then
-            echo "--from $FROM_SHA --to $TO_SHA"
-          fi
     cmds:
-      - task: install
-      - pnpm exec commitlint {{.COMMIT_RANGE}} {{.CLI_ARGS}}
-
-    skills:
-      - gh skill install aimarchirico/core --all --agent antigravity --scope project 
+      - task: tools:commit:check
+        vars:
+          CLI_ARGS: '{{.CLI_ARGS}}'

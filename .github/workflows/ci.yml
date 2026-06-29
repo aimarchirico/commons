@@ -16,8 +16,8 @@ jobs:
     name: Detect Changed Paths
     runs-on: ubuntu-latest
     outputs:
-      gradle: ${{ steps.filter.outputs.gradle }}
-      pnpm: ${{ steps.filter.outputs.pnpm }}
+      maven: ${{ steps.filter.outputs.maven }}
+      npm: ${{ steps.filter.outputs.npm }}
       docs: ${{ steps.filter.outputs.docs }}
     steps:
       - name: Check Out Repo
@@ -28,51 +28,53 @@ jobs:
         id: filter
         with:
           filters: |
-            gradle:
-              - 'gradle/**'
+            maven:
+              - 'maven/**'
               - '.github/workflows/ci.yml'
-            pnpm:
-              - 'pnpm/**'
+            npm:
+              - 'npm/**'
               - '.github/workflows/ci.yml'
             docs:
               - '**/*.md'
               - '.github/workflows/ci.yml'
 
   # ==========================================
-  # GRADLE CI JOB
+  # MAVEN CI JOB
   # ==========================================
-  gradle:
-    name: Gradle Check
+  maven:
+    name: Maven Check
     needs: changes
-    if: needs.changes.outputs.gradle == 'true'
+    if: needs.changes.outputs.maven == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Repo
         uses: actions/checkout@v4
 
-      - name: Set Up Gradle
-        uses: ./.github/actions/setup-gradle
+      - name: Set Up Java
+        uses: ./.github/actions/setup-java
 
       - name: Run Check
-        run: task gradle:check
+        run: task maven:check
 
   # ==========================================
-  # PNPM CI JOB
+  # NPM CI JOB
   # ==========================================
-  pnpm:
-    name: PNPM Check
+  npm:
+    name: NPM Check
     needs: changes
-    if: needs.changes.outputs.pnpm == 'true'
+    if: needs.changes.outputs.npm == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Repo
         uses: actions/checkout@v4
 
-      - name: Set Up PNPM
-        uses: ./.github/actions/setup-pnpm
+      - name: Set Up Node
+        uses: ./.github/actions/setup-node
+        with:
+          cache-dependency-path: npm/pnpm-lock.yaml
 
       - name: Run Check
-        run: task pnpm:check
+        run: task npm:check
 
   # ==========================================
   # COMMIT CI JOB
@@ -88,6 +90,8 @@ jobs:
 
       - name: Set Up Node
         uses: ./.github/actions/setup-node
+        with:
+          cache-dependency-path: tools/pnpm-lock.yaml
 
       - name: Run Check
         env:
@@ -109,6 +113,8 @@ jobs:
 
       - name: Set Up Node
         uses: ./.github/actions/setup-node
+        with:
+          cache-dependency-path: tools/pnpm-lock.yaml
 
       - name: Run Docs Checks
         run: task docs:check

@@ -1,9 +1,15 @@
 name: Set Up Node
-description:  Set Up PNPM
+description: Set Up Node and PNPM
 inputs:
   cache-dependency-path:
     required: false
-    default: pnpm-lock.yaml
+    default: npm/pnpm-lock.yaml
+  registry-url:
+    required: false
+    default: ''
+  scope:
+    required: false
+    default: ''
 runs:
   using: composite
   steps:
@@ -16,6 +22,8 @@ runs:
       uses: actions/setup-node@v4
       with:
         node-version: 22
+        registry-url: ${{ inputs.registry-url }}
+        scope: ${{ inputs.scope }}
         cache: pnpm
         cache-dependency-path: ${{ inputs.cache-dependency-path }}
 

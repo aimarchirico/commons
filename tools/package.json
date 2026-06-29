@@ -1,0 +1,12 @@
+{
+  "name": "core-tools-runner",
+  "version": "1.0.0",
+  "private": true,
+  "devDependencies": {
+    "@aimarchirico/core-docs": "file:../npm/packages/core-docs",
+    "@aimarchirico/core-tools": "file:../npm/packages/core-tools",
+    "@commitlint/cli": "^19.0.0",
+    "markdownlint-cli2": "^0.13.0",
+    "turbo": "^2.0.0"
+  }
+}
