@@ -4,7 +4,7 @@
   "pnpm/packages/core-openapi": "0.0.1",
   "pnpm/packages/core-tools": "0.1.0",
   "pnpm/packages/core-docs": "0.1.0",
-  "gradle/security": "0.1.0",
-  "gradle/test": "0.1.0",
-  "gradle/build-logic": "0.1.0"
+  "gradle/security": "0.2.0",
+  "gradle/test": "0.2.0",
+  "gradle/build-logic": "0.2.0"
 }
