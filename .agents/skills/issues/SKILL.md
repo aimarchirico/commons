@@ -2,9 +2,9 @@
 description: Create new hierarchical issues
 metadata:
     github-path: skills/issues
-    github-ref: refs/heads/main
+    github-ref: refs/tags/core-docs-v0.1.1
     github-repo: https://github.com/aimarchirico/core
-    github-tree-sha: 6b523142fd8c214bf98a9c7f459ee4882f26096e
+    github-tree-sha: 8ed624e88396cc637073b16f9a4ee9653b3417e8
 name: issues
 ---
 ## When to Use

@@ -2,9 +2,9 @@
 description: Analyze unstaged changes and create logical, atomic git commits
 metadata:
     github-path: skills/commit
-    github-ref: refs/heads/main
+    github-ref: refs/tags/core-docs-v0.1.1
     github-repo: https://github.com/aimarchirico/core
-    github-tree-sha: 12e20494f714ece3ec9044808964097ef4b93bd6
+    github-tree-sha: daf8869853b230869d561a207644878a0b295581
 name: commit
 ---
 ## When to Use

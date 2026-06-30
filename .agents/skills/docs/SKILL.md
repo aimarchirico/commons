@@ -2,9 +2,9 @@
 description: Update project documentation
 metadata:
     github-path: skills/docs
-    github-ref: refs/heads/main
+    github-ref: refs/tags/core-docs-v0.1.1
     github-repo: https://github.com/aimarchirico/core
-    github-tree-sha: e2d9a0a88ce9657e0e291540afbfe84c8a0852db
+    github-tree-sha: ca4bbcad24e00d43e22ce9acf89376750ef98597
 name: docs
 ---
 ## When to Use

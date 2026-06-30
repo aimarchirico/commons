@@ -2,9 +2,9 @@
 description: Orchestrate the development lifecycle starting from an existing issue
 metadata:
     github-path: skills/implement
-    github-ref: refs/heads/main
+    github-ref: refs/tags/core-docs-v0.1.1
     github-repo: https://github.com/aimarchirico/core
-    github-tree-sha: dc56ec7a3e426760a63977a0a209b906919155e6
+    github-tree-sha: c47779419c9287484792f49910419192966432a4
 name: implement
 ---
 ## When to Use

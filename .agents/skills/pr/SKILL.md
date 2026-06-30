@@ -2,9 +2,9 @@
 description: Create a standardized pull request
 metadata:
     github-path: skills/pr
-    github-ref: refs/heads/main
+    github-ref: refs/tags/core-docs-v0.1.1
     github-repo: https://github.com/aimarchirico/core
-    github-tree-sha: 9d8bc590b84ff207dd9252244f22f8b4a55d5a4c
+    github-tree-sha: cf3b98d3521d191916c8924cd62389c1e21c93f6
 name: pr
 ---
 ## When to Use
