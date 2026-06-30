@@ -46,9 +46,9 @@ jobs:
         uses: ./.github/actions/setup-java
 
       - name: Publish Module
+        run: task maven:publish
         env:
           MODULE: security
-        run: task maven:publish
 
   # ==========================================
   # MAVEN MODULES
@@ -69,9 +69,9 @@ jobs:
         uses: ./.github/actions/setup-java
 
       - name: Publish Module
+        run: task maven:publish
         env:
           MODULE: test
-        run: task maven:publish
 
   # ==========================================
   # MAVEN MODULES
@@ -92,9 +92,9 @@ jobs:
         uses: ./.github/actions/setup-java
 
       - name: Publish Module
+        run: task maven:publish
         env:
           MODULE: build-logic
-        run: task maven:publish
 
   # ==========================================
   # NPM MODULES
@@ -114,10 +114,10 @@ jobs:
           cache-dependency-path: npm/pnpm-lock.yaml
 
       - name: Publish Package
+        run: task npm:publish
         env:
           PACKAGE: '@aimarchirico/core-ts'
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: task npm:publish
 
   publish-core-expo:
     name: Publish core-expo
@@ -134,10 +134,10 @@ jobs:
           cache-dependency-path: npm/pnpm-lock.yaml
 
       - name: Publish Package
+        run: task npm:publish
         env:
           PACKAGE: '@aimarchirico/core-expo'
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: task npm:publish
 
   publish-core-openapi:
     name: Publish core-openapi
@@ -153,11 +153,11 @@ jobs:
         with:
           cache-dependency-path: npm/pnpm-lock.yaml
 
-      - name: Publish Package
+      - name: Publish Package 
+        run: task npm:publish
         env:
           PACKAGE: '@aimarchirico/core-openapi'
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: task npm:publish
 
   publish-core-tools:
     name: Publish core-tools
@@ -174,10 +174,10 @@ jobs:
           cache-dependency-path: npm/pnpm-lock.yaml
 
       - name: Publish Package
+        run: task npm:publish
         env:
           PACKAGE: '@aimarchirico/core-tools'
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: task npm:publish
 
   publish-core-docs:
     name: Publish core-docs
@@ -194,7 +194,7 @@ jobs:
           cache-dependency-path: npm/pnpm-lock.yaml
 
       - name: Publish Package
+        run: task npm:publish
         env:
           PACKAGE: '@aimarchirico/core-docs'
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: task npm:publish

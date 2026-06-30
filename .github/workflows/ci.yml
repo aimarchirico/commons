@@ -77,30 +77,6 @@ jobs:
         run: task npm:check
 
   # ==========================================
-  # COMMIT CI JOB
-  # ==========================================
-  commitlint:
-    name: Commit Check
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check Out Repo
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Set Up Node
-        uses: ./.github/actions/setup-node
-        with:
-          cache-dependency-path: tools/pnpm-lock.yaml
-
-      - name: Run Check
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          FROM_SHA: ${{ github.event.pull_request.base.sha }}
-          TO_SHA: ${{ github.event.pull_request.head.sha }}
-        run: task commit:check
-
-  # ==========================================
   # DOCUMENTATION CI JOB
   # ==========================================
   docs:
@@ -118,6 +94,31 @@ jobs:
           cache-dependency-path: tools/pnpm-lock.yaml
 
       - name: Run Docs Checks
+        run: task docs:check
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: task docs:check
+
+
+  # ==========================================
+  # COMMIT CI JOB
+  # ==========================================
+  commitlint:
+    name: Commit Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set Up Node
+        uses: ./.github/actions/setup-node
+        with:
+          cache-dependency-path: tools/pnpm-lock.yaml
+
+      - name: Run Check
+        run: task commit:check
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FROM_SHA: ${{ github.event.pull_request.base.sha }}
+          TO_SHA: ${{ github.event.pull_request.head.sha }}
