@@ -56,8 +56,10 @@ The underlying commands are `./gradlew build`, `check`, and `ktfmtFormat`.
 
 - **Formatting** — ktfmt, applied through the convention plugin and run via
   `task gradle:fix` (`ktfmtFormat`).
-- **Architecture** — ArchUnit rules; modules extend `BaseArchitectureTest` from
-  `core-test`.
+- **Conventions** — file naming and length rules; modules extend
+  `BaseConventionTest` from `core-test`.
+- **Architecture** — ArchUnit dependency rules; modules extend
+  `BaseArchitectureTest` from `core-test`.
 
 ## Deployment
 
