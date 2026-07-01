@@ -22,12 +22,12 @@
     "eslint": "^9.39.2",
     "expo": "*",
     "react": "*",
-    "typescript": "^5.0.0"
+    "typescript": "^6.0.3"
   },
   "peerDependencies": {
     "eslint": "^9.39.2",
     "expo": "*",
     "react": "*",
-    "typescript": "^5.0.0"
+    "typescript": "^6.0.3"
   }
 }

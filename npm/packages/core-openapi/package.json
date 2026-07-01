@@ -23,6 +23,6 @@
     "@aimarchirico/core-ts": "workspace:*",
     "@types/node": "^26.0.1",
     "eslint": "^9.39.2",
-    "typescript": "^5.0.0"
+    "typescript": "^6.0.3"
   }
 }
