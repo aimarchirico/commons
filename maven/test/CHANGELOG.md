@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/aimarchirico/core/compare/core-test-v0.2.0...core-test-v0.2.1) (2026-07-01)
+
+
+### Bug Fixes
+
+* **test:** update test function names for consistency ([ddd3a98](https://github.com/aimarchirico/core/commit/ddd3a98a1c174e3eefac686a78b65fd1658e7d5c))
+
 ## [0.2.0](https://github.com/aimarchirico/core/compare/core-test-v0.1.0...core-test-v0.2.0) (2026-06-29)
 
 
