@@ -15,7 +15,7 @@ abstract class BaseConventionTest {
   }
 
   @Test
-  fun `Kotlin source files should use PascalCase naming`() {
+  fun `Kotlin files should use PascalCase naming`() {
     val rootDir = File(System.getProperty("user.dir"))
     val pascalCaseRegex = Regex("^[A-Z][a-zA-Z0-9]*\\.kt$")
 
@@ -31,7 +31,7 @@ abstract class BaseConventionTest {
   }
 
   @Test
-  fun `Kotlin source files should not exceed 300 lines`() {
+  fun `Kotlin files should not exceed 300 lines`() {
     val rootDir = File(System.getProperty("user.dir"))
     val maxLines = 300
 
