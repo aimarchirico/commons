@@ -1,6 +1,6 @@
 {
-  "npm/packages/core-ts": "0.1.2",
-  "npm/packages/core-expo": "0.1.2",
+  "npm/packages/core-ts": "0.1.3",
+  "npm/packages/core-expo": "0.1.3",
   "npm/packages/core-openapi": "0.0.3",
   "npm/packages/core-tools": "0.1.1",
   "npm/packages/core-docs": "0.1.2",
