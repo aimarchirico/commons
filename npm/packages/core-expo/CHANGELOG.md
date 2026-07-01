@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/aimarchirico/core/compare/core-expo-v0.1.1...core-expo-v0.1.2) (2026-07-01)
+
+
+### Bug Fixes
+
+* **package:** update tsconfig export path in package.json ([edbc710](https://github.com/aimarchirico/core/commit/edbc7107844027bf1ca246a35ee967ade274f0ca))
+
 ## [0.1.1](https://github.com/aimarchirico/core/compare/core-expo-v0.1.0...core-expo-v0.1.1) (2026-06-29)
 
 

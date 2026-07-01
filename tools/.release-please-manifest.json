@@ -1,10 +1,10 @@
 {
-  "npm/packages/core-ts": "0.1.1",
-  "npm/packages/core-expo": "0.1.1",
+  "npm/packages/core-ts": "0.1.2",
+  "npm/packages/core-expo": "0.1.2",
   "npm/packages/core-openapi": "0.0.3",
   "npm/packages/core-tools": "0.1.1",
-  "npm/packages/core-docs": "0.1.1",
-  "maven/security": "0.2.0",
+  "npm/packages/core-docs": "0.1.2",
+  "maven/security": "0.2.1",
   "maven/test": "0.2.0",
   "maven/build-logic": "0.2.0"
 }

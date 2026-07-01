@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/aimarchirico/core/compare/core-ts-v0.1.1...core-ts-v0.1.2) (2026-07-01)
+
+
+### Bug Fixes
+
+* **eslint:** register eslint-plugin-import in flat config ([d79c99e](https://github.com/aimarchirico/core/commit/d79c99e8292a5101bb5366a7731f440e599c080c))
+
 ## [0.1.1](https://github.com/aimarchirico/core/compare/core-ts-v0.1.0...core-ts-v0.1.1) (2026-06-29)
 
 
