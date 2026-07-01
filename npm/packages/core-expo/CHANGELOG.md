@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.3](https://github.com/aimarchirico/core/compare/core-expo-v0.1.2...core-expo-v0.1.3) (2026-07-01)
+
+
+### Bug Fixes
+
+* **tsconfig:** add include to tsconfig ([42b68ad](https://github.com/aimarchirico/core/commit/42b68ad5393d7c8d9a6a1f8387c2528737829d26))
+
 ## [0.1.2](https://github.com/aimarchirico/core/compare/core-expo-v0.1.1...core-expo-v0.1.2) (2026-07-01)
 
 ### Bug Fixes
