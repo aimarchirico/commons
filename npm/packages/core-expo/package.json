@@ -7,7 +7,7 @@
   },
   "exports": {
     "./eslint": "./eslint.mjs",
-    "./tsconfig.json": "./tsconfig.json"
+    "./tsconfig": "./tsconfig.json"
   },
   "files": [
     "eslint.mjs",
