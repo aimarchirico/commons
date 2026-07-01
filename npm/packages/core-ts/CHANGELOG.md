@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.4](https://github.com/aimarchirico/core/compare/core-ts-v0.1.3...core-ts-v0.1.4) (2026-07-01)
+
+
+### Bug Fixes
+
+* **tsconfig:** remove unnecessary include section ([81903f2](https://github.com/aimarchirico/core/commit/81903f286cfbd7eb6ece4e15e8e1e2571313da4c))
+
 ## [0.1.3](https://github.com/aimarchirico/core/compare/core-ts-v0.1.2...core-ts-v0.1.3) (2026-07-01)
 
 
