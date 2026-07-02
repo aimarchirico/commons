@@ -8,21 +8,21 @@ importers:
 
   .:
     devDependencies:
-      '@aimarchirico/core-docs':
+      '@aimarchirico/commons-docs':
         specifier: workspace:*
-        version: link:packages/core-docs
-      '@aimarchirico/core-expo':
+        version: link:packages/commons-docs
+      '@aimarchirico/commons-expo':
         specifier: workspace:*
-        version: link:packages/core-expo
-      '@aimarchirico/core-openapi':
+        version: link:packages/commons-expo
+      '@aimarchirico/commons-openapi':
         specifier: workspace:*
-        version: link:packages/core-openapi
-      '@aimarchirico/core-tools':
+        version: link:packages/commons-openapi
+      '@aimarchirico/commons-tools':
         specifier: workspace:*
-        version: link:packages/core-tools
-      '@aimarchirico/core-ts':
+        version: link:packages/commons-tools
+      '@aimarchirico/commons-ts':
         specifier: workspace:*
-        version: link:packages/core-ts
+        version: link:packages/commons-ts
       '@types/node':
         specifier: ^26.0.1
         version: 26.0.1
@@ -36,11 +36,11 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
 
-  packages/core-docs:
+  packages/commons-docs:
     devDependencies:
-      '@aimarchirico/core-ts':
+      '@aimarchirico/commons-ts':
         specifier: workspace:*
-        version: link:../core-ts
+        version: link:../commons-ts
       '@types/node':
         specifier: ^26.0.1
         version: 26.0.1
@@ -51,11 +51,11 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
 
-  packages/core-expo:
+  packages/commons-expo:
     dependencies:
-      '@aimarchirico/core-ts':
+      '@aimarchirico/commons-ts':
         specifier: workspace:*
-        version: link:../core-ts
+        version: link:../commons-ts
       eslint-config-expo:
         specifier: ~56.0.4
         version: 56.0.4(eslint@9.39.4(jiti@2.6.1))(typescript@6.0.3)
@@ -76,18 +76,18 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
 
-  packages/core-openapi:
+  packages/commons-openapi:
     dependencies:
       '@openapitools/openapi-generator-cli':
         specifier: ^2.39.0
         version: 2.39.0
       widdershins:
         specifier: ^4.0.1
-        version: 4.0.1(ajv@5.5.2)(mkdirp@3.0.1)
+        version: 4.0.1(ajv@8.20.0)(mkdirp@3.0.1)
     devDependencies:
-      '@aimarchirico/core-ts':
+      '@aimarchirico/commons-ts':
         specifier: workspace:*
-        version: link:../core-ts
+        version: link:../commons-ts
       '@types/node':
         specifier: ^26.0.1
         version: 26.0.1
@@ -98,7 +98,7 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
 
-  packages/core-tools:
+  packages/commons-tools:
     dependencies:
       '@commitlint/cli':
         specifier: ^19.0.0
@@ -110,9 +110,9 @@ importers:
         specifier: ^0.13.0
         version: 0.13.0
     devDependencies:
-      '@aimarchirico/core-ts':
+      '@aimarchirico/commons-ts':
         specifier: workspace:*
-        version: link:../core-ts
+        version: link:../commons-ts
       '@types/node':
         specifier: ^26.0.1
         version: 26.0.1
@@ -123,7 +123,7 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
 
-  packages/core-ts:
+  packages/commons-ts:
     dependencies:
       eslint-plugin-check-file:
         specifier: ^3.3.1
@@ -6620,6 +6620,17 @@ snapshots:
       jsonpointer: 4.1.0
       leven: 3.1.0
 
+  better-ajv-errors@0.6.7(ajv@8.20.0):
+    dependencies:
+      '@babel/code-frame': 7.29.7
+      '@babel/runtime': 7.29.7
+      ajv: 8.20.0
+      chalk: 2.4.2
+      core-js: 3.49.0
+      json-to-ast: 2.1.0
+      jsonpointer: 4.1.0
+      leven: 3.1.0
+
   big-integer@1.6.52: {}
 
   bplist-creator@0.1.0:
@@ -9796,9 +9807,9 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  swagger2openapi@6.2.3(ajv@5.5.2):
+  swagger2openapi@6.2.3(ajv@8.20.0):
     dependencies:
-      better-ajv-errors: 0.6.7(ajv@5.5.2)
+      better-ajv-errors: 0.6.7(ajv@8.20.0)
       call-me-maybe: 1.0.2
       node-fetch-h2: 2.3.0
       node-readfiles: 0.2.0
@@ -10120,7 +10131,7 @@ snapshots:
     dependencies:
       isexe: 2.0.0
 
-  widdershins@4.0.1(ajv@5.5.2)(mkdirp@3.0.1):
+  widdershins@4.0.1(ajv@8.20.0)(mkdirp@3.0.1):
     dependencies:
       dot: 1.1.3
       fast-safe-stringify: 2.1.1
@@ -10134,7 +10145,7 @@ snapshots:
       oas-schema-walker: 1.1.5
       openapi-sampler: 1.7.4
       reftools: 1.1.9
-      swagger2openapi: 6.2.3(ajv@5.5.2)
+      swagger2openapi: 6.2.3(ajv@8.20.0)
       urijs: 1.19.11
       yaml: 1.10.3
       yargs: 12.0.5
