@@ -3,6 +3,7 @@ registries:
   github-npm:
     type: npm-registry
     url: https://npm.pkg.github.com
+    scope: "@aimarchirico"
     token: ${{secrets.GH_PACKAGES_TOKEN}}
   github-maven:
     type: maven-repository
