@@ -76,8 +76,8 @@ jobs:
   # ==========================================
   # MAVEN MODULES
   # ==========================================
-  publish-core-commons-convention:
-    name: Publish core-commons-convention
+  publish-commons-convention:
+    name: Publish commons-convention
     needs: release-please
     if: contains(fromJSON(needs.release-please.outputs.paths_released), 'maven/commons-convention')
     runs-on: ubuntu-latest
