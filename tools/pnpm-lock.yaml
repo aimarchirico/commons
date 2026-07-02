@@ -8,9 +8,9 @@ importers:
 
   .:
     devDependencies:
-      '@aimarchirico/core-tools':
-        specifier: ^0.1.0
-        version: 0.1.0
+      '@aimarchirico/commons-tools':
+        specifier: ^1.1.0
+        version: 1.1.0(@commitlint/cli@19.8.1(@types/node@26.0.1)(typescript@6.0.3))(markdownlint-cli2@0.13.0)
       '@commitlint/cli':
         specifier: ^19.0.0
         version: 19.8.1(@types/node@26.0.1)(typescript@6.0.3)
@@ -23,8 +23,11 @@ importers:
 
 packages:
 
-  '@aimarchirico/core-tools@0.1.0':
-    resolution: {integrity: sha512-cxZiNv28wT3hnJobDzoTshDRv64HmfgPBLvozN9Ix4C+GUl815M8VnMskfyeRFmq1Nn91EnCENvW3a59oS1+oA==, tarball: https://npm.pkg.github.com/download/@aimarchirico/core-tools/0.1.0/700a91c744a172b24071ccfe3ce8c93f77408f89}
+  '@aimarchirico/commons-tools@1.1.0':
+    resolution: {integrity: sha512-kg1VK9+PQbndQ+VKpODpcG+FZnIMNu/oYkq1iZq5UVAxZHXNbvPhvSIToHOPwUjs0PGBYL7fwUtyAl7qQF8OZw==, tarball: https://npm.pkg.github.com/download/@aimarchirico/commons-tools/1.1.0/254f84f99a86c33b59a759d4a3050de0fc3db7ac}
+    peerDependencies:
+      '@commitlint/cli': ^19.0.0
+      markdownlint-cli2: ^0.13.0
 
   '@babel/code-frame@7.29.7':
     resolution: {integrity: sha512-Aup7aUOfpbAUg2ROOJN6Iw5f9DMBlzu0mIkm/malLQFN/YQgO48wCj0Kxa3sEHJvPVFg7siR+qRInwXd2qhQKw==}
@@ -561,9 +564,11 @@ packages:
 
 snapshots:
 
-  '@aimarchirico/core-tools@0.1.0':
+  '@aimarchirico/commons-tools@1.1.0(@commitlint/cli@19.8.1(@types/node@26.0.1)(typescript@6.0.3))(markdownlint-cli2@0.13.0)':
     dependencies:
+      '@commitlint/cli': 19.8.1(@types/node@26.0.1)(typescript@6.0.3)
       '@commitlint/config-conventional': 19.8.1
+      markdownlint-cli2: 0.13.0
 
   '@babel/code-frame@7.29.7':
     dependencies:
