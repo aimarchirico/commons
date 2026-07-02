@@ -1,6 +1,7 @@
-package no.chirico.commons.buildlogic
+package no.chirico.commons.convention
 
 plugins {
+    id("org.springframework.boot")
     kotlin("plugin.spring")
     kotlin("plugin.jpa")
 }

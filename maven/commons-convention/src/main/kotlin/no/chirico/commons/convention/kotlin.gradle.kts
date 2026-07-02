@@ -1,4 +1,4 @@
-package no.chirico.commons.buildlogic
+package no.chirico.commons.convention
 
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
