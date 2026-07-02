@@ -4,7 +4,7 @@
   "npm/packages/commons-openapi": "1.1.0",
   "npm/packages/commons-tools": "1.1.0",
   "npm/packages/commons-docs": "1.1.0",
-  "maven/commons-security": "1.1.1",
-  "maven/commons-test": "1.1.1",
+  "maven/commons-security": "1.1.2",
+  "maven/commons-test": "1.1.2",
   "maven/commons-convention": "1.1.0"
 }

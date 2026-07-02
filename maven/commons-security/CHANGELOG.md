@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/aimarchirico/commons/compare/commons-security-v1.1.1...commons-security-v1.1.2) (2026-07-02)
+
+
+### Bug Fixes
+
+* update module names in release workflow ([307c55f](https://github.com/aimarchirico/commons/commit/307c55fb2dee989993ada37c61f395deb886991a))
+
 ## [1.1.1](https://github.com/aimarchirico/commons/compare/commons-security-v1.1.0...commons-security-v1.1.1) (2026-07-02)
 
 
