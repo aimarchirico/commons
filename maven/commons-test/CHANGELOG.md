@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/aimarchirico/commons/compare/commons-test-v1.1.0...commons-test-v1.1.1) (2026-07-02)
+
+
+### Bug Fixes
+
+* **commons-test:** document module purpose in build script ([8c6d25a](https://github.com/aimarchirico/commons/commit/8c6d25ab1d546d93def1c9b8e4eacc4c52f28b8e))
+
 ## [1.1.0](https://github.com/aimarchirico/commons/compare/commons-test-v1.0.0...commons-test-v1.1.0) (2026-07-02)
 
 

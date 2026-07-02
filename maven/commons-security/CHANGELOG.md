@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/aimarchirico/commons/compare/commons-security-v1.1.0...commons-security-v1.1.1) (2026-07-02)
+
+
+### Bug Fixes
+
+* **commons-security:** document module purpose in build script ([2c4188b](https://github.com/aimarchirico/commons/commit/2c4188beb3ecfa8d8997d5f601bc47d13e16cd8e))
+
 ## [1.1.0](https://github.com/aimarchirico/commons/compare/commons-security-v1.0.0...commons-security-v1.1.0) (2026-07-02)
 
 
