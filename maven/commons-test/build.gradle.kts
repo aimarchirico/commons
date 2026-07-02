@@ -1,4 +1,3 @@
-// ArchUnit-based convention test fixtures for commons.
 plugins {
   id("no.chirico.commons.convention.kotlin")
   `java-library`

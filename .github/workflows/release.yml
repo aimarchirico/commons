@@ -33,7 +33,7 @@ jobs:
   publish-commons-security:
     name: Publish commons-security
     needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'maven/security')
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'maven/commons-security')
     runs-on: ubuntu-latest
     env:
       GITHUB_ACTOR: ${{ github.actor }}
@@ -47,7 +47,7 @@ jobs:
 
       - name: Publish Module
         env:
-          MODULE: security
+          MODULE: commons-security
         run: task maven:publish
 
   # ==========================================
@@ -56,7 +56,7 @@ jobs:
   publish-commons-test:
     name: Publish commons-test
     needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'maven/test')
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'maven/commons-test')
     runs-on: ubuntu-latest
     env:
       GITHUB_ACTOR: ${{ github.actor }}
@@ -70,7 +70,7 @@ jobs:
 
       - name: Publish Module
         env:
-          MODULE: test
+          MODULE: commons-test
         run: task maven:publish
 
   # ==========================================
