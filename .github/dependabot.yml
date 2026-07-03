@@ -29,6 +29,8 @@ updates:
       - github-npm
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 1
 
   - package-ecosystem: "npm"
     directory: "/tools"
@@ -36,3 +38,5 @@ updates:
       - github-npm
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 1
