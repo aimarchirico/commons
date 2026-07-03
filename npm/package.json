@@ -15,7 +15,7 @@
     "@aimarchirico/commons-ts": "workspace:*",
     "@types/node": "^26.0.1",
     "eslint": "^9.39.2",
-    "turbo": "^2.0.4",
+    "turbo": "^2.10.3",
     "typescript": "^6.0.3"
   }
 }
