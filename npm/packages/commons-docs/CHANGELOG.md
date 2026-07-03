@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/aimarchirico/commons/compare/commons-docs-v1.1.0...commons-docs-v1.2.0) (2026-07-03)
+
+
+### Features
+
+* **CONTRIBUTING.md:** update project documentation ([cce5ed8](https://github.com/aimarchirico/commons/commit/cce5ed81746ff1cee04b7cb0b02ce65e98893952))
+
 ## [1.1.0](https://github.com/aimarchirico/commons/compare/commons-docs-v1.0.0...commons-docs-v1.1.0) (2026-07-02)
 
 
