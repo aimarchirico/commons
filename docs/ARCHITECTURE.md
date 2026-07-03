@@ -1,17 +1,17 @@
 # Architecture
 
-System-level source of truth for Core. Contains only what spans the whole
+System-level source of truth for Commons. Contains only what spans the whole
 repository; implementation detail lives in each subsystem's README.
 
 ## Data Flow
 
-Core is built and published from a single monorepo. Release Please cuts versioned
+Commons is built and published from a single monorepo. Release Please cuts versioned
 releases, the matching artifacts are published to GitHub Packages, and downstream
 repositories consume them.
 
 ```mermaid
 graph LR
-    subgraph Core["Core monorepo"]
+    subgraph Commons["Commons monorepo"]
         maven_src["maven/<br/>Kotlin modules"]
         npm_src["npm/<br/>config packages + CLI"]
         tools_src["tools/<br/>linting + release config"]
