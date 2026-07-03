@@ -16,7 +16,7 @@
     "fix": "eslint --fix"
   },
   "dependencies": {
-    "@openapitools/openapi-generator-cli": "^2.39.0",
+    "@openapitools/openapi-generator-cli": "^2.39.1",
     "widdershins": "^4.0.1"
   },
   "devDependencies": {
