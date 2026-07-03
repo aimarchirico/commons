@@ -1,8 +1,8 @@
-# Core
+# Commons
 
 ## Introduction
 
-Core is the reusable foundation for Chirico services. It centralizes the shared
+Commons is the reusable foundation for Chirico services. It centralizes the shared
 backend modules, frontend configuration packages, and agent skills that
 downstream repositories — such as the service template — depend on, so every
 project inherits the same conventions instead of re-implementing them. The
@@ -10,7 +10,7 @@ audience is developers building or maintaining Chirico services.
 
 ## Demo
 
-_Not applicable — Core is a collection of published libraries, configuration
+_Not applicable — Commons is a collection of published libraries, configuration
 packages, and agent skills with no runnable UI. Released artifacts are available
 on GitHub Packages._
 

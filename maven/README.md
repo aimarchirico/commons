@@ -15,21 +15,21 @@ published as Maven artifacts under the `no.chirico.commons` group.
 ## Folder Structure
 
 ```text
-gradle/
+maven/
 ├── commons-convention/   # convention plugin (included build)
-├── security/      # commons-security library
-├── test/          # commons-test library
+├── commons-security/     # commons-security library
+├── commons-test/         # commons-test library
 └── settings.gradle.kts
 ```
 
 - **`commons-convention/`** — precompiled script plugins under
   `no.chirico.commons.buildlogic`: `kotlin` (Kotlin/JVM + ktfmt baseline) and
   `spring` (Spring Boot). Wired in via `includeBuild("commons-convention")`.
-- **`security/`** — publishes `commons-security`; applies
-  `id("no.chirico.commons.buildlogic.kotlin")` and depends on `:test` for its
-  architecture tests.
-- **`test/`** — publishes `commons-test`; shared test/ArchUnit support consumed by
-  the other modules.
+- **`commons-security/`** — publishes `commons-security`; applies
+  `id("no.chirico.commons.buildlogic.kotlin")` and depends on `:commons-test` for
+  its architecture tests.
+- **`commons-test/`** — publishes `commons-test`; shared test/ArchUnit support
+  consumed by the other modules.
 
 ## Environment Variables
 
@@ -48,14 +48,14 @@ Requires Java 25 and [Task](https://taskfile.dev). Run from the repository root:
 - `task maven:build` — build the modules.
 - `task maven:check` — run tests and checks.
 - `task maven:fix` — format Kotlin with ktfmt.
-- `task maven:publish MODULE=<security|test|commons-convention>` — publish a module.
+- `task maven:publish MODULE=<commons-security|commons-test|commons-convention>` — publish a module.
 
 The underlying commands are `./gradlew build`, `check`, and `ktfmtFormat`.
 
 ## Code Quality
 
 - **Formatting** — ktfmt, applied through the convention plugin and run via
-  `task gradle:fix` (`ktfmtFormat`).
+  `task maven:fix` (`ktfmtFormat`).
 - **Conventions** — file naming and length rules; modules extend
   `BaseConventionTest` from `commons-test`.
 - **Architecture** — ArchUnit dependency rules; modules extend
@@ -64,7 +64,7 @@ The underlying commands are `./gradlew build`, `check`, and `ktfmtFormat`.
 ## Deployment
 
 Releases are driven by Release Please (`release-type: simple`) and published by
-`.github/workflows/release.yml` when a release touches `maven/security`,
-`maven/test`, or `maven/commons-convention`. Each module's `maven-publish`
+`.github/workflows/release.yml` when a release touches `maven/commons-security`,
+`maven/commons-test`, or `maven/commons-convention`. Each module's `maven-publish`
 configuration publishes to the GitHub Packages Maven registry at
 `https://maven.pkg.github.com/aimarchirico/commons` under group `no.chirico.commons`.
