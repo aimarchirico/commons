@@ -1,0 +1,138 @@
+name: Reusable CI
+
+on:
+  workflow_call:
+    inputs:
+      filters:
+        description: >-
+          dorny/paths-filter YAML mapping the `backend`, `frontend`, and `docs`
+          outputs to the path globs that trigger each job. Override this when the
+          consumer repo uses a different module layout.
+        type: string
+        default: |
+          backend:
+            - 'backend/**'
+            - '.github/workflows/**'
+          frontend:
+            - 'frontend/**'
+            - '.github/workflows/**'
+          docs:
+            - '**/*.md'
+            - '.github/workflows/**'
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  # ==========================================
+  # PATH FILTERING
+  # ==========================================
+  changes:
+    name: Detect Changed Paths
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+      docs: ${{ steps.filter.outputs.docs }}
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v4
+
+      - name: Detect Changes
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: ${{ inputs.filters }}
+
+  # ==========================================
+  # BACKEND CI JOB
+  # ==========================================
+  backend-ci:
+    name: Backend CI
+    needs: changes
+    if: needs.changes.outputs.backend == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v4
+
+      - name: Set Up Java
+        uses: aimarchirico/commons/.github/actions/setup-java@main
+
+      - name: Run Check
+        run: task backend:check
+        env:
+          GH_PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+
+  # ==========================================
+  # FRONTEND CI JOB
+  # ==========================================
+  frontend-ci:
+    name: Frontend CI
+    needs: changes
+    if: needs.changes.outputs.frontend == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v4
+
+      - name: Set Up Node
+        uses: aimarchirico/commons/.github/actions/setup-node@main
+        with:
+          cache-dependency-path: ./frontend/pnpm-lock.yaml
+
+      - name: Run Check
+        run: task frontend:check
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+          API_URL: ${{ vars.API_URL }}
+          CF_ACCESS_CLIENT_ID: ${{ vars.CF_ACCESS_CLIENT_ID }}
+          CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+
+  # ==========================================
+  # DOCUMENTATION CI JOB
+  # ==========================================
+  docs:
+    name: Docs Check
+    needs: changes
+    if: needs.changes.outputs.docs == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v4
+
+      - name: Set Up Node
+        uses: aimarchirico/commons/.github/actions/setup-node@main
+        with:
+          cache-dependency-path: tools/pnpm-lock.yaml
+
+      - name: Run Check
+        run: task docs:check
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+
+  # ==========================================
+  # COMMIT CI JOB
+  # ==========================================
+  commitlint:
+    name: Commit Check
+    if: github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set Up Node
+        uses: aimarchirico/commons/.github/actions/setup-node@main
+        with:
+          cache-dependency-path: tools/pnpm-lock.yaml
+
+      - name: Run Check
+        run: task commit:check
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+          FROM_SHA: ${{ github.event.pull_request.base.sha }}
+          TO_SHA: ${{ github.event.pull_request.head.sha }}
