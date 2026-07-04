@@ -8,6 +8,7 @@
     "fix": "turbo run fix"
   },
   "devDependencies": {
+    "@aimarchirico/commons-cloudflare": "workspace:*",
     "@aimarchirico/commons-docs": "workspace:*",
     "@aimarchirico/commons-expo": "workspace:*",
     "@aimarchirico/commons-openapi": "workspace:*",
