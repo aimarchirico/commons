@@ -1,0 +1,96 @@
+name: Reusable Deploy
+
+on:
+  workflow_call:
+    inputs:
+      deploy-api:
+        type: boolean
+        default: false
+      deploy-web:
+        type: boolean
+        default: false
+      compose-dir:
+        description: >-
+          Remote docker compose directory on the VPS. Defaults to
+          `~/docker/<repository>`.
+        type: string
+        default: ''
+      service-name:
+        description: >-
+          Docker compose service to restart. Defaults to `<repository>-api`.
+        type: string
+        default: ''
+      cf-project:
+        description: >-
+          Cloudflare Pages project name. Defaults to the repository name.
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+  deployments: write
+
+jobs:
+  # ==========================================
+  # API -> VPS
+  # ==========================================
+  deploy-api:
+    name: Deploy API
+    if: ${{ inputs.deploy-api }}
+    runs-on: ubuntu-latest
+    environment:
+      name: api-production
+      url: ${{ vars.API_URL }}
+    steps:
+      - name: Set Up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/key
+          chmod 600 ~/.ssh/key
+          ssh-keyscan -H ${{ vars.VPS_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to VPS
+        env:
+          COMPOSE_DIR: ${{ inputs.compose-dir != '' && inputs.compose-dir || format('~/docker/{0}', github.event.repository.name) }}
+          SERVICE_NAME: ${{ inputs.service-name != '' && inputs.service-name || format('{0}-api', github.event.repository.name) }}
+        run: |
+          ssh -i ~/.ssh/key ${{ vars.VPS_USER }}@${{ vars.VPS_HOST }} 'bash -s' <<EOF
+          cd $COMPOSE_DIR
+          docker compose -f compose.yml -f compose.prod.yml up -d --pull always $SERVICE_NAME
+          EOF
+
+  # ==========================================
+  # WEB -> Cloudflare Pages
+  # ==========================================
+  deploy-web:
+    name: Deploy Web
+    if: ${{ inputs.deploy-web }}
+    runs-on: ubuntu-latest
+    environment:
+      name: web-production
+      url: ${{ vars.APP_URL }}
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v4
+
+      - name: Set Up Node
+        uses: aimarchirico/commons/.github/actions/setup-node@main
+        with:
+          cache-dependency-path: ./frontend/pnpm-lock.yaml
+
+      - name: Build for Web
+        run: task build:web
+        working-directory: ./frontend
+        env:
+          API_URL: ${{ vars.API_URL }}
+          CF_ACCESS_CLIENT_ID: ${{ vars.CF_ACCESS_CLIENT_ID }}
+          CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+
+      - name: Publish to Cloudflare Pages
+        working-directory: ./frontend
+        run: npx wrangler pages deploy ./apps/expo/dist --project-name=${{ inputs.cf-project != '' && inputs.cf-project || github.event.repository.name }} --branch=main
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
