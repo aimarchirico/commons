@@ -1,5 +1,5 @@
 name: Set Up Java
-description: Set Up Java and Task
+description: Set up Java and Task
 runs:
   using: composite
   steps:
