@@ -1,8 +1,8 @@
-name: Cascade Close Sub-Issues
-description: Close every sub-issue of a closed issue, descending through nested sub-issues
+name: Close Sub-Issues
+description: Cascade close every nested sub-issue
 inputs:
   token:
-    description: Token used to read and close sub-issues (needs issues:write)
+    description: Token used to read and close sub-issues
     required: false
     default: ${{ github.token }}
 runs:
@@ -13,9 +13,7 @@ runs:
       with:
         github-token: ${{ inputs.token }}
         script: |
-          // Breadth-first walk of the sub-issue tree. A single run closes the
-          // whole tree because the default GITHUB_TOKEN cannot trigger the
-          // downstream workflow runs that closing each child would otherwise fire.
+          // BFS to close all nested sub-issues
           const queue = [context.payload.issue.number];
           while (queue.length) {
             const issue_number = queue.shift();
