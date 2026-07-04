@@ -3,7 +3,7 @@ description: Cascade close every nested sub-issue
 runs:
   using: composite
   steps:
-    - name: Close sub-issues
+    - name: Close Sub-Issues
       uses: actions/github-script@v7
       with:
         script: |
