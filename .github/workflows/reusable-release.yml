@@ -1,0 +1,162 @@
+name: Reusable Release
+
+on:
+  workflow_call:
+    inputs:
+      api-image-name:
+        description: >-
+          Container image name (without registry/owner). Defaults to
+          `<repository>-api`.
+        type: string
+        default: ''
+      apk-asset-prefix:
+        description: >-
+          Prefix for the uploaded Android APK release asset. Defaults to the
+          repository name.
+        type: string
+        default: ''
+
+permissions:
+  contents: write
+  pull-requests: write
+  packages: write
+  deployments: write
+
+jobs:
+  # ==========================================
+  # RELEASE PLEASE
+  # ==========================================
+  release-please:
+    name: Release Please
+    runs-on: ubuntu-latest
+    outputs:
+      paths_released: ${{ steps.release.outputs.paths_released }}
+      backend--version: ${{ steps.release.outputs.backend--version }}
+      frontend--version: ${{ steps.release.outputs.frontend--version }}
+      frontend--upload_url: ${{ steps.release.outputs.frontend--upload_url }}
+    steps:
+      - name: Run Release Please
+        id: release
+        uses: googleapis/release-please-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          config-file: tools/release-please-config.json
+          manifest-file: tools/.release-please-manifest.json
+
+  # ==========================================
+  # API IMAGE
+  # ==========================================
+  api-release:
+    name: API Release
+    needs: release-please
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'backend')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v4
+
+      - name: Log In to Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Metadata and Create Tags
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: >-
+            ghcr.io/${{ github.repository_owner }}/${{ inputs.api-image-name != '' && inputs.api-image-name || format('{0}-api', github.event.repository.name) }}
+          tags: |
+            type=raw,value=${{ needs.release-please.outputs.backend--version }}
+            type=raw,value=latest
+
+      - name: Set Up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v7
+        with:
+          context: ./backend
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            GITHUB_ACTOR=${{ github.actor }}
+          secrets: |
+            gh_packages_token=${{ secrets.GH_PACKAGES_TOKEN }}
+
+  # ==========================================
+  # ANDROID APK
+  # ==========================================
+  android-release:
+    name: Android Release
+    needs: release-please
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'frontend')
+    runs-on: ubuntu-latest
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v4
+
+      - name: Set Up Node
+        uses: aimarchirico/commons/.github/actions/setup-node@main
+        with:
+          cache-dependency-path: ./frontend/pnpm-lock.yaml
+
+      - name: Set Up Gradle/Java
+        uses: aimarchirico/commons/.github/actions/setup-java@main
+
+      - name: JDK 17 for Android native build
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Run CI Build for Android
+        run: task build:android
+        working-directory: ./frontend
+        env:
+          API_URL: ${{ vars.API_URL }}
+          CF_ACCESS_CLIENT_ID: ${{ vars.CF_ACCESS_CLIENT_ID }}
+          CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+
+      - name: Copy APK
+        run: cp ./frontend/apps/expo/android/app/build/outputs/apk/release/app-release.apk ${{ github.workspace }}/app-release.apk
+
+      - name: Upload Release Asset to GitHub
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.release-please.outputs.frontend--upload_url }}
+          asset_path: ${{ github.workspace }}/app-release.apk
+          asset_name: >-
+            ${{ inputs.apk-asset-prefix != '' && inputs.apk-asset-prefix || github.event.repository.name }}-${{ needs.release-please.outputs.frontend--version }}.apk
+          asset_content_type: application/vnd.android.package-archive
+
+  # ==========================================
+  # TRIGGER API DEPLOYMENT
+  # ==========================================
+  deploy-api:
+    name: Deploy API
+    needs: api-release
+    uses: aimarchirico/commons/.github/workflows/reusable-deploy.yml@main
+    with:
+      deploy-api: true
+    secrets: inherit
+
+  # ==========================================
+  # TRIGGER WEB DEPLOYMENT
+  # ==========================================
+  deploy-web:
+    name: Deploy Web
+    needs: release-please
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'frontend')
+    uses: aimarchirico/commons/.github/workflows/reusable-deploy.yml@main
+    with:
+      deploy-web: true
+    secrets: inherit
