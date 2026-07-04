@@ -26,8 +26,12 @@ stay in the consumer as `task` targets — see [Consumer Contract](#consumer-con
 | Workflow               | Trigger in consumer     | Purpose                                              |
 | :--------------------- | :---------------------- | :-------------------------------------------------- |
 | `reusable-ci.yml`      | `pull_request`          | Changed-path detection + backend/frontend/docs/commit checks. |
-| `reusable-release.yml` | `push` to `main`        | Release Please, API image, Android APK, deploy triggers. |
-| `reusable-deploy.yml`  | called by release       | API → VPS over SSH, web → Cloudflare Pages.         |
+| `reusable-release.yml` | `push` to `main`        | Release Please, API image, Android APK; outputs `paths_released`. |
+| `reusable-deploy.yml`  | called by consumer deploy | API → VPS over SSH, web → Cloudflare Pages.         |
+
+`reusable-release` exposes a `paths_released` output so the consumer's `release.yml`
+gates its own deploy jobs and calls `reusable-deploy` (see the service template's
+`release.yml`/`deploy.yml`), keeping all three workflow files thin callers.
 
 Consumers invoke each with `uses:` + `secrets: inherit`. Example CI caller:
 
