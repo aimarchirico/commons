@@ -39,3 +39,4 @@ tasks:
   skills:
     cmds:
       - gh skill install aimarchirico/commons --all --scope project --agent antigravity
+      - gh skill install aimarchirico/commons --all --scope project --agent claude-code

@@ -2,9 +2,9 @@
 description: Create a standardized pull request
 metadata:
     github-path: skills/pr
-    github-ref: refs/tags/commons-docs-v0.1.1
+    github-ref: refs/tags/commons-docs-v1.2.0
     github-repo: https://github.com/aimarchirico/commons
-    github-tree-sha: cf3b98d3521d191916c8924cd62389c1e21c93f6
+    github-tree-sha: 33877ece0a5888dd4f7167a38746816fa9dbe057
 name: pr
 ---
 ## When to Use

@@ -2,9 +2,9 @@
 description: Analyze unstaged changes and create logical, atomic git commits
 metadata:
     github-path: skills/commit
-    github-ref: refs/heads/main
+    github-ref: refs/tags/commons-docs-v1.2.0
     github-repo: https://github.com/aimarchirico/commons
-    github-tree-sha: 12e20494f714ece3ec9044808964097ef4b93bd6
+    github-tree-sha: a85aa802c2903830c322c3537a389f804cba9798
 name: commit
 ---
 ## When to Use

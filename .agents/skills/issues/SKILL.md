@@ -2,9 +2,9 @@
 description: Create new hierarchical issues
 metadata:
     github-path: skills/issues
-    github-ref: refs/tags/commons-docs-v0.1.1
+    github-ref: refs/tags/commons-docs-v1.2.0
     github-repo: https://github.com/aimarchirico/commons
-    github-tree-sha: 8ed624e88396cc637073b16f9a4ee9653b3417e8
+    github-tree-sha: 584a8f04a7eb3c094cb63d636527fca5e1f78ebe
 name: issues
 ---
 ## When to Use

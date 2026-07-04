@@ -2,9 +2,9 @@
 description: Orchestrate the development lifecycle starting from an existing issue
 metadata:
     github-path: skills/implement
-    github-ref: refs/tags/commons-docs-v0.1.1
+    github-ref: refs/tags/commons-docs-v1.2.0
     github-repo: https://github.com/aimarchirico/commons
-    github-tree-sha: c47779419c9287484792f49910419192966432a4
+    github-tree-sha: 7add9321eb8363f92a05db0bea9042aab4031b9f
 name: implement
 ---
 ## When to Use
