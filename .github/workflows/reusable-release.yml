@@ -15,6 +15,12 @@ on:
           repository name.
         type: string
         default: ''
+    outputs:
+      paths_released:
+        description: >-
+          JSON array of the paths Release Please released, so the caller can
+          gate its deploy jobs (e.g. `contains(..., 'backend')`).
+        value: ${{ jobs.release-please.outputs.paths_released }}
 
 permissions:
   contents: write
@@ -137,26 +143,3 @@ jobs:
           asset_name: >-
             ${{ inputs.apk-asset-prefix != '' && inputs.apk-asset-prefix || github.event.repository.name }}-${{ needs.release-please.outputs.frontend--version }}.apk
           asset_content_type: application/vnd.android.package-archive
-
-  # ==========================================
-  # TRIGGER API DEPLOYMENT
-  # ==========================================
-  deploy-api:
-    name: Deploy API
-    needs: api-release
-    uses: aimarchirico/commons/.github/workflows/reusable-deploy.yml@main
-    with:
-      deploy-api: true
-    secrets: inherit
-
-  # ==========================================
-  # TRIGGER WEB DEPLOYMENT
-  # ==========================================
-  deploy-web:
-    name: Deploy Web
-    needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'frontend')
-    uses: aimarchirico/commons/.github/workflows/reusable-deploy.yml@main
-    with:
-      deploy-web: true
-    secrets: inherit
