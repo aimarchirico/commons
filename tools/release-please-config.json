@@ -17,6 +17,9 @@
     "npm/packages/commons-docs": {
       "release-type": "node"
     },
+    "npm/packages/commons-cloudflare": {
+      "release-type": "node"
+    },
     "maven/commons-security": {
       "release-type": "simple",
       "package-name": "commons-security",
