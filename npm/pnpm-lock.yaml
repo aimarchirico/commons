@@ -8,6 +8,9 @@ importers:
 
   .:
     devDependencies:
+      '@aimarchirico/commons-cloudflare':
+        specifier: workspace:*
+        version: link:packages/commons-cloudflare
       '@aimarchirico/commons-docs':
         specifier: workspace:*
         version: link:packages/commons-docs
@@ -35,6 +38,15 @@ importers:
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
+
+  packages/commons-cloudflare:
+    dependencies:
+      replace-in-file:
+        specifier: ^8.4.0
+        version: 8.4.0
+      shelljs:
+        specifier: ^0.10.0
+        version: 0.10.0
 
   packages/commons-docs:
     devDependencies:
@@ -3992,6 +4004,11 @@ packages:
     resolution: {integrity: sha512-NgRBy2Nx/bE+9F27nVHnqcN5HjyLmecqsqx2PJHu3/IEtADD4WuxuXIVExD5PoSDFVrl78dOonfcOe5O+5nbzQ==}
     hasBin: true
 
+  replace-in-file@8.4.0:
+    resolution: {integrity: sha512-D28k8jy2LtUGbCzCnR3znajaTWIjJ/Uee3UdodzcHRxE7zn6NmYW/dcSqyivnsYU3W+MxdX6SbF28NvJ0GRoLA==}
+    engines: {node: '>=18'}
+    hasBin: true
+
   require-directory@2.1.1:
     resolution: {integrity: sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q==}
     engines: {node: '>=0.10.0'}
@@ -4151,6 +4168,10 @@ packages:
   shell-quote@1.9.0:
     resolution: {integrity: sha512-Iov+JwFv/2HcTpcwNMKd8+IWNb8tboQJNQTkAY/LLVK7gGH9jy+LGkVqPxfekHl+yMmiqXszdGWXgkfml7hjqA==}
     engines: {node: '>= 0.4'}
+
+  shelljs@0.10.0:
+    resolution: {integrity: sha512-Jex+xw5Mg2qMZL3qnzXIfaxEtBaC4n7xifqaqtrZDdlheR70OGkydrPJWT0V1cA1k3nanC86x9FwAmQl6w3Klw==}
+    engines: {node: '>=18'}
 
   should-equal@2.0.0:
     resolution: {integrity: sha512-ZP36TMrK9euEuWQYBig9W55WPC7uo37qzAEmbjHz4gfyuXrEUgF8cUvQVO+w+d3OMfPvSRQJ22lSm8MQJ43LTA==}
@@ -9502,6 +9523,12 @@ snapshots:
     dependencies:
       jsesc: 3.1.0
 
+  replace-in-file@8.4.0:
+    dependencies:
+      chalk: 5.6.2
+      glob: 13.0.6
+      yargs: 18.0.0
+
   require-directory@2.1.1: {}
 
   require-from-string@2.0.2: {}
@@ -9665,6 +9692,11 @@ snapshots:
   shell-quote@1.8.4: {}
 
   shell-quote@1.9.0: {}
+
+  shelljs@0.10.0:
+    dependencies:
+      execa: 5.1.1
+      fast-glob: 3.3.3
 
   should-equal@2.0.0:
     dependencies:

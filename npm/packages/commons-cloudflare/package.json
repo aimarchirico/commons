@@ -1,0 +1,22 @@
+{
+  "name": "@aimarchirico/commons-cloudflare",
+  "version": "1.0.0",
+  "private": false,
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "exports": {
+    "./proxy": "./proxy.mjs"
+  },
+  "bin": {
+    "commons-cloudflare-fix": "bin/fix-cloudflare.js"
+  },
+  "files": [
+    "proxy.mjs",
+    "bin"
+  ],
+  "dependencies": {
+    "replace-in-file": "^8.4.0",
+    "shelljs": "^0.10.0"
+  }
+}

@@ -21,7 +21,8 @@ pnpm/
 │   ├── commons-expo/         # shared Expo / React Native ESLint + tsconfig
 │   ├── commons-tools/        # shared markdownlint + commitlint configs
 │   ├── commons-docs/         # documentation templates and materializer CLI
-│   └── commons-openapi/      # OpenAPI client/docs generator CLI
+│   ├── commons-openapi/      # OpenAPI client/docs generator CLI
+│   └── commons-cloudflare/   # Cloudflare Pages proxy + web-export fixup
 ├── pnpm-workspace.yaml    # workspace globs (packages/*)
 └── turbo.json             # check/fix task pipeline
 ```
@@ -33,6 +34,7 @@ pnpm/
 | `@aimarchirico/commons-tools`       | `./markdownlint`, `./commitlint` configs.                                                  |
 | `@aimarchirico/commons-docs`        | `commons-docs` CLI (`bin/cli.js`) materializing `CONTRIBUTING.md` and GitHub templates.        |
 | `@aimarchirico/commons-openapi`     | `commons-openapi` CLI (`bin/cli.js`) generating the OpenAPI client and docs.                   |
+| `@aimarchirico/commons-cloudflare`  | `./proxy` Pages Function + `commons-cloudflare-fix` bin for Expo web deploys.                   |
 
 `commons-expo`, `commons-tools`, `commons-docs`, and `commons-openapi` extend `commons-ts` as a
 `workspace:*` dependency, so `commons-ts` is the base every other package builds on.

@@ -198,3 +198,23 @@ jobs:
           PACKAGE: '@aimarchirico/commons-docs'
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: task npm:publish
+
+  publish-commons-cloudflare:
+    name: Publish commons-cloudflare
+    needs: release-please
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-cloudflare')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v7
+
+      - name: Set Up Node
+        uses: ./.github/actions/setup-node
+        with:
+          cache-dependency-path: npm/pnpm-lock.yaml
+
+      - name: Publish Package
+        env:
+          PACKAGE: '@aimarchirico/commons-cloudflare'
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: task npm:publish
