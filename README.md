@@ -23,6 +23,8 @@ on GitHub Packages._
 - **Project conventions** — shared Markdown and commit lint rules, the
   contributing guide, and GitHub issue/PR templates.
 - **API tooling** — a CLI that generates the OpenAPI client and docs.
+- **CI/CD workflows** — reusable GitHub Actions workflows for CI, release, and
+  deploy that consumer repos call instead of copying pipeline YAML.
 - **Agent skills** — reusable skills covering the development lifecycle.
 
 ## Getting Started

@@ -7,7 +7,9 @@ repository; implementation detail lives in each subsystem's README.
 
 Commons is built and published from a single monorepo. Release Please cuts versioned
 releases, the matching artifacts are published to GitHub Packages, and downstream
-repositories consume them.
+repositories consume them. Downstream repositories also call the reusable
+`workflow_call` pipelines in `.github/workflows/` (CI, release, deploy) rather
+than copying pipeline YAML.
 
 ```mermaid
 graph LR
