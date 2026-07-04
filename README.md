@@ -35,6 +35,7 @@ Implementation-level setup and usage live in each subsystem's README:
 - [`npm/`](npm/README.md) — frontend configuration packages and the API CLI.
 - [`tools/`](tools/README.md) — shared linting configs and release tooling.
 - [`skills/`](skills/README.md) — agent skills.
+- [`.github/`](.github/README.md) — reusable CI/CD workflows and the consumer contract.
 
 ## Documentation
 
