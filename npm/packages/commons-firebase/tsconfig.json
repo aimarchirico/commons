@@ -1,0 +1,4 @@
+{
+  "extends": "@aimarchirico/commons-expo/tsconfig",
+  "include": ["*.ts"]
+}

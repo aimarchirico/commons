@@ -114,10 +114,10 @@ jobs:
           cache-dependency-path: npm/pnpm-lock.yaml
 
       - name: Publish Package
-        env:
-          PACKAGE: '@aimarchirico/commons-ts'
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: task npm:publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+          PACKAGE: '@aimarchirico/commons-ts'
 
   publish-commons-expo:
     name: Publish commons-expo
@@ -134,10 +134,11 @@ jobs:
           cache-dependency-path: npm/pnpm-lock.yaml
 
       - name: Publish Package
-        env:
-          PACKAGE: '@aimarchirico/commons-expo'
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
         run: task npm:publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+          PACKAGE: '@aimarchirico/commons-expo'
 
   publish-commons-openapi:
     name: Publish commons-openapi
@@ -154,10 +155,10 @@ jobs:
           cache-dependency-path: npm/pnpm-lock.yaml
 
       - name: Publish Package
-        env:
-          PACKAGE: '@aimarchirico/commons-openapi'
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: task npm:publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+          PACKAGE: '@aimarchirico/commons-openapi'
 
   publish-commons-tools:
     name: Publish commons-tools
@@ -174,10 +175,10 @@ jobs:
           cache-dependency-path: npm/pnpm-lock.yaml
 
       - name: Publish Package
-        env:
-          PACKAGE: '@aimarchirico/commons-tools'
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: task npm:publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+          PACKAGE: '@aimarchirico/commons-tools'
 
   publish-commons-docs:
     name: Publish commons-docs
@@ -193,11 +194,11 @@ jobs:
         with:
           cache-dependency-path: npm/pnpm-lock.yaml
 
-      - name: Publish Package
-        env:
-          PACKAGE: '@aimarchirico/commons-docs'
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish 
         run: task npm:publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+          PACKAGE: '@aimarchirico/commons-docs'
 
   publish-commons-cloudflare:
     name: Publish commons-cloudflare
@@ -214,7 +215,47 @@ jobs:
           cache-dependency-path: npm/pnpm-lock.yaml
 
       - name: Publish Package
-        env:
-          PACKAGE: '@aimarchirico/commons-cloudflare'
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: task npm:publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+          PACKAGE: '@aimarchirico/commons-cloudflare'
+
+  publish-commons-firebase:
+    name: Publish commons-firebase
+    needs: release-please
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-firebase')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v7
+
+      - name: Set Up Node
+        uses: ./.github/actions/setup-node
+        with:
+          cache-dependency-path: npm/pnpm-lock.yaml
+
+      - name: Publish Package
+        run: task npm:publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+          PACKAGE: '@aimarchirico/commons-firebase'
+
+  publish-commons-google-signin:
+    name: Publish commons-google-signin
+    needs: release-please
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-google-signin')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v7
+
+      - name: Set Up Node
+        uses: ./.github/actions/setup-node
+        with:
+          cache-dependency-path: npm/pnpm-lock.yaml
+
+      - name: Publish Package
+        run: task npm:publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+          PACKAGE: '@aimarchirico/commons-google-signin'

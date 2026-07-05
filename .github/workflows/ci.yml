@@ -75,6 +75,8 @@ jobs:
 
       - name: Run Check
         run: task npm:check
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
 
   # ==========================================
   # COMMIT CI JOB
@@ -95,11 +97,11 @@ jobs:
           cache-dependency-path: tools/pnpm-lock.yaml
 
       - name: Run Check
+        run: task commit:check
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
           FROM_SHA: ${{ github.event.pull_request.base.sha }}
           TO_SHA: ${{ github.event.pull_request.head.sha }}
-        run: task commit:check
 
   # ==========================================
   # DOCUMENTATION CI JOB
@@ -119,6 +121,6 @@ jobs:
           cache-dependency-path: tools/pnpm-lock.yaml
 
       - name: Run Docs Checks
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: task docs:check
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}

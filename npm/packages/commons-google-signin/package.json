@@ -1,0 +1,41 @@
+{
+  "name": "@aimarchirico/commons-google-signin",
+  "version": "1.0.0",
+  "private": false,
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "main": "index.ts",
+  "exports": {
+    ".": "./index.ts"
+  },
+  "files": [
+    "index.ts",
+    "google-sign-in-service.ts",
+    "use-google-sign-in.ts",
+    "auth-context.tsx"
+  ],
+  "scripts": {
+    "check": "eslint && tsc",
+    "fix": "eslint --fix"
+  },
+  "dependencies": {
+    "@aimarchirico/commons-firebase": "workspace:*"
+  },
+  "devDependencies": {
+    "@aimarchirico/commons-expo": "workspace:*",
+    "@aimarchirico/commons-ts": "workspace:*",
+    "@react-native-google-signin/google-signin": "*",
+    "@types/react": "^19.0.0",
+    "eslint": "^9.39.2",
+    "expo": "*",
+    "react": "*",
+    "react-native": "*",
+    "typescript": "^6.0.3"
+  },
+  "peerDependencies": {
+    "@react-native-google-signin/google-signin": "*",
+    "react": "*",
+    "react-native": "*"
+  }
+}
