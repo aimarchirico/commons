@@ -1,1 +1,2 @@
 no.chirico.commons.security.ProxyValidationFilter
+no.chirico.commons.security.CorsAutoConfiguration
