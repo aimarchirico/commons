@@ -1,6 +1,6 @@
 {
   "name": "@aimarchirico/commons-firebase-client",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": false,
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
@@ -22,8 +22,8 @@
     "fix": "eslint --fix"
   },
   "devDependencies": {
-    "@aimarchirico/commons-expo": "workspace:*",
-    "@aimarchirico/commons-ts": "workspace:*",
+    "@aimarchirico/commons-expo": "workspace:^",
+    "@aimarchirico/commons-ts": "workspace:^",
     "@react-native-firebase/auth": "*",
     "eslint": "^9.39.2",
     "expo": "*",

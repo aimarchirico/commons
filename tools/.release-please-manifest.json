@@ -1,7 +1,7 @@
 {
   "npm/packages/commons-ts": "1.1.0",
   "npm/packages/commons-expo": "1.1.0",
-  "npm/packages/commons-firebase-client": "1.0.0",
+  "npm/packages/commons-firebase-client": "1.0.1",
   "npm/packages/commons-google-signin": "1.1.1",
   "npm/packages/commons-openapi": "1.1.0",
   "npm/packages/commons-tools": "1.1.0",

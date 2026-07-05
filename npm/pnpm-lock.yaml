@@ -13,28 +13,28 @@ importers:
   .:
     devDependencies:
       '@aimarchirico/commons-cloudflare':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:packages/commons-cloudflare
       '@aimarchirico/commons-docs':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:packages/commons-docs
       '@aimarchirico/commons-expo':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:packages/commons-expo
       '@aimarchirico/commons-firebase-client':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:packages/commons-firebase-client
       '@aimarchirico/commons-google-signin':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:packages/commons-google-signin
       '@aimarchirico/commons-openapi':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:packages/commons-openapi
       '@aimarchirico/commons-tools':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:packages/commons-tools
       '@aimarchirico/commons-ts':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:packages/commons-ts
       '@types/node':
         specifier: ^26.0.1
@@ -61,7 +61,7 @@ importers:
   packages/commons-docs:
     devDependencies:
       '@aimarchirico/commons-ts':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../commons-ts
       '@types/node':
         specifier: ^26.0.1
@@ -76,7 +76,7 @@ importers:
   packages/commons-expo:
     dependencies:
       '@aimarchirico/commons-ts':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../commons-ts
       eslint-config-expo:
         specifier: ~57.0.0
@@ -101,10 +101,10 @@ importers:
   packages/commons-firebase-client:
     devDependencies:
       '@aimarchirico/commons-expo':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../commons-expo
       '@aimarchirico/commons-ts':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../commons-ts
       '@react-native-firebase/auth':
         specifier: '*'
@@ -128,14 +128,14 @@ importers:
   packages/commons-google-signin:
     dependencies:
       '@aimarchirico/commons-firebase-client':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../commons-firebase-client
     devDependencies:
       '@aimarchirico/commons-expo':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../commons-expo
       '@aimarchirico/commons-ts':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../commons-ts
       '@react-native-google-signin/google-signin':
         specifier: '*'
@@ -169,7 +169,7 @@ importers:
         version: 4.0.1(ajv@8.20.0)(mkdirp@3.0.1)
     devDependencies:
       '@aimarchirico/commons-ts':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../commons-ts
       '@types/node':
         specifier: ^26.0.1
@@ -194,7 +194,7 @@ importers:
         version: 0.13.0
     devDependencies:
       '@aimarchirico/commons-ts':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../commons-ts
       '@types/node':
         specifier: ^26.0.1
