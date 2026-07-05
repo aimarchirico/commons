@@ -14,8 +14,8 @@
     "firebase.ts"
   ],
   "scripts": {
-    "check": "eslint . --no-error-on-unmatched-pattern",
-    "fix": "eslint . --no-error-on-unmatched-pattern --fix"
+    "check": "eslint && tsc",
+    "fix": "eslint --fix"
   },
   "devDependencies": {
     "@aimarchirico/commons-expo": "workspace:*",
