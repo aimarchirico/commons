@@ -1,0 +1,13 @@
+name: Set Up Android
+description: Set up the JDK toolchains required for Android release builds
+runs:
+  using: composite
+  steps:
+    - name: Set Up Gradle/Java
+      uses: aimarchirico/commons/.github/actions/setup-java@main
+
+    - name: JDK 17 for Android native build
+      uses: actions/setup-java@v5
+      with:
+        distribution: temurin
+        java-version: '17'
