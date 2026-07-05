@@ -22,8 +22,8 @@
     "fix": "eslint --fix"
   },
   "devDependencies": {
-    "@aimarchirico/commons-expo": "workspace:*",
-    "@aimarchirico/commons-ts": "workspace:*",
+    "@aimarchirico/commons-expo": "workspace:^",
+    "@aimarchirico/commons-ts": "workspace:^",
     "@react-native-firebase/auth": "*",
     "eslint": "^9.39.2",
     "expo": "*",
