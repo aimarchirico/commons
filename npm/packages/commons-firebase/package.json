@@ -1,0 +1,35 @@
+{
+  "name": "@aimarchirico/commons-firebase",
+  "version": "1.0.0",
+  "private": false,
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "main": "index.ts",
+  "exports": {
+    ".": "./index.ts"
+  },
+  "files": [
+    "index.ts",
+    "firebase.ts"
+  ],
+  "scripts": {
+    "check": "eslint . --no-error-on-unmatched-pattern",
+    "fix": "eslint . --no-error-on-unmatched-pattern --fix"
+  },
+  "devDependencies": {
+    "@aimarchirico/commons-expo": "workspace:*",
+    "@aimarchirico/commons-ts": "workspace:*",
+    "@react-native-firebase/auth": "*",
+    "eslint": "^9.39.2",
+    "expo": "*",
+    "firebase": "*",
+    "react-native": "*",
+    "typescript": "^6.0.3"
+  },
+  "peerDependencies": {
+    "@react-native-firebase/auth": "*",
+    "firebase": "*",
+    "react-native": "*"
+  }
+}
