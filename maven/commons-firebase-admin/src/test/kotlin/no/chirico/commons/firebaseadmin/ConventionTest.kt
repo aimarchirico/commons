@@ -1,4 +1,4 @@
-package no.chirico.commons.firebase
+package no.chirico.commons.firebaseadmin
 
 import no.chirico.commons.test.BaseConventionTest
 

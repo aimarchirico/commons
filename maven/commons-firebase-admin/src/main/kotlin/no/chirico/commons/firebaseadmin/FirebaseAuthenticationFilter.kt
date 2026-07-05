@@ -1,4 +1,4 @@
-package no.chirico.commons.firebase
+package no.chirico.commons.firebaseadmin
 
 import com.google.firebase.auth.FirebaseAuth
 import jakarta.servlet.FilterChain

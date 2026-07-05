@@ -1,4 +1,4 @@
-package no.chirico.commons.firebase
+package no.chirico.commons.firebaseadmin
 
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.firebase.FirebaseApp
@@ -22,14 +22,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableConfigurationProperties(FirebaseProperties::class)
 class FirebaseAutoConfiguration {
 
+  private val publicPaths =
+    arrayOf("/actuator/health", "/actuator/info", "/swagger-ui/**", "/v3/api-docs/**")
+
   @Bean
   @ConditionalOnMissingBean
   fun firebaseApp(properties: FirebaseProperties): FirebaseApp {
-    val file =
-      properties.credentialsPath.map(::File).firstOrNull { it.isFile }
-        ?: throw FileNotFoundException(
-          "Firebase credentials not found in: ${properties.credentialsPath}"
-        )
+    val file = File(properties.credentialsPath)
+    if (!file.isFile) {
+      throw FileNotFoundException(
+        "Firebase credentials not found at: ${properties.credentialsPath}"
+      )
+    }
     val options =
       FirebaseOptions.builder()
         .setCredentials(GoogleCredentials.fromStream(FileInputStream(file)))
@@ -56,8 +60,7 @@ class FirebaseAutoConfiguration {
       .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
       .authorizeHttpRequests {
         it.dispatcherTypeMatchers(DispatcherType.ASYNC).permitAll()
-        it.requestMatchers("/actuator/health", "/actuator/info").permitAll()
-        it.requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+        it.requestMatchers(*publicPaths).permitAll()
         it.anyRequest().authenticated()
       }
       .addFilterBefore(filter, UsernamePasswordAuthenticationFilter::class.java)
