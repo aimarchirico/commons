@@ -26,6 +26,7 @@
     "@aimarchirico/commons-expo": "workspace:*",
     "@aimarchirico/commons-ts": "workspace:*",
     "@react-native-google-signin/google-signin": "*",
+    "@types/react": "^19.0.0",
     "eslint": "^9.39.2",
     "expo": "*",
     "react": "*",
