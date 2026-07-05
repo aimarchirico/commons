@@ -40,6 +40,11 @@
       "release-type": "simple",
       "package-name": "commons-convention",
       "extra-files": ["build.gradle.kts"]
+    },
+    "maven/commons-firebase-admin": {
+      "release-type": "simple",
+      "package-name": "commons-firebase-admin",
+      "extra-files": ["build.gradle.kts"]
     }
   }
 }

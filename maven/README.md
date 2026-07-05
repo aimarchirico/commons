@@ -16,9 +16,10 @@ published as Maven artifacts under the `no.chirico.commons` group.
 
 ```text
 maven/
-├── commons-convention/   # convention plugin (included build)
-├── commons-security/     # commons-security library
-├── commons-test/         # commons-test library
+├── commons-convention/     # convention plugin (included build)
+├── commons-security/       # commons-security library
+├── commons-firebase-admin/ # commons-firebase-admin library
+├── commons-test/           # commons-test library
 └── settings.gradle.kts
 ```
 
@@ -28,6 +29,9 @@ maven/
 - **`commons-security/`** — publishes `commons-security`; applies
   `id("no.chirico.commons.buildlogic.kotlin")` and depends on `:commons-test` for
   its architecture tests.
+- **`commons-firebase-admin/`** — publishes `commons-firebase-admin`; Firebase
+  authentication filter and default stateless security chain, auto-configured for
+  backends that need in-JVM user identity.
 - **`commons-test/`** — publishes `commons-test`; shared test/ArchUnit support
   consumed by the other modules.
 
@@ -48,7 +52,7 @@ Requires Java 25 and [Task](https://taskfile.dev). Run from the repository root:
 - `task maven:build` — build the modules.
 - `task maven:check` — run tests and checks.
 - `task maven:fix` — format Kotlin with ktfmt.
-- `task maven:publish MODULE=<commons-security|commons-test|commons-convention>` — publish a module.
+- `task maven:publish MODULE=<commons-security|commons-firebase-admin|commons-test|commons-convention>` — publish a module.
 
 The underlying commands are `./gradlew build`, `check`, and `ktfmtFormat`.
 
