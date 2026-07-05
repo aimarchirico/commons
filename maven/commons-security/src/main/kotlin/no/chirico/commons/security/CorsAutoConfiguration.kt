@@ -11,9 +11,6 @@ import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 import org.springframework.web.filter.CorsFilter
 
-/**
- * Opt-in CORS support. Disabled unless `client.cors.allowed-origins` is set.
- */
 @ConfigurationProperties(prefix = "client.cors")
 data class CorsProperties(val allowedOrigins: List<String> = emptyList())
 
@@ -22,10 +19,7 @@ data class CorsProperties(val allowedOrigins: List<String> = emptyList())
 @ConditionalOnProperty(prefix = "client.cors", name = ["allowed-origins"])
 class CorsAutoConfiguration {
 
-  /**
-   * Runs ahead of [ProxyValidationFilter] so browser preflight (`OPTIONS`) requests
-   * are answered before the proxy check rejects them.
-   */
+  // Ahead of ProxyValidationFilter: preflight requests carry no X-Proxy-Secret header.
   @Bean
   @Order(Ordered.HIGHEST_PRECEDENCE)
   fun corsFilter(properties: CorsProperties): CorsFilter {
