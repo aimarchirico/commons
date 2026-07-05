@@ -116,7 +116,7 @@ jobs:
       - name: Publish Package
         env:
           PACKAGE: '@aimarchirico/commons-ts'
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
         run: task npm:publish
 
   publish-commons-expo:
@@ -136,7 +136,7 @@ jobs:
       - name: Publish Package
         env:
           PACKAGE: '@aimarchirico/commons-expo'
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
         run: task npm:publish
 
   publish-commons-openapi:
@@ -156,7 +156,7 @@ jobs:
       - name: Publish Package
         env:
           PACKAGE: '@aimarchirico/commons-openapi'
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
         run: task npm:publish
 
   publish-commons-tools:
@@ -176,7 +176,7 @@ jobs:
       - name: Publish Package
         env:
           PACKAGE: '@aimarchirico/commons-tools'
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
         run: task npm:publish
 
   publish-commons-docs:
@@ -196,7 +196,7 @@ jobs:
       - name: Publish Package
         env:
           PACKAGE: '@aimarchirico/commons-docs'
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
         run: task npm:publish
 
   publish-commons-cloudflare:
@@ -216,5 +216,5 @@ jobs:
       - name: Publish Package
         env:
           PACKAGE: '@aimarchirico/commons-cloudflare'
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
         run: task npm:publish
