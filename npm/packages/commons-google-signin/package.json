@@ -20,7 +20,7 @@
     "fix": "eslint --fix"
   },
   "dependencies": {
-    "@aimarchirico/commons-firebase": "workspace:*"
+    "@aimarchirico/commons-firebase-client": "workspace:*"
   },
   "devDependencies": {
     "@aimarchirico/commons-expo": "workspace:*",

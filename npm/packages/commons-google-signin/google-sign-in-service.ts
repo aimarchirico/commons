@@ -6,7 +6,7 @@ import {
   signOut as firebaseSignOut,
   getIdToken,
   signInWithEmailAndPassword,
-} from '@aimarchirico/commons-firebase';
+} from '@aimarchirico/commons-firebase-client';
 import {GoogleOneTapSignIn} from '@react-native-google-signin/google-signin';
 
 export interface GoogleSignInResult {

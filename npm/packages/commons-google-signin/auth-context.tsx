@@ -9,7 +9,7 @@ import {
   getAuth,
   onAuthStateChanged,
   getIdToken as firebaseGetIdToken,
-} from '@aimarchirico/commons-firebase';
+} from '@aimarchirico/commons-firebase-client';
 
 interface User {
   uid: string;

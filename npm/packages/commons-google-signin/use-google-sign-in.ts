@@ -7,7 +7,7 @@ import {
   signInWithCredential,
   signOut as firebaseSignOut,
   GoogleAuthProvider,
-} from '@aimarchirico/commons-firebase';
+} from '@aimarchirico/commons-firebase-client';
 
 export interface UseGoogleSignInOptions {
   /** Overrides the Google web client id. Defaults to 'autoDetect'. */
