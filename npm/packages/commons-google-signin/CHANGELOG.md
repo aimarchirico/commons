@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/aimarchirico/commons/compare/commons-google-signin-v1.1.0...commons-google-signin-v1.1.1) (2026-07-05)
+
+
+### Bug Fixes
+
+* **commons-google-signin:** consume renamed commons-firebase-client ([5cf0b70](https://github.com/aimarchirico/commons/commit/5cf0b70a80857e2fe3f6cdce5a5d476e08446748))
+
 ## [1.1.0](https://github.com/aimarchirico/commons/compare/commons-google-signin-v1.0.0...commons-google-signin-v1.1.0) (2026-07-05)
 
 
