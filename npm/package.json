@@ -11,7 +11,7 @@
     "@aimarchirico/commons-cloudflare": "workspace:*",
     "@aimarchirico/commons-docs": "workspace:*",
     "@aimarchirico/commons-expo": "workspace:*",
-    "@aimarchirico/commons-firebase": "workspace:*",
+    "@aimarchirico/commons-firebase-client": "workspace:*",
     "@aimarchirico/commons-google-signin": "workspace:*",
     "@aimarchirico/commons-openapi": "workspace:*",
     "@aimarchirico/commons-tools": "workspace:*",

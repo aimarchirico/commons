@@ -8,7 +8,7 @@
     "npm/packages/commons-expo": {
       "release-type": "node"
     },
-    "npm/packages/commons-firebase": {
+    "npm/packages/commons-firebase-client": {
       "release-type": "node"
     },
     "npm/packages/commons-google-signin": {

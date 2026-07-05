@@ -21,9 +21,9 @@ importers:
       '@aimarchirico/commons-expo':
         specifier: workspace:*
         version: link:packages/commons-expo
-      '@aimarchirico/commons-firebase':
+      '@aimarchirico/commons-firebase-client':
         specifier: workspace:*
-        version: link:packages/commons-firebase
+        version: link:packages/commons-firebase-client
       '@aimarchirico/commons-google-signin':
         specifier: workspace:*
         version: link:packages/commons-google-signin
@@ -98,7 +98,7 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
 
-  packages/commons-firebase:
+  packages/commons-firebase-client:
     devDependencies:
       '@aimarchirico/commons-expo':
         specifier: workspace:*
@@ -127,9 +127,9 @@ importers:
 
   packages/commons-google-signin:
     dependencies:
-      '@aimarchirico/commons-firebase':
+      '@aimarchirico/commons-firebase-client':
         specifier: workspace:*
-        version: link:../commons-firebase
+        version: link:../commons-firebase-client
     devDependencies:
       '@aimarchirico/commons-expo':
         specifier: workspace:*

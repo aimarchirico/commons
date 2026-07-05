@@ -1,6 +1,6 @@
 {
-  "name": "@aimarchirico/commons-firebase",
-  "version": "1.2.0",
+  "name": "@aimarchirico/commons-firebase-client",
+  "version": "1.0.0",
   "private": false,
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
@@ -10,7 +10,7 @@
     ".": "./index.ts"
   },
   "bin": {
-    "commons-firebase-decode-google-services": "bin/decode-google-services.js"
+    "commons-firebase-client-decode-google-services": "bin/decode-google-services.js"
   },
   "files": [
     "index.ts",

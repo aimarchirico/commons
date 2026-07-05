@@ -243,10 +243,10 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
           PACKAGE: '@aimarchirico/commons-cloudflare'
 
-  publish-commons-firebase:
-    name: Publish commons-firebase
+  publish-commons-firebase-client:
+    name: Publish commons-firebase-client
     needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-firebase')
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-firebase-client')
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Repo
@@ -261,7 +261,7 @@ jobs:
         run: task npm:publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
-          PACKAGE: '@aimarchirico/commons-firebase'
+          PACKAGE: '@aimarchirico/commons-firebase-client'
 
   publish-commons-google-signin:
     name: Publish commons-google-signin
