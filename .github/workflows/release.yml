@@ -218,3 +218,43 @@ jobs:
           PACKAGE: '@aimarchirico/commons-cloudflare'
           NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
         run: task npm:publish
+
+  publish-commons-firebase:
+    name: Publish commons-firebase
+    needs: release-please
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-firebase')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v7
+
+      - name: Set Up Node
+        uses: ./.github/actions/setup-node
+        with:
+          cache-dependency-path: npm/pnpm-lock.yaml
+
+      - name: Publish Package
+        env:
+          PACKAGE: '@aimarchirico/commons-firebase'
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+        run: task npm:publish
+
+  publish-commons-google-signin:
+    name: Publish commons-google-signin
+    needs: release-please
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-google-signin')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v7
+
+      - name: Set Up Node
+        uses: ./.github/actions/setup-node
+        with:
+          cache-dependency-path: npm/pnpm-lock.yaml
+
+      - name: Publish Package
+        env:
+          PACKAGE: '@aimarchirico/commons-google-signin'
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+        run: task npm:publish
