@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.0.0](https://github.com/aimarchirico/commons/compare/commons-security-v1.1.2...commons-security-v2.0.0) (2026-07-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* **commons-security:** consumers must rename client.cors.allowed-origins to cors.allowed-origins and client.proxy-secret to proxy-secret.
+
+### Features
+
+* firebase-admin module, commons-security 2.0.0, google-services CLI ([f707703](https://github.com/aimarchirico/commons/commit/f707703e8f567e1d269da8150d1736a90570ac3e))
+* **security:** add opt-in CORS autoconfiguration for local dev ([bb2d478](https://github.com/aimarchirico/commons/commit/bb2d478d33265c9ce90ba3892b4a1b8a2cf28376))
+
+
+### Code Refactoring
+
+* **commons-security:** drop client prefix from property names ([7b37c3a](https://github.com/aimarchirico/commons/commit/7b37c3a6df0fa21d5dfc86a1d0c6af3e887c9524))
+
 ## [1.1.2](https://github.com/aimarchirico/commons/compare/commons-security-v1.1.1...commons-security-v1.1.2) (2026-07-02)
 
 

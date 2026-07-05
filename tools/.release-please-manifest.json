@@ -1,14 +1,14 @@
 {
   "npm/packages/commons-ts": "1.1.0",
   "npm/packages/commons-expo": "1.1.0",
-  "npm/packages/commons-firebase": "1.1.0",
+  "npm/packages/commons-firebase": "1.2.0",
   "npm/packages/commons-google-signin": "1.1.0",
   "npm/packages/commons-openapi": "1.1.0",
   "npm/packages/commons-tools": "1.1.0",
   "npm/packages/commons-docs": "1.2.0",
   "npm/packages/commons-cloudflare": "1.1.0",
-  "maven/commons-security": "1.1.2",
+  "maven/commons-security": "2.0.0",
   "maven/commons-test": "1.1.2",
   "maven/commons-convention": "1.1.0",
-  "maven/commons-firebase-admin": "0.0.0"
+  "maven/commons-firebase-admin": "1.0.0"
 }
