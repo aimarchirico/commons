@@ -15,4 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "commons"
 
-include(":commons-security", ":commons-test")
+include(":commons-security", ":commons-test", ":commons-firebase-admin")

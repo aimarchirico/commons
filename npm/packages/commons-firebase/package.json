@@ -9,9 +9,13 @@
   "exports": {
     ".": "./index.ts"
   },
+  "bin": {
+    "commons-firebase-decode-google-services": "bin/decode-google-services.js"
+  },
   "files": [
     "index.ts",
-    "firebase.ts"
+    "firebase.ts",
+    "bin"
   ],
   "scripts": {
     "check": "eslint && tsc",

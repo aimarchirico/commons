@@ -5,6 +5,7 @@ hypersistence = "3.15.3"
 springdoc = "3.0.3"
 ktfmt = "0.26.0"
 archunit = "1.4.2"
+firebase-admin = "9.2.0"
 
 [libraries]
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -16,6 +17,7 @@ hypersistence-utils = { module = "io.hypersistence:hypersistence-utils-hibernate
 springdoc-openapi = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc" }
 ktfmt-gradle-plugin = { module = "com.ncorti.ktfmt.gradle:com.ncorti.ktfmt.gradle.gradle.plugin", version.ref = "ktfmt" }
 archunit = { module = "com.tngtech.archunit:archunit-junit5", version.ref = "archunit" }
+firebase-admin = { module = "com.google.firebase:firebase-admin", version.ref = "firebase-admin" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

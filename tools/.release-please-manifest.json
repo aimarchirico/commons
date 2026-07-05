@@ -9,5 +9,6 @@
   "npm/packages/commons-cloudflare": "1.1.0",
   "maven/commons-security": "1.1.2",
   "maven/commons-test": "1.1.2",
-  "maven/commons-convention": "1.1.0"
+  "maven/commons-convention": "1.1.0",
+  "maven/commons-firebase-admin": "0.0.0"
 }

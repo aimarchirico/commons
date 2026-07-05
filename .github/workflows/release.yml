@@ -97,6 +97,29 @@ jobs:
         run: task maven:publish
 
   # ==========================================
+  # MAVEN MODULES
+  # ==========================================
+  publish-commons-firebase-admin:
+    name: Publish commons-firebase-admin
+    needs: release-please
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'maven/commons-firebase-admin')
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_ACTOR: ${{ github.actor }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v7
+
+      - name: Set Up Java
+        uses: ./.github/actions/setup-java
+
+      - name: Publish Module
+        env:
+          MODULE: commons-firebase-admin
+        run: task maven:publish
+
+  # ==========================================
   # NPM MODULES
   # ==========================================
   publish-commons-ts:
