@@ -9,7 +9,7 @@ import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
 class ProxyValidationFilter : OncePerRequestFilter() {
-  @Value("\${client.proxy-secret:}") private lateinit var proxySecret: String
+  @Value("\${proxy-secret:}") private lateinit var proxySecret: String
 
   override fun doFilterInternal(
     request: HttpServletRequest,

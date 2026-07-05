@@ -11,12 +11,12 @@ import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 import org.springframework.web.filter.CorsFilter
 
-@ConfigurationProperties(prefix = "client.cors")
+@ConfigurationProperties(prefix = "cors")
 data class CorsProperties(val allowedOrigins: List<String> = emptyList())
 
 @AutoConfiguration
 @EnableConfigurationProperties(CorsProperties::class)
-@ConditionalOnProperty(prefix = "client.cors", name = ["allowed-origins"])
+@ConditionalOnProperty(prefix = "cors", name = ["allowed-origins"])
 class CorsAutoConfiguration {
 
   // Ahead of ProxyValidationFilter: preflight requests carry no X-Proxy-Secret header.
