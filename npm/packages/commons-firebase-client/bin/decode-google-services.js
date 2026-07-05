@@ -5,7 +5,8 @@ const fs = require('fs');
 const path = require('path');
 
 const base64 = process.env.GOOGLE_SERVICES_JSON_BASE64;
-const outputPath = process.argv[2] || 'src/assets/google-services.json';
+const outputPath =
+  process.env.GOOGLE_SERVICES_OUTPUT_PATH || 'src/assets/google-services.json';
 
 if (!base64) {
   console.log(
