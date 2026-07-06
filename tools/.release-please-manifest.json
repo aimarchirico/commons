@@ -8,7 +8,7 @@
   "npm/packages/commons-docs": "1.2.1",
   "npm/packages/commons-cloudflare": "1.1.1",
   "maven/commons-security": "2.0.1",
-  "maven/commons-test": "1.1.4",
-  "maven/commons-convention": "1.1.1",
+  "maven/commons-test": "2.0.0",
+  "maven/commons-convention": "1.2.0",
   "maven/commons-firebase-admin": "1.0.1"
 }
