@@ -25,8 +25,7 @@ maven/
 
 - **`commons-convention/`** — precompiled script plugins under
   `no.chirico.commons.convention`: `kotlin` (Kotlin/JVM + ktfmt baseline),
-  `spring` (Spring Boot), and `architecture` (module-dependency enforcement for
-  the api/impl/core modular-monolith layout). Wired in via
+  `spring` (Spring Boot), and `architecture` (module-dependency architecture enforcement). Wired in via
   `includeBuild("commons-convention")`.
 - **`commons-security/`** — publishes `commons-security`; applies
   `id("no.chirico.commons.convention.kotlin")` and depends on `:commons-test` for
@@ -42,9 +41,9 @@ maven/
 No local `.env` is required. Publishing reads credentials from the environment
 (injected by CI):
 
-| Key            | Purpose                                  |
-| :------------- | :--------------------------------------- |
-| `GITHUB_ACTOR` | GitHub Packages (Maven) publishing user. |
+| Key            | Purpose                                   |
+| :------------- | :---------------------------------------- |
+| `GITHUB_ACTOR` | GitHub Packages (Maven) publishing user.  |
 | `GITHUB_TOKEN` | GitHub Packages (Maven) publishing token. |
 
 ## Local Development
@@ -66,8 +65,7 @@ The underlying commands are `./gradlew build`, `check`, and `ktfmtFormat`.
   `BaseConventionTest` from `commons-test`.
 - **Architecture** — module-dependency rules for the api/impl/core layout,
   enforced at Gradle configuration time by the
-  `no.chirico.commons.convention.architecture` plugin (`:app → :*:impl | :core`,
-  `:*:impl → :*:api | :core`, `:*:api → :core`, `:core → :core`).
+  `no.chirico.commons.convention.architecture` plugin.
 
 ## Deployment
 
