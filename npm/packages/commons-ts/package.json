@@ -5,6 +5,10 @@
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aimarchirico/commons.git"
+  },
   "exports": {
     "./eslint": "./eslint.mjs",
     "./tsconfig": "./tsconfig.json"
