@@ -30,9 +30,9 @@ abstract class BaseArchitectureTest {
       .whereLayer("App")
       .mayNotBeAccessedByAnyLayer()
       .whereLayer("Feature")
-      .mayOnlyBeAccessedByLayers("App")
-      .whereLayer("Core")
       .mayOnlyBeAccessedByLayers("App", "Feature")
+      .whereLayer("Core")
+      .mayOnlyBeAccessedByLayers("App", "Feature", "Core")
       .check(classes)
   }
 
@@ -60,11 +60,11 @@ abstract class BaseArchitectureTest {
       .whereLayer("Controller")
       .mayNotBeAccessedByAnyLayer()
       .whereLayer("Service")
-      .mayOnlyBeAccessedByLayers("Controller")
-      .whereLayer("Repository")
       .mayOnlyBeAccessedByLayers("Controller", "Service")
-      .whereLayer("Model")
+      .whereLayer("Repository")
       .mayOnlyBeAccessedByLayers("Controller", "Service", "Repository")
+      .whereLayer("Model")
+      .mayOnlyBeAccessedByLayers("Controller", "Service", "Repository", "Model")
       .check(classes)
   }
 }
