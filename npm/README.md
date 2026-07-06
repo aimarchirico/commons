@@ -1,4 +1,4 @@
-# PNPM
+# NPM
 
 Frontend configuration packages and tooling, published to GitHub Packages under
 the `@aimarchirico` scope and managed as a PNPM workspace.
@@ -15,7 +15,7 @@ the `@aimarchirico` scope and managed as a PNPM workspace.
 ## Folder Structure
 
 ```text
-pnpm/
+npm/
 ├── packages/
 │   ├── commons-ts/           # shared ESLint + tsconfig (base config)
 │   ├── commons-expo/         # shared Expo / React Native ESLint + tsconfig
@@ -27,14 +27,14 @@ pnpm/
 └── turbo.json             # check/fix task pipeline
 ```
 
-| Package                          | Provides                                                                                   |
-| :------------------------------- | :----------------------------------------------------------------------------------------- |
-| `@aimarchirico/commons-ts`          | `./eslint`, `./tsconfig.json` — base TypeScript config.                                     |
-| `@aimarchirico/commons-expo`        | `./eslint`, `./tsconfig.json` — Expo / React Native config.                                 |
-| `@aimarchirico/commons-tools`       | `./markdownlint`, `./commitlint` configs.                                                  |
-| `@aimarchirico/commons-docs`        | `commons-docs` CLI (`bin/cli.js`) materializing `CONTRIBUTING.md` and GitHub templates.        |
-| `@aimarchirico/commons-openapi`     | `commons-openapi` CLI (`bin/cli.js`) generating the OpenAPI client and docs.                   |
-| `@aimarchirico/commons-cloudflare`  | `./proxy` Pages Function + `commons-cloudflare-fix` bin for Expo web deploys.                   |
+| Package                            | Provides                                                                                |
+| :--------------------------------- | :-------------------------------------------------------------------------------------- |
+| `@aimarchirico/commons-ts`         | `./eslint`, `./tsconfig.json` — base TypeScript config.                                 |
+| `@aimarchirico/commons-expo`       | `./eslint`, `./tsconfig.json` — Expo / React Native config.                             |
+| `@aimarchirico/commons-tools`      | `./markdownlint`, `./commitlint` configs.                                               |
+| `@aimarchirico/commons-docs`       | `commons-docs` CLI (`bin/cli.js`) materializing `CONTRIBUTING.md` and GitHub templates. |
+| `@aimarchirico/commons-openapi`    | `commons-openapi` CLI (`bin/cli.js`) generating the OpenAPI client and docs.            |
+| `@aimarchirico/commons-cloudflare` | `./proxy` Pages Function + `commons-cloudflare-fix` bin for Expo web deploys.           |
 
 `commons-expo`, `commons-tools`, `commons-docs`, and `commons-openapi` extend `commons-ts` as a
 `workspace:*` dependency, so `commons-ts` is the base every other package builds on.
@@ -44,8 +44,8 @@ pnpm/
 No local `.env` is required. Publishing reads credentials from the environment
 (injected by CI):
 
-| Key               | Purpose                                |
-| :---------------- | :------------------------------------- |
+| Key               | Purpose                                 |
+| :---------------- | :-------------------------------------- |
 | `NODE_AUTH_TOKEN` | GitHub Packages (npm) publishing token. |
 
 ## Local Development
