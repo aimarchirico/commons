@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/aimarchirico/commons/compare/commons-firebase-admin-v1.0.0...commons-firebase-admin-v1.0.1) (2026-07-06)
+
+
+### Bug Fixes
+
+* **commons-firebase-client:** force release ([f6b030c](https://github.com/aimarchirico/commons/commit/f6b030c8645bbb290d955193962d09c7f02f3f94))
+
 ## 1.0.0 (2026-07-05)
 
 

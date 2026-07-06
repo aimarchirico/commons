@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.2](https://github.com/aimarchirico/commons/compare/commons-google-signin-v1.1.1...commons-google-signin-v1.1.2) (2026-07-06)
+
+
+### Bug Fixes
+
+* **commons-firebase-client:** force release ([f6b030c](https://github.com/aimarchirico/commons/commit/f6b030c8645bbb290d955193962d09c7f02f3f94))
+* **commons-google-signin:** add repository field to package.json ([0f42e0e](https://github.com/aimarchirico/commons/commit/0f42e0ebe6a6a920d8e1b689b54a59e36d301d2f))
+
 ## [1.1.1](https://github.com/aimarchirico/commons/compare/commons-google-signin-v1.1.0...commons-google-signin-v1.1.1) (2026-07-05)
 
 
