@@ -2,6 +2,7 @@ version: '3'
 
 tasks:
   install:
+    internal: true
     desc: Install npm dependencies
     cmds:
       - pnpm install
@@ -21,4 +22,5 @@ tasks:
   publish:
     desc: Publish a package
     cmds:
+      - task: install
       - pnpm publish --filter {{.PACKAGE}} --no-git-checks

@@ -136,15 +136,10 @@ jobs:
         with:
           cache-dependency-path: npm/pnpm-lock.yaml
 
-      - name: Install Dependencies
-        run: task npm:install
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
-
       - name: Publish Package
         run: task npm:publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
           PACKAGE: '@aimarchirico/commons-ts'
 
   publish-commons-expo:
@@ -161,15 +156,11 @@ jobs:
         with:
           cache-dependency-path: npm/pnpm-lock.yaml
 
-      - name: Install Dependencies
-        run: task npm:install
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
-
       - name: Publish Package
+
         run: task npm:publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
           PACKAGE: '@aimarchirico/commons-expo'
 
   publish-commons-openapi:
@@ -186,15 +177,10 @@ jobs:
         with:
           cache-dependency-path: npm/pnpm-lock.yaml
 
-      - name: Install Dependencies
-        run: task npm:install
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
-
       - name: Publish Package
         run: task npm:publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
           PACKAGE: '@aimarchirico/commons-openapi'
 
   publish-commons-tools:
@@ -211,15 +197,10 @@ jobs:
         with:
           cache-dependency-path: npm/pnpm-lock.yaml
 
-      - name: Install Dependencies
-        run: task npm:install
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
-
       - name: Publish Package
         run: task npm:publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
           PACKAGE: '@aimarchirico/commons-tools'
 
   publish-commons-docs:
@@ -236,15 +217,10 @@ jobs:
         with:
           cache-dependency-path: npm/pnpm-lock.yaml
 
-      - name: Install Dependencies
-        run: task npm:install
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
-
       - name: Publish 
         run: task npm:publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
           PACKAGE: '@aimarchirico/commons-docs'
 
   publish-commons-cloudflare:
@@ -261,15 +237,10 @@ jobs:
         with:
           cache-dependency-path: npm/pnpm-lock.yaml
 
-      - name: Install Dependencies
-        run: task npm:install
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
-
       - name: Publish Package
         run: task npm:publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
           PACKAGE: '@aimarchirico/commons-cloudflare'
 
   publish-commons-firebase-client:
@@ -286,15 +257,10 @@ jobs:
         with:
           cache-dependency-path: npm/pnpm-lock.yaml
 
-      - name: Install Dependencies
-        run: task npm:install
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
-
       - name: Publish Package
         run: task npm:publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
           PACKAGE: '@aimarchirico/commons-firebase-client'
 
   publish-commons-google-signin:
@@ -311,13 +277,8 @@ jobs:
         with:
           cache-dependency-path: npm/pnpm-lock.yaml
 
-      - name: Install Dependencies
-        run: task npm:install
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
-
       - name: Publish Package
         run: task npm:publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
           PACKAGE: '@aimarchirico/commons-google-signin'
