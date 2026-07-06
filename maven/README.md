@@ -1,4 +1,4 @@
-# Gradle
+# Maven
 
 Kotlin backend components: the shared Gradle convention plugin and the libraries
 published as Maven artifacts under the `no.chirico.commons` group.
