@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.0](https://github.com/aimarchirico/commons/compare/commons-convention-v1.2.0...commons-convention-v1.3.0) (2026-07-06)
+
+
+### Features
+
+* **architecture:** strictly enforce -api and -impl suffixes ([f29efd0](https://github.com/aimarchirico/commons/commit/f29efd0b1e6e7b866087af0bdc52e8a2b250daf2))
+* **architecture:** support -api and -impl suffixes ([33bd7ab](https://github.com/aimarchirico/commons/commit/33bd7abcac4b83540bd8abfc5c944d61fcc9d037))
+
 ## [1.2.0](https://github.com/aimarchirico/commons/compare/commons-convention-v1.1.1...commons-convention-v1.2.0) (2026-07-06)
 
 
