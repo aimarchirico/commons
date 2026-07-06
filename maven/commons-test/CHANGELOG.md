@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.4](https://github.com/aimarchirico/commons/compare/commons-test-v1.1.3...commons-test-v1.1.4) (2026-07-06)
+
+
+### Bug Fixes
+
+* allow app and controller intra-layer dependencies ([5e44ddf](https://github.com/aimarchirico/commons/commit/5e44ddf5b995beb0c03a364e0e13b1698c734ebd))
+* allow intra-layer dependencies in BaseArchitectureTest ([3d8ad9e](https://github.com/aimarchirico/commons/commit/3d8ad9ec8674b98545021f2c6d434c5ed9a19f35))
+
 ## [1.1.3](https://github.com/aimarchirico/commons/compare/commons-test-v1.1.2...commons-test-v1.1.3) (2026-07-06)
 
 
