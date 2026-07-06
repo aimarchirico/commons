@@ -67,8 +67,7 @@ The underlying commands are `./gradlew build`, `check`, and `ktfmtFormat`.
 - **Architecture** — module-dependency rules for the api/impl/core layout,
   enforced at Gradle configuration time by the
   `no.chirico.commons.convention.architecture` plugin (`:app → :*:impl | :core`,
-  `:*:impl → :*:api | :core`, `:*:api → :core`, `:core → :core`). Superseded the
-  former `BaseArchitectureTest`.
+  `:*:impl → :*:api | :core`, `:*:api → :core`, `:core → :core`).
 
 ## Deployment
 
