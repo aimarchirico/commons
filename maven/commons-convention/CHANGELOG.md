@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0](https://github.com/aimarchirico/commons/compare/commons-convention-v1.1.1...commons-convention-v1.2.0) (2026-07-06)
+
+
+### Features
+
+* **convention:** add architecture enforcer plugin, remove BaseArchitectureTest ([a0cca50](https://github.com/aimarchirico/commons/commit/a0cca50b73acd7a266e8c1fe1dc3243540d5922b))
+* **convention:** add architecture module-dependency enforcer plugin ([66d0c2b](https://github.com/aimarchirico/commons/commit/66d0c2b2c01ed5bdb05152a5ab682327dee59f94))
+
 ## [1.1.1](https://github.com/aimarchirico/commons/compare/commons-convention-v1.1.0...commons-convention-v1.1.1) (2026-07-06)
 
 
