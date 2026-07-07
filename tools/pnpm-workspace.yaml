@@ -1,2 +1,3 @@
 minimumReleaseAgeExclude:
   - '@aimarchirico/commons-tools'
+packages: []
