@@ -37,10 +37,10 @@ graph LR
 
 ## Infrastructure Overview
 
-| Layer             | Technology                                    | Hosting                          |
-| :---------------- | :-------------------------------------------- | :------------------------------- |
-| Backend libraries | Kotlin 2.4 · Gradle 9.6 · Spring Boot 4.1     | GitHub Packages (Maven registry) |
-| Frontend configs  | PNPM 11.9 · TypeScript 5 · ESLint 9 · Turbo 2 | GitHub Packages (npm registry)   |
+| Layer             | Technology                                                 | Hosting                          |
+| :---------------- | :--------------------------------------------------------- | :------------------------------- |
+| Backend libraries | Java 25 · Kotlin 2.4 · Gradle 9.6 · Spring Boot 4.1        | GitHub Packages (Maven registry) |
+| Frontend configs  | Node 20+ · PNPM 11.9 · TypeScript 5 · ESLint 9 · Turbo 2   | GitHub Packages (npm registry)   |
 | Tooling configs   | PNPM 11.9 · markdownlint-cli2 · commitlint    | `tools/` (not published)         |
 | Agent skills      | Markdown `SKILL.md`                           | GitHub repository (`skills add`) |
 | CI/CD             | GitHub Actions · Release Please               | GitHub-hosted runners            |

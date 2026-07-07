@@ -1,9 +1,13 @@
 {
   "name": "@aimarchirico/commons-docs",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "private": false,
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aimarchirico/commons.git"
   },
   "bin": {
     "commons-docs": "bin/cli.js"

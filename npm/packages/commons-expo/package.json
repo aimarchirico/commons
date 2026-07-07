@@ -1,17 +1,25 @@
 {
   "name": "@aimarchirico/commons-expo",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": false,
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aimarchirico/commons.git"
   },
   "exports": {
     "./eslint": "./eslint.mjs",
     "./tsconfig": "./tsconfig.json"
   },
+  "bin": {
+    "commons-expo-build-android": "bin/build-android.js"
+  },
   "files": [
     "eslint.mjs",
-    "tsconfig.json"
+    "tsconfig.json",
+    "bin"
   ],
   "dependencies": {
     "@aimarchirico/commons-ts": "workspace:^",

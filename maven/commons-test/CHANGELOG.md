@@ -1,5 +1,36 @@
 # Changelog
 
+## [2.0.0](https://github.com/aimarchirico/commons/compare/commons-test-v1.1.4...commons-test-v2.0.0) (2026-07-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* **test:** BaseArchitectureTest is removed from commons-test.
+
+### Features
+
+* **convention:** add architecture enforcer plugin, remove BaseArchitectureTest ([a0cca50](https://github.com/aimarchirico/commons/commit/a0cca50b73acd7a266e8c1fe1dc3243540d5922b))
+
+
+### Code Refactoring
+
+* **test:** remove obsolete BaseArchitectureTest ([81d426b](https://github.com/aimarchirico/commons/commit/81d426b843e1a6115fc35993625e610de0df33e2))
+
+## [1.1.4](https://github.com/aimarchirico/commons/compare/commons-test-v1.1.3...commons-test-v1.1.4) (2026-07-06)
+
+
+### Bug Fixes
+
+* allow app and controller intra-layer dependencies ([5e44ddf](https://github.com/aimarchirico/commons/commit/5e44ddf5b995beb0c03a364e0e13b1698c734ebd))
+* allow intra-layer dependencies in BaseArchitectureTest ([3d8ad9e](https://github.com/aimarchirico/commons/commit/3d8ad9ec8674b98545021f2c6d434c5ed9a19f35))
+
+## [1.1.3](https://github.com/aimarchirico/commons/compare/commons-test-v1.1.2...commons-test-v1.1.3) (2026-07-06)
+
+
+### Bug Fixes
+
+* **commons-firebase-client:** force release ([f6b030c](https://github.com/aimarchirico/commons/commit/f6b030c8645bbb290d955193962d09c7f02f3f94))
+
 ## [1.1.2](https://github.com/aimarchirico/commons/compare/commons-test-v1.1.1...commons-test-v1.1.2) (2026-07-02)
 
 

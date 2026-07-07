@@ -1,4 +1,4 @@
-# Gradle
+# Maven
 
 Kotlin backend components: the shared Gradle convention plugin and the libraries
 published as Maven artifacts under the `no.chirico.commons` group.
@@ -24,11 +24,12 @@ maven/
 ```
 
 - **`commons-convention/`** — precompiled script plugins under
-  `no.chirico.commons.buildlogic`: `kotlin` (Kotlin/JVM + ktfmt baseline) and
-  `spring` (Spring Boot). Wired in via `includeBuild("commons-convention")`.
+  `no.chirico.commons.convention`: `kotlin` (Kotlin/JVM + ktfmt baseline),
+  `spring` (Spring Boot), and `architecture` (module-dependency architecture enforcement). Wired in via
+  `includeBuild("commons-convention")`.
 - **`commons-security/`** — publishes `commons-security`; applies
-  `id("no.chirico.commons.buildlogic.kotlin")` and depends on `:commons-test` for
-  its architecture tests.
+  `id("no.chirico.commons.convention.kotlin")` and depends on `:commons-test` for
+  its convention tests.
 - **`commons-firebase-admin/`** — publishes `commons-firebase-admin`; Firebase
   authentication filter and default stateless security chain, auto-configured for
   backends that need in-JVM user identity.
@@ -40,9 +41,9 @@ maven/
 No local `.env` is required. Publishing reads credentials from the environment
 (injected by CI):
 
-| Key            | Purpose                                  |
-| :------------- | :--------------------------------------- |
-| `GITHUB_ACTOR` | GitHub Packages (Maven) publishing user. |
+| Key            | Purpose                                   |
+| :------------- | :---------------------------------------- |
+| `GITHUB_ACTOR` | GitHub Packages (Maven) publishing user.  |
 | `GITHUB_TOKEN` | GitHub Packages (Maven) publishing token. |
 
 ## Local Development
@@ -62,8 +63,9 @@ The underlying commands are `./gradlew build`, `check`, and `ktfmtFormat`.
   `task maven:fix` (`ktfmtFormat`).
 - **Conventions** — file naming and length rules; modules extend
   `BaseConventionTest` from `commons-test`.
-- **Architecture** — ArchUnit dependency rules; modules extend
-  `BaseArchitectureTest` from `commons-test`.
+- **Architecture** — module-dependency rules for the api/impl/core layout,
+  enforced at Gradle configuration time by the
+  `no.chirico.commons.convention.architecture` plugin.
 
 ## Deployment
 

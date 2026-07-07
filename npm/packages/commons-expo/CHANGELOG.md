@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.2.0](https://github.com/aimarchirico/commons/compare/commons-expo-v1.1.1...commons-expo-v1.2.0) (2026-07-07)
+
+
+### Features
+
+* **commons-expo:** add build-android helper for signed release builds ([2a85773](https://github.com/aimarchirico/commons/commit/2a857736cd66c5e5e724d4fa3231bcfda9134903))
+* **commons-expo:** add build-android helper for signed release builds ([be6b785](https://github.com/aimarchirico/commons/commit/be6b785e1efc717518a111c1560b03bb6e80ab36))
+
+## [1.1.1](https://github.com/aimarchirico/commons/compare/commons-expo-v1.1.0...commons-expo-v1.1.1) (2026-07-06)
+
+
+### Bug Fixes
+
+* add repository field to all npm packages ([39ca7a2](https://github.com/aimarchirico/commons/commit/39ca7a266824698c75e9669de1aaa38e620b2d6c))
+* **commons-firebase-client:** force release ([f6b030c](https://github.com/aimarchirico/commons/commit/f6b030c8645bbb290d955193962d09c7f02f3f94))
+
 ## [1.1.0](https://github.com/aimarchirico/commons/compare/commons-expo-v1.0.0...commons-expo-v1.1.0) (2026-07-02)
 
 

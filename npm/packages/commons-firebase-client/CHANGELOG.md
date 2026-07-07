@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.2](https://github.com/aimarchirico/commons/compare/commons-firebase-client-v1.0.1...commons-firebase-client-v1.0.2) (2026-07-06)
+
+
+### Bug Fixes
+
+* **commons-firebase-client:** add repository field to package.json ([a8813ac](https://github.com/aimarchirico/commons/commit/a8813ac13ecdf0de948c513c57bd1359f5639d08))
+* **commons-firebase-client:** force release ([f6b030c](https://github.com/aimarchirico/commons/commit/f6b030c8645bbb290d955193962d09c7f02f3f94))
+* **commons-firebase-client:** trigger release ([7ea7887](https://github.com/aimarchirico/commons/commit/7ea788758925b4ddf31f6b9716ba2694efe0b472))
+
 ## [1.0.1](https://github.com/aimarchirico/commons/compare/commons-firebase-client-v1.0.0...commons-firebase-client-v1.0.1) (2026-07-05)
 
 
