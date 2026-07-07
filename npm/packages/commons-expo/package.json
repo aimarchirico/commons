@@ -13,9 +13,13 @@
     "./eslint": "./eslint.mjs",
     "./tsconfig": "./tsconfig.json"
   },
+  "bin": {
+    "commons-expo-build-android": "bin/build-android.js"
+  },
   "files": [
     "eslint.mjs",
-    "tsconfig.json"
+    "tsconfig.json",
+    "bin"
   ],
   "dependencies": {
     "@aimarchirico/commons-ts": "workspace:^",
