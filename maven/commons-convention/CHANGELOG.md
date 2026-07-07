@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/aimarchirico/commons/compare/commons-convention-v1.4.0...commons-convention-v1.5.0) (2026-07-07)
+
+
+### Features
+
+* **architecture:** derive jar archive names from module path ([89d1903](https://github.com/aimarchirico/commons/commit/89d1903a9a193a067eb8b275a1efe8c16394ef47))
+
 ## [1.4.0](https://github.com/aimarchirico/commons/compare/commons-convention-v1.3.0...commons-convention-v1.4.0) (2026-07-07)
 
 
