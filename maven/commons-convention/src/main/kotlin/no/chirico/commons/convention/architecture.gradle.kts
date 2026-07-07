@@ -2,6 +2,11 @@ package no.chirico.commons.convention
 
 import org.gradle.api.GradleException
 import org.gradle.api.artifacts.ProjectDependency
+import org.gradle.api.tasks.bundling.Jar
+
+tasks.withType<Jar>().configureEach {
+    archiveBaseName.set(project.path.replace(":", "-").trim('-'))
+}
 
 afterEvaluate {
     val current = project.path
