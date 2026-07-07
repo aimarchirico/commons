@@ -10,9 +10,9 @@ afterEvaluate {
             val target = dep.path
             val allowed =
                 when {
-                    current == ":app" -> target.endsWith("-impl") || target.startsWith(":core")
-                    current.endsWith("-impl") -> target.endsWith("-api") || target.startsWith(":core")
-                    current.endsWith("-api") -> target.startsWith(":core")
+                    current == ":app" -> target.endsWith(":impl") || target.startsWith(":core")
+                    current.endsWith(":impl") -> target.endsWith(":api") || target.startsWith(":core")
+                    current.endsWith(":api") -> target.startsWith(":core")
                     current.startsWith(":core") -> target.startsWith(":core")
                     else -> false
                 }
