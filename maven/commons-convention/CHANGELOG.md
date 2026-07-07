@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.0](https://github.com/aimarchirico/commons/compare/commons-convention-v1.3.0...commons-convention-v1.4.0) (2026-07-07)
+
+
+### Features
+
+* **architecture:** match nested :api and :impl module suffixes ([0b0a818](https://github.com/aimarchirico/commons/commit/0b0a818acfc67b44fe5420dfabafaee5a8c5b19b))
+* **architecture:** match nested :api and :impl module suffixes ([9852b1a](https://github.com/aimarchirico/commons/commit/9852b1a6ce6118e6d4c4d3d9edba60e582f9be9c))
+
 ## [1.3.0](https://github.com/aimarchirico/commons/compare/commons-convention-v1.2.0...commons-convention-v1.3.0) (2026-07-06)
 
 
