@@ -8,7 +8,5 @@ module.exports = {
       siblings_only: true,
     },
   },
-  globs: ['**/*.md'],
-  ignores: ['**/CHANGELOG.md'],
   gitignore: true,
 };
