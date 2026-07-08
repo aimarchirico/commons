@@ -71,6 +71,6 @@ The underlying commands are `./gradlew build`, `check`, and `ktfmtFormat`.
 
 Releases are driven by Release Please (`release-type: simple`) and published by
 `.github/workflows/release.yml` when a release touches `maven/commons-security`,
-`maven/commons-test`, or `maven/commons-convention`. Each module's `maven-publish`
+`maven/commons-test`, `maven/commons-convention`, or `maven/commons-firebase-admin`. Each module's `maven-publish`
 configuration publishes to the GitHub Packages Maven registry at
 `https://maven.pkg.github.com/aimarchirico/commons` under group `no.chirico.commons`.
