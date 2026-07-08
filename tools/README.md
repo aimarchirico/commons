@@ -1,54 +1,72 @@
-# tools
+# Tools
 
-Shared tooling configuration and release orchestration for the Core monorepo.
-Owns the markdownlint and commitlint configs consumed by all subsystems, and
-holds the Release Please config and manifest that drive versioned releases.
+Shared repository tooling: commit and Markdown linting, Git hooks, task
+orchestration, and release automation for the monorepo. Contains no
+application code.
 
 ## Tech Stack
 
-- **Node** 20+
-- **PNPM** 11.9.0
-- **markdownlint-cli2** 0.13+
-- **@commitlint/cli** 19+
-- **@aimarchirico/commons-tools** (markdownlint + commitlint presets)
+| Technology                  | Version | Purpose                       |
+| :-------------------------- | :------ | :---------------------------- |
+| pnpm                        | -       | Package manager               |
+| Turborepo                   | ^2.10.2 | Monorepo task pipeline        |
+| commitlint                  | ^19.3.0 | Commit message linting        |
+| config-conventional         | ^21.2.0 | Conventional Commits ruleset  |
+| markdownlint-cli2           | ^0.13.0 | Markdown linting              |
+| Husky                       | ^9.1.7  | Git hooks                     |
+| @aimarchirico/commons-tools | ^1.1.2  | Shared linting config presets |
 
 ## Folder Structure
 
 ```text
 tools/
-├── .markdownlint-cli2.cjs         # re-exports @aimarchirico/commons-tools/markdownlint
-├── commitlint.config.js           # re-exports @aimarchirico/commons-tools/commitlint
-├── release-please-config.json     # Release Please package config for all subsystems
-├── .release-please-manifest.json  # Release Please version manifest
-├── Taskfile.yml                   # docs:check, docs:fix, commit:check tasks
-└── package.json
+├── .husky/                        # Git hooks (commit-msg → commitlint)
+├── Taskfile.yml                   # Task command definitions
+├── turbo.json                     # Turborepo pipeline
+├── commitlint.config.js           # commitlint config (commons-tools preset)
+├── .markdownlint-cli2.cjs         # markdownlint config (commons-tools preset)
+├── release-please-config.json     # release-please package config
+├── .release-please-manifest.json  # release-please version manifest
+├── pnpm-workspace.yaml            # Isolated tooling workspace
+└── .npmrc                         # GitHub Packages registry
 ```
 
 ## Environment Variables
 
-No local `.env` is required. The CI workflows inject all needed credentials.
+Installing the `@aimarchirico`-scoped dependencies
+from GitHub Packages (see `.npmrc`) requires an authenticated npm token. The
+Taskfile honors these runtime variables:
+
+| Variable            | Purpose                                      |
+| :------------------ | :------------------------------------------- |
+| `CI`                | Gates automatic dependency install           |
+| `EDIT_FILE`         | Commit-message file passed to `commit:check` |
+| `FROM_SHA`/`TO_SHA` | Commit range passed to `commit:check`        |
 
 ## Local Development
 
-Requires Node 20+, PNPM 11.9, and [Task](https://taskfile.dev). Run from the
-repository root (tasks are flattened into the root namespace):
+Requires Node.js, pnpm, and [go-task](https://taskfile.dev). Install
+dependencies with `pnpm install`. Tasks are flattened into the root Taskfile
+and run from the repository root:
 
-- `task docs:check` — lint all Markdown files in the repository.
-- `task docs:fix` — auto-fix Markdown issues.
-- `task commit:check` — lint commit messages (`FROM_SHA`/`TO_SHA` env vars
-  select the range; omit for the latest commit only).
+| Command             | Description          |
+| :------------------ | :------------------- |
+| `task docs:check`   | Lint Markdown files  |
+| `task docs:fix`     | Fix Markdown issues  |
+| `task commit:check` | Lint commit messages |
+| `task skills`       | Install agent skills |
 
 ## Code Quality
 
-- **Markdown** — markdownlint-cli2 using the `@aimarchirico/commons-tools/markdownlint`
-  preset, scoped to `../**/*.md` from the `tools/` working directory.
-- **Commits** — commitlint using the `@aimarchirico/commons-tools/commitlint` preset,
-  enforcing Conventional Commits across the monorepo.
+- **Markdown**: `markdownlint-cli2` configured in `.markdownlint-cli2.cjs`,
+  extending the `@aimarchirico/commons-tools` preset. Lints all `../**/*.md`
+  files, excluding `CHANGELOG.md`.
+- **Commits**: `commitlint` with the Conventional Commits ruleset via the
+  `@aimarchirico/commons-tools` preset, enforced by the `.husky/commit-msg`
+  hook.
 
 ## Deployment
 
-This workspace is not published to any registry. It drives releases for all
-other subsystems via Release Please: `tools/release-please-config.json` declares
-each publishable package and `tools/.release-please-manifest.json` tracks their
-current versions. The `.github/workflows/release.yml` workflow references both
-files when running the `googleapis/release-please-action`.
+- **Releases**: [release-please](https://github.com/googleapis/release-please)
+  drives versioning and changelogs for releases via `release-please-config.json` and
+  `.release-please-manifest.json`.
