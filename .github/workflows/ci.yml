@@ -4,6 +4,10 @@ on:
   pull_request:
     branches: [dev, main]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   pull-requests: read
@@ -45,9 +49,13 @@ jobs:
     name: Maven Check
     needs: changes
     if: needs.changes.outputs.maven == 'true'
-    uses: ./.github/workflows/java-ci.yml
-    with:
-      command: maven:check
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/java-ci
+        with:
+          command: maven:check
 
   # ==========================================
   # NPM CI JOB
@@ -56,13 +64,16 @@ jobs:
     name: NPM Check
     needs: changes
     if: needs.changes.outputs.npm == 'true'
-    uses: ./.github/workflows/node-ci.yml
-    with:
-      command: npm:check
-      node_cache_path: npm/pnpm-lock.yaml
-    secrets:
-      TASK_ENV: |
-        NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/node-ci
+        with:
+          command: npm:check
+          node_cache_path: npm/pnpm-lock.yaml
+          TASK_ENV: |
+            NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
 
   # ==========================================
   # COMMIT CI JOB
@@ -70,15 +81,20 @@ jobs:
   commitlint:
     name: Commit Check
     if: github.actor != 'dependabot[bot]'
-    uses: ./.github/workflows/node-ci.yml
-    with:
-      command: commit:check
-      node_cache_path: tools/pnpm-lock.yaml
-    secrets:
-      TASK_ENV: |
-        NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
-        FROM_SHA=${{ github.event.pull_request.base.sha }}
-        TO_SHA=${{ github.event.pull_request.head.sha }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/node-ci
+        with:
+          command: commit:check
+          node_cache_path: tools/pnpm-lock.yaml
+          TASK_ENV: |
+            NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+            FROM_SHA=${{ github.event.pull_request.base.sha }}
+            TO_SHA=${{ github.event.pull_request.head.sha }}
 
   # ==========================================
   # DOCUMENTATION CI JOB
@@ -87,10 +103,13 @@ jobs:
     name: Docs Check
     needs: changes
     if: needs.changes.outputs.docs == 'true'
-    uses: ./.github/workflows/node-ci.yml
-    with:
-      command: docs:check
-      node_cache_path: tools/pnpm-lock.yaml
-    secrets:
-      TASK_ENV: |
-        NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/node-ci
+        with:
+          command: docs:check
+          node_cache_path: tools/pnpm-lock.yaml
+          TASK_ENV: |
+            NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}

@@ -1,0 +1,32 @@
+name: VPS Deploy
+description: Deploy to VPS via SSH
+inputs:
+  api_url:
+    required: true
+  vps_user:
+    required: true
+  vps_host:
+    required: true
+  VPS_SSH_KEY:
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup SSH
+      shell: bash
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ inputs.VPS_SSH_KEY }}" > ~/.ssh/deploy_key
+        chmod 600 ~/.ssh/deploy_key
+        cat >> ~/.ssh/config <<END
+        Host vps
+          HostName ${{ inputs.vps_host }}
+          User ${{ inputs.vps_user }}
+          IdentityFile ~/.ssh/deploy_key
+          StrictHostKeyChecking no
+        END
+    - name: Deploy to VPS
+      shell: bash
+      run: |
+        ssh vps "cd /opt/${{ github.event.repository.name }} && docker compose pull && docker compose up -d"

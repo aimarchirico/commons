@@ -4,6 +4,10 @@ on:
   push:
     branches: [main]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 permissions:
   contents: write
   pull-requests: write
@@ -35,12 +39,15 @@ jobs:
     name: Publish commons-firebase-admin
     needs: release-please
     if: contains(fromJSON(needs.release-please.outputs.paths_released), 'maven/commons-firebase-admin')
-    uses: ./.github/workflows/java-ci.yml
-    with:
-      command: maven:publish
-    secrets:
-      TASK_ENV: |
-        MODULE=commons-firebase-admin
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/java-ci
+        with:
+          command: maven:publish
+          TASK_ENV: |
+            MODULE=commons-firebase-admin
 
   # ==========================================
   # NPM MODULES
@@ -49,102 +56,126 @@ jobs:
     name: Publish commons-ts
     needs: release-please
     if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-ts')
-    uses: ./.github/workflows/node-ci.yml
-    with:
-      command: npm:publish
-      node_cache_path: npm/pnpm-lock.yaml
-    secrets:
-      TASK_ENV: |
-        NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
-        PACKAGE='@aimarchirico/commons-ts'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/node-ci
+        with:
+          command: npm:publish
+          node_cache_path: npm/pnpm-lock.yaml
+          TASK_ENV: |
+            NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+            PACKAGE='@aimarchirico/commons-ts'
 
   publish-commons-expo:
     name: Publish commons-expo
     needs: release-please
     if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-expo')
-    uses: ./.github/workflows/node-ci.yml
-    with:
-      command: npm:publish
-      node_cache_path: npm/pnpm-lock.yaml
-    secrets:
-      TASK_ENV: |
-        NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
-        PACKAGE='@aimarchirico/commons-expo'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/node-ci
+        with:
+          command: npm:publish
+          node_cache_path: npm/pnpm-lock.yaml
+          TASK_ENV: |
+            NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+            PACKAGE='@aimarchirico/commons-expo'
 
   publish-commons-openapi:
     name: Publish commons-openapi
     needs: release-please
     if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-openapi')
-    uses: ./.github/workflows/node-ci.yml
-    with:
-      command: npm:publish
-      node_cache_path: npm/pnpm-lock.yaml
-    secrets:
-      TASK_ENV: |
-        NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
-        PACKAGE='@aimarchirico/commons-openapi'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/node-ci
+        with:
+          command: npm:publish
+          node_cache_path: npm/pnpm-lock.yaml
+          TASK_ENV: |
+            NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+            PACKAGE='@aimarchirico/commons-openapi'
 
   publish-commons-tools:
     name: Publish commons-tools
     needs: release-please
     if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-tools')
-    uses: ./.github/workflows/node-ci.yml
-    with:
-      command: npm:publish
-      node_cache_path: npm/pnpm-lock.yaml
-    secrets:
-      TASK_ENV: |
-        NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
-        PACKAGE='@aimarchirico/commons-tools'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/node-ci
+        with:
+          command: npm:publish
+          node_cache_path: npm/pnpm-lock.yaml
+          TASK_ENV: |
+            NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+            PACKAGE='@aimarchirico/commons-tools'
 
   publish-commons-docs:
     name: Publish commons-docs
     needs: release-please
     if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-docs')
-    uses: ./.github/workflows/node-ci.yml
-    with:
-      command: npm:publish
-      node_cache_path: npm/pnpm-lock.yaml
-    secrets:
-      TASK_ENV: |
-        NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
-        PACKAGE='@aimarchirico/commons-docs'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/node-ci
+        with:
+          command: npm:publish
+          node_cache_path: npm/pnpm-lock.yaml
+          TASK_ENV: |
+            NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+            PACKAGE='@aimarchirico/commons-docs'
 
   publish-commons-cloudflare:
     name: Publish commons-cloudflare
     needs: release-please
     if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-cloudflare')
-    uses: ./.github/workflows/node-ci.yml
-    with:
-      command: npm:publish
-      node_cache_path: npm/pnpm-lock.yaml
-    secrets:
-      TASK_ENV: |
-        NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
-        PACKAGE='@aimarchirico/commons-cloudflare'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/node-ci
+        with:
+          command: npm:publish
+          node_cache_path: npm/pnpm-lock.yaml
+          TASK_ENV: |
+            NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+            PACKAGE='@aimarchirico/commons-cloudflare'
 
   publish-commons-firebase-client:
     name: Publish commons-firebase-client
     needs: release-please
     if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-firebase-client')
-    uses: ./.github/workflows/node-ci.yml
-    with:
-      command: npm:publish
-      node_cache_path: npm/pnpm-lock.yaml
-    secrets:
-      TASK_ENV: |
-        NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
-        PACKAGE='@aimarchirico/commons-firebase-client'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/node-ci
+        with:
+          command: npm:publish
+          node_cache_path: npm/pnpm-lock.yaml
+          TASK_ENV: |
+            NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+            PACKAGE='@aimarchirico/commons-firebase-client'
 
   publish-commons-google-signin:
     name: Publish commons-google-signin
     needs: release-please
     if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-google-signin')
-    uses: ./.github/workflows/node-ci.yml
-    with:
-      command: npm:publish
-      node_cache_path: npm/pnpm-lock.yaml
-    secrets:
-      TASK_ENV: |
-        NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
-        PACKAGE='@aimarchirico/commons-google-signin'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/node-ci
+        with:
+          command: npm:publish
+          node_cache_path: npm/pnpm-lock.yaml
+          TASK_ENV: |
+            NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+            PACKAGE='@aimarchirico/commons-google-signin'
