@@ -7,7 +7,7 @@ inputs:
     required: true
   version:
     required: true
-  gh_packages_token:
+  build_secrets:
     required: false
   github_token:
     required: true
@@ -43,5 +43,4 @@ runs:
         labels: ${{ steps.meta.outputs.labels }}
         build-args: |
           GITHUB_ACTOR=${{ github.actor }}
-        secrets: |
-          gh_packages_token=${{ inputs.gh_packages_token }}
+        secrets: ${{ inputs.build_secrets }}
