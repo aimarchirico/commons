@@ -45,7 +45,7 @@ jobs:
       - uses: ./.github/actions/java-ci
         with:
           command: maven:publish
-          TASK_ENV: |
+          task_env: |
             MODULE=commons-firebase-admin
 
   # ==========================================
@@ -62,7 +62,7 @@ jobs:
         with:
           command: npm:publish
           node_cache_path: npm/pnpm-lock.yaml
-          TASK_ENV: |
+          task_env: |
             NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
             PACKAGE='@aimarchirico/commons-ts'
 
@@ -77,7 +77,7 @@ jobs:
         with:
           command: npm:publish
           node_cache_path: npm/pnpm-lock.yaml
-          TASK_ENV: |
+          task_env: |
             NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
             PACKAGE='@aimarchirico/commons-expo'
 
@@ -92,7 +92,7 @@ jobs:
         with:
           command: npm:publish
           node_cache_path: npm/pnpm-lock.yaml
-          TASK_ENV: |
+          task_env: |
             NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
             PACKAGE='@aimarchirico/commons-openapi'
 
@@ -107,7 +107,7 @@ jobs:
         with:
           command: npm:publish
           node_cache_path: npm/pnpm-lock.yaml
-          TASK_ENV: |
+          task_env: |
             NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
             PACKAGE='@aimarchirico/commons-tools'
 
@@ -122,7 +122,7 @@ jobs:
         with:
           command: npm:publish
           node_cache_path: npm/pnpm-lock.yaml
-          TASK_ENV: |
+          task_env: |
             NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
             PACKAGE='@aimarchirico/commons-docs'
 
@@ -137,7 +137,7 @@ jobs:
         with:
           command: npm:publish
           node_cache_path: npm/pnpm-lock.yaml
-          TASK_ENV: |
+          task_env: |
             NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
             PACKAGE='@aimarchirico/commons-cloudflare'
 
@@ -152,7 +152,7 @@ jobs:
         with:
           command: npm:publish
           node_cache_path: npm/pnpm-lock.yaml
-          TASK_ENV: |
+          task_env: |
             NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
             PACKAGE='@aimarchirico/commons-firebase-client'
 
@@ -167,6 +167,6 @@ jobs:
         with:
           command: npm:publish
           node_cache_path: npm/pnpm-lock.yaml
-          TASK_ENV: |
+          task_env: |
             NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
             PACKAGE='@aimarchirico/commons-google-signin'

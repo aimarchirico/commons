@@ -7,15 +7,15 @@ inputs:
     required: true
   android_key_alias:
     required: true
-  BUILD_ENV:
+  build_env:
     required: true
-  ANDROID_KEYSTORE_BASE64:
+  android_keystore_base64:
     required: true
-  ANDROID_KEYSTORE_PASSWORD:
+  android_keystore_password:
     required: true
-  ANDROID_KEY_PASSWORD:
+  android_key_password:
     required: true
-  GITHUB_TOKEN:
+  github_token:
     required: true
 
 runs:
@@ -55,21 +55,21 @@ runs:
       working-directory: ./frontend
       shell: bash
       run: |
-        echo "${{ inputs.BUILD_ENV }}" > .env.temp
+        echo "${{ inputs.build_env }}" > .env.temp
         source .env.temp
         task build:android
       env:
-        ANDROID_KEYSTORE_BASE64: ${{ inputs.ANDROID_KEYSTORE_BASE64 }}
-        ANDROID_KEYSTORE_PASSWORD: ${{ inputs.ANDROID_KEYSTORE_PASSWORD }}
+        ANDROID_KEYSTORE_BASE64: ${{ inputs.android_keystore_base64 }}
+        ANDROID_KEYSTORE_PASSWORD: ${{ inputs.android_keystore_password }}
         ANDROID_KEY_ALIAS: ${{ inputs.android_key_alias }}
-        ANDROID_KEY_PASSWORD: ${{ inputs.ANDROID_KEY_PASSWORD }}
+        ANDROID_KEY_PASSWORD: ${{ inputs.android_key_password }}
     - name: Copy APK
       shell: bash
       run: cp ./frontend/apps/expo/android/app/build/outputs/apk/release/app-release.apk ${{ github.workspace }}/app-release.apk
     - name: Upload Release Asset to GitHub
       uses: actions/upload-release-asset@v1
       env:
-        GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.github_token }}
       with:
         upload_url: ${{ inputs.upload_url }}
         asset_path: ${{ github.workspace }}/app-release.apk

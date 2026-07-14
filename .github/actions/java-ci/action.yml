@@ -6,7 +6,7 @@ inputs:
   working_directory:
     required: false
     default: '.'
-  TASK_ENV:
+  task_env:
     required: false
 
 runs:
@@ -26,8 +26,8 @@ runs:
       working-directory: ${{ inputs.working_directory }}
       shell: bash
       run: |
-        if [ -n "${{ inputs.TASK_ENV }}" ]; then
-          echo "${{ inputs.TASK_ENV }}" > .env.temp
+        if [ -n "${{ inputs.task_env }}" ]; then
+          echo "${{ inputs.task_env }}" > .env.temp
           source .env.temp
         fi
         task ${{ inputs.command }}

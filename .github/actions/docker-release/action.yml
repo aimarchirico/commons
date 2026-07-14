@@ -7,7 +7,7 @@ inputs:
     required: true
   version:
     required: true
-  GH_PACKAGES_TOKEN:
+  gh_packages_token:
     required: true
 
 runs:
@@ -22,7 +22,7 @@ runs:
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
-        password: ${{ inputs.GH_PACKAGES_TOKEN }}
+        password: ${{ inputs.gh_packages_token }}
     - name: Extract metadata for Docker
       id: meta
       uses: docker/metadata-action@v5

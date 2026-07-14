@@ -7,7 +7,7 @@ inputs:
     required: true
   vps_host:
     required: true
-  VPS_SSH_KEY:
+  vps_ssh_key:
     required: true
 
 runs:
@@ -17,7 +17,7 @@ runs:
       shell: bash
       run: |
         mkdir -p ~/.ssh
-        echo "${{ inputs.VPS_SSH_KEY }}" > ~/.ssh/deploy_key
+        echo "${{ inputs.vps_ssh_key }}" > ~/.ssh/deploy_key
         chmod 600 ~/.ssh/deploy_key
         cat >> ~/.ssh/config <<END
         Host vps

@@ -5,9 +5,9 @@ inputs:
     required: true
   cloudflare_account_id:
     required: true
-  BUILD_ENV:
+  build_env:
     required: true
-  CLOUDFLARE_API_TOKEN:
+  cloudflare_api_token:
     required: true
 
 runs:
@@ -32,12 +32,12 @@ runs:
       working-directory: ./frontend
       shell: bash
       run: |
-        echo "${{ inputs.BUILD_ENV }}" > .env.temp
+        echo "${{ inputs.build_env }}" > .env.temp
         source .env.temp
         task build:web
     - name: Deploy to Cloudflare Pages
       uses: cloudflare/wrangler-action@v3
       with:
-        apiToken: ${{ inputs.CLOUDFLARE_API_TOKEN }}
+        apiToken: ${{ inputs.cloudflare_api_token }}
         accountId: ${{ inputs.cloudflare_account_id }}
         command: pages deploy ./frontend/apps/web/dist --project-name=${{ github.event.repository.name }}-web
