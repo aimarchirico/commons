@@ -8,6 +8,8 @@ inputs:
   version:
     required: true
   gh_packages_token:
+    required: false
+  github_token:
     required: true
 
 runs:
@@ -18,23 +20,28 @@ runs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
     - name: Log in to GitHub Container Registry
-      uses: docker/login-action@v3
+      uses: docker/login-action@v4
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
-        password: ${{ inputs.gh_packages_token }}
+        password: ${{ inputs.github_token }}
     - name: Extract metadata for Docker
       id: meta
-      uses: docker/metadata-action@v5
+      uses: docker/metadata-action@v6
       with:
         images: ${{ inputs.image }}
         tags: |
           type=raw,value=${{ inputs.version }}
           type=raw,value=latest
     - name: Build and push Docker image
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v7
       with:
         context: ${{ inputs.context }}
         push: true
+        platforms: linux/amd64,linux/arm64
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
+        build-args: |
+          GITHUB_ACTOR=${{ github.actor }}
+        secrets: |
+          gh_packages_token=${{ inputs.gh_packages_token }}
