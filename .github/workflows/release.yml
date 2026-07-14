@@ -8,6 +8,7 @@ permissions:
   contents: write
   pull-requests: write
   packages: write
+  deployments: write
 
 jobs:
   # ==========================================
@@ -30,130 +31,16 @@ jobs:
   # ==========================================
   # MAVEN MODULES
   # ==========================================
-  publish-commons-security:
-    name: Publish commons-security
-    needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'maven/commons-security')
-    runs-on: ubuntu-latest
-    env:
-      GITHUB_ACTOR: ${{ github.actor }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - name: Check Out Repo
-        uses: actions/checkout@v7
-
-      - name: Set Up Java
-        uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: 25
-          cache: gradle
-
-      - name: Set Up Task
-        uses: arduino/setup-task@v2
-        with:
-          version: 3.x
-
-      - name: Publish Module
-        env:
-          MODULE: commons-security
-        run: task maven:publish
-
-  # ==========================================
-  # MAVEN MODULES
-  # ==========================================
-  publish-commons-test:
-    name: Publish commons-test
-    needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'maven/commons-test')
-    runs-on: ubuntu-latest
-    env:
-      GITHUB_ACTOR: ${{ github.actor }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - name: Check Out Repo
-        uses: actions/checkout@v7
-
-      - name: Set Up Java
-        uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: 25
-          cache: gradle
-
-      - name: Set Up Task
-        uses: arduino/setup-task@v2
-        with:
-          version: 3.x
-
-      - name: Publish Module
-        env:
-          MODULE: commons-test
-        run: task maven:publish
-
-  # ==========================================
-  # MAVEN MODULES
-  # ==========================================
-  publish-commons-convention:
-    name: Publish commons-convention
-    needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'maven/commons-convention')
-    runs-on: ubuntu-latest
-    env:
-      GITHUB_ACTOR: ${{ github.actor }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - name: Check Out Repo
-        uses: actions/checkout@v7
-
-      - name: Set Up Java
-        uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: 25
-          cache: gradle
-
-      - name: Set Up Task
-        uses: arduino/setup-task@v2
-        with:
-          version: 3.x
-
-      - name: Publish Module
-        env:
-          MODULE: commons-convention
-        run: task maven:publish
-
-  # ==========================================
-  # MAVEN MODULES
-  # ==========================================
-  publish-commons-firebase-admin:
+  publish-commons-maven:
     name: Publish commons-firebase-admin
     needs: release-please
     if: contains(fromJSON(needs.release-please.outputs.paths_released), 'maven/commons-firebase-admin')
-    runs-on: ubuntu-latest
-    env:
-      GITHUB_ACTOR: ${{ github.actor }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - name: Check Out Repo
-        uses: actions/checkout@v7
-
-      - name: Set Up Java
-        uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: 25
-          cache: gradle
-
-      - name: Set Up Task
-        uses: arduino/setup-task@v2
-        with:
-          version: 3.x
-
-      - name: Publish Module
-        env:
-          MODULE: commons-firebase-admin
-        run: task maven:publish
+    uses: ./.github/workflows/java-ci.yml
+    with:
+      command: maven:publish
+    secrets:
+      TASK_ENV: |
+        MODULE=commons-firebase-admin
 
   # ==========================================
   # NPM MODULES
@@ -162,263 +49,102 @@ jobs:
     name: Publish commons-ts
     needs: release-please
     if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-ts')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check Out Repo
-        uses: actions/checkout@v7
-
-      - name: Set Up PNPM
-        uses: pnpm/action-setup@v4
-        with:
-          version: 11.9.0
-
-      - name: Set Up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-          cache-dependency-path: npm/pnpm-lock.yaml
-          registry-url: https://npm.pkg.github.com
-
-      - name: Set Up Task
-        uses: arduino/setup-task@v2
-        with:
-          version: 3.51.1
-
-      - name: Publish Package
-        run: task npm:publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
-          PACKAGE: '@aimarchirico/commons-ts'
+    uses: ./.github/workflows/node-ci.yml
+    with:
+      command: npm:publish
+      node_cache_path: npm/pnpm-lock.yaml
+    secrets:
+      TASK_ENV: |
+        NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+        PACKAGE='@aimarchirico/commons-ts'
 
   publish-commons-expo:
     name: Publish commons-expo
     needs: release-please
     if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-expo')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check Out Repo
-        uses: actions/checkout@v7
-
-      - name: Set Up PNPM
-        uses: pnpm/action-setup@v4
-        with:
-          version: 11.9.0
-
-      - name: Set Up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-          cache-dependency-path: npm/pnpm-lock.yaml
-          registry-url: https://npm.pkg.github.com
-
-      - name: Set Up Task
-        uses: arduino/setup-task@v2
-        with:
-          version: 3.51.1
-
-      - name: Publish Package
-
-        run: task npm:publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
-          PACKAGE: '@aimarchirico/commons-expo'
+    uses: ./.github/workflows/node-ci.yml
+    with:
+      command: npm:publish
+      node_cache_path: npm/pnpm-lock.yaml
+    secrets:
+      TASK_ENV: |
+        NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+        PACKAGE='@aimarchirico/commons-expo'
 
   publish-commons-openapi:
     name: Publish commons-openapi
     needs: release-please
     if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-openapi')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check Out Repo
-        uses: actions/checkout@v7
-
-      - name: Set Up PNPM
-        uses: pnpm/action-setup@v4
-        with:
-          version: 11.9.0
-
-      - name: Set Up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-          cache-dependency-path: npm/pnpm-lock.yaml
-          registry-url: https://npm.pkg.github.com
-
-      - name: Set Up Task
-        uses: arduino/setup-task@v2
-        with:
-          version: 3.51.1
-
-      - name: Publish Package
-        run: task npm:publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
-          PACKAGE: '@aimarchirico/commons-openapi'
+    uses: ./.github/workflows/node-ci.yml
+    with:
+      command: npm:publish
+      node_cache_path: npm/pnpm-lock.yaml
+    secrets:
+      TASK_ENV: |
+        NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+        PACKAGE='@aimarchirico/commons-openapi'
 
   publish-commons-tools:
     name: Publish commons-tools
     needs: release-please
     if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-tools')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check Out Repo
-        uses: actions/checkout@v7
-
-      - name: Set Up PNPM
-        uses: pnpm/action-setup@v4
-        with:
-          version: 11.9.0
-
-      - name: Set Up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-          cache-dependency-path: npm/pnpm-lock.yaml
-          registry-url: https://npm.pkg.github.com
-
-      - name: Set Up Task
-        uses: arduino/setup-task@v2
-        with:
-          version: 3.51.1
-
-      - name: Publish Package
-        run: task npm:publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
-          PACKAGE: '@aimarchirico/commons-tools'
+    uses: ./.github/workflows/node-ci.yml
+    with:
+      command: npm:publish
+      node_cache_path: npm/pnpm-lock.yaml
+    secrets:
+      TASK_ENV: |
+        NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+        PACKAGE='@aimarchirico/commons-tools'
 
   publish-commons-docs:
     name: Publish commons-docs
     needs: release-please
     if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-docs')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check Out Repo
-        uses: actions/checkout@v7
-
-      - name: Set Up PNPM
-        uses: pnpm/action-setup@v4
-        with:
-          version: 11.9.0
-
-      - name: Set Up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-          cache-dependency-path: npm/pnpm-lock.yaml
-          registry-url: https://npm.pkg.github.com
-
-      - name: Set Up Task
-        uses: arduino/setup-task@v2
-        with:
-          version: 3.51.1
-
-      - name: Publish 
-        run: task npm:publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
-          PACKAGE: '@aimarchirico/commons-docs'
+    uses: ./.github/workflows/node-ci.yml
+    with:
+      command: npm:publish
+      node_cache_path: npm/pnpm-lock.yaml
+    secrets:
+      TASK_ENV: |
+        NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+        PACKAGE='@aimarchirico/commons-docs'
 
   publish-commons-cloudflare:
     name: Publish commons-cloudflare
     needs: release-please
     if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-cloudflare')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check Out Repo
-        uses: actions/checkout@v7
-
-      - name: Set Up PNPM
-        uses: pnpm/action-setup@v4
-        with:
-          version: 11.9.0
-
-      - name: Set Up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-          cache-dependency-path: npm/pnpm-lock.yaml
-          registry-url: https://npm.pkg.github.com
-
-      - name: Set Up Task
-        uses: arduino/setup-task@v2
-        with:
-          version: 3.51.1
-
-      - name: Publish Package
-        run: task npm:publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
-          PACKAGE: '@aimarchirico/commons-cloudflare'
+    uses: ./.github/workflows/node-ci.yml
+    with:
+      command: npm:publish
+      node_cache_path: npm/pnpm-lock.yaml
+    secrets:
+      TASK_ENV: |
+        NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+        PACKAGE='@aimarchirico/commons-cloudflare'
 
   publish-commons-firebase-client:
     name: Publish commons-firebase-client
     needs: release-please
     if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-firebase-client')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check Out Repo
-        uses: actions/checkout@v7
-
-      - name: Set Up PNPM
-        uses: pnpm/action-setup@v4
-        with:
-          version: 11.9.0
-
-      - name: Set Up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-          cache-dependency-path: npm/pnpm-lock.yaml
-          registry-url: https://npm.pkg.github.com
-
-      - name: Set Up Task
-        uses: arduino/setup-task@v2
-        with:
-          version: 3.51.1
-
-      - name: Publish Package
-        run: task npm:publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
-          PACKAGE: '@aimarchirico/commons-firebase-client'
+    uses: ./.github/workflows/node-ci.yml
+    with:
+      command: npm:publish
+      node_cache_path: npm/pnpm-lock.yaml
+    secrets:
+      TASK_ENV: |
+        NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+        PACKAGE='@aimarchirico/commons-firebase-client'
 
   publish-commons-google-signin:
     name: Publish commons-google-signin
     needs: release-please
     if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-google-signin')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check Out Repo
-        uses: actions/checkout@v7
-
-      - name: Set Up PNPM
-        uses: pnpm/action-setup@v4
-        with:
-          version: 11.9.0
-
-      - name: Set Up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-          cache-dependency-path: npm/pnpm-lock.yaml
-          registry-url: https://npm.pkg.github.com
-
-      - name: Set Up Task
-        uses: arduino/setup-task@v2
-        with:
-          version: 3.51.1
-
-      - name: Publish Package
-        run: task npm:publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
-          PACKAGE: '@aimarchirico/commons-google-signin'
+    uses: ./.github/workflows/node-ci.yml
+    with:
+      command: npm:publish
+      node_cache_path: npm/pnpm-lock.yaml
+    secrets:
+      TASK_ENV: |
+        NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+        PACKAGE='@aimarchirico/commons-google-signin'
