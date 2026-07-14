@@ -50,7 +50,6 @@ jobs:
     needs: changes
     if: needs.changes.outputs.maven == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/java-ci
@@ -65,7 +64,6 @@ jobs:
     needs: changes
     if: needs.changes.outputs.npm == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/node-ci
@@ -82,7 +80,6 @@ jobs:
     name: Commit Check
     if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
         with:
@@ -104,7 +101,6 @@ jobs:
     needs: changes
     if: needs.changes.outputs.docs == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/node-ci

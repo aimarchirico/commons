@@ -40,7 +40,6 @@ jobs:
     needs: release-please
     if: contains(fromJSON(needs.release-please.outputs.paths_released), 'maven/commons-firebase-admin')
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/java-ci
@@ -57,7 +56,6 @@ jobs:
     needs: release-please
     if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-ts')
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/node-ci
@@ -73,7 +71,6 @@ jobs:
     needs: release-please
     if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-expo')
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/node-ci
@@ -89,7 +86,6 @@ jobs:
     needs: release-please
     if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-openapi')
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/node-ci
@@ -105,7 +101,6 @@ jobs:
     needs: release-please
     if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-tools')
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/node-ci
@@ -121,7 +116,6 @@ jobs:
     needs: release-please
     if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-docs')
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/node-ci
@@ -137,7 +131,6 @@ jobs:
     needs: release-please
     if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-cloudflare')
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/node-ci
@@ -153,7 +146,6 @@ jobs:
     needs: release-please
     if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-firebase-client')
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/node-ci
@@ -169,7 +161,6 @@ jobs:
     needs: release-please
     if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-google-signin')
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/node-ci
