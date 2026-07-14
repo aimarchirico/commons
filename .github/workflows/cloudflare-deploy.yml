@@ -2,6 +2,13 @@ name: Cloudflare Deploy
 
 on:
   workflow_call:
+    inputs:
+      app_url:
+        required: true
+        type: string
+      cloudflare_account_id:
+        required: true
+        type: string
     secrets:
       BUILD_ENV:
         required: true
@@ -13,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: web-production
-      url: ${{ vars.APP_URL }}
+      url: ${{ inputs.app_url }}
     steps:
       - name: Check Out Repo
         uses: actions/checkout@v4
@@ -47,5 +54,5 @@ jobs:
         working-directory: ./frontend
         run: npx wrangler pages deploy ./apps/expo/dist --project-name=${{ github.event.repository.name }} --branch=main
         env:
-          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ inputs.cloudflare_account_id }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
