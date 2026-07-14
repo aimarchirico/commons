@@ -51,7 +51,16 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Set Up Java
-        uses: ./.github/actions/setup-java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 25
+          cache: gradle
+
+      - name: Set Up Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
 
       - name: Run Check
         run: task maven:check
@@ -68,10 +77,23 @@ jobs:
       - name: Check Out Repo
         uses: actions/checkout@v7
 
-      - name: Set Up Node
-        uses: ./.github/actions/setup-node
+      - name: Set Up PNPM
+        uses: pnpm/action-setup@v4
         with:
+          version: 11.9.0
+
+      - name: Set Up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
           cache-dependency-path: npm/pnpm-lock.yaml
+          registry-url: https://npm.pkg.github.com
+
+      - name: Set Up Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.51.1
 
       - name: Run Check
         run: task npm:check
@@ -91,10 +113,23 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set Up Node
-        uses: ./.github/actions/setup-node
+      - name: Set Up PNPM
+        uses: pnpm/action-setup@v4
         with:
+          version: 11.9.0
+
+      - name: Set Up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
           cache-dependency-path: tools/pnpm-lock.yaml
+          registry-url: https://npm.pkg.github.com
+
+      - name: Set Up Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.51.1
 
       - name: Run Check
         run: task commit:check
@@ -115,10 +150,23 @@ jobs:
       - name: Check Out Repo
         uses: actions/checkout@v7
 
-      - name: Set Up Node
-        uses: ./.github/actions/setup-node
+      - name: Set Up PNPM
+        uses: pnpm/action-setup@v4
         with:
+          version: 11.9.0
+
+      - name: Set Up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
           cache-dependency-path: tools/pnpm-lock.yaml
+          registry-url: https://npm.pkg.github.com
+
+      - name: Set Up Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.51.1
 
       - name: Run Docs Checks
         run: task docs:check

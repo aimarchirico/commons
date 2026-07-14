@@ -24,13 +24,35 @@ jobs:
       - name: Check Out Repo
         uses: actions/checkout@v4
 
-      - name: Set Up Node
-        uses: aimarchirico/commons/.github/actions/setup-node@main
+      - name: Set Up PNPM
+        uses: pnpm/action-setup@v4
         with:
+          version: 11.9.0
+
+      - name: Set Up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
           cache-dependency-path: ./frontend/pnpm-lock.yaml
+          registry-url: https://npm.pkg.github.com
+
+      - name: Set Up Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.51.1
 
       - name: Set Up Java
-        uses: aimarchirico/commons/.github/actions/setup-java@main
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 25
+          cache: gradle
+
+      - name: Set Up Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
 
       - name: JDK 17 for Android Native Build
         uses: actions/setup-java@v5

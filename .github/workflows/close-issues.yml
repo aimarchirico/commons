@@ -1,0 +1,34 @@
+name: Close Sub-Issues
+
+on:
+  workflow_call:
+
+jobs:
+  cascade:
+    name: Close Sub-Issues
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close Sub-Issues
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // BFS to close all nested sub-issues
+            const queue = [context.payload.issue.number];
+            while (queue.length) {
+              const issue_number = queue.shift();
+              const subIssues = await github.paginate(
+                "GET /repos/{owner}/{repo}/issues/{issue_number}/sub_issues",
+                { ...context.repo, issue_number, per_page: 100 }
+              );
+              for (const sub of subIssues) {
+                if (sub.state === "open") {
+                  await github.rest.issues.update({
+                    ...context.repo,
+                    issue_number: sub.number,
+                    state: "closed",
+                  });
+                  core.info(`Closed sub-issue #${sub.number}`);
+                }
+                queue.push(sub.number);
+              }
+            }
