@@ -1,0 +1,64 @@
+name: Android Release
+
+on:
+  workflow_call:
+    inputs:
+      build_env:
+        description: 'Environment variables to inject before build'
+        type: string
+        required: true
+      version:
+        description: 'Release version'
+        type: string
+        required: true
+      upload_url:
+        description: 'Release upload URL'
+        type: string
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    environment: android-production
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v4
+
+      - name: Set Up Node
+        uses: aimarchirico/commons/.github/actions/setup-node@main
+        with:
+          cache-dependency-path: ./frontend/pnpm-lock.yaml
+
+      - name: Set Up Java
+        uses: aimarchirico/commons/.github/actions/setup-java@main
+
+      - name: JDK 17 for Android Native Build
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Run CI Build for Android
+        working-directory: ./frontend
+        run: |
+          echo "${{ inputs.build_env }}" > .env.temp
+          source .env.temp
+          task build:android
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ vars.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+      - name: Copy APK
+        run: cp ./frontend/apps/expo/android/app/build/outputs/apk/release/app-release.apk ${{ github.workspace }}/app-release.apk
+
+      - name: Upload Release Asset to GitHub
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ inputs.upload_url }}
+          asset_path: ${{ github.workspace }}/app-release.apk
+          asset_name: ${{ github.event.repository.name }}-${{ inputs.version }}.apk
+          asset_content_type: application/vnd.android.package-archive

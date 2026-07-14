@@ -1,0 +1,26 @@
+name: VPS Deploy
+
+on:
+  workflow_call:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: api-production
+      url: ${{ vars.API_URL }}
+    steps:
+      - name: Set Up SSH
+        shell: bash
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/key
+          chmod 600 ~/.ssh/key
+          ssh-keyscan -H ${{ vars.VPS_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to VPS
+        run: |
+          ssh -i ~/.ssh/key ${{ vars.VPS_USER }}@${{ vars.VPS_HOST }} 'bash -s' <<'EOF'
+          cd ~/docker/${{ github.event.repository.name }}
+          docker compose -f compose.yml -f compose.prod.yml up -d --pull always ${{ github.event.repository.name }}-api
+          EOF
