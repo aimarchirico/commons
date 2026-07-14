@@ -2,6 +2,9 @@ name: VPS Deploy
 
 on:
   workflow_call:
+    secrets:
+      VPS_SSH_KEY:
+        required: true
 
 jobs:
   deploy:

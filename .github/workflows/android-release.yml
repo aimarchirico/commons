@@ -3,10 +3,6 @@ name: Android Release
 on:
   workflow_call:
     inputs:
-      build_env:
-        description: 'Environment variables to inject before build'
-        type: string
-        required: true
       version:
         description: 'Release version'
         type: string
@@ -14,6 +10,15 @@ on:
       upload_url:
         description: 'Release upload URL'
         type: string
+        required: true
+    secrets:
+      BUILD_ENV:
+        required: true
+      ANDROID_KEYSTORE_BASE64:
+        required: true
+      ANDROID_KEYSTORE_PASSWORD:
+        required: true
+      ANDROID_KEY_PASSWORD:
         required: true
 
 jobs:
@@ -63,7 +68,7 @@ jobs:
       - name: Run CI Build for Android
         working-directory: ./frontend
         run: |
-          echo "${{ inputs.build_env }}" > .env.temp
+          echo "${{ secrets.BUILD_ENV }}" > .env.temp
           source .env.temp
           task build:android
         env:

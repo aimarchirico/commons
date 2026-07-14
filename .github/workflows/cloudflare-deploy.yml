@@ -2,10 +2,10 @@ name: Cloudflare Deploy
 
 on:
   workflow_call:
-    inputs:
-      build_env:
-        description: 'Environment variables to inject before build'
-        type: string
+    secrets:
+      BUILD_ENV:
+        required: true
+      CLOUDFLARE_API_TOKEN:
         required: true
 
 jobs:
@@ -39,7 +39,7 @@ jobs:
       - name: Build for Web
         working-directory: ./frontend
         run: |
-          echo "${{ inputs.build_env }}" > .env.temp
+          echo "${{ secrets.BUILD_ENV }}" > .env.temp
           source .env.temp
           task build:web
 
