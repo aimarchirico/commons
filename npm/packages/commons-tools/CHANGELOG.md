@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.2.0](https://github.com/aimarchirico/commons/compare/commons-tools-v1.1.2...commons-tools-v1.2.0) (2026-07-15)
+
+
+### Features
+
+* update markdown rules ([79d96ae](https://github.com/aimarchirico/commons/commit/79d96aea000986931d9abde1a85b82801f935e91))
+* update md rules ([952ed71](https://github.com/aimarchirico/commons/commit/952ed711711b3db0cdd3d7ffc715c7fec964d41f))
+
+## [1.1.2](https://github.com/aimarchirico/commons/compare/commons-tools-v1.1.1...commons-tools-v1.1.2) (2026-07-07)
+
+
+### Bug Fixes
+
+* **tools:** update markdownlint config to rely on gitignore ([04a6dc4](https://github.com/aimarchirico/commons/commit/04a6dc4b081cda50db9833b6186a03532d05fe6c))
+
 ## [1.1.1](https://github.com/aimarchirico/commons/compare/commons-tools-v1.1.0...commons-tools-v1.1.1) (2026-07-06)
 
 
