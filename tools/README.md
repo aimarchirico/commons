@@ -59,8 +59,7 @@ and run from the repository root:
 ## Code Quality
 
 - **Markdown**: `markdownlint-cli2` configured in `.markdownlint-cli2.cjs`,
-  extending the `@aimarchirico/commons-tools` preset. Lints all `../**/*.md`
-  files, excluding `CHANGELOG.md`.
+  extending the `@aimarchirico/commons-tools` preset.
 - **Commits**: `commitlint` with the Conventional Commits ruleset via the
   `@aimarchirico/commons-tools` preset, enforced by the `.husky/commit-msg`
   hook.
@@ -68,5 +67,5 @@ and run from the repository root:
 ## Deployment
 
 - **Releases**: [release-please](https://github.com/googleapis/release-please)
-  drives versioning and changelogs for releases via `release-please-config.json` and
-  `.release-please-manifest.json`.
+  drives versioning and changelogs for releases via
+  `release-please-config.json` and `.release-please-manifest.json`.
