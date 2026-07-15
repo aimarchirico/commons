@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/aimarchirico/commons/compare/commons-openapi-v1.1.1...commons-openapi-v1.1.2) (2026-07-15)
+
+
+### Bug Fixes
+
+* **cli:** use safe URI for OpenAPI client generation ([7a0f296](https://github.com/aimarchirico/commons/commit/7a0f296d05c48652c4ecabcde276ab2b0be99037))
+
 ## [1.1.1](https://github.com/aimarchirico/commons/compare/commons-openapi-v1.1.0...commons-openapi-v1.1.1) (2026-07-06)
 
 
