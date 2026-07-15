@@ -1,31 +1,35 @@
-name: Close Issues
-description: Close issues and PRs related to a branch
+name: Close Sub-Issues
+description: Cascade close every nested sub-issue
 inputs:
-  branch:
-    required: true
-  github_token:
-    required: true
-
+  token:
+    description: Token used to read and close sub-issues
+    required: false
+    default: ${{ github.token }}
 runs:
-  using: "composite"
+  using: composite
   steps:
-    - name: Close Related Issues and PRs
+    - name: Close Sub-Issues
       uses: actions/github-script@v7
       with:
-        github-token: ${{ inputs.github_token }}
+        github-token: ${{ inputs.token }}
         script: |
-          const branch = '${{ inputs.branch }}';
-          
-          const issues = await github.rest.search.issuesAndPullRequests({
-            q: `repo:${context.repo.owner}/${context.repo.repo} is:open head:${branch}`,
-          });
-
-          for (const issue of issues.data.items) {
-            await github.rest.issues.update({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: issue.number,
-              state: 'closed',
-            });
-            console.log(`Closed issue/PR #${issue.number} related to branch ${branch}`);
+          // BFS to close all nested sub-issues
+          const queue = [context.payload.issue.number];
+          while (queue.length) {
+            const issue_number = queue.shift();
+            const subIssues = await github.paginate(
+              "GET /repos/{owner}/{repo}/issues/{issue_number}/sub_issues",
+              { ...context.repo, issue_number, per_page: 100 }
+            );
+            for (const sub of subIssues) {
+              if (sub.state === "open") {
+                await github.rest.issues.update({
+                  ...context.repo,
+                  issue_number: sub.number,
+                  state: "closed",
+                });
+                core.info(`Closed sub-issue #${sub.number}`);
+              }
+              queue.push(sub.number);
+            }
           }
