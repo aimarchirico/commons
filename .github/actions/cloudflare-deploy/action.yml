@@ -7,6 +7,11 @@ inputs:
     required: true
   cloudflare_account_id:
     required: true
+  working_directory:
+    required: false
+    default: "."
+  output_directory:
+    required: true
 
 runs:
   using: "composite"
@@ -15,11 +20,11 @@ runs:
       uses: aimarchirico/commons/.github/actions/node-task@main
       with:
         command: build:web
-        working_directory: ./frontend
+        working_directory: ${{ inputs.working_directory }}
         task_env: ${{ inputs.build_env }}
     - name: Deploy to Cloudflare Pages
       uses: cloudflare/wrangler-action@v3
       with:
         apiToken: ${{ inputs.cloudflare_api_token }}
         accountId: ${{ inputs.cloudflare_account_id }}
-        command: pages deploy ./frontend/apps/web/dist --project-name=${{ github.event.repository.name }}-web
+        command: pages deploy ${{ inputs.output_directory }} --project-name=${{ github.event.repository.name }}
