@@ -9,6 +9,6 @@
     "@aimarchirico/commons-tools": "^1.2.0",
     "@commitlint/cli": "^19.0.0",
     "husky": "^9.1.7",
-    "markdownlint-cli2": "^0.13.0"
+    "markdownlint-cli2": "^0.23.0"
   }
 }
