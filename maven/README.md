@@ -25,13 +25,16 @@ maven/
 
 - **`commons-convention/`** — precompiled script plugins under
   `no.chirico.commons.convention`: `kotlin` (Kotlin/JVM + ktfmt baseline),
-  `spring` (Spring Boot), and `architecture` (module-dependency architecture enforcement). Wired in via
+  `spring` (Spring Boot), and `architecture` (module-dependency architecture
+  enforcement). Wired in via
   `includeBuild("commons-convention")`.
 - **`commons-security/`** — publishes `commons-security`; applies
-  `id("no.chirico.commons.convention.kotlin")` and depends on `:commons-test` for
+  `id("no.chirico.commons.convention.kotlin")`
+  and depends on `:commons-test` for
   its convention tests.
 - **`commons-firebase-admin/`** — publishes `commons-firebase-admin`; Firebase
-  authentication filter and default stateless security chain, auto-configured for
+  authentication filter and default stateless security chain,
+  auto-configured for
   backends that need in-JVM user identity.
 - **`commons-test/`** — publishes `commons-test`; shared test/ArchUnit support
   consumed by the other modules.
@@ -53,7 +56,9 @@ Requires Java 25 and [Task](https://taskfile.dev). Run from the repository root:
 - `task maven:build` — build the modules.
 - `task maven:check` — run tests and checks.
 - `task maven:fix` — format Kotlin with ktfmt.
-- `task maven:publish MODULE=<commons-security|commons-firebase-admin|commons-test|commons-convention>` — publish a module.
+- `task maven:publish MODULE=<module>` — publish a module, where
+  `<module>` is one of `commons-security`, `commons-firebase-admin`,
+  `commons-test`, or `commons-convention`.
 
 The underlying commands are `./gradlew build`, `check`, and `ktfmtFormat`.
 
@@ -71,6 +76,8 @@ The underlying commands are `./gradlew build`, `check`, and `ktfmtFormat`.
 
 Releases are driven by Release Please (`release-type: simple`) and published by
 `.github/workflows/release.yml` when a release touches `maven/commons-security`,
-`maven/commons-test`, or `maven/commons-convention`. Each module's `maven-publish`
+`maven/commons-test`, or `maven/commons-convention`. Each module's
+`maven-publish`
 configuration publishes to the GitHub Packages Maven registry at
-`https://maven.pkg.github.com/aimarchirico/commons` under group `no.chirico.commons`.
+`https://maven.pkg.github.com/aimarchirico/commons` under group
+`no.chirico.commons`.

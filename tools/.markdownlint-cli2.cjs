@@ -10,5 +10,7 @@ module.exports = {
     '../**/build/**',
     '../**/target/**',
     '../**/CHANGELOG.md',
+    '../**/SKILL.md',
+    '../**/PULL_REQUEST_TEMPLATE.md',
   ],
 };

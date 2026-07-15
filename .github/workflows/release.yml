@@ -33,7 +33,7 @@ jobs:
           manifest-file: tools/.release-please-manifest.json
 
   # ==========================================
-  # MAVEN MODULES
+  # MAVEN ARTIFACTS
   # ==========================================
   publish-commons-maven:
     name: Publish commons-firebase-admin
@@ -49,7 +49,7 @@ jobs:
             MODULE=commons-firebase-admin
 
   # ==========================================
-  # NPM MODULES
+  # NPM PACKAGES
   # ==========================================
   publish-commons-ts:
     name: Publish commons-ts
