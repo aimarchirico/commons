@@ -11,7 +11,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Setup SSH
+    - name: Set Up SSH
       shell: bash
       run: |
         mkdir -p ~/.ssh
@@ -27,4 +27,4 @@ runs:
     - name: Deploy to VPS
       shell: bash
       run: |
-        ssh vps "cd /opt/${{ github.event.repository.name }} && docker compose pull && docker compose up -d"
+        ssh vps "cd ~/docker/${{ github.event.repository.name }} && docker compose pull && docker compose up -d"

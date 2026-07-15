@@ -1,13 +1,11 @@
 name: Cloudflare Deploy
 description: Build and deploy to Cloudflare Pages
 inputs:
-  app_url:
-    required: true
-  cloudflare_account_id:
-    required: true
   build_env:
     required: true
   cloudflare_api_token:
+    required: true
+  cloudflare_account_id:
     required: true
 
 runs:
