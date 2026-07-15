@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/aimarchirico/commons/compare/commons-docs-v1.2.1...commons-docs-v1.3.0) (2026-07-15)
+
+
+### Features
+
+* update md rules ([952ed71](https://github.com/aimarchirico/commons/commit/952ed711711b3db0cdd3d7ffc715c7fec964d41f))
+
 ## [1.2.1](https://github.com/aimarchirico/commons/compare/commons-docs-v1.2.0...commons-docs-v1.2.1) (2026-07-06)
 
 

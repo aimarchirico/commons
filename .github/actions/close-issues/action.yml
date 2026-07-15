@@ -1,11 +1,17 @@
 name: Close Sub-Issues
 description: Cascade close every nested sub-issue
+inputs:
+  token:
+    description: Token used to read and close sub-issues
+    required: false
+    default: ${{ github.token }}
 runs:
   using: composite
   steps:
     - name: Close Sub-Issues
       uses: actions/github-script@v7
       with:
+        github-token: ${{ inputs.token }}
         script: |
           // BFS to close all nested sub-issues
           const queue = [context.payload.issue.number];
