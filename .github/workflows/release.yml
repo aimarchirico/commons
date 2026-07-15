@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: ./.github/actions/java-ci
+      - uses: ./.github/actions/java-task
         with:
           command: maven:publish
           task_env: |
@@ -58,7 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: ./.github/actions/node-ci
+      - uses: ./.github/actions/node-task
         with:
           command: npm:publish
           node_cache_path: npm/pnpm-lock.yaml
@@ -73,7 +73,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: ./.github/actions/node-ci
+      - uses: ./.github/actions/node-task
         with:
           command: npm:publish
           node_cache_path: npm/pnpm-lock.yaml
@@ -88,7 +88,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: ./.github/actions/node-ci
+      - uses: ./.github/actions/node-task
         with:
           command: npm:publish
           node_cache_path: npm/pnpm-lock.yaml
@@ -103,7 +103,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: ./.github/actions/node-ci
+      - uses: ./.github/actions/node-task
         with:
           command: npm:publish
           node_cache_path: npm/pnpm-lock.yaml
@@ -118,7 +118,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: ./.github/actions/node-ci
+      - uses: ./.github/actions/node-task
         with:
           command: npm:publish
           node_cache_path: npm/pnpm-lock.yaml
@@ -133,7 +133,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: ./.github/actions/node-ci
+      - uses: ./.github/actions/node-task
         with:
           command: npm:publish
           node_cache_path: npm/pnpm-lock.yaml
@@ -148,7 +148,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: ./.github/actions/node-ci
+      - uses: ./.github/actions/node-task
         with:
           command: npm:publish
           node_cache_path: npm/pnpm-lock.yaml
@@ -163,7 +163,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: ./.github/actions/node-ci
+      - uses: ./.github/actions/node-task
         with:
           command: npm:publish
           node_cache_path: npm/pnpm-lock.yaml

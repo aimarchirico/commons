@@ -52,7 +52,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: ./.github/actions/java-ci
+      - uses: ./.github/actions/java-task
         with:
           command: maven:check
 
@@ -66,7 +66,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: ./.github/actions/node-ci
+      - uses: ./.github/actions/node-task
         with:
           command: npm:check
           node_cache_path: npm/pnpm-lock.yaml
@@ -84,7 +84,7 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - uses: ./.github/actions/node-ci
+      - uses: ./.github/actions/node-task
         with:
           command: commit:check
           node_cache_path: tools/pnpm-lock.yaml
@@ -103,7 +103,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: ./.github/actions/node-ci
+      - uses: ./.github/actions/node-task
         with:
           command: docs:check
           node_cache_path: tools/pnpm-lock.yaml
