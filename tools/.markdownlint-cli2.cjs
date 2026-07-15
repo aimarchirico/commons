@@ -10,13 +10,16 @@ module.exports = {
     '../**/target/**',
     '../**/CHANGELOG.md',
   ],
-   overrides: [
-      {
-        filter: ['../**/SKILL.md', '../**/PULL_REQUEST_TEMPLATE.md'],
-        config: {
-          "MD041": false
-        },
-        combine: 'merge'
-      }
-    ]
+  overrides: [
+    {
+      filter: [
+        '../**/SKILL.md', 
+        '../**/PULL_REQUEST_TEMPLATE.md'
+      ],
+      config: {
+        "MD041": false
+      },
+      combine: 'merge'
+    }
+  ]
 };
