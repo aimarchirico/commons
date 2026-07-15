@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3](https://github.com/aimarchirico/commons/compare/commons-openapi-v1.1.2...commons-openapi-v1.1.3) (2026-07-15)
+
+
+### Bug Fixes
+
+* **cli:** replace URI conversion with path normalization for OpenAPI client generation ([7001dcf](https://github.com/aimarchirico/commons/commit/7001dcf73fd50dc1fd1ee7b0f7c1dc7e4b2ccb52))
+
 ## [1.1.2](https://github.com/aimarchirico/commons/compare/commons-openapi-v1.1.1...commons-openapi-v1.1.2) (2026-07-15)
 
 
