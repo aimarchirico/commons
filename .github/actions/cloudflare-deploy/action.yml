@@ -1,16 +1,18 @@
 name: Cloudflare Deploy
 description: Build and deploy to Cloudflare Pages
 inputs:
-  build_env:
+  command:
     required: true
-  cloudflare_api_token:
+  node_cache_path:
+    required: false
+    default: "pnpm-lock.yaml"
+  output_directory:
     required: true
   cloudflare_account_id:
     required: true
-  working_directory:
-    required: false
-    default: "."
-  output_directory:
+  cloudflare_api_token:
+    required: true
+  build_env:
     required: true
 
 runs:
@@ -19,8 +21,8 @@ runs:
     - name: Run Web Build
       uses: aimarchirico/commons/.github/actions/node-task@main
       with:
-        command: build:web
-        working_directory: ${{ inputs.working_directory }}
+        command: ${{ inputs.command }}
+        node_cache_path: ${{ inputs.node_cache_path }}
         task_env: ${{ inputs.build_env }}
     - name: Deploy to Cloudflare Pages
       uses: cloudflare/wrangler-action@v3

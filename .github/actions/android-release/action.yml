@@ -1,9 +1,18 @@
 name: Android Release
 description: Build and release Android APK
 inputs:
-  upload_url:
+  command:
+    required: true
+  node_cache_path:
+    required: false
+    default: "pnpm-lock.yaml"
+  output_directory:
     required: true
   version:
+    required: true
+  upload_url:
+    required: true
+  github_token:
     required: true
   android_key_alias:
     required: true
@@ -15,11 +24,6 @@ inputs:
     required: true
   build_env:
     required: true
-  github_token:
-    required: true
-  working_directory:
-    required: false
-    default: "."
 
 runs:
   using: "composite"
@@ -38,23 +42,20 @@ runs:
     - name: Run CI Build for Android
       uses: aimarchirico/commons/.github/actions/node-task@main
       with:
-        command: build:android
-        working_directory: ${{ inputs.working_directory }}
+        command: ${{ inputs.command }}
+        node_cache_path: ${{ inputs.node_cache_path }}
         task_env: |
           ANDROID_KEY_ALIAS=${{ inputs.android_key_alias }}
           ANDROID_KEY_PASSWORD=${{ inputs.android_key_password }}
           ANDROID_KEYSTORE_BASE64=${{ inputs.android_keystore_base64 }}
           ANDROID_KEYSTORE_PASSWORD=${{ inputs.android_keystore_password }}
           ${{ inputs.build_env }}
-    - name: Copy APK
-      shell: bash
-      run: cp ${{ inputs.working_directory }}/apps/expo/android/app/build/outputs/apk/release/app-release.apk ${{ github.workspace }}/app-release.apk
     - name: Upload Release Asset to GitHub
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
       with:
         upload_url: ${{ inputs.upload_url }}
-        asset_path: ${{ github.workspace }}/app-release.apk
+        asset_path: ${{ inputs.output_directory }}/android/app/build/outputs/apk/release/app-release.apk
         asset_name: ${{ github.event.repository.name }}-${{ inputs.version }}.apk
         asset_content_type: application/vnd.android.package-archive
