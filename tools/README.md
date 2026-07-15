@@ -12,7 +12,7 @@ application code.
 | Turborepo                   | ^2.10.2 | Monorepo task pipeline        |
 | commitlint                  | ^19.3.0 | Commit message linting        |
 | config-conventional         | ^21.2.0 | Conventional Commits ruleset  |
-| markdownlint-cli2           | ^0.13.0 | Markdown linting              |
+| markdownlint-cli2           | ^0.23.0 | Markdown linting              |
 | Husky                       | ^9.1.7  | Git hooks                     |
 | @aimarchirico/commons-tools | ^1.1.2  | Shared linting config presets |
 
