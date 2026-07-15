@@ -1,8 +1,6 @@
 name: VPS Deploy
 description: Deploy to VPS via SSH
 inputs:
-  api_url:
-    required: true
   vps_user:
     required: true
   vps_host:
