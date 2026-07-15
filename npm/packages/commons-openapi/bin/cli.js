@@ -52,7 +52,8 @@ function generateClient(specPath) {
   const outputDir =
     process.env.API_CLIENT_OUTPUT_DIR ||
     path.resolve(process.cwd(), 'src/generated');
-  const cmd = `rm -rf "${outputDir}" && npx @openapitools/openapi-generator-cli generate -i "${specPath}" -g typescript-axios -o "${outputDir}"`;
+  const safeSpecUri = require('url').pathToFileURL(specPath).href;
+  const cmd = `rm -rf "${outputDir}" && npx @openapitools/openapi-generator-cli generate -i "${safeSpecUri}" -g typescript-axios -o "${outputDir}"`;
   execSync(cmd, {stdio: 'inherit', cwd: packageRoot});
   console.log(`OpenAPI client generated at ${outputDir}`);
 }
