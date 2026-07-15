@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       '@aimarchirico/commons-tools':
-        specifier: ^1.1.0
-        version: 1.1.0(@commitlint/cli@19.8.1(@types/node@26.0.1)(typescript@6.0.3))(markdownlint-cli2@0.13.0)
+        specifier: ^1.2.0
+        version: 1.2.0(@commitlint/cli@19.8.1(@types/node@26.0.1)(typescript@6.0.3))(markdownlint-cli2@0.13.0)
       '@commitlint/cli':
         specifier: ^19.0.0
         version: 19.8.1(@types/node@26.0.1)(typescript@6.0.3)
@@ -23,8 +23,8 @@ importers:
 
 packages:
 
-  '@aimarchirico/commons-tools@1.1.0':
-    resolution: {integrity: sha512-kg1VK9+PQbndQ+VKpODpcG+FZnIMNu/oYkq1iZq5UVAxZHXNbvPhvSIToHOPwUjs0PGBYL7fwUtyAl7qQF8OZw==, tarball: https://npm.pkg.github.com/download/@aimarchirico/commons-tools/1.1.0/254f84f99a86c33b59a759d4a3050de0fc3db7ac}
+  '@aimarchirico/commons-tools@1.2.0':
+    resolution: {integrity: sha512-LUML87DBn1XEObMmR7audcReFMtlmAevaOdcphjCnKgmcUa+Q5h4c8Wpsj6hHR5GePlKwuOLGXPokL1wFu93AQ==, tarball: https://npm.pkg.github.com/download/@aimarchirico/commons-tools/1.2.0/fe1f13e077815c0f37aee7835d790ddb82b8fee5}
     peerDependencies:
       '@commitlint/cli': ^19.0.0
       markdownlint-cli2: ^0.13.0
@@ -564,7 +564,7 @@ packages:
 
 snapshots:
 
-  '@aimarchirico/commons-tools@1.1.0(@commitlint/cli@19.8.1(@types/node@26.0.1)(typescript@6.0.3))(markdownlint-cli2@0.13.0)':
+  '@aimarchirico/commons-tools@1.2.0(@commitlint/cli@19.8.1(@types/node@26.0.1)(typescript@6.0.3))(markdownlint-cli2@0.13.0)':
     dependencies:
       '@commitlint/cli': 19.8.1(@types/node@26.0.1)(typescript@6.0.3)
       '@commitlint/config-conventional': 19.8.1
