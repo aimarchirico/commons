@@ -1,13 +1,13 @@
 name: Docker Release
 description: Build and push Docker image
 inputs:
-  github_token:
-    required: true
   image:
+    required: true
+  context:
     required: true
   version:
     required: true
-  context:
+  github_token:
     required: true
   build_secrets:
     required: false

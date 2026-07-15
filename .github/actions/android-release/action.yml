@@ -1,21 +1,21 @@
 name: Android Release
 description: Build and release Android APK
 inputs:
-  android_keystore_base64:
+  upload_url:
     required: true
-  android_keystore_password:
+  version:
     required: true
   android_key_alias:
     required: true
   android_key_password:
     required: true
+  android_keystore_base64:
+    required: true
+  android_keystore_password:
+    required: true
   build_env:
     required: true
   github_token:
-    required: true
-  upload_url:
-    required: true
-  version:
     required: true
 
 runs:
@@ -38,10 +38,10 @@ runs:
         command: build:android
         working_directory: ./frontend
         task_env: |
-          ANDROID_KEYSTORE_BASE64=${{ inputs.android_keystore_base64 }}
-          ANDROID_KEYSTORE_PASSWORD=${{ inputs.android_keystore_password }}
           ANDROID_KEY_ALIAS=${{ inputs.android_key_alias }}
           ANDROID_KEY_PASSWORD=${{ inputs.android_key_password }}
+          ANDROID_KEYSTORE_BASE64=${{ inputs.android_keystore_base64 }}
+          ANDROID_KEYSTORE_PASSWORD=${{ inputs.android_keystore_password }}
           ${{ inputs.build_env }}
     - name: Copy APK
       shell: bash

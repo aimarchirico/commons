@@ -36,6 +36,9 @@ runs:
       run: |
         if [ -n "${{ inputs.task_env }}" ]; then
           echo "${{ inputs.task_env }}" > .env.temp
+          set -a
           source .env.temp
+          set +a
+          rm -f .env.temp
         fi
         task ${{ inputs.command }}
