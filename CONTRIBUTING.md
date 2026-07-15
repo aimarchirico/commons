@@ -2,54 +2,75 @@
 
 ## Documentation
 
-We adapt the [Google documentation guide](https://google.github.io/styleguide/docguide/) and split documentation by audience:
+We adapt the
+[Google documentation guide](https://google.github.io/styleguide/docguide/) and
+split documentation by audience:
 
-- **`README.md` and `docs/`** (System-level): Features, how components connect, what infrastructure they run on, external dependencies. Nothing implementation-specific.
-- **Module READMEs** (Implementation-level): Everything a developer needs to work on that part.
+- **`README.md` and `docs/`** (System-level): Features, how components connect,
+  what infrastructure they run on, external dependencies. Nothing
+  implementation-specific.
+- **Module READMEs** (Implementation-level): Everything a developer needs to
+  work on that part.
 
 ### 1. README.md
 
 The primary entry point and high-level overview of the project.
 
-- **Introduction**: Clear, concise statement of the project's purpose. What problem does it solve? Who is the target audience?
-- **Demo**: Visual evidence of the project in action. Placeholders for screenshots, GIFs, or links to live staging/production environments.
-- **Features**: High-level bullet points of the core functionality and value propositions.
-- **Getting Started**: Link to sub-directory READMEs for detailed technical setup.
-- **Documentation**: A directory map for the extended documentation located in the `docs/` folder.
+- **Introduction**: Clear, concise statement of the project's purpose. What
+  problem does it solve? Who is the target audience?
+- **Demo**: Visual evidence of the project in action. Placeholders for
+  screenshots, GIFs, or links to live staging/production environments.
+- **Features**: High-level bullet points of the core functionality and value
+  propositions.
+- **Getting Started**: Link to sub-directory READMEs for detailed technical
+  setup.
+- **Documentation**: A directory map for the extended documentation located in
+  the `docs/` folder.
 - **Workflow**: Link to contribution guidelines in `CONTRIBUTING.md`.
 
 ### 2. docs/ARCHITECTURE.md
 
-System-level source of truth. Contains only what spans the whole system; nothing implementation-specific.
+System-level source of truth. Contains only what spans the whole system; nothing
+implementation-specific.
 
 - **Data Flow**: Mermaid diagram showing communication between services.
-- **Infrastructure Overview**: Table of layers, technologies, and hosting locations.
-- **Project Structure**: Top-level directory tree explaining the purpose of each folder.
+- **Infrastructure Overview**: Table of layers, technologies, and hosting
+  locations.
+- **Project Structure**: Top-level directory tree explaining the purpose of each
+  folder.
 
 ### 3. docs/DESIGN.md
 
 Standards for UI, UX, and visual identity.
 
-- **Design System**: Definitions for the color palette, typography, spacing scales, and component library usage.
-- **User Flows**: Logical maps or descriptions of the most critical user journeys through the application.
-- **Assets**: Markdown illustrations, screenshots, or other visual assets used in the design system.
+- **Design System**: Definitions for the color palette, typography, spacing
+  scales, and component library usage.
+- **User Flows**: Logical maps or descriptions of the most critical user
+  journeys through the application.
+- **Assets**: Markdown illustrations, screenshots, or other visual assets used
+  in the design system.
 
 ### 4. docs/API.md
 
 Technical reference for internal and external interfaces.
 
-- **Authentication**: Detailed security protocol. Instructions for obtaining and rotating credentials.
-- **Endpoints**: Summary of API resources. Link to interactive documentation if applicable.
-- **Data Models**: Schema definitions or descriptions of core domain entities and their relationships.
+- **Authentication**: Detailed security protocol. Instructions for obtaining and
+  rotating credentials.
+- **Endpoints**: Summary of API resources. Link to interactive documentation if
+  applicable.
+- **Data Models**: Schema definitions or descriptions of core domain entities
+  and their relationships.
 
 ### 5. [module]/README.md
 
-Technical documentation specific to a project subsystem. All implementation-level detail lives here.
+Technical documentation specific to a project subsystem. All
+implementation-level detail lives here.
 
 - **Tech Stack**: Versioned list of major languages, frameworks, and libraries.
 - **Folder Structure**: Directory layout and module boundary rules.
 - **Environment Variables**: List of required keys and `.env.example` reference.
-- **Local Development**: Installation steps, runtime requirements and available commands.
+- **Local Development**: Installation steps, runtime requirements and available
+  commands.
 - **Code Quality**: Code quality configurations, style guides, and rules.
 - **Deployment**: CI/CD pipelines, deployment targets and hosting details.
 
@@ -57,9 +78,11 @@ Technical documentation specific to a project subsystem. All implementation-leve
 
 ## Issues
 
-We follow the [Jira hierarchy](https://www.atlassian.com/software/jira/guides/issues/overview#what-is-an-work-item) for issues.
+We follow the
+[Jira hierarchy](https://www.atlassian.com/software/jira/guides/issues/overview#what-is-an-work-item)
+for issues.
 
-### Types
+### Issue Types
 
 Each issue type has has a provided template.
 
@@ -109,23 +132,25 @@ graph TD
 | `Medium` | Standard priority issues.  |
 | `Low`    | Non-urgent issues.         |
 
-### Title
+### Issue Title
 
-Issue titles follow the commit summary style but omit prefixes and use sentence case. See [Commits](#commits) for details.
+Issue titles follow the commit summary style but omit prefixes and use sentence
+case. See [Commits](#commits) for details.
 
 ---
 
 ## Branches
 
-We follow the [Conventional Branch](https://conventional-branch.github.io/) specification.
+We follow the [Conventional Branch](https://conventional-branch.github.io/)
+specification.
 
-### Pattern
+### Branch Pattern
 
 ```text
 <type>/[ticket-id]-<description>
 ```
 
-### Types
+### Branch Types
 
 | Type       | Usage                |
 | :--------- | :------------------- |
@@ -135,7 +160,7 @@ We follow the [Conventional Branch](https://conventional-branch.github.io/) spec
 | `release/` | Release preparations |
 | `chore/`   | Maintenance tasks    |
 
-### Rules
+### Branch Rules
 
 - Lowercase only
 - Hyphen-separated
@@ -145,9 +170,11 @@ We follow the [Conventional Branch](https://conventional-branch.github.io/) spec
 
 ## Commits
 
-We follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0) specification.
+We follow the
+[Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0)
+specification.
 
-### Pattern
+### Commit Pattern
 
 ```text
 <type>[optional scope][optional !]: <description>
@@ -157,7 +184,7 @@ We follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0
 [optional footer(s)]
 ```
 
-### Types
+### Commit Types
 
 | Type       | Release | Description                 |
 | :--------- | :------ | :-------------------------- |
@@ -173,19 +200,21 @@ We follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0
 | `test`     | -       | Adding/correcting tests     |
 | `revert`   | -       | Reverts a previous commit   |
 
-### Rules
+### Commit Rules
 
 - **Imperative**: Use the imperative mood (e.g., `add` not `added`).
 - **Formatting**: Lowercase start and no trailing period.
-- **Breaking**: Append `!` to type/scope or include `BREAKING CHANGE:` footer for MAJOR version update.
+- **Breaking**: Append `!` to type/scope or include `BREAKING CHANGE:` footer
+  for MAJOR version update.
 
 ---
 
 ## Pull Requests
 
-We adapt the [Gitmore PR Template](https://gitmore.io/blog/pull-request-template).
+We adapt the
+[Gitmore PR Template](https://gitmore.io/blog/pull-request-template).
 
-### Title
+### PR Title
 
 PR titles follow the commit summary style. See [Commits](#commits) for details.
 
