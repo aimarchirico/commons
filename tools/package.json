@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "prepare": "cd .. && husky tools/.husky",
-    "lint:root": "cd .. && eslint .",
-    "fix:root": "cd .. && eslint . --fix"
+    "prepare": "cd .. && husky tools/.husky"
   },
   "devDependencies": {
     "@aimarchirico/commons-python": "file:../npm/packages/commons-python",

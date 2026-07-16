@@ -44,12 +44,12 @@ tasks:
   root:check:
     desc: Lint global repository folders
     cmds:
-      - pnpm run lint:root
+      - pnpm exec -- sh -c "cd .. && eslint ."
 
   root:fix:
     desc: Fix global repository folders lint issues
     cmds:
-      - pnpm run fix:root
+      - pnpm exec -- sh -c "cd .. && eslint . --fix"
 
   shell:check:
     desc: Lint shell scripts
