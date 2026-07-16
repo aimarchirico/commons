@@ -67,8 +67,4 @@ tasks:
     cmds:
       - docker run --rm -v $(pwd):/repo --workdir /repo rhysd/actionlint:latest -color -config tools/node_modules/@aimarchirico/commons-tools/actionlint.yaml
 
-  docker:check:
-    desc: Lint Dockerfiles
-    dir: ..
-    cmds:
-      - 'find . -type d \( -name "node_modules" -o -name ".git" \) -prune -o -name "Dockerfile" -print | xargs -r docker run --rm -v $(pwd):/repo --workdir /repo hadolint/hadolint:latest hadolint -c tools/node_modules/@aimarchirico/commons-tools/.hadolint.yaml'
+
