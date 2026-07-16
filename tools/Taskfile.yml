@@ -61,6 +61,12 @@ tasks:
     cmds:
       - 'find . -type d \( -name "node_modules" -o -name ".git" \) -prune -o -name "*.sh" -print | xargs -r docker run --rm -v $(pwd):/repo --workdir /repo koalaman/shellcheck:latest shellcheck --rcfile=tools/node_modules/@aimarchirico/commons-tools/.shellcheckrc'
 
+  python:check:
+    desc: Lint Python scripts
+    dir: ..
+    cmds:
+      - 'find . -type d \( -name "node_modules" -o -name ".git" -o -name ".venv" \) -prune -o -name "*.py" -print | xargs -r docker run --rm -v $(pwd):/repo --workdir /repo ghcr.io/astral-sh/ruff:latest check --config tools/node_modules/@aimarchirico/commons-tools/ruff.toml'
+
   action:check:
     desc: Lint GitHub Actions
     dir: ..
