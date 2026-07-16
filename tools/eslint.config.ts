@@ -1,3 +1,7 @@
+import eslintPluginJsonc from 'eslint-plugin-jsonc';
+import eslintPluginToml from 'eslint-plugin-toml';
+import eslintPluginYml from 'eslint-plugin-yml';
+
 let tsConfig;
 let jsonConfig;
 let ymlConfig;
@@ -11,6 +15,10 @@ try {
 
 export default [
   ...tsConfig,
+  ...eslintPluginJsonc.configs['flat/recommended-with-jsonc'],
+  ...eslintPluginToml.configs['flat/recommended'],
+  ...eslintPluginYml.configs['flat/recommended'],
+
   {
     ignores: [
       '../npm/packages/**/*.{ts,tsx,mts,cts,js,jsx,mjs,cjs}',
