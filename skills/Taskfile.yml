@@ -15,4 +15,4 @@ tasks:
   shell:check:
     desc: Lint shell scripts
     cmds:
-      - 'git ls-files -z "*.sh" | xargs -0r shellcheck --rcfile ../tools/node_modules/@aimarchirico/commons-tools/.shellcheckrc'
+      - 'git ls-files -z "*.sh" | xargs -0r shellcheck --rcfile .shellcheckrc'
