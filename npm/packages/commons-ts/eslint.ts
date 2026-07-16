@@ -2,6 +2,10 @@
 import checkFile from 'eslint-plugin-check-file';
 // @ts-ignore
 import eslintPluginImport from 'eslint-plugin-import';
+// @ts-ignore
+import eslintPluginJsonc from 'eslint-plugin-jsonc';
+// @ts-ignore
+import eslintPluginYml from 'eslint-plugin-yml';
 import globals from 'globals';
 import gts from 'gts';
 import {createRequire} from 'module';
@@ -60,4 +64,18 @@ export default defineConfig([
       'check-file/filename-naming-convention': 'off',
     },
   },
+  ...eslintPluginJsonc.configs['flat/recommended-with-jsonc'],
+  ...eslintPluginYml.configs['flat/recommended'],
+  {
+    files: ['**/*.{yml,yaml}'],
+    rules: {
+      // Customize yaml rules if needed
+    }
+  },
+  {
+    files: ['**/*.{json,jsonc,json5}'],
+    rules: {
+      // Customize json rules if needed
+    }
+  }
 ]);
