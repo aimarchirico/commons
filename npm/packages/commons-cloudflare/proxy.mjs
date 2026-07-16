@@ -7,7 +7,7 @@ export async function onRequest(context) {
   const apiUrl = context.env.API_URL;
 
   if (!apiUrl) {
-    return new Response('API_URL not configured', { status: 500 });
+    return new Response('API_URL not configured', {status: 500});
   }
 
   const url = new URL(context.request.url);

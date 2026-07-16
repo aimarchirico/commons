@@ -2,7 +2,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import { spawnSync } from 'child_process';
+import {spawnSync} from 'child_process';
 
 const androidDir = path.resolve('android');
 if (!fs.existsSync(androidDir)) {

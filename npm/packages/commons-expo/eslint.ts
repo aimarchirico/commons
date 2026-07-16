@@ -6,7 +6,11 @@ const dedupedConfig = baseConfig.map(config => {
   if (!config?.plugins) {
     return config;
   }
-  const {'@typescript-eslint': _tsPlugin, import: _importPlugin, ...plugins} = config.plugins;
+  const {
+    '@typescript-eslint': _tsPlugin,
+    import: _importPlugin,
+    ...plugins
+  } = config.plugins;
   return {...config, plugins};
 });
 
