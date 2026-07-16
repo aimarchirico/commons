@@ -26,14 +26,14 @@
     "fix": "eslint --fix"
   },
   "devDependencies": {
-    "@aimarchirico/commons-expo": "workspace:^",
-    "@aimarchirico/commons-ts": "workspace:^",
     "@react-native-firebase/auth": "*",
     "eslint": "^9.39.2",
     "expo": "*",
     "firebase": "*",
     "react-native": "*",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "@aimarchirico/commons-eslint": "workspace:^",
+    "@aimarchirico/commons-tsconfig": "workspace:^"
   },
   "peerDependencies": {
     "@react-native-firebase/auth": "*",

@@ -3,12 +3,13 @@ import eslintPluginImport from 'eslint-plugin-import';
 import globals from 'globals';
 import gts from 'gts';
 import {createRequire} from 'module';
-import {defineConfig} from 'eslint/config';
 
 const require = createRequire(import.meta.url);
 const gtsPrettier = require('gts/.prettierrc.json');
 
-export default defineConfig([
+import jsonConfig from './json.js';
+
+export default [
   ...gts,
   {
     rules: {
@@ -52,10 +53,11 @@ export default defineConfig([
     },
   },
   {
-    files: ['**/eslint.config.ts', '**/eslint.ts', '**/eslint/*.ts'],
+    files: ['**/eslint.config.js', '**/eslint.config.ts', '**/eslint.ts', '**/eslint/*.ts', '**/index.js', '**/expo.js', '**/json.js', '**/yaml.js', '**/toml.js', '**/*.d.ts'],
     rules: {
       'import/no-default-export': 'off',
       'check-file/filename-naming-convention': 'off',
     },
   },
-]);
+  ...jsonConfig,
+];

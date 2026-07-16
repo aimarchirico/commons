@@ -10,15 +10,15 @@
   "devDependencies": {
     "@aimarchirico/commons-cloudflare": "workspace:^",
     "@aimarchirico/commons-docs": "workspace:^",
-    "@aimarchirico/commons-expo": "workspace:^",
     "@aimarchirico/commons-firebase-client": "workspace:^",
     "@aimarchirico/commons-google-signin": "workspace:^",
     "@aimarchirico/commons-openapi": "workspace:^",
     "@aimarchirico/commons-tools": "workspace:^",
-    "@aimarchirico/commons-ts": "workspace:^",
     "@types/node": "^26.0.1",
     "eslint": "^9.39.2",
     "turbo": "^2.10.2",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "@aimarchirico/commons-eslint": "workspace:^",
+    "@aimarchirico/commons-tsconfig": "workspace:^"
   }
 }

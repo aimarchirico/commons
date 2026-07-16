@@ -1,6 +1,6 @@
-import {defineConfig} from 'eslint/config';
+// @ts-nocheck
 import expoConfig from 'eslint-config-expo/flat.js';
-import baseConfig from '@aimarchirico/commons-ts/eslint';
+import baseConfig from './index.js';
 
 const dedupedConfig = baseConfig.map(config => {
   if (!config?.plugins) {
@@ -14,4 +14,4 @@ const dedupedConfig = baseConfig.map(config => {
   return {...config, plugins};
 });
 
-export default defineConfig([...expoConfig, ...dedupedConfig]);
+export default [...expoConfig, ...dedupedConfig];
