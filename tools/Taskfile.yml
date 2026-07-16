@@ -44,9 +44,9 @@ tasks:
   root:check:
     desc: Lint global repository folders
     cmds:
-      - pnpm exec -- sh -c "cd .. && eslint --no-error-on-unmatched-pattern -c tools/eslint.config.ts . .github/**/* .vscode/**/* *.yml *.json *.toml"
+      - pnpm exec -- sh -c "cd .. && eslint -c tools/eslint.config.ts ."
 
   root:fix:
     desc: Fix global repository folders lint issues
     cmds:
-      - pnpm exec -- sh -c "cd .. && eslint --no-error-on-unmatched-pattern -c tools/eslint.config.ts . .github/**/* .vscode/**/* *.yml *.json *.toml --fix"
+      - pnpm exec -- sh -c "cd .. && eslint -c tools/eslint.config.ts . --fix"
