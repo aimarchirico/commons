@@ -10,14 +10,16 @@ tasks:
 
   docs:check:
     desc: Lint Markdown files
+    dir: ..
     cmds:
       - task: install
-      - pnpm exec markdownlint-cli2
+      - tools/node_modules/.bin/markdownlint-cli2 --config tools/.markdownlint-cli2.cjs
 
   docs:fix:
     desc: Fix Markdown issues
+    dir: ..
     cmds:
-      - pnpm exec markdownlint-cli2 --fix
+      - tools/node_modules/.bin/markdownlint-cli2 --config tools/.markdownlint-cli2.cjs --fix
 
   commit:check:
     desc: Lint commit messages
@@ -40,3 +42,15 @@ tasks:
     cmds:
       - gh skill install aimarchirico/commons --all --scope project --agent antigravity
       - gh skill install aimarchirico/commons --all --scope project --agent claude-code
+
+  root:check:
+    desc: Lint global repository folders
+    dir: ..
+    cmds:
+      - ./npm/node_modules/.bin/eslint --config tools/eslint.config.ts --no-error-on-unmatched-pattern ".github/**/*" "tools/**/*" ".vscode/**/*" "*.yml" "*.json"
+
+  root:fix:
+    desc: Fix global repository folders lint issues
+    dir: ..
+    cmds:
+      - ./npm/node_modules/.bin/eslint --config tools/eslint.config.ts --no-error-on-unmatched-pattern ".github/**/*" "tools/**/*" ".vscode/**/*" "*.yml" "*.json" --fix
