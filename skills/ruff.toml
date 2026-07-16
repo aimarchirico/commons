@@ -1,0 +1,1 @@
+extend = "../tools/node_modules/@aimarchirico/commons-python/ruff.toml"

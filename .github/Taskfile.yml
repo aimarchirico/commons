@@ -1,0 +1,7 @@
+version: '3'
+
+tasks:
+  check:
+    desc: Lint GitHub Actions
+    cmds:
+      - actionlint -color

@@ -3,6 +3,9 @@ version: '3'
 dotenv: ['.env']
 
 includes:
+  github:
+    taskfile: ./.github/Taskfile.yml
+    dir: ./.github
   maven:
     taskfile: ./maven/Taskfile.yml
     dir: ./maven
@@ -13,6 +16,12 @@ includes:
     taskfile: ./tools/Taskfile.yml
     dir: ./tools
     flatten: true
+  skills:
+    taskfile: ./skills/Taskfile.yml
+    dir: ./skills
+  github:
+    taskfile: ./.github/Taskfile.yml
+    dir: ./.github
 
 tasks:
   default:

@@ -56,28 +56,3 @@ tasks:
     dir: ..
     cmds:
       - 'git ls-files -z "*.sh" | xargs -0r shellcheck --rcfile tools/.shellcheckrc'
-
-  python:check:
-    desc: Lint Python scripts
-    dir: ..
-    cmds:
-      - uvx ruff check --config tools/ruff.toml .
-
-  python:fix:
-    desc: Fix Python scripts
-    dir: ..
-    cmds:
-      - uvx ruff check --config tools/ruff.toml --fix .
-      - uvx ruff format --config tools/ruff.toml .
-
-  action:check:
-    desc: Lint GitHub Actions
-    dir: ..
-    cmds:
-      - actionlint -color
-
-  docker:check:
-    desc: Lint Dockerfiles
-    dir: ..
-    cmds:
-      - 'git ls-files -z "*Dockerfile*" | xargs -0r hadolint -c tools/.hadolint.yaml'
