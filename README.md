@@ -24,6 +24,7 @@ on GitHub Packages._
   contributing guide, and GitHub issue/PR templates.
 - **API tooling** — a CLI that generates the OpenAPI client and docs.
 - **Agent skills** — reusable skills covering the development lifecycle.
+- **CI/CD Actions** — reusable GitHub Actions for standardized building, testing, and deployments.
 
 ## Getting Started
 
@@ -33,6 +34,7 @@ Implementation-level setup and usage live in each subsystem's README:
 - [`npm/`](npm/README.md) — frontend configuration packages and the API CLI.
 - [`tools/`](tools/README.md) — shared linting configs and release tooling.
 - [`skills/`](skills/README.md) — agent skills.
+- [`.github/actions/`](.github/actions/README.md) — shared GitHub Actions for CI/CD workflows.
 
 ## Documentation
 
