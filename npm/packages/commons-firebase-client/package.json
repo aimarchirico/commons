@@ -32,8 +32,7 @@
     "firebase": "*",
     "react-native": "*",
     "typescript": "^6.0.3",
-    "@aimarchirico/commons-eslint": "workspace:^",
-    "@aimarchirico/commons-tsconfig": "workspace:^"
+    "@aimarchirico/commons-ts": "workspace:^"
   },
   "peerDependencies": {
     "@react-native-firebase/auth": "*",

@@ -1,5 +1,5 @@
 import expoConfig from 'eslint-config-expo/flat.js';
-import baseConfig from '@aimarchirico/commons-eslint';
+import baseConfig from '@aimarchirico/commons-ts/eslint';
 
 const dedupedConfig = baseConfig.map(config => {
   if (!config?.plugins) return config;

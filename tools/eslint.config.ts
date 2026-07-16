@@ -8,9 +8,9 @@ let ymlConfig;
 let tomlConfig;
 
 try {
-  tsConfig = (await import('@aimarchirico/commons-eslint')).default;
+  tsConfig = (await import('@aimarchirico/commons-ts/eslint')).default;
 } catch {
-  tsConfig = (await import('../npm/packages/commons-eslint/index.js')).default;
+  tsConfig = (await import('../npm/packages/commons-ts/eslint.js')).default;
 }
 
 export default [

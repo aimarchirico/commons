@@ -7,7 +7,7 @@
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^19.0.0",
-    "@aimarchirico/commons-eslint": "link:../npm/packages/commons-eslint",
+    "@aimarchirico/commons-ts": "workspace:^",
     "@commitlint/cli": "^19.0.0",
     "eslint": "^9.39.5",
     "husky": "^9.1.7",

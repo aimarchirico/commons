@@ -1,5 +1,5 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "extends": "@aimarchirico/commons-tsconfig/base.json",
+  "extends": "@aimarchirico/commons-ts/tsconfig",
   "include": ["bin/**/*.mjs", "eslint.config.ts", "eslint.ts"]
 }
