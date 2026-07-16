@@ -43,15 +43,13 @@ tasks:
 
   root:check:
     desc: Lint global repository folders
-    dir: ..
     cmds:
-      - ./tools/node_modules/.bin/eslint .
+      - pnpm run lint:root
 
   root:fix:
     desc: Fix global repository folders lint issues
-    dir: ..
     cmds:
-      - ./tools/node_modules/.bin/eslint . --fix
+      - pnpm run fix:root
 
   shell:check:
     desc: Lint shell scripts
