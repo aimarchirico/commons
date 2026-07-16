@@ -1,7 +1,7 @@
-module.exports = {
+export default {
   config: {
     default: true,
-    MD013: { code_blocks: false, tables: false },
+    MD013: {code_blocks: false, tables: false},
   },
   globs: ['../**/*.md'],
   ignores: [
@@ -13,14 +13,11 @@ module.exports = {
   ],
   overrides: [
     {
-      filter: [
-        '../**/SKILL.md', 
-        '../**/PULL_REQUEST_TEMPLATE.md'
-      ],
+      filter: ['../**/SKILL.md', '../**/PULL_REQUEST_TEMPLATE.md'],
       config: {
-        "MD041": false
+        MD041: false,
       },
-      combine: 'merge'
-    }
-  ]
+      combine: 'merge',
+    },
+  ],
 };

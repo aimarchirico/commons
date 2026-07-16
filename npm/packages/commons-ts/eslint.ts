@@ -55,7 +55,20 @@ export default [
     },
   },
   {
-    files: ['**/eslint.config.js', '**/eslint.config.ts', '**/eslint.ts', '**/eslint/*.ts', '**/index.js', '**/expo.js', '**/json.js', '**/yaml.js', '**/toml.js', '**/*.d.ts'],
+    files: [
+      '**/eslint.config.js',
+      '**/eslint.config.ts',
+      '**/eslint.ts',
+      '**/eslint/*.ts',
+      '**/index.js',
+      '**/expo.js',
+      '**/json.js',
+      '**/yaml.js',
+      '**/toml.js',
+      '**/*.d.ts',
+      '**/*config.ts',
+      '**/.*.mjs',
+    ],
     rules: {
       'import/no-default-export': 'off',
       'check-file/filename-naming-convention': 'off',
