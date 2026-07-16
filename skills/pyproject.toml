@@ -3,3 +3,7 @@ target-version = 'py313'
 
 [tool.ruff.lint]
 select = ['E', 'F']
+
+[tool.pyright]
+pythonVersion = "3.13"
+typeCheckingMode = "standard"
