@@ -18,11 +18,7 @@ export default [
     ignores: [
       '../npm/packages/**/*.{ts,tsx,mts,cts,js,jsx,mjs,cjs}',
       '../**/.turbo/**',
-      '**/pnpm-lock.yaml',
       '../**/pnpm-lock.yaml',
-      '**/*config.ts',
-      '../**/*config.ts',
-      '**/test.toml',
     ],
   },
   {
