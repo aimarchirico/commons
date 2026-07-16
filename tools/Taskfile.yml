@@ -10,16 +10,14 @@ tasks:
 
   docs:check:
     desc: Lint Markdown files
-    dir: ..
     cmds:
       - task: install
-      - tools/node_modules/.bin/markdownlint-cli2 --config tools/.markdownlint-cli2.cjs
+      - pnpm exec markdownlint-cli2
 
   docs:fix:
     desc: Fix Markdown issues
-    dir: ..
     cmds:
-      - tools/node_modules/.bin/markdownlint-cli2 --config tools/.markdownlint-cli2.cjs --fix
+      - pnpm exec markdownlint-cli2 --fix
 
   commit:check:
     desc: Lint commit messages
@@ -45,39 +43,41 @@ tasks:
 
   root:check:
     desc: Lint global repository folders
-    dir: ..
     cmds:
-      - ./npm/node_modules/.bin/eslint --config tools/eslint.config.ts --no-error-on-unmatched-pattern ".github/**/*" "tools/**/*" ".vscode/**/*" "*.yml" "*.json"
+      - pnpm exec eslint --config eslint.config.ts --no-error-on-unmatched-pattern "../.github/**/*" "../*" "../.vscode/**/*" "../*.yml" "../*.json" "../*.toml"
 
   root:fix:
     desc: Fix global repository folders lint issues
-    dir: ..
     cmds:
-      - ./npm/node_modules/.bin/eslint --config tools/eslint.config.ts --no-error-on-unmatched-pattern ".github/**/*" "tools/**/*" ".vscode/**/*" "*.yml" "*.json" --fix
+      - pnpm exec eslint --config eslint.config.ts --no-error-on-unmatched-pattern "../.github/**/*" "../*" "../.vscode/**/*" "../*.yml" "../*.json" "../*.toml" --fix
 
   shell:check:
     desc: Lint shell scripts
     dir: ..
     cmds:
-      - 'find . -type d \( -name "node_modules" -o -name ".git" \) -prune -o -name "*.sh" -print | xargs -r docker run --rm -v $(pwd):/repo --workdir /repo koalaman/shellcheck:latest shellcheck --rcfile=tools/node_modules/@aimarchirico/commons-tools/.shellcheckrc'
+      - 'git ls-files -z "*.sh" | xargs -0r shellcheck'
 
   python:check:
     desc: Lint Python scripts
     dir: ..
     cmds:
-      - 'find . -type d \( -name "node_modules" -o -name ".git" -o -name ".venv" \) -prune -o -name "*.py" -print | xargs -r docker run --rm -v $(pwd):/repo --workdir /repo ghcr.io/astral-sh/ruff:latest check --config tools/node_modules/@aimarchirico/commons-python/ruff.toml'
+      - uvx ruff check .
 
   python:fix:
     desc: Fix Python scripts
     dir: ..
     cmds:
-      - 'find . -type d \( -name "node_modules" -o -name ".git" -o -name ".venv" \) -prune -o -name "*.py" -print | xargs -r docker run --rm -v $(pwd):/repo --workdir /repo ghcr.io/astral-sh/ruff:latest check --fix --config tools/node_modules/@aimarchirico/commons-python/ruff.toml'
-      - 'find . -type d \( -name "node_modules" -o -name ".git" -o -name ".venv" \) -prune -o -name "*.py" -print | xargs -r docker run --rm -v $(pwd):/repo --workdir /repo ghcr.io/astral-sh/ruff:latest format --config tools/node_modules/@aimarchirico/commons-python/ruff.toml'
+      - uvx ruff check --fix .
+      - uvx ruff format .
 
   action:check:
     desc: Lint GitHub Actions
     dir: ..
     cmds:
-      - docker run --rm -v $(pwd):/repo --workdir /repo rhysd/actionlint:latest -color -config tools/node_modules/@aimarchirico/commons-tools/actionlint.yaml
+      - actionlint -color
 
-
+  docker:check:
+    desc: Lint Dockerfiles
+    dir: ..
+    cmds:
+      - 'git ls-files -z "*Dockerfile*" | xargs -0r hadolint'

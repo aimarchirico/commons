@@ -6,7 +6,8 @@ try {
   toolsConfig = (await import('@aimarchirico/commons-tools/eslint')).default;
 } catch {
   tsConfig = (await import('../npm/packages/commons-ts/eslint.ts')).default;
-  toolsConfig = (await import('../npm/packages/commons-tools/eslint.ts')).default;
+  toolsConfig = (await import('../npm/packages/commons-tools/eslint.ts'))
+    .default;
 }
 
 export default [
