@@ -6,7 +6,6 @@
     "prepare": "cd .. && husky tools/.husky"
   },
   "devDependencies": {
-    "@aimarchirico/commons-python": "file:../npm/packages/commons-python",
     "@aimarchirico/commons-tools": "^1.2.0",
     "@aimarchirico/commons-ts": "^1.1.1",
     "@commitlint/cli": "^19.0.0",

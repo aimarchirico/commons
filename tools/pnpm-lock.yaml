@@ -8,9 +8,6 @@ importers:
 
   .:
     devDependencies:
-      '@aimarchirico/commons-python':
-        specifier: workspace:*
-        version: link:../npm/packages/commons-python
       '@aimarchirico/commons-tools':
         specifier: ^1.2.0
         version: 1.2.0(@commitlint/cli@19.8.1(@types/node@26.0.1)(typescript@6.0.3))(markdownlint-cli2@0.13.0)
