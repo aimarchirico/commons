@@ -11,8 +11,3 @@ tasks:
     cmds:
       - uvx ruff check --fix --verbose .
       - uvx ruff format .
-
-  shell:check:
-    desc: Lint shell scripts
-    cmds:
-      - 'git ls-files -z "*.sh" | xargs -0r shellcheck --rcfile .shellcheckrc'
