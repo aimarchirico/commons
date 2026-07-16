@@ -1,7 +1,8 @@
-const baseConfig = require('@aimarchirico/commons-tools/markdownlint');
-
 module.exports = {
-  ...baseConfig,
+  config: {
+    default: true,
+    MD013: { code_blocks: false, tables: false },
+  },
   globs: ['../**/*.md'],
   ignores: [
     '../**/node_modules/**',

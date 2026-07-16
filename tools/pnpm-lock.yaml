@@ -11,12 +11,12 @@ importers:
       '@aimarchirico/commons-eslint':
         specifier: link:../npm/packages/commons-eslint
         version: link:../npm/packages/commons-eslint
-      '@aimarchirico/commons-tools':
-        specifier: ^1.2.0
-        version: 1.2.0(@commitlint/cli@19.8.1(@types/node@26.0.1)(typescript@6.0.3))(markdownlint-cli2@0.13.0)
       '@commitlint/cli':
         specifier: ^19.0.0
         version: 19.8.1(@types/node@26.0.1)(typescript@6.0.3)
+      '@commitlint/config-conventional':
+        specifier: ^19.0.0
+        version: 19.8.1
       eslint:
         specifier: ^9.39.5
         version: 9.39.5(jiti@2.6.1)
@@ -28,12 +28,6 @@ importers:
         version: 0.13.0
 
 packages:
-
-  '@aimarchirico/commons-tools@1.2.0':
-    resolution: {integrity: sha512-LUML87DBn1XEObMmR7audcReFMtlmAevaOdcphjCnKgmcUa+Q5h4c8Wpsj6hHR5GePlKwuOLGXPokL1wFu93AQ==, tarball: https://npm.pkg.github.com/download/@aimarchirico/commons-tools/1.2.0/fe1f13e077815c0f37aee7835d790ddb82b8fee5}
-    peerDependencies:
-      '@commitlint/cli': ^19.0.0
-      markdownlint-cli2: ^0.13.0
 
   '@babel/code-frame@7.29.7':
     resolution: {integrity: sha512-Aup7aUOfpbAUg2ROOJN6Iw5f9DMBlzu0mIkm/malLQFN/YQgO48wCj0Kxa3sEHJvPVFg7siR+qRInwXd2qhQKw==}
@@ -854,12 +848,6 @@ packages:
     engines: {node: '>=12.20'}
 
 snapshots:
-
-  '@aimarchirico/commons-tools@1.2.0(@commitlint/cli@19.8.1(@types/node@26.0.1)(typescript@6.0.3))(markdownlint-cli2@0.13.0)':
-    dependencies:
-      '@commitlint/cli': 19.8.1(@types/node@26.0.1)(typescript@6.0.3)
-      '@commitlint/config-conventional': 19.8.1
-      markdownlint-cli2: 0.13.0
 
   '@babel/code-frame@7.29.7':
     dependencies:
