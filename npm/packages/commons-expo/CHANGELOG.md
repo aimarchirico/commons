@@ -1,0 +1,49 @@
+# Changelog
+
+## [1.2.0](https://github.com/aimarchirico/commons/compare/commons-expo-v1.1.1...commons-expo-v1.2.0) (2026-07-07)
+
+
+### Features
+
+* **commons-expo:** add build-android helper for signed release builds ([2a85773](https://github.com/aimarchirico/commons/commit/2a857736cd66c5e5e724d4fa3231bcfda9134903))
+* **commons-expo:** add build-android helper for signed release builds ([be6b785](https://github.com/aimarchirico/commons/commit/be6b785e1efc717518a111c1560b03bb6e80ab36))
+
+## [1.1.1](https://github.com/aimarchirico/commons/compare/commons-expo-v1.1.0...commons-expo-v1.1.1) (2026-07-06)
+
+
+### Bug Fixes
+
+* add repository field to all npm packages ([39ca7a2](https://github.com/aimarchirico/commons/commit/39ca7a266824698c75e9669de1aaa38e620b2d6c))
+* **commons-firebase-client:** force release ([f6b030c](https://github.com/aimarchirico/commons/commit/f6b030c8645bbb290d955193962d09c7f02f3f94))
+
+## [1.1.0](https://github.com/aimarchirico/commons/compare/commons-expo-v1.0.0...commons-expo-v1.1.0) (2026-07-02)
+
+
+### Features
+
+* rename core to commons ([d06b90c](https://github.com/aimarchirico/commons/commit/d06b90cf5720d3db41d058769ada8bf50983dcfb))
+
+## [0.1.3](https://github.com/aimarchirico/commons/compare/core-expo-v0.1.2...core-expo-v0.1.3) (2026-07-01)
+
+
+### Bug Fixes
+
+* **tsconfig:** add include to tsconfig ([42b68ad](https://github.com/aimarchirico/commons/commit/42b68ad5393d7c8d9a6a1f8387c2528737829d26))
+
+## [0.1.2](https://github.com/aimarchirico/commons/compare/core-expo-v0.1.1...core-expo-v0.1.2) (2026-07-01)
+
+### Bug Fixes
+
+* **package:** update tsconfig export path in package.json ([edbc710](https://github.com/aimarchirico/commons/commit/edbc7107844027bf1ca246a35ee967ade274f0ca))
+
+## [0.1.1](https://github.com/aimarchirico/commons/compare/core-expo-v0.1.0...core-expo-v0.1.1) (2026-06-29)
+
+### Bug Fixes
+
+* **npm:** correct dependency classification and align package versions ([b636543](https://github.com/aimarchirico/commons/commit/b636543192de6f137874416481794044f023e0e7))
+
+## [0.1.0](https://github.com/aimarchirico/commons/compare/core-expo-v0.0.1...core-expo-v0.1.0) (2026-06-29)
+
+### Features
+
+* **repo:** migrate to pnpm workspace and reorganize repository structure ([06266b2](https://github.com/aimarchirico/commons/commit/06266b2daf9770e94592509c5168680be406f721))

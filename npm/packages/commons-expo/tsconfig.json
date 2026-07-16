@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": [
+    "expo/tsconfig.base",
+    "@aimarchirico/commons-ts/tsconfig"
+  ],
+  "include": [
+    "eslint.config.ts",
+    "eslint.ts",
+    "eslint-config-expo.d.ts",
+    "bin/**/*.mjs"
+  ]
+}
