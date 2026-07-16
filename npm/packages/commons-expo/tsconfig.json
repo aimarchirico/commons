@@ -6,6 +6,8 @@
   ],
   "include": [
     "eslint.config.ts",
-    "eslint.ts"
+    "eslint.ts",
+    "eslint-config-expo.d.ts",
+    "bin/**/*.mjs"
   ]
 }

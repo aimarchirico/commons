@@ -1,7 +1,6 @@
-// @ts-ignore
 import checkFile from 'eslint-plugin-check-file';
-// @ts-ignore
 import eslintPluginImport from 'eslint-plugin-import';
+import eslintPluginJsonc from 'eslint-plugin-jsonc';
 import globals from 'globals';
 import gts from 'gts';
 import {createRequire} from 'module';
@@ -12,6 +11,8 @@ const gtsPrettier = require('gts/.prettierrc.json');
 
 export default defineConfig([
   ...gts,
+  ...eslintPluginJsonc.configs['flat/recommended-with-jsonc'],
+  ...eslintPluginJsonc.configs['flat/prettier'],
   {
     rules: {
       'prettier/prettier': ['error', gtsPrettier],
@@ -35,7 +36,7 @@ export default defineConfig([
     files: ['**/*.{js,cjs,mjs,ts,jsx,tsx}'],
     plugins: {
       'check-file': checkFile,
-      'import': eslintPluginImport,
+      import: eslintPluginImport,
     },
     rules: {
       'import/no-default-export': ['error'],
@@ -59,5 +60,5 @@ export default defineConfig([
       'import/no-default-export': 'off',
       'check-file/filename-naming-convention': 'off',
     },
-  }
+  },
 ]);

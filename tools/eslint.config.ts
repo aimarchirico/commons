@@ -16,11 +16,7 @@ export default [
   {
     ignores: [
       '../npm/packages/**/*',
-      '../npm/apps/**/*',
-      '../backend/**/*',
-      '../frontend/**/*',
       '../**/.turbo/**',
-      '../**/Taskfile.yml',
       '../**/pnpm-lock.yaml',
       '../**/commitlint.config.js',
     ],

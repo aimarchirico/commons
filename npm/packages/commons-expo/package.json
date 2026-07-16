@@ -16,6 +16,10 @@
   "bin": {
     "commons-expo-build-android": "bin/build-android.mjs"
   },
+  "scripts": {
+    "check": "eslint && tsc",
+    "fix": "eslint --fix"
+  },
   "files": [
     "eslint.ts",
     "tsconfig.json",

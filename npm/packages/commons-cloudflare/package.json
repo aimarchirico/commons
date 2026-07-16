@@ -19,8 +19,18 @@
     "proxy.mjs",
     "bin"
   ],
+  "scripts": {
+    "check": "eslint",
+    "fix": "eslint --fix"
+  },
   "dependencies": {
     "replace-in-file": "^8.4.0",
     "shelljs": "^0.10.0"
+  },
+  "devDependencies": {
+    "@aimarchirico/commons-ts": "workspace:^",
+    "@types/node": "^26.0.1",
+    "eslint": "^9.39.2",
+    "typescript": "^6.0.3"
   }
 }

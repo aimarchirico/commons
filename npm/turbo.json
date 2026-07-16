@@ -4,10 +4,9 @@
     "check": {
       "cache": true,
       "inputs": [
-        "src/**/*",
-        "eslint.config.mjs",
-        "tsconfig.json",
-        "package.json"
+        "**/*.{ts,tsx,cts,mts,js,cjs,mjs,jsx}",
+        "**/*.{json,jsonc,json5,yaml,yml,toml}",
+        "tsconfig.json"
       ]
     },
     "fix": {
