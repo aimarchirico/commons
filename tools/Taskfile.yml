@@ -65,14 +65,14 @@ tasks:
     desc: Lint Python scripts
     dir: ..
     cmds:
-      - 'find . -type d \( -name "node_modules" -o -name ".git" -o -name ".venv" \) -prune -o -name "*.py" -print | xargs -r docker run --rm -v $(pwd):/repo --workdir /repo ghcr.io/astral-sh/ruff:latest check --config tools/node_modules/@aimarchirico/commons-tools/ruff.toml'
+      - 'find . -type d \( -name "node_modules" -o -name ".git" -o -name ".venv" \) -prune -o -name "*.py" -print | xargs -r docker run --rm -v $(pwd):/repo --workdir /repo ghcr.io/astral-sh/ruff:latest check --config tools/node_modules/@aimarchirico/commons-python/ruff.toml'
 
   python:fix:
     desc: Fix Python scripts
     dir: ..
     cmds:
-      - 'find . -type d \( -name "node_modules" -o -name ".git" -o -name ".venv" \) -prune -o -name "*.py" -print | xargs -r docker run --rm -v $(pwd):/repo --workdir /repo ghcr.io/astral-sh/ruff:latest check --fix --config tools/node_modules/@aimarchirico/commons-tools/ruff.toml'
-      - 'find . -type d \( -name "node_modules" -o -name ".git" -o -name ".venv" \) -prune -o -name "*.py" -print | xargs -r docker run --rm -v $(pwd):/repo --workdir /repo ghcr.io/astral-sh/ruff:latest format --config tools/node_modules/@aimarchirico/commons-tools/ruff.toml'
+      - 'find . -type d \( -name "node_modules" -o -name ".git" -o -name ".venv" \) -prune -o -name "*.py" -print | xargs -r docker run --rm -v $(pwd):/repo --workdir /repo ghcr.io/astral-sh/ruff:latest check --fix --config tools/node_modules/@aimarchirico/commons-python/ruff.toml'
+      - 'find . -type d \( -name "node_modules" -o -name ".git" -o -name ".venv" \) -prune -o -name "*.py" -print | xargs -r docker run --rm -v $(pwd):/repo --workdir /repo ghcr.io/astral-sh/ruff:latest format --config tools/node_modules/@aimarchirico/commons-python/ruff.toml'
 
   action:check:
     desc: Lint GitHub Actions

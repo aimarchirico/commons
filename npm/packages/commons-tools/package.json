@@ -15,8 +15,7 @@
     "./commitlint": "./commitlint.cjs",
     "./actionlint": "./actionlint.yaml",
     "./hadolint": "./.hadolint.yaml",
-    "./shellcheck": "./.shellcheckrc",
-    "./ruff": "./ruff.toml"
+    "./shellcheck": "./.shellcheckrc"
   },
   "files": [
     "eslint.ts",
@@ -24,8 +23,7 @@
     "commitlint.cjs",
     "actionlint.yaml",
     ".hadolint.yaml",
-    ".shellcheckrc",
-    "ruff.toml"
+    ".shellcheckrc"
   ],
   "dependencies": {
     "@commitlint/config-conventional": "^19.0.0",
