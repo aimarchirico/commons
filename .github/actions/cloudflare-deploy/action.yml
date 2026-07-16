@@ -5,7 +5,7 @@ inputs:
     required: true
   node_cache_path:
     required: false
-    default: "pnpm-lock.yaml"
+    default: 'pnpm-lock.yaml'
   output_directory:
     required: true
   cloudflare_account_id:
@@ -16,7 +16,7 @@ inputs:
     required: true
 
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - name: Run Web Build
       uses: aimarchirico/commons/.github/actions/node-task@main

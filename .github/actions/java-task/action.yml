@@ -10,7 +10,7 @@ inputs:
     required: false
 
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - name: Set Up Java
       uses: actions/setup-java@v5
