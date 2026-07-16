@@ -23,6 +23,8 @@ jobs:
       maven: ${{ steps.filter.outputs.maven }}
       npm: ${{ steps.filter.outputs.npm }}
       docs: ${{ steps.filter.outputs.docs }}
+      skills: ${{ steps.filter.outputs.skills }}
+      github: ${{ steps.filter.outputs.github }}
     steps:
       - name: Check Out Repo
         uses: actions/checkout@v7
@@ -41,6 +43,42 @@ jobs:
             docs:
               - '**/*.md'
               - '.github/workflows/ci.yml'
+            skills:
+              - 'skills/**'
+              - '.github/workflows/ci.yml'
+            github:
+              - '.github/**'
+
+  # ==========================================
+  # SKILLS CI JOB
+  # ==========================================
+  skills:
+    name: Skills Check
+    needs: changes
+    if: needs.changes.outputs.skills == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/python-task
+        with:
+          command: skills:check
+      - uses: ./.github/actions/python-task
+        with:
+          command: skills:shell:check
+
+  # ==========================================
+  # GITHUB CI JOB
+  # ==========================================
+  github:
+    name: GitHub Check
+    needs: changes
+    if: needs.changes.outputs.github == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/github-task
+        with:
+          command: github:check
 
   # ==========================================
   # MAVEN CI JOB
