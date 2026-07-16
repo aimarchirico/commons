@@ -1,21 +1,31 @@
 let tsConfig;
-let toolsConfig;
+let jsonConfig;
+let ymlConfig;
+let tomlConfig;
 
 try {
   tsConfig = (await import('@aimarchirico/commons-ts/eslint')).default;
-  toolsConfig = (await import('@aimarchirico/commons-tools/eslint')).default;
+  jsonConfig = (await import('@aimarchirico/commons-tools/eslint/json')).default;
+  ymlConfig = (await import('@aimarchirico/commons-tools/eslint/yml')).default;
+  tomlConfig = (await import('@aimarchirico/commons-tools/eslint/toml')).default;
 } catch {
   tsConfig = (await import('../npm/packages/commons-ts/eslint.ts')).default;
-  toolsConfig = (await import('../npm/packages/commons-tools/eslint.ts'))
+  jsonConfig = (await import('../npm/packages/commons-tools/eslint/json.ts'))
+    .default;
+  ymlConfig = (await import('../npm/packages/commons-tools/eslint/yml.ts'))
+    .default;
+  tomlConfig = (await import('../npm/packages/commons-tools/eslint/toml.ts'))
     .default;
 }
 
 export default [
   ...tsConfig,
-  ...toolsConfig,
+  ...jsonConfig,
+  ...ymlConfig,
+  ...tomlConfig,
   {
     ignores: [
-      '../npm/packages/**/*',
+      '../npm/packages/**/*.{ts,tsx,mts,cts,js,jsx,mjs,cjs}',
       '../**/.turbo/**',
       '../**/pnpm-lock.yaml',
       '../**/commitlint.config.js',

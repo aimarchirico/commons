@@ -1,1 +1,3 @@
-export {default} from '@aimarchirico/commons-ts/eslint';
+import baseConfig from '@aimarchirico/commons-ts/eslint';
+
+export default baseConfig;

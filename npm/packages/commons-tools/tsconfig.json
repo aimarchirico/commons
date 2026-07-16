@@ -3,7 +3,7 @@
   "extends": "@aimarchirico/commons-ts/tsconfig",
   "include": [
     "eslint.config.ts",
-    "eslint.ts",
+    "eslint/*.ts",
     "commitlint.cjs",
     ".markdownlint-cli2.cjs"
   ]
