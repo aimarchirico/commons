@@ -96,21 +96,6 @@ jobs:
             NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
             PACKAGE='@aimarchirico/commons-openapi'
 
-  publish-commons-tools:
-    name: Publish commons-tools
-    needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-tools')
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: ./.github/actions/node-task
-        with:
-          command: npm:publish
-          node_cache_path: npm/pnpm-lock.yaml
-          task_env: |
-            NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
-            PACKAGE='@aimarchirico/commons-tools'
-
   publish-commons-docs:
     name: Publish commons-docs
     needs: release-please
