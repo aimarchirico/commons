@@ -8,8 +8,11 @@ const require = createRequire(import.meta.url);
 const gtsPrettier = require('gts/.prettierrc.json');
 
 
+import eslintPluginJsonc from 'eslint-plugin-jsonc';
+
 export default [
   ...gts,
+  ...eslintPluginJsonc.configs['flat/recommended-with-jsonc'],
   {
     rules: {
       'prettier/prettier': ['error', gtsPrettier],

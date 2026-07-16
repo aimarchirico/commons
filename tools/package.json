@@ -12,7 +12,6 @@
     "eslint": "^9.39.5",
     "husky": "^9.1.7",
     "markdownlint-cli2": "^0.23.0",
-    "eslint-plugin-jsonc": "^2.16.0",
     "eslint-plugin-toml": "^0.11.1",
     "eslint-plugin-yml": "^1.14.0"
   }

@@ -1,4 +1,3 @@
-import eslintPluginJsonc from 'eslint-plugin-jsonc';
 import eslintPluginToml from 'eslint-plugin-toml';
 import eslintPluginYml from 'eslint-plugin-yml';
 
@@ -15,7 +14,6 @@ try {
 
 export default [
   ...tsConfig,
-  ...eslintPluginJsonc.configs['flat/recommended-with-jsonc'],
   ...eslintPluginToml.configs['flat/recommended'],
   ...eslintPluginYml.configs['flat/recommended'],
 
