@@ -4,4 +4,4 @@ tasks:
   check:
     desc: Lint GitHub Actions
     cmds:
-      - actionlint -color
+      - actionlint -verbose
