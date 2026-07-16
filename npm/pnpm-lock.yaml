@@ -102,15 +102,33 @@ importers:
       eslint-plugin-import:
         specifier: ^2.32.0
         version: 2.32.0(@typescript-eslint/parser@8.62.1(eslint@9.39.4(jiti@2.6.1))(typescript@6.0.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.4(jiti@2.6.1))
+      eslint-plugin-jsonc:
+        specifier: ^3.3.0
+        version: 3.3.0(eslint@9.39.4(jiti@2.6.1))
+      eslint-plugin-toml:
+        specifier: ^1.4.0
+        version: 1.4.0(eslint@9.39.4(jiti@2.6.1))
+      eslint-plugin-yml:
+        specifier: ^3.6.0
+        version: 3.6.0(eslint@9.39.4(jiti@2.6.1))
       globals:
         specifier: ^17.7.0
         version: 17.7.0
       gts:
         specifier: ^7.0.0
         version: 7.0.0(jiti@2.6.1)(typescript@6.0.3)
+      jsonc-eslint-parser:
+        specifier: ^3.1.0
+        version: 3.1.0
+      toml-eslint-parser:
+        specifier: ^1.0.3
+        version: 1.0.3
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
+      yaml-eslint-parser:
+        specifier: ^2.1.0
+        version: 2.1.0
 
   packages/commons-firebase-client:
     devDependencies:
@@ -209,33 +227,15 @@ importers:
       eslint-config-prettier:
         specifier: ^10.1.8
         version: 10.1.8(eslint@9.39.4(jiti@2.6.1))
-      eslint-plugin-jsonc:
-        specifier: ^3.3.0
-        version: 3.3.0(eslint@9.39.4(jiti@2.6.1))
       eslint-plugin-prettier:
         specifier: ^5.5.6
         version: 5.5.6(eslint-config-prettier@10.1.8(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))(prettier@3.9.5)
-      eslint-plugin-toml:
-        specifier: ^1.4.0
-        version: 1.4.0(eslint@9.39.4(jiti@2.6.1))
-      eslint-plugin-yml:
-        specifier: ^3.6.0
-        version: 3.6.0(eslint@9.39.4(jiti@2.6.1))
-      jsonc-eslint-parser:
-        specifier: ^3.1.0
-        version: 3.1.0
       markdownlint-cli2:
         specifier: ^0.13.0
         version: 0.13.0
       prettier:
         specifier: ^3.9.5
         version: 3.9.5
-      toml-eslint-parser:
-        specifier: ^1.0.3
-        version: 1.0.3
-      yaml-eslint-parser:
-        specifier: ^2.1.0
-        version: 2.1.0
     devDependencies:
       '@aimarchirico/commons-eslint':
         specifier: workspace:^

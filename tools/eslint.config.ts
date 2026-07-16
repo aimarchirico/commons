@@ -4,18 +4,15 @@ let ymlConfig;
 let tomlConfig;
 
 try {
-  tsConfig = (await import('@aimarchirico/commons-ts/eslint')).default;
-  jsonConfig = (await import('@aimarchirico/commons-tools/eslint/json')).default;
-  ymlConfig = (await import('@aimarchirico/commons-tools/eslint/yml')).default;
-  tomlConfig = (await import('@aimarchirico/commons-tools/eslint/toml')).default;
+  tsConfig = (await import('@aimarchirico/commons-eslint')).default;
+  jsonConfig = (await import('@aimarchirico/commons-eslint/json')).default;
+  ymlConfig = (await import('@aimarchirico/commons-eslint/yaml')).default;
+  tomlConfig = (await import('@aimarchirico/commons-eslint/toml')).default;
 } catch {
-  tsConfig = (await import('../npm/packages/commons-ts/eslint.ts')).default;
-  jsonConfig = (await import('../npm/packages/commons-tools/eslint/json.ts'))
-    .default;
-  ymlConfig = (await import('../npm/packages/commons-tools/eslint/yml.ts'))
-    .default;
-  tomlConfig = (await import('../npm/packages/commons-tools/eslint/toml.ts'))
-    .default;
+  tsConfig = (await import('../npm/packages/commons-eslint/index.js')).default;
+  jsonConfig = (await import('../npm/packages/commons-eslint/json.js')).default;
+  ymlConfig = (await import('../npm/packages/commons-eslint/yaml.js')).default;
+  tomlConfig = (await import('../npm/packages/commons-eslint/toml.js')).default;
 }
 
 export default [
@@ -27,8 +24,11 @@ export default [
     ignores: [
       '../npm/packages/**/*.{ts,tsx,mts,cts,js,jsx,mjs,cjs}',
       '../**/.turbo/**',
+      '**/pnpm-lock.yaml',
       '../**/pnpm-lock.yaml',
+      '**/commitlint.config.js',
       '../**/commitlint.config.js',
+      '**/test.toml',
     ],
   },
   {

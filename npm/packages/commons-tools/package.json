@@ -10,14 +10,10 @@
     "url": "https://github.com/aimarchirico/commons.git"
   },
   "exports": {
-    "./eslint/json": "./eslint/json.ts",
-    "./eslint/yml": "./eslint/yml.ts",
-    "./eslint/toml": "./eslint/toml.ts",
     "./markdownlint": "./.markdownlint-cli2.cjs",
     "./commitlint": "./commitlint.cjs"
   },
   "files": [
-    "eslint",
     ".markdownlint-cli2.cjs",
     "commitlint.cjs"
   ],
@@ -28,14 +24,8 @@
   "dependencies": {
     "@commitlint/config-conventional": "^19.0.0",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-jsonc": "^3.3.0",
     "eslint-plugin-prettier": "^5.5.6",
-    "eslint-plugin-toml": "^1.4.0",
-    "eslint-plugin-yml": "^3.6.0",
-    "jsonc-eslint-parser": "^3.1.0",
-    "prettier": "^3.9.5",
-    "toml-eslint-parser": "^1.0.3",
-    "yaml-eslint-parser": "^2.1.0"
+    "prettier": "^3.9.5"
   },
   "devDependencies": {
     "@types/node": "^26.0.1",
