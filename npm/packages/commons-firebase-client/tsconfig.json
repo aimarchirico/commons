@@ -1,4 +1,8 @@
 {
   "extends": "@aimarchirico/commons-expo/tsconfig",
-  "include": ["*.ts"]
+  "include": [
+    "*.ts",
+    "eslint.config.ts",
+    "eslint.ts"
+  ]
 }

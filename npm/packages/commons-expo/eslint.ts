@@ -1,4 +1,5 @@
 import {defineConfig} from 'eslint/config';
+// @ts-ignore
 import expoConfig from 'eslint-config-expo/flat.js';
 import baseConfig from '@aimarchirico/commons-ts/eslint';
 

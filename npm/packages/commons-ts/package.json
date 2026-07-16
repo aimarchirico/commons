@@ -10,11 +10,11 @@
     "url": "https://github.com/aimarchirico/commons.git"
   },
   "exports": {
-    "./eslint": "./eslint.mjs",
+    "./eslint": "./eslint.ts",
     "./tsconfig": "./tsconfig.json"
   },
   "files": [
-    "eslint.mjs",
+    "eslint.ts",
     "tsconfig.json"
   ],
   "dependencies": {

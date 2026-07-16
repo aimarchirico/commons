@@ -1,4 +1,6 @@
+// @ts-ignore
 import checkFile from 'eslint-plugin-check-file';
+// @ts-ignore
 import eslintPluginImport from 'eslint-plugin-import';
 import globals from 'globals';
 import gts from 'gts';
@@ -52,7 +54,7 @@ export default defineConfig([
     },
   },
   {
-    files: ['**/eslint.config.mjs', '**/eslint.mjs'],
+    files: ['**/eslint.config.ts', '**/eslint.ts'],
     rules: {
       'import/no-default-export': 'off',
       'check-file/filename-naming-convention': 'off',
