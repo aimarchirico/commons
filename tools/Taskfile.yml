@@ -55,20 +55,20 @@ tasks:
     desc: Lint shell scripts
     dir: ..
     cmds:
-      - 'git ls-files -z "*.sh" | xargs -0r shellcheck'
+      - 'git ls-files -z "*.sh" | xargs -0r shellcheck --rcfile tools/.shellcheckrc'
 
   python:check:
     desc: Lint Python scripts
     dir: ..
     cmds:
-      - uvx ruff check .
+      - uvx ruff check --config tools/ruff.toml .
 
   python:fix:
     desc: Fix Python scripts
     dir: ..
     cmds:
-      - uvx ruff check --fix .
-      - uvx ruff format .
+      - uvx ruff check --config tools/ruff.toml --fix .
+      - uvx ruff format --config tools/ruff.toml .
 
   action:check:
     desc: Lint GitHub Actions
@@ -80,4 +80,4 @@ tasks:
     desc: Lint Dockerfiles
     dir: ..
     cmds:
-      - 'git ls-files -z "*Dockerfile*" | xargs -0r hadolint'
+      - 'git ls-files -z "*Dockerfile*" | xargs -0r hadolint -c tools/.hadolint.yaml'
