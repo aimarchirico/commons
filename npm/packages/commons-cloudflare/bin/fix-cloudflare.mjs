@@ -1,8 +1,7 @@
 #!/usr/bin/env node
-'use strict';
 
-const shell = require('shelljs');
-const replace = require('replace-in-file');
+import shell from 'shelljs';
+import replace from 'replace-in-file';
 
 // Cloudflare Pages rejects upload paths containing "node_modules", so rename
 // the exported directory and rewrite references to it. Run from the app

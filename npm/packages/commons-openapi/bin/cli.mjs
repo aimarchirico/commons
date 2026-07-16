@@ -1,11 +1,15 @@
 #!/usr/bin/env node
 
-const {execSync} = require('child_process');
-const path = require('path');
-const fs = require('fs');
-const os = require('os');
-const https = require('https');
-const http = require('http');
+import {execSync} from 'child_process';
+import path from 'path';
+import fs from 'fs';
+import os from 'os';
+import https from 'https';
+import http from 'http';
+import {fileURLToPath} from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const packageRoot = path.resolve(__dirname, '..');
 

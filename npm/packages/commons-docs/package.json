@@ -10,7 +10,7 @@
     "url": "https://github.com/aimarchirico/commons.git"
   },
   "bin": {
-    "commons-docs": "bin/cli.js"
+    "commons-docs": "bin/cli.mjs"
   },
   "files": [
     "CONTRIBUTING.md",

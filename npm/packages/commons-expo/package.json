@@ -14,7 +14,7 @@
     "./tsconfig": "./tsconfig.json"
   },
   "bin": {
-    "commons-expo-build-android": "bin/build-android.js"
+    "commons-expo-build-android": "bin/build-android.mjs"
   },
   "files": [
     "eslint.mjs",

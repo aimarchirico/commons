@@ -16,14 +16,21 @@ export default defineConfig([
     },
   },
   {
-    files: ['**/*.js'],
+    files: ['**/*.{js,cjs}'],
     languageOptions: {
       sourceType: 'commonjs',
       globals: {...globals.node},
     },
   },
   {
-    files: ['**/*.{js,ts,jsx,tsx}'],
+    files: ['**/*.mjs'],
+    languageOptions: {
+      sourceType: 'module',
+      globals: {...globals.node},
+    },
+  },
+  {
+    files: ['**/*.{js,cjs,mjs,ts,jsx,tsx}'],
     plugins: {
       'check-file': checkFile,
       'import': eslintPluginImport,
@@ -32,7 +39,7 @@ export default defineConfig([
       'import/no-default-export': ['error'],
       'check-file/filename-naming-convention': [
         'error',
-        {'**/*.{js,ts,jsx,tsx}': 'KEBAB_CASE'},
+        {'**/*.{js,cjs,mjs,ts,jsx,tsx}': 'KEBAB_CASE'},
       ],
       'max-lines': [
         'error',
@@ -42,6 +49,13 @@ export default defineConfig([
           skipComments: false,
         },
       ],
+    },
+  },
+  {
+    files: ['**/eslint.config.mjs', '**/eslint.mjs'],
+    rules: {
+      'import/no-default-export': 'off',
+      'check-file/filename-naming-convention': 'off',
     },
   },
 ]);

@@ -13,7 +13,7 @@
     "./proxy": "./proxy.mjs"
   },
   "bin": {
-    "commons-cloudflare-fix": "bin/fix-cloudflare.js"
+    "commons-cloudflare-fix": "bin/fix-cloudflare.mjs"
   },
   "files": [
     "proxy.mjs",

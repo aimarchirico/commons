@@ -3,10 +3,10 @@ import expoConfig from 'eslint-config-expo/flat.js';
 import baseConfig from '@aimarchirico/commons-ts/eslint';
 
 const dedupedConfig = baseConfig.map(config => {
-  if (!config?.plugins?.import) {
+  if (!config?.plugins) {
     return config;
   }
-  const {import: _importPlugin, ...plugins} = config.plugins;
+  const {'@typescript-eslint': _tsPlugin, import: _importPlugin, ...plugins} = config.plugins;
   return {...config, plugins};
 });
 

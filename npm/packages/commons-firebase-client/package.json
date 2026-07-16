@@ -14,7 +14,7 @@
     ".": "./index.ts"
   },
   "bin": {
-    "commons-firebase-client-decode-google-services": "bin/decode-google-services.js"
+    "commons-firebase-client-decode-google-services": "bin/decode-google-services.mjs"
   },
   "files": [
     "index.ts",

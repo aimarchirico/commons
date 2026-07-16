@@ -10,7 +10,7 @@
     "url": "https://github.com/aimarchirico/commons.git"
   },
   "bin": {
-    "commons-openapi": "bin/cli.js"
+    "commons-openapi": "bin/cli.mjs"
   },
   "files": [
     "bin"
