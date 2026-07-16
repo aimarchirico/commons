@@ -5,7 +5,7 @@ tasks:
     desc: Lint Python scripts
     cmds:
       - uvx ruff check --verbose .
-      - uvx pyright .
+      - uvx ty .
 
   fix:
     desc: Fix Python scripts
