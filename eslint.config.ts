@@ -5,9 +5,8 @@ try {
   tsConfig = (await import('@aimarchirico/commons-ts/eslint')).default;
   toolsConfig = (await import('@aimarchirico/commons-tools/eslint')).default;
 } catch {
-  tsConfig = (await import('../npm/packages/commons-ts/eslint.ts')).default;
-  toolsConfig = (await import('../npm/packages/commons-tools/eslint.ts'))
-    .default;
+  tsConfig = (await import('./npm/packages/commons-ts/eslint.ts')).default;
+  toolsConfig = (await import('./npm/packages/commons-tools/eslint.ts')).default;
 }
 
 export default [
@@ -15,11 +14,12 @@ export default [
   ...toolsConfig,
   {
     ignores: [
-      '../npm/packages/**/*',
-      '../npm/apps/**/*',
-      '../backend/**/*',
-      '../frontend/**/*',
-      '../**/pnpm-lock.yaml',
+      'npm/packages/**/*',
+      'npm/apps/**/*',
+      'backend/**/*',
+      'frontend/**/*',
+      '**/.turbo/**',
+      '**/Taskfile.yml',
       '**/pnpm-lock.yaml',
       '**/commitlint.config.js',
     ],
