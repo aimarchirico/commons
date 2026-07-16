@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/aimarchirico/commons/compare/commons-docs-v1.3.0...commons-docs-v1.3.1) (2026-07-15)
+
+
+### Bug Fixes
+
+* **docs:** trigger release for commons-docs ([bef549f](https://github.com/aimarchirico/commons/commit/bef549fec2ae96476f73cee7f3e060be874f222b))
+
 ## [1.3.0](https://github.com/aimarchirico/commons/compare/commons-docs-v1.2.1...commons-docs-v1.3.0) (2026-07-15)
 
 

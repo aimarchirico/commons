@@ -115,10 +115,10 @@ graph TD
 
 ### Project Management
 
-| View             | Purpose                                                             |
-| :--------------- | :------------------------------------------------------------------ |
-| **Backlog**      | A table for prioritizing upcoming stories, tasks, and bugs.         |
-| **Sprint Board** | A board for tracking stories, tasks, and bugs in the active sprint. |
+| View         | Purpose                                            |
+| :----------- | :------------------------------------------------- |
+| **Backlog**  | A table for prioritizing stories, tasks, and bugs. |
+| **Board**    | A board for tracking stories, tasks, and bugs.     |
 
 | Status        | Description                          |
 | :------------ | :----------------------------------- |
