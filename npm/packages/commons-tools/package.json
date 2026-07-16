@@ -12,24 +12,30 @@
   "exports": {
     "./eslint": "./eslint.ts",
     "./markdownlint": "./.markdownlint-cli2.cjs",
-    "./commitlint": "./commitlint.cjs"
+    "./commitlint": "./commitlint.cjs",
+    "./actionlint": "./actionlint.yaml",
+    "./hadolint": "./.hadolint.yaml",
+    "./shellcheck": "./.shellcheckrc"
   },
   "files": [
     "eslint.ts",
     ".markdownlint-cli2.cjs",
-    "commitlint.cjs"
+    "commitlint.cjs",
+    "actionlint.yaml",
+    ".hadolint.yaml",
+    ".shellcheckrc"
   ],
   "dependencies": {
     "@commitlint/config-conventional": "^19.0.0",
+    "actionlint": "^2.0.6",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-check-file": "^3.3.1",
-    "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-jsonc": "^3.3.0",
     "eslint-plugin-prettier": "^5.5.6",
     "eslint-plugin-yml": "^3.6.0",
-    "globals": "^17.7.0",
+    "hadolint": "^0.4.2",
     "jsonc-eslint-parser": "^3.1.0",
     "prettier": "^3.9.5",
+    "shellcheck": "^4.1.0",
     "yaml-eslint-parser": "^2.1.0"
   },
   "devDependencies": {

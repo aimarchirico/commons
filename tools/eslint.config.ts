@@ -1,12 +1,17 @@
-let baseConfig;
+let tsConfig;
+let toolsConfig;
+
 try {
-  baseConfig = (await import('@aimarchirico/commons-ts/eslint')).default;
+  tsConfig = (await import('@aimarchirico/commons-ts/eslint')).default;
+  toolsConfig = (await import('@aimarchirico/commons-tools/eslint')).default;
 } catch {
-  baseConfig = (await import('../npm/packages/commons-ts/eslint.ts')).default;
+  tsConfig = (await import('../npm/packages/commons-ts/eslint.ts')).default;
+  toolsConfig = (await import('../npm/packages/commons-tools/eslint.ts')).default;
 }
 
 export default [
-  ...baseConfig,
+  ...tsConfig,
+  ...toolsConfig,
   {
     ignores: [
       '../npm/packages/**/*',
