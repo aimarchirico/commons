@@ -7,7 +7,9 @@ import {createRequire} from 'module';
 const require = createRequire(import.meta.url);
 const gtsPrettier = require('gts/.prettierrc.json');
 
-import jsonConfig from './json.js';
+import eslintPluginJsonc from 'eslint-plugin-jsonc';
+import eslintPluginToml from 'eslint-plugin-toml';
+import eslintPluginYml from 'eslint-plugin-yml';
 
 export default [
   ...gts,
@@ -59,5 +61,7 @@ export default [
       'check-file/filename-naming-convention': 'off',
     },
   },
-  ...jsonConfig,
+  ...eslintPluginJsonc.configs['flat/recommended-with-jsonc'],
+  ...eslintPluginToml.configs['flat/recommended'],
+  ...eslintPluginYml.configs['flat/recommended'],
 ];
