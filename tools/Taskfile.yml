@@ -41,12 +41,12 @@ tasks:
       - gh skill install aimarchirico/commons --all --scope project --agent antigravity
       - gh skill install aimarchirico/commons --all --scope project --agent claude-code
 
-  root:check:
+  config:check:
     desc: Lint global repository folders
     cmds:
       - pnpm exec -- sh -c "cd .. && eslint -c tools/eslint.config.ts ."
 
-  root:fix:
+  config:fix:
     desc: Fix global repository folders lint issues
     cmds:
       - pnpm exec -- sh -c "cd .. && eslint -c tools/eslint.config.ts . --fix"
