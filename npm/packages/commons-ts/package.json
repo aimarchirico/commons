@@ -10,8 +10,8 @@
     "fix": "eslint --fix"
   },
   "exports": {
-    "./eslint": "./eslint.ts",
-    "./tsconfig": "./tsconfig.base.json"
+    "./eslint": "./configs/eslint.ts",
+    "./tsconfig": "./configs/tsconfig.base.json"
   },
   "dependencies": {
     "eslint-plugin-check-file": "^3.3.1",

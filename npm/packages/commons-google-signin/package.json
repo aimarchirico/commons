@@ -9,15 +9,12 @@
     "type": "git",
     "url": "https://github.com/aimarchirico/commons.git"
   },
-  "main": "index.ts",
+  "main": "src/index.ts",
   "exports": {
-    ".": "./index.ts"
+    ".": "./src/index.ts"
   },
   "files": [
-    "index.ts",
-    "google-sign-in-service.ts",
-    "use-google-sign-in.ts",
-    "auth-context.tsx"
+    "src"
   ],
   "scripts": {
     "check": "eslint && tsc",

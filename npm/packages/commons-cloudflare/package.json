@@ -10,13 +10,13 @@
     "url": "https://github.com/aimarchirico/commons.git"
   },
   "exports": {
-    "./proxy": "./proxy.mjs"
+    "./proxy": "./src/proxy.mjs"
   },
   "bin": {
     "commons-cloudflare-fix": "bin/fix-cloudflare.mjs"
   },
   "files": [
-    "proxy.mjs",
+    "src",
     "bin"
   ],
   "scripts": {

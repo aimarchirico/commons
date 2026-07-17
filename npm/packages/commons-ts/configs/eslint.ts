@@ -41,16 +41,8 @@ export default [
     },
   },
   {
-    files: ['**/*.{js,cjs}'],
+    files: ['**/*.{js,cjs,mjs}'],
     languageOptions: {
-      sourceType: 'commonjs',
-      globals: {...globals.node},
-    },
-  },
-  {
-    files: ['**/*.mjs'],
-    languageOptions: {
-      sourceType: 'module',
       globals: {...globals.node},
     },
   },
@@ -77,7 +69,7 @@ export default [
     },
   },
   {
-    files: ['eslint.config.ts', 'eslint.ts'],
+    files: ['**/eslint.config.ts', '**/eslint.ts'],
     rules: {
       'check-file/filename-naming-convention': 'off',
       'import/no-default-export': 'off',

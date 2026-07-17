@@ -11,10 +11,12 @@ const packageRoot = path.resolve(__dirname, '..');
 const cwd = process.cwd();
 
 fs.copyFileSync(
-  path.join(packageRoot, 'CONTRIBUTING.md'),
+  path.join(packageRoot, 'templates', 'CONTRIBUTING.md'),
   path.join(cwd, 'CONTRIBUTING.md'),
 );
-fs.cpSync(path.join(packageRoot, 'github'), path.join(cwd, '.github'), {
-  recursive: true,
-});
+fs.cpSync(
+  path.join(packageRoot, 'templates', 'github'),
+  path.join(cwd, '.github'),
+  {recursive: true},
+);
 console.log('Materialized CONTRIBUTING.md and .github templates.');

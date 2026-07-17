@@ -10,8 +10,8 @@
     "url": "https://github.com/aimarchirico/commons.git"
   },
   "exports": {
-    "./eslint": "./eslint.ts",
-    "./tsconfig": "./tsconfig.base.json"
+    "./eslint": "./configs/eslint.ts",
+    "./tsconfig": "./configs/tsconfig.base.json"
   },
   "bin": {
     "commons-expo-build-android": "bin/build-android.mjs"
@@ -21,9 +21,7 @@
     "fix": "eslint --fix"
   },
   "files": [
-    "eslint.ts",
-    "eslint-config-expo.ts",
-    "tsconfig.base.json",
+    "configs",
     "bin"
   ],
   "dependencies": {

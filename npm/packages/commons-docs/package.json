@@ -13,8 +13,7 @@
     "commons-docs": "bin/cli.mjs"
   },
   "files": [
-    "CONTRIBUTING.md",
-    "github",
+    "templates",
     "bin"
   ],
   "scripts": {
