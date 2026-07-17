@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "prepare": "cd .. && husky tools/.husky",
-    "config:check": "cd .. && eslint -c tools/eslint.config.ts",
+    "config:check": "cd .. && eslint -c tools/eslint.config.ts && tsc -p tools/tsconfig.json",
     "config:fix": "cd .. && eslint -c tools/eslint.config.ts --fix",
     "docs:check": "cd .. && markdownlint-cli2 --config tools/.markdownlint-cli2.yaml",
     "docs:fix": "cd .. && markdownlint-cli2 --config tools/.markdownlint-cli2.yaml --fix"
@@ -17,6 +17,8 @@
     "husky": "^9.1.7",
     "markdownlint-cli2": "^0.23.0",
     "eslint-plugin-toml": "^0.11.1",
-    "eslint-plugin-yml": "^1.14.0"
+    "eslint-plugin-yml": "^1.14.0",
+    "typescript": "^6.0.3",
+    "@types/node": "^26.0.1"
   }
 }

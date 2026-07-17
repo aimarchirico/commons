@@ -7,10 +7,6 @@ globs:
   - '**/*.md'
 gitignore: true
 ignores:
-  - '**/node_modules/**'
-  - '**/dist/**'
-  - '**/build/**'
-  - '**/target/**'
   - '**/CHANGELOG.md'
 overrides:
   - filter:

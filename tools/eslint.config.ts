@@ -21,6 +21,14 @@ export default [
     ],
   },
   {
+    files: ['**/*.ts'],
+    languageOptions: {
+      parserOptions: {
+        project: 'tools/tsconfig.json',
+      },
+    },
+  },
+  {
     files: ['**/*.toml'],
     rules: {
       'prettier/prettier': 'off',
