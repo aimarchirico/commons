@@ -21,14 +21,18 @@ export default [
       '**/dist/**',
       '**/build/**',
       '**/.turbo/**',
-      '**/.github/**',
-      '**/.vscode/**',
-      '**/.claude/**',
-      '**/.agents/**',
-      '**/.husky/**',
       '**/pnpm-lock.yaml',
       '**/*.lock',
+      'npm/eslint.config.ts',
+      'npm/tsconfig.json',
+      'maven/gradle/libs.versions.toml',
     ],
+  },
+  {
+    files: ['**/*.toml'],
+    rules: {
+      'prettier/prettier': 'off',
+    },
   },
   {
     files: ['**/eslint.config.ts'],
