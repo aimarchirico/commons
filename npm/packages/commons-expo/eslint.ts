@@ -1,16 +1,17 @@
-import expoConfig from 'eslint-config-expo/flat.js';
+import type {Linter} from 'eslint';
 import baseConfig from '@aimarchirico/commons-ts/eslint';
+import {expoConfig} from './eslint-config-expo';
 
-const flatExpo = expoConfig.flat(Infinity);
-const primaryTsPlugin = flatExpo.find(
-  c => c && c.plugins && c.plugins['@typescript-eslint'],
-)?.plugins['@typescript-eslint'];
-const primaryImportPlugin = flatExpo.find(
-  c => c && c.plugins && c.plugins['import'],
-)?.plugins['import'];
+const flatExpo = expoConfig.flat(Infinity) as Linter.Config[];
+const primaryTsPlugin = flatExpo.find(c => c.plugins?.['@typescript-eslint'])
+  ?.plugins?.['@typescript-eslint'];
+const primaryImportPlugin = flatExpo.find(c => c.plugins?.['import'])
+  ?.plugins?.['import'];
 
-const combined = [...expoConfig, ...baseConfig].flat(Infinity).map(config => {
-  if (config && config.plugins) {
+const combined = (
+  [...expoConfig, ...baseConfig].flat(Infinity) as Linter.Config[]
+).map(config => {
+  if (config.plugins) {
     const newPlugins = {...config.plugins};
     if (newPlugins['@typescript-eslint'] && primaryTsPlugin) {
       newPlugins['@typescript-eslint'] = primaryTsPlugin;
