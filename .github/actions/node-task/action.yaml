@@ -27,7 +27,7 @@ runs:
         cache-dependency-path: ${{ inputs.node_cache_path }}
         registry-url: https://npm.pkg.github.com
     - name: Run Task
-      uses: aimarchirico/commons/.github/actions/run-task@main
+      uses: aimarchirico/commons/.github/actions/run-task@dev
       with:
         command: ${{ inputs.command }}
         working_directory: ${{ inputs.working_directory }}

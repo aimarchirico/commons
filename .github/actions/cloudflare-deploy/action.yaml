@@ -19,7 +19,7 @@ runs:
   using: 'composite'
   steps:
     - name: Run Web Build
-      uses: aimarchirico/commons/.github/actions/node-task@main
+      uses: aimarchirico/commons/.github/actions/node-task@dev
       with:
         command: ${{ inputs.command }}
         node_cache_path: ${{ inputs.node_cache_path }}

@@ -25,6 +25,7 @@ jobs:
       docs: ${{ steps.filter.outputs.docs }}
       skills: ${{ steps.filter.outputs.skills }}
       github: ${{ steps.filter.outputs.github }}
+      tools: ${{ steps.filter.outputs.tools }}
     steps:
       - name: Check Out Repo
         uses: actions/checkout@v7
@@ -34,37 +35,80 @@ jobs:
         id: filter
         with:
           filters: |
+            config:
+              - '**/*.ts'
+              - '**/*.json'
+              - '**/*.toml'
+              - '**/*.yaml'
+              - '!npm/packages/**'
+            docs:
+              - '**/*.md'
+              - '.github/workflows/ci.yaml'
+            github:
+              - '.github/**'
             maven:
               - 'maven/**'
               - '.github/workflows/ci.yaml'
             npm:
               - 'npm/**'
               - '.github/workflows/ci.yaml'
-            docs:
-              - '**/*.md'
-              - '.github/workflows/ci.yaml'
             skills:
               - 'skills/**'
               - '.github/workflows/ci.yaml'
-            github:
-              - '.github/**'
 
   # ==========================================
-  # SKILLS CI JOB
+  # COMMIT CI JOB
   # ==========================================
-  skills:
-    name: Skills Check
-    needs: changes
-    if: needs.changes.outputs.skills == 'true'
+  commitlint:
+    name: Commit Check
+    if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: ./.github/actions/python-task
         with:
-          command: skills:check
-      - uses: ./.github/actions/python-task
+          fetch-depth: 0
+      - uses: ./.github/actions/node-task
         with:
-          command: skills:shell:check
+          command: commit:check
+          node_cache_path: tools/pnpm-lock.yaml
+          task_env: |
+            NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+            FROM_SHA=${{ github.event.pull_request.base.sha }}
+            TO_SHA=${{ github.event.pull_request.head.sha }}
+
+  # ==========================================
+  # CONFIG CI JOB
+  # ==========================================
+  config:
+    name: Config Check
+    needs: changes
+    if: needs.changes.outputs.tools == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/node-task
+        with:
+          command: config:check
+          node_cache_path: tools/pnpm-lock.yaml
+          task_env: |
+            NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+
+  # ==========================================
+  # DOCS CI JOB
+  # ==========================================
+  docs:
+    name: Docs Check
+    needs: changes
+    if: needs.changes.outputs.docs == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/node-task
+        with:
+          command: docs:check
+          node_cache_path: tools/pnpm-lock.yaml
+          task_env: |
+            NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
 
   # ==========================================
   # GITHUB CI JOB
@@ -112,38 +156,16 @@ jobs:
             NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
 
   # ==========================================
-  # COMMIT CI JOB
+  # SKILLS CI JOB
   # ==========================================
-  commitlint:
-    name: Commit Check
-    if: github.actor != 'dependabot[bot]'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-      - uses: ./.github/actions/node-task
-        with:
-          command: commit:check
-          node_cache_path: tools/pnpm-lock.yaml
-          task_env: |
-            NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
-            FROM_SHA=${{ github.event.pull_request.base.sha }}
-            TO_SHA=${{ github.event.pull_request.head.sha }}
-
-  # ==========================================
-  # DOCUMENTATION CI JOB
-  # ==========================================
-  docs:
-    name: Docs Check
+  skills:
+    name: Skills Check
     needs: changes
-    if: needs.changes.outputs.docs == 'true'
+    if: needs.changes.outputs.skills == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: ./.github/actions/node-task
+      - uses: ./.github/actions/python-task
         with:
-          command: docs:check
-          node_cache_path: tools/pnpm-lock.yaml
-          task_env: |
-            NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+          command: skills:check
+      - uses: ./.github/actions/python-task

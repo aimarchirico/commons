@@ -19,7 +19,7 @@ runs:
         java-version: 25
         cache: gradle
     - name: Run Task
-      uses: aimarchirico/commons/.github/actions/run-task@main
+      uses: aimarchirico/commons/.github/actions/run-task@dev
       with:
         command: ${{ inputs.command }}
         working_directory: ${{ inputs.working_directory }}

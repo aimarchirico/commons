@@ -4,4 +4,4 @@ tasks:
   check:
     desc: Check GitHub Actions
     cmds:
-      - actionlint -verbose
+      - actionlint
