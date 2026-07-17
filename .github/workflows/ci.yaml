@@ -36,16 +36,16 @@ jobs:
           filters: |
             maven:
               - 'maven/**'
-              - '.github/workflows/ci.yml'
+              - '.github/workflows/ci.yaml'
             npm:
               - 'npm/**'
-              - '.github/workflows/ci.yml'
+              - '.github/workflows/ci.yaml'
             docs:
               - '**/*.md'
-              - '.github/workflows/ci.yml'
+              - '.github/workflows/ci.yaml'
             skills:
               - 'skills/**'
-              - '.github/workflows/ci.yml'
+              - '.github/workflows/ci.yaml'
             github:
               - '.github/**'
 

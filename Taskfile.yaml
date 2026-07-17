@@ -4,20 +4,20 @@ dotenv: ['.env']
 
 includes:
   github:
-    taskfile: ./.github/Taskfile.yml
+    taskfile: ./.github/Taskfile.yaml
     dir: ./.github
   maven:
-    taskfile: ./maven/Taskfile.yml
+    taskfile: ./maven/Taskfile.yaml
     dir: ./maven
   npm:
-    taskfile: ./npm/Taskfile.yml
+    taskfile: ./npm/Taskfile.yaml
     dir: ./npm
   tools:
-    taskfile: ./tools/Taskfile.yml
+    taskfile: ./tools/Taskfile.yaml
     dir: ./tools
     flatten: true
   skills:
-    taskfile: ./skills/Taskfile.yml
+    taskfile: ./skills/Taskfile.yaml
     dir: ./skills
 
 tasks:
