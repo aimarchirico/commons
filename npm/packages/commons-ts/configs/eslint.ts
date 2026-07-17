@@ -36,27 +36,16 @@ export default [
   ...gts,
   ...eslintPluginJsonc.configs['flat/recommended-with-jsonc'],
   {
-    rules: {
-      'prettier/prettier': ['error', gtsPrettier],
-    },
-  },
-  {
-    files: ['**/*.{js,cjs,mjs}'],
-    languageOptions: {
-      globals: {...globals.node},
-    },
-  },
-  {
-    files: ['**/*.{js,cjs,mjs,ts,jsx,tsx}'],
     plugins: {
       'check-file': checkFile,
       import: eslintPluginImport,
     },
     rules: {
+      'prettier/prettier': ['error', gtsPrettier],
       'import/no-default-export': ['error'],
       'check-file/filename-naming-convention': [
         'error',
-        {'**/*.{js,cjs,mjs,ts,jsx,tsx}': 'KEBAB_CASE'},
+        {'**/*.{ts,tsx,mjs}': 'KEBAB_CASE'},
       ],
       'max-lines': [
         'error',
@@ -66,6 +55,12 @@ export default [
           skipComments: false,
         },
       ],
+    },
+  },
+  {
+    files: ['**/*.mjs'],
+    languageOptions: {
+      globals: {...globals.node},
     },
   },
   {

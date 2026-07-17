@@ -11,14 +11,20 @@ def run_cmd(args):
 
 def check_dependencies():
     if not shutil.which("gh"):
-        print("Error: GitHub CLI (gh) is not installed or not in PATH.", file=sys.stderr)
+        print(
+            "Error: GitHub CLI (gh) is not installed or not in PATH.",
+            file=sys.stderr,
+        )
         sys.exit(1)
 
     # Check gh auth status
     try:
         subprocess.run(["gh", "auth", "status"], capture_output=True, check=True)
     except subprocess.CalledProcessError:
-        print("Error: GitHub CLI is not authenticated. Please run 'gh auth login' first.", file=sys.stderr)
+        print(
+            "Error: GitHub CLI is not authenticated. Please run 'gh auth login' first.",
+            file=sys.stderr,
+        )
         sys.exit(1)
 
     # Check/install gh-sub-issue extension
@@ -26,9 +32,15 @@ def check_dependencies():
         output = run_cmd(["gh", "extension", "list"])
         if "gh-sub-issue" not in output:
             print("Installing gh-sub-issue extension...")
-            subprocess.run(["gh", "extension", "install", "yahsan2/gh-sub-issue"], check=True)
+            subprocess.run(
+                ["gh", "extension", "install", "yahsan2/gh-sub-issue"],
+                check=True,
+            )
     except Exception as e:
-        print(f"Warning: Error verifying or installing gh-sub-issue: {e}", file=sys.stderr)
+        print(
+            f"Warning: Error verifying or installing gh-sub-issue: {e}",
+            file=sys.stderr,
+        )
 
 def get_project_context():
     try:
@@ -37,7 +49,10 @@ def get_project_context():
         owner = repo_data["owner"]["login"]
         repo_name = repo_data["name"]
     except Exception as e:
-        print(f"Error: Could not retrieve GitHub repository context. {e}", file=sys.stderr)
+        print(
+            f"Error: Could not retrieve GitHub repository context. {e}",
+            file=sys.stderr,
+        )
         sys.exit(1)
 
     print(f"Checking for projects linked to repository '{owner}/{repo_name}'...")
@@ -63,8 +78,9 @@ def get_project_context():
             "-f", f"query={query}"
         ])
         api_data = json.loads(api_output)
-        linked_projects = api_data.get("data", {}).get("repository", {}).get("projectsV2", {}).get("nodes", [])
-        
+        repository = api_data.get("data", {}).get("repository", {})
+        linked_projects = repository.get("projectsV2", {}).get("nodes", [])
+
         # Filter for open projects
         open_projects = [p for p in linked_projects if not p.get("closed", False)]
         if open_projects:
@@ -72,10 +88,16 @@ def get_project_context():
             proj = open_projects[0]
             project_number = proj["number"]
             project_id = proj["id"]
-            print(f"Found active linked project: '{proj.get('title')}' (number: {project_number}, id: {project_id})")
+            print(
+                f"Found active linked project: '{proj.get('title')}' "
+                f"(number: {project_number}, id: {project_id})"
+            )
             return owner, project_number, project_id
     except Exception as e:
-        print(f"Warning: Error querying linked projects via GraphQL. {e}", file=sys.stderr)
+        print(
+            f"Warning: Error querying linked projects via GraphQL. {e}",
+            file=sys.stderr,
+        )
 
     print("No active linked projects found. Skipping project field setup.")
     return owner, None, None
@@ -89,7 +111,10 @@ def get_project_fields(owner, project_number):
         return type_field_id, priority_field_id, fields_data
 
     try:
-        fields_output = run_cmd(["gh", "project", "field-list", str(project_number), "--owner", owner, "--format", "json"])
+        fields_output = run_cmd([
+            "gh", "project", "field-list", str(project_number),
+            "--owner", owner, "--format", "json"
+        ])
         fields_data = json.loads(fields_output)
         for field in fields_data.get("fields", []):
             if field.get("name") == "Type":
@@ -101,7 +126,16 @@ def get_project_fields(owner, project_number):
 
     return type_field_id, priority_field_id, fields_data
 
-def create_issue_recursive(item, parent_id, owner, project_number, project_id, type_field_id, priority_field_id, fields_data):
+def create_issue_recursive(
+    item,
+    parent_id,
+    owner,
+    project_number,
+    project_id,
+    type_field_id,
+    priority_field_id,
+    fields_data,
+):
     title = item.get("title")
     body = item.get("body", "")
     type_val = item.get("type")
@@ -118,7 +152,12 @@ def create_issue_recursive(item, parent_id, owner, project_number, project_id, t
         issue_url_raw = run_cmd(args)
     else:
         print(f"Creating child issue: '{title}' under parent {parent_id}...")
-        args = ["gh", "sub-issue", "create", "--title", title, "--body", body, "--parent", str(parent_id)]
+        args = [
+            "gh", "sub-issue", "create",
+            "--title", title,
+            "--body", body,
+            "--parent", str(parent_id)
+        ]
         issue_url_raw = run_cmd(args)
 
     issue_url = None
@@ -139,7 +178,10 @@ def create_issue_recursive(item, parent_id, owner, project_number, project_id, t
     if project_id and issue_url:
         try:
             print(f"Adding issue {issue_id} to project #{project_number}...")
-            item_output = run_cmd(["gh", "project", "item-add", str(project_number), "--owner", owner, "--url", issue_url, "--format", "json"])
+            item_output = run_cmd([
+                "gh", "project", "item-add", str(project_number),
+                "--owner", owner, "--url", issue_url, "--format", "json"
+            ])
             item_data = json.loads(item_output)
             item_id = item_data.get("id")
 
@@ -155,7 +197,13 @@ def create_issue_recursive(item, parent_id, owner, project_number, project_id, t
                                     break
                     if option_id:
                         print(f"Setting project item Type to '{type_val}'...")
-                        run_cmd(["gh", "project", "item-edit", "--id", item_id, "--project-id", project_id, "--field-id", type_field_id, "--single-select-option-id", option_id])
+                        run_cmd([
+                            "gh", "project", "item-edit",
+                            "--id", item_id,
+                            "--project-id", project_id,
+                            "--field-id", type_field_id,
+                            "--single-select-option-id", option_id
+                        ])
 
                 # Set Priority field if defined
                 if priority_val and priority_field_id:
@@ -168,13 +216,32 @@ def create_issue_recursive(item, parent_id, owner, project_number, project_id, t
                                     break
                     if option_id:
                         print(f"Setting project item Priority to '{priority_val}'...")
-                        run_cmd(["gh", "project", "item-edit", "--id", item_id, "--project-id", project_id, "--field-id", priority_field_id, "--single-select-option-id", option_id])
+                        run_cmd([
+                            "gh", "project", "item-edit",
+                            "--id", item_id,
+                            "--project-id", project_id,
+                            "--field-id", priority_field_id,
+                            "--single-select-option-id", option_id
+                        ])
         except Exception as e:
-            print(f"Warning: Failed to add/configure project fields for issue {issue_id}. {e}", file=sys.stderr)
+            print(
+                "Warning: Failed to add/configure project fields for "
+                f"issue {issue_id}. {e}",
+                file=sys.stderr,
+            )
 
     # Recurse for children
     for child in item.get("children", []):
-        create_issue_recursive(child, issue_id, owner, project_number, project_id, type_field_id, priority_field_id, fields_data)
+        create_issue_recursive(
+            child,
+            issue_id,
+            owner,
+            project_number,
+            project_id,
+            type_field_id,
+            priority_field_id,
+            fields_data,
+        )
 
 def main():
     if len(sys.argv) < 2:
@@ -203,11 +270,22 @@ def main():
     try:
         check_dependencies()
         owner, project_number, project_id = get_project_context()
-        type_field_id, priority_field_id, fields_data = get_project_fields(owner, project_number)
+        type_field_id, priority_field_id, fields_data = get_project_fields(
+            owner, project_number
+        )
 
         print("Processing and creating issues...")
         for item in data.get("items", []):
-            create_issue_recursive(item, None, owner, project_number, project_id, type_field_id, priority_field_id, fields_data)
+            create_issue_recursive(
+                item,
+                None,
+                owner,
+                project_number,
+                project_id,
+                type_field_id,
+                priority_field_id,
+                fields_data,
+            )
 
         print("Successfully created all issues.")
     finally:

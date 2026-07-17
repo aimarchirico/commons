@@ -9,16 +9,7 @@ export default [
   ...eslintPluginYml.configs['flat/recommended'],
 
   {
-    ignores: [
-      '**/npm/packages/**',
-      '**/node_modules/**',
-      '**/dist/**',
-      '**/build/**',
-      '**/.turbo/**',
-      '**/pnpm-lock.yaml',
-      '**/*.lock',
-      '**/maven/gradle/libs.versions.toml',
-    ],
+    ignores: ['**/npm/packages/**', '**/pnpm-lock.yaml'],
   },
   {
     files: ['**/*.ts'],

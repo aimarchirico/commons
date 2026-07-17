@@ -3,6 +3,10 @@ version: '3'
 dotenv: ['.env']
 
 includes:
+  tools:
+    taskfile: ./tools/Taskfile.yaml
+    dir: ./tools
+    flatten: true
   github:
     taskfile: ./.github/Taskfile.yaml
     dir: ./.github
@@ -12,10 +16,6 @@ includes:
   npm:
     taskfile: ./npm/Taskfile.yaml
     dir: ./npm
-  tools:
-    taskfile: ./tools/Taskfile.yaml
-    dir: ./tools
-    flatten: true
   skills:
     taskfile: ./skills/Taskfile.yaml
     dir: ./skills
