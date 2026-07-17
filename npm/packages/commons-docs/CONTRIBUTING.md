@@ -88,11 +88,11 @@ Each issue type has has a provided template.
 
 | Type                                            | Purpose                                |
 | :---------------------------------------------- | :------------------------------------- |
-| [`Epic`](.github/ISSUE_TEMPLATE/epic.yml)       | A high-level initiative.               |
-| [`Story`](.github/ISSUE_TEMPLATE/story.yml)     | A user-facing feature.                 |
-| [`Task`](.github/ISSUE_TEMPLATE/task.yml)       | A technical piece of work.             |
-| [`Bug`](.github/ISSUE_TEMPLATE/bug.yml)         | A problem which impairs functionality. |
-| [`Subtask`](.github/ISSUE_TEMPLATE/subtask.yml) | A granular piece of work.              |
+| [`Epic`](.github/ISSUE_TEMPLATE/epic.yaml)       | A high-level initiative.               |
+| [`Story`](.github/ISSUE_TEMPLATE/story.yaml)     | A user-facing feature.                 |
+| [`Task`](.github/ISSUE_TEMPLATE/task.yaml)       | A technical piece of work.             |
+| [`Bug`](.github/ISSUE_TEMPLATE/bug.yaml)         | A problem which impairs functionality. |
+| [`Subtask`](.github/ISSUE_TEMPLATE/subtask.yaml) | A granular piece of work.              |
 
 ### Hierarchy
 
