@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/aimarchirico/commons/compare/commons-expo-v1.2.0...commons-expo-v1.3.0) (2026-07-17)
+
+
+### Features
+
+* **expo:** restore commons-expo for configuration deduplication ([7d2b293](https://github.com/aimarchirico/commons/commit/7d2b293e83523da73337a8b0f248ff096d407077))
+
 ## [1.2.0](https://github.com/aimarchirico/commons/compare/commons-expo-v1.1.1...commons-expo-v1.2.0) (2026-07-07)
 
 
