@@ -1,0 +1,22 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/DavidAnson/markdownlint-cli2/main/schema/markdownlint-cli2-config-schema.json
+config:
+  default: true
+  MD013:
+    code_blocks: false
+    tables: false
+globs:
+  - '**/*.md'
+gitignore: true
+ignores:
+  - '**/node_modules/**'
+  - '**/dist/**'
+  - '**/build/**'
+  - '**/target/**'
+  - '**/CHANGELOG.md'
+overrides:
+  - filter:
+      - '**/SKILL.md'
+      - '**/PULL_REQUEST_TEMPLATE.md'
+    config:
+      MD041: false
+    combine: merge
