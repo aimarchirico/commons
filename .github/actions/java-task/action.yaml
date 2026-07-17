@@ -18,19 +18,9 @@ runs:
         distribution: temurin
         java-version: 25
         cache: gradle
-    - name: Set Up Task
-      uses: arduino/setup-task@v2
-      with:
-        version: 3.x
     - name: Run Task
-      working-directory: ${{ inputs.working_directory }}
-      shell: bash
-      run: |
-        if [ -n "${{ inputs.task_env }}" ]; then
-          echo "${{ inputs.task_env }}" > .env.temp
-          set -a
-          source .env.temp
-          set +a
-          rm -f .env.temp
-        fi
-        task ${{ inputs.command }}
+      uses: aimarchirico/commons/.github/actions/run-task@main
+      with:
+        command: ${{ inputs.command }}
+        working_directory: ${{ inputs.working_directory }}
+        task_env: ${{ inputs.task_env }}
