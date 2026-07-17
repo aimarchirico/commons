@@ -44,4 +44,4 @@ are documented.
 
 Changes to these actions take effect once merged into the `main` branch.
 Downstream repositories utilizing these actions will pick up the updates based
-on the branch or version tag they target (e.g., `@dev` or specific release tags).
+on the branch or version tag they target (e.g., `@main` or specific release tags).

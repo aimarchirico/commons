@@ -18,7 +18,7 @@ runs:
         bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
         sudo mv actionlint /usr/local/bin/
     - name: Run Task
-      uses: aimarchirico/commons/.github/actions/run-task@dev
+      uses: aimarchirico/commons/.github/actions/run-task@main
       with:
         command: ${{ inputs.command }}
         working_directory: ${{ inputs.working_directory }}
