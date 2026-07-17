@@ -23,8 +23,6 @@ export default [
       '**/.turbo/**',
       '**/pnpm-lock.yaml',
       '**/*.lock',
-      'npm/eslint.config.ts',
-      'npm/tsconfig.json',
       'maven/gradle/libs.versions.toml',
     ],
   },
