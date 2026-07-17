@@ -44,9 +44,10 @@ tasks:
   config:check:
     desc: Lint global repository folders
     cmds:
-      - pnpm exec -- sh -c "cd .. && eslint -c tools/eslint.config.ts ."
+      - task: install
+      - pnpm check
 
   config:fix:
     desc: Fix global repository folders lint issues
     cmds:
-      - pnpm exec -- sh -c "cd .. && eslint -c tools/eslint.config.ts . --fix"
+      - pnpm fix

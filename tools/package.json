@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "prepare": "cd .. && husky tools/.husky"
+    "prepare": "cd .. && husky tools/.husky",
+    "check": "cd .. && eslint -c tools/eslint.config.ts .",
+    "fix": "cd .. && eslint -c tools/eslint.config.ts . --fix"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^19.0.0",
