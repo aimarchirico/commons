@@ -1,0 +1,29 @@
+version: '3'
+
+tasks:
+  check:
+    desc: Check Kotlin files
+    cmds:
+      - bash gradlew check
+
+  fix:
+    desc: Fix Kotlin files
+    cmds:
+      - bash gradlew ktfmtFormat
+
+  build:
+    desc: Assemble Gradle project
+    cmds:
+      - bash gradlew build
+
+  publish:
+    desc: Publish a Maven artifact
+    cmds:
+      - bash gradlew {{.GRADLE_TARGET}}
+    vars:
+      GRADLE_TARGET:
+        sh: |
+          case "{{.MODULE}}" in
+            commons-convention) echo "-p commons-convention publish" ;;
+            *) echo ":{{.MODULE}}:publish" ;;
+          esac

@@ -1,0 +1,24 @@
+name: Python Task
+description: Run Python CI Task
+inputs:
+  command:
+    required: true
+  working_directory:
+    required: false
+    default: '.'
+  task_env:
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set Up uv
+      uses: astral-sh/setup-uv@v5
+      with:
+        enable-cache: true
+    - name: Run Task
+      uses: aimarchirico/commons/.github/actions/run-task@dev
+      with:
+        command: ${{ inputs.command }}
+        working_directory: ${{ inputs.working_directory }}
+        task_env: ${{ inputs.task_env }}

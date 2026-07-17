@@ -1,0 +1,170 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [dev, main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  # ==========================================
+  # PATH FILTERING
+  # ==========================================
+  changes:
+    name: Detect Changed Paths
+    runs-on: ubuntu-latest
+    outputs:
+      maven: ${{ steps.filter.outputs.maven }}
+      npm: ${{ steps.filter.outputs.npm }}
+      docs: ${{ steps.filter.outputs.docs }}
+      skills: ${{ steps.filter.outputs.skills }}
+      github: ${{ steps.filter.outputs.github }}
+      tools: ${{ steps.filter.outputs.tools }}
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v7
+
+      - name: Detect Changes
+        uses: dorny/paths-filter@v4
+        id: filter
+        with:
+          filters: |
+            config:
+              - '**/*.ts'
+              - '**/*.json'
+              - '**/*.toml'
+              - '**/*.yaml'
+              - '!npm/packages/**'
+            docs:
+              - '**/*.md'
+              - '.github/workflows/ci.yaml'
+            github:
+              - '.github/**'
+            maven:
+              - 'maven/**'
+              - '.github/workflows/ci.yaml'
+            npm:
+              - 'npm/**'
+              - '.github/workflows/ci.yaml'
+            skills:
+              - 'skills/**'
+              - '.github/workflows/ci.yaml'
+
+  # ==========================================
+  # COMMIT CI JOB
+  # ==========================================
+  commitlint:
+    name: Commit Check
+    if: github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/node-task
+        with:
+          command: commit:check
+          node_cache_path: tools/pnpm-lock.yaml
+          task_env: |
+            NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+            FROM_SHA=${{ github.event.pull_request.base.sha }}
+            TO_SHA=${{ github.event.pull_request.head.sha }}
+
+  # ==========================================
+  # CONFIG CI JOB
+  # ==========================================
+  config:
+    name: Config Check
+    needs: changes
+    if: needs.changes.outputs.tools == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/node-task
+        with:
+          command: config:check
+          node_cache_path: tools/pnpm-lock.yaml
+          task_env: |
+            NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+
+  # ==========================================
+  # DOCS CI JOB
+  # ==========================================
+  docs:
+    name: Docs Check
+    needs: changes
+    if: needs.changes.outputs.docs == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/node-task
+        with:
+          command: docs:check
+          node_cache_path: tools/pnpm-lock.yaml
+          task_env: |
+            NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+
+  # ==========================================
+  # GITHUB CI JOB
+  # ==========================================
+  github:
+    name: GitHub Check
+    needs: changes
+    if: needs.changes.outputs.github == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/github-task
+        with:
+          command: github:check
+
+  # ==========================================
+  # MAVEN CI JOB
+  # ==========================================
+  maven:
+    name: Maven Check
+    needs: changes
+    if: needs.changes.outputs.maven == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/java-task
+        with:
+          command: maven:check
+
+  # ==========================================
+  # NPM CI JOB
+  # ==========================================
+  npm:
+    name: NPM Check
+    needs: changes
+    if: needs.changes.outputs.npm == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/node-task
+        with:
+          command: npm:check
+          node_cache_path: npm/pnpm-lock.yaml
+          task_env: |
+            NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+
+  # ==========================================
+  # SKILLS CI JOB
+  # ==========================================
+  skills:
+    name: Skills Check
+    needs: changes
+    if: needs.changes.outputs.skills == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/python-task
+        with:
+          command: skills:check

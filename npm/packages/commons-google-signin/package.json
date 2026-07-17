@@ -9,15 +9,12 @@
     "type": "git",
     "url": "https://github.com/aimarchirico/commons.git"
   },
-  "main": "index.ts",
+  "main": "src/index.ts",
   "exports": {
-    ".": "./index.ts"
+    ".": "./src/index.ts"
   },
   "files": [
-    "index.ts",
-    "google-sign-in-service.ts",
-    "use-google-sign-in.ts",
-    "auth-context.tsx"
+    "src"
   ],
   "scripts": {
     "check": "eslint && tsc",
@@ -27,15 +24,15 @@
     "@aimarchirico/commons-firebase-client": "workspace:^"
   },
   "devDependencies": {
-    "@aimarchirico/commons-expo": "workspace:^",
-    "@aimarchirico/commons-ts": "workspace:^",
     "@react-native-google-signin/google-signin": "*",
     "@types/react": "^19.0.0",
     "eslint": "^9.39.2",
     "expo": "*",
     "react": "*",
     "react-native": "*",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "@aimarchirico/commons-expo": "workspace:^",
+    "@aimarchirico/commons-ts": "workspace:^"
   },
   "peerDependencies": {
     "@react-native-google-signin/google-signin": "*",

@@ -3,12 +3,22 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "prepare": "cd .. && husky tools/.husky"
+    "prepare": "cd .. && husky tools/.husky",
+    "config:check": "cd .. && eslint -c tools/eslint.config.ts && tsc -p tools/tsconfig.json",
+    "config:fix": "cd .. && eslint -c tools/eslint.config.ts --fix",
+    "docs:check": "cd .. && markdownlint-cli2 --config tools/.markdownlint-cli2.yaml",
+    "docs:fix": "cd .. && markdownlint-cli2 --config tools/.markdownlint-cli2.yaml --fix"
   },
   "devDependencies": {
-    "@aimarchirico/commons-tools": "^1.2.0",
+    "@commitlint/config-conventional": "^19.0.0",
+    "@aimarchirico/commons-ts": "link:../npm/packages/commons-ts",
     "@commitlint/cli": "^19.0.0",
+    "eslint": "^9.39.5",
     "husky": "^9.1.7",
-    "markdownlint-cli2": "^0.23.0"
+    "markdownlint-cli2": "^0.23.0",
+    "eslint-plugin-toml": "^0.11.1",
+    "eslint-plugin-yml": "^1.14.0",
+    "typescript": "^6.0.3",
+    "@types/node": "^26.0.1"
   }
 }

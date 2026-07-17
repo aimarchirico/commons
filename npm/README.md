@@ -74,7 +74,7 @@ repository root:
 ## Deployment
 
 Releases are driven by Release Please (`release-type: node`, separate PRs per
-package) and published by `.github/workflows/release.yml` when a release touches
+package) and published by `.github/workflows/release.yaml` when a release touches
 the matching `npm/packages/*` path. Publishing runs
 `pnpm publish --filter <package>` against the GitHub Packages npm registry
 (`https://npm.pkg.github.com`).

@@ -1,0 +1,26 @@
+version: '3'
+
+dotenv: ['.env']
+
+includes:
+  tools:
+    taskfile: ./tools/Taskfile.yaml
+    dir: ./tools
+    flatten: true
+  github:
+    taskfile: ./.github/Taskfile.yaml
+    dir: ./.github
+  maven:
+    taskfile: ./maven/Taskfile.yaml
+    dir: ./maven
+  npm:
+    taskfile: ./npm/Taskfile.yaml
+    dir: ./npm
+  skills:
+    taskfile: ./skills/Taskfile.yaml
+    dir: ./skills
+
+tasks:
+  default:
+    cmds:
+      - task --list

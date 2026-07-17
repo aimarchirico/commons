@@ -1,15 +1,5 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "compilerOptions": {
-    "strict": true,
-    "noEmit": true,
-    "allowJs": true,
-    "checkJs": true,
-    "types": ["node"],
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ]
-    },
-  }
+  "extends": "./configs/tsconfig.base.json",
+  "include": ["**/*.ts", "**/*.tsx", "**/*.mjs"]
 }

@@ -1,0 +1,14 @@
+version: '3'
+
+tasks:
+  check:
+    desc: Check Python files
+    cmds:
+      - uvx ruff check
+      - uvx ty check
+
+  fix:
+    desc: Fix Python files
+    cmds:
+      - uvx ruff check --fix
+      - uvx ruff format

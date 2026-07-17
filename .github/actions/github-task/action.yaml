@@ -1,0 +1,25 @@
+name: GitHub Task
+description: Run GitHub Actions CI Task
+inputs:
+  command:
+    required: true
+  working_directory:
+    required: false
+    default: '.'
+  task_env:
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Actionlint
+      shell: bash
+      run: |
+        bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+        sudo mv actionlint /usr/local/bin/
+    - name: Run Task
+      uses: aimarchirico/commons/.github/actions/run-task@dev
+      with:
+        command: ${{ inputs.command }}
+        working_directory: ${{ inputs.working_directory }}
+        task_env: ${{ inputs.task_env }}

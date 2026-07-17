@@ -17,9 +17,6 @@
     "npm/packages/commons-openapi": {
       "release-type": "node"
     },
-    "npm/packages/commons-tools": {
-      "release-type": "node"
-    },
     "npm/packages/commons-docs": {
       "release-type": "node"
     },

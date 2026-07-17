@@ -10,11 +10,10 @@
     "url": "https://github.com/aimarchirico/commons.git"
   },
   "bin": {
-    "commons-docs": "bin/cli.js"
+    "commons-docs": "bin/cli.mjs"
   },
   "files": [
-    "CONTRIBUTING.md",
-    "github",
+    "templates",
     "bin"
   ],
   "scripts": {
@@ -22,9 +21,9 @@
     "fix": "eslint --fix"
   },
   "devDependencies": {
-    "@aimarchirico/commons-ts": "workspace:^",
     "@types/node": "^26.0.1",
     "eslint": "^9.39.2",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "@aimarchirico/commons-ts": "workspace:^"
   }
 }

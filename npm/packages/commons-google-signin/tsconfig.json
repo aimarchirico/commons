@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "@aimarchirico/commons-expo/tsconfig",
-  "include": ["*.ts", "*.tsx"]
+  "include": ["**/*.ts", "**/*.tsx"]
 }

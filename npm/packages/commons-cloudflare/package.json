@@ -10,17 +10,27 @@
     "url": "https://github.com/aimarchirico/commons.git"
   },
   "exports": {
-    "./proxy": "./proxy.mjs"
+    "./proxy": "./src/proxy.mjs"
   },
   "bin": {
-    "commons-cloudflare-fix": "bin/fix-cloudflare.js"
+    "commons-cloudflare-fix": "bin/fix-cloudflare.mjs"
   },
   "files": [
-    "proxy.mjs",
+    "src",
     "bin"
   ],
+  "scripts": {
+    "check": "eslint",
+    "fix": "eslint --fix"
+  },
   "dependencies": {
     "replace-in-file": "^8.4.0",
     "shelljs": "^0.10.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.0.1",
+    "eslint": "^9.39.2",
+    "typescript": "^6.0.3",
+    "@aimarchirico/commons-ts": "workspace:^"
   }
 }

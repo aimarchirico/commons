@@ -21,7 +21,7 @@ application code.
 ```text
 tools/
 ├── .husky/                        # Git hooks (commit-msg → commitlint)
-├── Taskfile.yml                   # Task command definitions
+├── Taskfile.yaml                   # Task command definitions
 ├── turbo.json                     # Turborepo pipeline
 ├── commitlint.config.js           # commitlint config (commons-tools preset)
 ├── .markdownlint-cli2.cjs         # markdownlint config (commons-tools preset)

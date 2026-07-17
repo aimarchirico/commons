@@ -23,7 +23,7 @@ Each directory represents a standalone reusable action:
 ## Environment Variables
 
 Dependencies on environment variables or secrets (e.g., `GITHUB_TOKEN`,
-deployment keys) vary per action. Refer to the `action.yml` within each
+deployment keys) vary per action. Refer to the `action.yaml` within each
 subdirectory for specific `inputs` and required secrets.
 
 ## Local Development
@@ -31,7 +31,7 @@ subdirectory for specific `inputs` and required secrets.
 Actions are primarily executed in the GitHub CI environment. For local testing,
 you can use tools like [act](https://github.com/nektos/act).
 
-To modify an action, edit the corresponding `action.yml` file and its associated
+To modify an action, edit the corresponding `action.yaml` file and its associated
 scripts within its directory.
 
 ## Code Quality
@@ -44,4 +44,4 @@ are documented.
 
 Changes to these actions take effect once merged into the `main` branch.
 Downstream repositories utilizing these actions will pick up the updates based
-on the branch or version tag they target (e.g., `@main` or specific release tags).
+on the branch or version tag they target (e.g., `@dev` or specific release tags).

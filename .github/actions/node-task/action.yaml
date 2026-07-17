@@ -1,0 +1,34 @@
+name: Node Task
+description: Run Node CI Task
+inputs:
+  command:
+    required: true
+  node_cache_path:
+    required: false
+    default: 'pnpm-lock.yaml'
+  working_directory:
+    required: false
+    default: '.'
+  task_env:
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set Up PNPM
+      uses: pnpm/action-setup@v4
+      with:
+        version: 11.9.0
+    - name: Set Up Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
+        cache: pnpm
+        cache-dependency-path: ${{ inputs.node_cache_path }}
+        registry-url: https://npm.pkg.github.com
+    - name: Run Task
+      uses: aimarchirico/commons/.github/actions/run-task@dev
+      with:
+        command: ${{ inputs.command }}
+        working_directory: ${{ inputs.working_directory }}
+        task_env: ${{ inputs.task_env }}

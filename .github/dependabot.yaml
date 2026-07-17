@@ -1,0 +1,42 @@
+version: 2
+registries:
+  github-npm:
+    type: npm-registry
+    url: https://npm.pkg.github.com
+    scope: '@aimarchirico'
+    token: ${{secrets.GH_PACKAGES_TOKEN}}
+  github-maven:
+    type: maven-repository
+    url: https://maven.pkg.github.com/aimarchirico/commons
+    username: x-access-token
+    password: ${{secrets.GH_PACKAGES_TOKEN}}
+updates:
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+
+  - package-ecosystem: 'gradle'
+    directory: '/maven'
+    registries:
+      - github-maven
+    schedule:
+      interval: 'weekly'
+
+  - package-ecosystem: 'npm'
+    directory: '/npm'
+    registries:
+      - github-npm
+    schedule:
+      interval: 'weekly'
+    cooldown:
+      default-days: 1
+
+  - package-ecosystem: 'npm'
+    directory: '/tools'
+    registries:
+      - github-npm
+    schedule:
+      interval: 'weekly'
+    cooldown:
+      default-days: 1

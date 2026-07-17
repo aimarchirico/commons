@@ -9,16 +9,15 @@
     "type": "git",
     "url": "https://github.com/aimarchirico/commons.git"
   },
-  "main": "index.ts",
+  "main": "src/index.ts",
   "exports": {
-    ".": "./index.ts"
+    ".": "./src/index.ts"
   },
   "bin": {
-    "commons-firebase-client-decode-google-services": "bin/decode-google-services.js"
+    "commons-firebase-client-decode-google-services": "bin/decode-google-services.mjs"
   },
   "files": [
-    "index.ts",
-    "firebase.ts",
+    "src",
     "bin"
   ],
   "scripts": {
@@ -26,14 +25,14 @@
     "fix": "eslint --fix"
   },
   "devDependencies": {
-    "@aimarchirico/commons-expo": "workspace:^",
-    "@aimarchirico/commons-ts": "workspace:^",
     "@react-native-firebase/auth": "*",
     "eslint": "^9.39.2",
     "expo": "*",
     "firebase": "*",
     "react-native": "*",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "@aimarchirico/commons-expo": "workspace:^",
+    "@aimarchirico/commons-ts": "workspace:^"
   },
   "peerDependencies": {
     "@react-native-firebase/auth": "*",

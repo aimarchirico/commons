@@ -1,0 +1,54 @@
+version: '3'
+
+tasks:
+  install:
+    internal: true
+    desc: Install NPM dependencies
+    cmds:
+      - pnpm install
+    if: '[ -n "$CI" ]'
+
+  config:check:
+    desc: Check configuration files
+    cmds:
+      - task: install
+      - pnpm config:check
+
+  config:fix:
+    desc: Fix configuration files
+    cmds:
+      - pnpm config:fix
+
+  docs:check:
+    desc: Check Markdown files
+    cmds:
+      - task: install
+      - pnpm docs:check
+
+  docs:fix:
+    desc: Fix Markdown files
+    cmds:
+      - pnpm docs:fix
+
+  commit:check:
+    desc: Check commit messages
+    vars:
+      EDIT:
+        sh: |
+          if [ -n "$EDIT_FILE" ]; then
+            echo "--edit $EDIT_FILE"
+          fi
+      COMMIT_RANGE:
+        sh: |
+          if [ -n "$FROM_SHA" ] && [ -n "$TO_SHA" ]; then
+            echo "--from $FROM_SHA --to $TO_SHA"
+          fi
+    cmds:
+      - task: install
+      - pnpm exec commitlint {{.COMMIT_RANGE}} {{.EDIT}}
+
+  skills:install:
+    desc: Install skills
+    cmds:
+      - gh skill install aimarchirico/commons --all --scope project --agent antigravity
+      - gh skill install aimarchirico/commons --all --scope project --agent claude-code

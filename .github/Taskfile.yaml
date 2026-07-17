@@ -1,0 +1,7 @@
+version: '3'
+
+tasks:
+  check:
+    desc: Check GitHub Actions
+    cmds:
+      - actionlint

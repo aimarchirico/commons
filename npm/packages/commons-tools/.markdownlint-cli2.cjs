@@ -1,9 +1,0 @@
-module.exports = {
-  config: {
-    default: true,
-    MD013: {
-      code_blocks: false,
-      tables: false,
-    },
-  },
-};
