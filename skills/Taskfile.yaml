@@ -4,11 +4,11 @@ tasks:
   check:
     desc: Lint Python scripts
     cmds:
-      - uvx ruff check --verbose
+      - uvx ruff check
       - uvx ty check
 
   fix:
     desc: Fix Python scripts
     cmds:
-      - uvx ruff check --fix --verbose
+      - uvx ruff check --fix
       - uvx ruff format
