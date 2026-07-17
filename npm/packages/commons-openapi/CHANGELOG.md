@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/aimarchirico/commons/compare/commons-openapi-v1.1.3...commons-openapi-v1.2.0) (2026-07-17)
+
+
+### Features
+
+* **tools:** add root:fix task and fix docs pathing ([8d75182](https://github.com/aimarchirico/commons/commit/8d75182043713d6d389532ed60c783781df2cdad))
+
 ## [1.1.3](https://github.com/aimarchirico/commons/compare/commons-openapi-v1.1.2...commons-openapi-v1.1.3) (2026-07-15)
 
 
