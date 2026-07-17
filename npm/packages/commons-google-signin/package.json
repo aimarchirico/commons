@@ -34,6 +34,7 @@
     "react": "*",
     "react-native": "*",
     "typescript": "^6.0.3",
+    "@aimarchirico/commons-expo": "workspace:^",
     "@aimarchirico/commons-ts": "workspace:^"
   },
   "peerDependencies": {

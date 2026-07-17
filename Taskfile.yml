@@ -19,9 +19,6 @@ includes:
   skills:
     taskfile: ./skills/Taskfile.yml
     dir: ./skills
-  github:
-    taskfile: ./.github/Taskfile.yml
-    dir: ./.github
 
 tasks:
   default:

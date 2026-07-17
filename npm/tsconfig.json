@@ -1,0 +1,4 @@
+{
+  "extends": "@aimarchirico/commons-ts/tsconfig",
+  "include": ["eslint.config.ts"]
+}

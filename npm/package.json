@@ -4,8 +4,8 @@
   "private": true,
   "packageManager": "pnpm@11.9.0",
   "scripts": {
-    "check": "turbo run check",
-    "fix": "turbo run fix"
+    "check": "eslint . && turbo run check",
+    "fix": "eslint . --fix && turbo run fix"
   },
   "devDependencies": {
     "@aimarchirico/commons-cloudflare": "workspace:^",
@@ -15,6 +15,9 @@
     "@aimarchirico/commons-openapi": "workspace:^",
     "@types/node": "^26.0.1",
     "eslint": "^9.39.2",
+    "eslint-plugin-toml": "^0.11.1",
+    "eslint-plugin-yml": "^1.14.0",
+    "jiti": "^2.4.2",
     "turbo": "^2.10.2",
     "typescript": "^6.0.3",
     "@aimarchirico/commons-ts": "workspace:^"

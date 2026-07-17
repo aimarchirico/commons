@@ -2,11 +2,10 @@ import eslintPluginToml from 'eslint-plugin-toml';
 import eslintPluginYml from 'eslint-plugin-yml';
 
 let tsConfig;
-
 try {
   tsConfig = (await import('@aimarchirico/commons-ts/eslint')).default;
 } catch {
-  tsConfig = (await import('../npm/packages/commons-ts/eslint.ts')).default;
+  tsConfig = (await import('./packages/commons-ts/eslint.ts')).default;
 }
 
 export default [
@@ -16,18 +15,10 @@ export default [
 
   {
     ignores: [
-      '**/npm/packages/**',
-      '**/node_modules/**',
-      '**/dist/**',
-      '**/build/**',
+      'packages/**/*',
+      'apps/**/*',
       '**/.turbo/**',
-      '**/.github/**',
-      '**/.vscode/**',
-      '**/.claude/**',
-      '**/.agents/**',
-      '**/.husky/**',
       '**/pnpm-lock.yaml',
-      '**/*.lock',
     ],
   },
   {

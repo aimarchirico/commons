@@ -1,17 +1,26 @@
-import {defineConfig} from 'eslint/config';
 import expoConfig from 'eslint-config-expo/flat.js';
 import baseConfig from '@aimarchirico/commons-ts/eslint';
 
-const dedupedConfig = baseConfig.map(config => {
-  if (!config?.plugins) {
-    return config;
+const flatExpo = expoConfig.flat(Infinity);
+const primaryTsPlugin = flatExpo.find(
+  c => c && c.plugins && c.plugins['@typescript-eslint'],
+)?.plugins['@typescript-eslint'];
+const primaryImportPlugin = flatExpo.find(
+  c => c && c.plugins && c.plugins['import'],
+)?.plugins['import'];
+
+const combined = [...expoConfig, ...baseConfig].flat(Infinity).map(config => {
+  if (config && config.plugins) {
+    const newPlugins = {...config.plugins};
+    if (newPlugins['@typescript-eslint'] && primaryTsPlugin) {
+      newPlugins['@typescript-eslint'] = primaryTsPlugin;
+    }
+    if (newPlugins['import'] && primaryImportPlugin) {
+      newPlugins['import'] = primaryImportPlugin;
+    }
+    return {...config, plugins: newPlugins};
   }
-  const {
-    '@typescript-eslint': _tsPlugin,
-    import: _importPlugin,
-    ...plugins
-  } = config.plugins;
-  return {...config, plugins};
+  return config;
 });
 
-export default defineConfig([...expoConfig, ...dedupedConfig]);
+export default combined;
