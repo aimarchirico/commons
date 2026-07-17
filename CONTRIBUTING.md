@@ -86,8 +86,8 @@ for issues.
 
 Each issue type has has a provided template.
 
-| Type                                            | Purpose                                |
-| :---------------------------------------------- | :------------------------------------- |
+| Type                                             | Purpose                                |
+| :----------------------------------------------- | :------------------------------------- |
 | [`Epic`](.github/ISSUE_TEMPLATE/epic.yaml)       | A high-level initiative.               |
 | [`Story`](.github/ISSUE_TEMPLATE/story.yaml)     | A user-facing feature.                 |
 | [`Task`](.github/ISSUE_TEMPLATE/task.yaml)       | A technical piece of work.             |

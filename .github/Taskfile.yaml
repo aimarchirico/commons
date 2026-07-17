@@ -2,6 +2,6 @@ version: '3'
 
 tasks:
   check:
-    desc: Lint GitHub Actions
+    desc: Check GitHub Actions
     cmds:
       - actionlint -verbose

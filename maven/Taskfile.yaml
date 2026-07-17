@@ -2,22 +2,22 @@ version: '3'
 
 tasks:
   check:
-    desc: Run tests and lint
+    desc: Check Kotlin files
     cmds:
       - bash gradlew check
 
   fix:
-    desc: Format Kotlin files
+    desc: Fix Kotlin files
     cmds:
       - bash gradlew ktfmtFormat
 
   build:
-    desc: Build modules
+    desc: Assemble Gradle project
     cmds:
       - bash gradlew build
 
   publish:
-    desc: Publish a module
+    desc: Publish a Maven artifact
     cmds:
       - bash gradlew {{.GRADLE_TARGET}}
     vars:

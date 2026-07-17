@@ -3,24 +3,35 @@ version: '3'
 tasks:
   install:
     internal: true
-    desc: Install npm dependencies
+    desc: Install NPM dependencies
     cmds:
       - pnpm install
     if: '[ -n "$CI" ]'
 
+  config:check:
+    desc: Check configuration files
+    cmds:
+      - task: install
+      - pnpm config:check
+
+  config:fix:
+    desc: Fix configuration files
+    cmds:
+      - pnpm config:fix
+
   docs:check:
-    desc: Lint Markdown files
+    desc: Check Markdown files
     cmds:
       - task: install
       - pnpm docs:check
 
   docs:fix:
-    desc: Fix Markdown issues
+    desc: Fix Markdown files
     cmds:
       - pnpm docs:fix
 
   commit:check:
-    desc: Lint commit messages
+    desc: Check commit messages
     vars:
       EDIT:
         sh: |
@@ -36,18 +47,8 @@ tasks:
       - task: install
       - pnpm exec commitlint {{.COMMIT_RANGE}} {{.EDIT}}
 
-  skills:
+  skills:install:
+    desc: Install skills
     cmds:
       - gh skill install aimarchirico/commons --all --scope project --agent antigravity
       - gh skill install aimarchirico/commons --all --scope project --agent claude-code
-
-  config:check:
-    desc: Lint global repository folders
-    cmds:
-      - task: install
-      - pnpm config:check
-
-  config:fix:
-    desc: Fix global repository folders lint issues
-    cmds:
-      - pnpm config:fix

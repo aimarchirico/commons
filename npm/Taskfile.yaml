@@ -9,18 +9,18 @@ tasks:
     if: '[ -n "$CI" ]'
 
   check:
-    desc: Run lint and type check
+    desc: Check TypeScript files
     cmds:
       - task: install
       - pnpm check
 
   fix:
-    desc: Fix lint problems
+    desc: Fix TypeScript files
     cmds:
       - pnpm fix
 
   publish:
-    desc: Publish a package
+    desc: Publish an NPM package
     cmds:
       - task: install
       - pnpm publish --filter {{.PACKAGE}} --no-git-checks
