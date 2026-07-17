@@ -3,14 +3,41 @@ import eslintPluginImport from 'eslint-plugin-import';
 import globals from 'globals';
 import gts from 'gts';
 import {createRequire} from 'module';
+import {execFileSync} from 'node:child_process';
 
 const require = createRequire(import.meta.url);
 const gtsPrettier = require('gts/.prettierrc.json');
 
-
 import eslintPluginJsonc from 'eslint-plugin-jsonc';
 
+// Ignore everything git ignores, honoring nested .gitignore files.
+const gitignored = (cwd: string): string[] => {
+  try {
+    return execFileSync(
+      'git',
+      [
+        'ls-files',
+        '-z',
+        '--others',
+        '--ignored',
+        '--exclude-standard',
+        '--directory',
+      ],
+      {cwd, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024},
+    )
+      .split('\0')
+      .filter(Boolean)
+      .map(entry => (entry.endsWith('/') ? `${entry}**` : entry));
+  } catch {
+    return [];
+  }
+};
+
+const ignores = gitignored(process.cwd());
+const gitignoreConfig = ignores.length ? [{ignores}] : [];
+
 export default [
+  ...gitignoreConfig,
   ...gts,
   ...eslintPluginJsonc.configs['flat/recommended-with-jsonc'],
   {
