@@ -168,4 +168,3 @@ jobs:
       - uses: ./.github/actions/python-task
         with:
           command: skills:check
-      - uses: ./.github/actions/python-task
