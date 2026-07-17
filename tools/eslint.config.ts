@@ -1,13 +1,7 @@
 import eslintPluginToml from 'eslint-plugin-toml';
 import eslintPluginYml from 'eslint-plugin-yml';
 
-let tsConfig;
-
-try {
-  tsConfig = (await import('@aimarchirico/commons-ts/eslint')).default;
-} catch {
-  tsConfig = (await import('../npm/packages/commons-ts/eslint.ts')).default;
-}
+import tsConfig from '@aimarchirico/commons-ts/eslint';
 
 export default [
   ...tsConfig,
