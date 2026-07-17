@@ -23,7 +23,7 @@ export default [
       '**/.turbo/**',
       '**/pnpm-lock.yaml',
       '**/*.lock',
-      'maven/gradle/libs.versions.toml',
+      '**/maven/gradle/libs.versions.toml',
     ],
   },
   {
