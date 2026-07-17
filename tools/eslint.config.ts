@@ -32,11 +32,4 @@ export default [
       'prettier/prettier': 'off',
     },
   },
-  {
-    files: ['**/eslint.config.ts'],
-    rules: {
-      'import/no-default-export': 'off',
-      'check-file/filename-naming-convention': 'off',
-    },
-  },
 ];
