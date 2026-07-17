@@ -1,16 +1,11 @@
 import checkFile from 'eslint-plugin-check-file';
 import eslintPluginImport from 'eslint-plugin-import';
+import eslintPluginJsonc from 'eslint-plugin-jsonc';
 import globals from 'globals';
 import gts from 'gts';
-import {createRequire} from 'module';
 import {execFileSync} from 'node:child_process';
+import gtsPrettier from 'gts/.prettierrc.json';
 
-const require = createRequire(import.meta.url);
-const gtsPrettier = require('gts/.prettierrc.json');
-
-import eslintPluginJsonc from 'eslint-plugin-jsonc';
-
-// Ignore everything git ignores, honoring nested .gitignore files.
 const gitignored = (cwd: string): string[] => {
   try {
     return execFileSync(
@@ -82,23 +77,10 @@ export default [
     },
   },
   {
-    files: [
-      '**/eslint.config.js',
-      '**/eslint.config.ts',
-      '**/eslint.ts',
-      '**/eslint/*.ts',
-      '**/index.js',
-      '**/expo.js',
-      '**/json.js',
-      '**/yaml.js',
-      '**/toml.js',
-      '**/*.d.ts',
-      '**/*config.ts',
-      '**/.*.mjs',
-    ],
+    files: ['eslint.config.ts', 'eslint.ts'],
     rules: {
-      'import/no-default-export': 'off',
       'check-file/filename-naming-convention': 'off',
+      'import/no-default-export': 'off',
     },
   },
 ];

@@ -1,13 +1,17 @@
 {
   "name": "@aimarchirico/commons-ts",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "type": "module",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
+  "scripts": {
+    "check": "eslint && tsc",
+    "fix": "eslint --fix"
+  },
   "exports": {
     "./eslint": "./eslint.ts",
-    "./tsconfig": "./tsconfig.json"
+    "./tsconfig": "./tsconfig.base.json"
   },
   "dependencies": {
     "eslint-plugin-check-file": "^3.3.1",
