@@ -33,8 +33,6 @@ updates:
     directory: '/.github'
     schedule:
       interval: 'weekly'
-    cooldown:
-      default-days: 1
 
   - package-ecosystem: 'gradle'
     directory: '/maven'
