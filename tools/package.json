@@ -4,8 +4,10 @@
   "private": true,
   "scripts": {
     "prepare": "cd .. && husky tools/.husky",
-    "check": "cd .. && eslint -c tools/eslint.config.ts",
-    "fix": "cd .. && eslint -c tools/eslint.config.ts --fix"
+    "config:check": "cd .. && eslint -c tools/eslint.config.ts",
+    "config:fix": "cd .. && eslint -c tools/eslint.config.ts --fix",
+    "docs:check": "cd .. && markdownlint-cli2 --config tools/.markdownlint-cli2.mjs",
+    "docs:fix": "cd .. && markdownlint-cli2 --config tools/.markdownlint-cli2.mjs --fix"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^19.0.0",
