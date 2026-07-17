@@ -10,7 +10,7 @@
     "docs:fix": "cd .. && markdownlint-cli2 --config tools/.markdownlint-cli2.yaml --fix"
   },
   "devDependencies": {
-    "@commitlint/config-conventional": "^19.0.0",
+    "@commitlint/config-conventional": "^21.2.0",
     "@aimarchirico/commons-ts": "link:../npm/packages/commons-ts",
     "@commitlint/cli": "^19.0.0",
     "eslint": "^9.39.5",
