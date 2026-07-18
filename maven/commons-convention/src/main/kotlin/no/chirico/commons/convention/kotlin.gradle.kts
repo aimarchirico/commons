@@ -30,5 +30,5 @@ tasks.withType<Test>().configureEach {
 }
 
 tasks.named("check") {
-    dependsOn("ktfmtCheck")
+    dependsOn("ktfmtCheck", "detekt")
 }
