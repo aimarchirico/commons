@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/aimarchirico/commons/compare/commons-google-signin-v1.2.0...commons-google-signin-v1.2.1) (2026-07-18)
+
+
+### Bug Fixes
+
+* return a value for every google sign-in outcome ([1ccc09a](https://github.com/aimarchirico/commons/commit/1ccc09a130e97d08ac8276e27aa226bd5b7909fa))
+
 ## [1.2.0](https://github.com/aimarchirico/commons/compare/commons-google-signin-v1.1.2...commons-google-signin-v1.2.0) (2026-07-17)
 
 
