@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/aimarchirico/commons/compare/commons-ts-v1.2.1...commons-ts-v1.3.0) (2026-07-18)
+
+
+### Features
+
+* add stricter options and configDir paths to shared tsconfig ([134743f](https://github.com/aimarchirico/commons/commit/134743f892f0452e1ae5f8d0dd9cf6d3924fb88c))
+
 ## [1.2.1](https://github.com/aimarchirico/commons/compare/commons-ts-v1.2.0...commons-ts-v1.2.1) (2026-07-18)
 
 

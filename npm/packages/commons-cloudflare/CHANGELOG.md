@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/aimarchirico/commons/compare/commons-cloudflare-v1.1.1...commons-cloudflare-v1.1.2) (2026-07-18)
+
+
+### Bug Fixes
+
+* guard proxy secret header and repair fix-cloudflare script ([5bd5394](https://github.com/aimarchirico/commons/commit/5bd539447bd8290e74eafeb637728b5aff916fe0))
+
 ## [1.1.1](https://github.com/aimarchirico/commons/compare/commons-cloudflare-v1.1.0...commons-cloudflare-v1.1.1) (2026-07-06)
 
 
