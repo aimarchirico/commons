@@ -2,7 +2,7 @@
 
 /** @type {Record<string, string>} */
 const commands = {
-  'materialize-templates': './materialize-templates.mjs',
+  'fix-assets': './fix-cloudflare.mjs',
 };
 
 const verb = process.argv[2];
@@ -10,7 +10,7 @@ const script = verb ? commands[verb] : undefined;
 
 if (!script) {
   const usage = Object.keys(commands)
-    .map(name => `  commons-docs ${name}`)
+    .map(name => `  commons-cloudflare ${name}`)
     .join('\n');
   console.error(`Usage:\n${usage}`);
   process.exit(1);

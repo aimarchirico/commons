@@ -1,6 +1,6 @@
 {
   "name": "@aimarchirico/commons-openapi",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "private": false,
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"

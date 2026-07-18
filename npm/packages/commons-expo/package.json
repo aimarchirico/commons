@@ -1,6 +1,6 @@
 {
   "name": "@aimarchirico/commons-expo",
-  "version": "1.3.2",
+  "version": "2.0.0",
   "private": false,
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
@@ -14,7 +14,7 @@
     "./tsconfig": "./configs/tsconfig-base.json"
   },
   "bin": {
-    "commons-expo-build-android": "bin/build-android.mjs"
+    "commons-expo": "bin/cli.mjs"
   },
   "scripts": {
     "check": "eslint && tsc",
