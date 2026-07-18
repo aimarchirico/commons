@@ -16,8 +16,8 @@ Use when the user asks to implement an issue.
 ## Execution Steps
 
 1. Preflight: Verify that `CONTRIBUTING.md` exists in the repository root. If it
-   is missing, run `npx @aimarchirico/commons-docs` to materialize the
-   documentation.
+   is missing, run `npx @aimarchirico/commons-docs materialize-templates` to
+   materialize the documentation.
 2. Parse the `--issue` flag to extract the `<issue-id>`. Prompt the user if the
    flag is missing.
 3. Execute `gh issue view <issue-id> --json title,labels` to fetch the issue

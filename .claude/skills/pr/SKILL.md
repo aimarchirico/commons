@@ -16,7 +16,7 @@ Use when the user asks to create a pull request.
 
 1. Preflight: Verify that `CONTRIBUTING.md` exists in the repository root and
    `.github/PULL_REQUEST_TEMPLATE.md` exists. If any are missing, run
-   `npx @aimarchirico/commons-docs` to materialize the documentation.
+   `npx @aimarchirico/commons-docs materialize-templates` to materialize the documentation.
 2. Verify GitHub CLI (`gh`) authentication (`gh auth status`). If not logged in,
    provide instructions for `gh auth login` and exit.
 3. Analyze the current branch and recent commits:

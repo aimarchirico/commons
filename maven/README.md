@@ -10,6 +10,7 @@ published as Maven artifacts under the `no.chirico.commons` group.
 - **Gradle** 9.6.0
 - **Spring Boot** 4.1.0
 - **ktfmt** 0.26.0 (via `com.ncorti.ktfmt.gradle`)
+- **detekt** 2.0.0-alpha.5 (via `dev.detekt`)
 - **ArchUnit** 1.4.2 (JUnit 5)
 
 ## Folder Structure
@@ -24,7 +25,7 @@ maven/
 ```
 
 - **`commons-convention/`** — precompiled script plugins under
-  `no.chirico.commons.convention`: `kotlin` (Kotlin/JVM + ktfmt baseline),
+  `no.chirico.commons.convention`: `kotlin` (Kotlin/JVM + ktfmt + detekt),
   `spring` (Spring Boot), and `architecture` (module-dependency architecture
   enforcement). Wired in via
   `includeBuild("commons-convention")`.
@@ -66,6 +67,8 @@ The underlying commands are `./gradlew build`, `check`, and `ktfmtFormat`.
 
 - **Formatting** — ktfmt, applied through the convention plugin and run via
   `task maven:fix` (`ktfmtFormat`).
+- **Static analysis** — detekt (default ruleset), applied through the convention
+  plugin and run as part of `task maven:check` (`detekt`).
 - **Conventions** — file naming and length rules; modules extend
   `BaseConventionTest` from `commons-test`.
 - **Architecture** — module-dependency rules for the api/impl/core layout,

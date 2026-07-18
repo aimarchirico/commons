@@ -1,6 +1,7 @@
 package no.chirico.commons.firebaseadmin
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -32,7 +33,7 @@ class FirebaseAuthenticationFilter(private val properties: FirebaseProperties) :
           response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access denied")
           return
         }
-      } catch (e: Exception) {
+      } catch (e: FirebaseAuthException) {
         logger.error("Token verification failed: ${e.message}")
       }
     }

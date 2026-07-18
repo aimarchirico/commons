@@ -19,6 +19,7 @@ dependencies {
         exclude(group = "io.spring.gradle", module = "dependency-management-plugin")
     }
     implementation(libs.ktfmt.gradle.plugin)
+    implementation(libs.detekt.gradle.plugin)
 }
 
 publishing {

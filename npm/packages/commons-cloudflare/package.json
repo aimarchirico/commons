@@ -1,6 +1,6 @@
 {
   "name": "@aimarchirico/commons-cloudflare",
-  "version": "1.1.2",
+  "version": "2.0.0",
   "private": false,
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
@@ -13,7 +13,7 @@
     "./proxy": "./src/proxy.mjs"
   },
   "bin": {
-    "commons-cloudflare-fix": "bin/fix-cloudflare.mjs"
+    "commons-cloudflare": "bin/cli.mjs"
   },
   "files": [
     "src",

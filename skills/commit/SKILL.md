@@ -11,8 +11,8 @@ for committing, or run the commit skill.
 ## Execution Steps
 
 1. Preflight: Verify that `CONTRIBUTING.md` exists in the repository root. If it
-   is missing, run `npx @aimarchirico/commons-docs` to materialize the
-   documentation.
+   is missing, run `npx @aimarchirico/commons-docs materialize-templates` to
+   materialize the documentation.
 2. Execute `git status` and `git diff` to analyze all unstaged changes
    (including untracked files).
 3. If there are no changes to commit, notify the user and exit.

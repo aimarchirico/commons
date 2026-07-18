@@ -24,18 +24,15 @@ const combined = (
   return config;
 });
 
-export default [
-  ...combined,
+const expoOverrides: Linter.Config[] = [
   {
-    files: ['**/_layout.tsx'],
-    rules: {
-      'check-file/filename-naming-convention': 'off',
-    },
+    files: ['**/*.{web,native,ios,android}.{ts,tsx}', '**/_layout.tsx'],
+    rules: {'check-file/filename-naming-convention': 'off'},
   },
   {
     files: ['**/app/**/*.tsx'],
-    rules: {
-      'import/no-default-export': 'off',
-    },
+    rules: {'import/no-default-export': 'off'},
   },
 ];
+
+export default [...combined, ...expoOverrides];

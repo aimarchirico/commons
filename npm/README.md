@@ -30,16 +30,16 @@ npm/
 └── turbo.json             # check/fix task pipeline
 ```
 
-| Package                                 | Provides                                                                                |
-| :-------------------------------------- | :-------------------------------------------------------------------------------------- |
-| `@aimarchirico/commons-ts`              | `./eslint`, `./tsconfig.json` — base TypeScript config.                                 |
-| `@aimarchirico/commons-expo`            | `./eslint`, `./tsconfig.json` — Expo / React Native config.                             |
-| `@aimarchirico/commons-tools`           | `./markdownlint`, `./commitlint` configs.                                               |
-| `@aimarchirico/commons-docs`            | `commons-docs` CLI (`bin/cli.js`) materializing `CONTRIBUTING.md` and GitHub templates. |
-| `@aimarchirico/commons-openapi`         | `commons-openapi` CLI (`bin/cli.js`) generating the OpenAPI client and docs.            |
-| `@aimarchirico/commons-cloudflare`      | `./proxy` Pages Function + `commons-cloudflare-fix` bin for Expo web deploys.           |
-| `@aimarchirico/commons-firebase-client` | Firebase client config and `commons-firebase-client-decode-google-services` bin.        |
-| `@aimarchirico/commons-google-signin`   | Google Sign-In React context and authentication hooks.                                  |
+| Package                                 | Provides                                                                                                       |
+| :-------------------------------------- | :------------------------------------------------------------------------------------------------------------- |
+| `@aimarchirico/commons-ts`              | `./eslint`, `./tsconfig.json` — base TypeScript config.                                                        |
+| `@aimarchirico/commons-expo`            | `./eslint`, `./tsconfig.json` config + `commons-expo build-android` bin.                                       |
+| `@aimarchirico/commons-tools`           | `./markdownlint`, `./commitlint` configs.                                                                      |
+| `@aimarchirico/commons-docs`            | `commons-docs materialize-templates` bin (`bin/cli.mjs`) materializing `CONTRIBUTING.md` and GitHub templates. |
+| `@aimarchirico/commons-openapi`         | `commons-openapi generate-client` bin (`bin/cli.mjs`) generating the OpenAPI client and docs.                  |
+| `@aimarchirico/commons-cloudflare`      | `./proxy` Pages Function + `commons-cloudflare fix-assets` bin for Expo web deploys.                           |
+| `@aimarchirico/commons-firebase-client` | Firebase client config and `commons-firebase-client decode-google-services` bin.                               |
+| `@aimarchirico/commons-google-signin`   | Google Sign-In React context and authentication hooks.                                                         |
 
 `commons-expo`, `commons-tools`, `commons-docs`, and `commons-openapi` extend
 `commons-ts` as a `workspace:*` dependency, so `commons-ts` is the base every
