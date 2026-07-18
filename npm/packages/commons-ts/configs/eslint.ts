@@ -70,4 +70,10 @@ export default [
       'import/no-default-export': 'off',
     },
   },
+  {
+    files: ['*.config.{ts,cjs}'],
+    rules: {
+      'check-file/filename-naming-convention': 'off',
+    },
+  },
 ];

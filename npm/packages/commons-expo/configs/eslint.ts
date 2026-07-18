@@ -24,4 +24,18 @@ const combined = (
   return config;
 });
 
-export default combined;
+export default [
+  ...combined,
+  {
+    files: ['**/_layout.tsx'],
+    rules: {
+      'check-file/filename-naming-convention': 'off',
+    },
+  },
+  {
+    files: ['**/app/**/*.tsx'],
+    rules: {
+      'import/no-default-export': 'off',
+    },
+  },
+];
