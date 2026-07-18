@@ -35,7 +35,46 @@ jobs:
   # ==========================================
   # MAVEN ARTIFACTS
   # ==========================================
-  publish-commons-maven:
+  publish-commons-security:
+    name: Publish commons-security
+    needs: release-please
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'maven/commons-security')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/java-task
+        with:
+          command: maven:publish
+          task_env: |
+            MODULE=commons-security
+
+  publish-commons-test:
+    name: Publish commons-test
+    needs: release-please
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'maven/commons-test')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/java-task
+        with:
+          command: maven:publish
+          task_env: |
+            MODULE=commons-test
+
+  publish-commons-convention:
+    name: Publish commons-convention
+    needs: release-please
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'maven/commons-convention')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/java-task
+        with:
+          command: maven:publish
+          task_env: |
+            MODULE=commons-convention
+
+  publish-commons-firebase-admin:
     name: Publish commons-firebase-admin
     needs: release-please
     if: contains(fromJSON(needs.release-please.outputs.paths_released), 'maven/commons-firebase-admin')
