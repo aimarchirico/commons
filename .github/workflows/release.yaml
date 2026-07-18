@@ -47,6 +47,8 @@ jobs:
           command: maven:publish
           task_env: |
             MODULE=commons-convention
+            GITHUB_ACTOR=${{ github.actor }}
+            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
 
   publish-commons-firebase-admin:
     name: Publish commons-firebase-admin
@@ -60,6 +62,8 @@ jobs:
           command: maven:publish
           task_env: |
             MODULE=commons-firebase-admin
+            GITHUB_ACTOR=${{ github.actor }}
+            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
 
   publish-commons-security:
     name: Publish commons-security
@@ -73,6 +77,8 @@ jobs:
           command: maven:publish
           task_env: |
             MODULE=commons-security
+            GITHUB_ACTOR=${{ github.actor }}
+            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
 
   publish-commons-test:
     name: Publish commons-test
@@ -86,6 +92,8 @@ jobs:
           command: maven:publish
           task_env: |
             MODULE=commons-test
+            GITHUB_ACTOR=${{ github.actor }}
+            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
 
   # ==========================================
   # NPM PACKAGES
