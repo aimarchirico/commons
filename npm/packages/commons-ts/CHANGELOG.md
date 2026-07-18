@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/aimarchirico/commons/compare/commons-ts-v1.3.1...commons-ts-v1.4.0) (2026-07-18)
+
+
+### Features
+
+* migrate google-signin to nitro + split firebase client by platform ([e7d877d](https://github.com/aimarchirico/commons/commit/e7d877d9707cf670bd2c017722c55f1d95cb9166))
+
 ## [1.3.1](https://github.com/aimarchirico/commons/compare/commons-ts-v1.3.0...commons-ts-v1.3.1) (2026-07-18)
 
 

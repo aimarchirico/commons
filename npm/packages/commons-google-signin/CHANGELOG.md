@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.0.0](https://github.com/aimarchirico/commons/compare/commons-google-signin-v1.2.1...commons-google-signin-v2.0.0) (2026-07-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* **google-signin:** consumers must replace the @react-native-google-signin/google-signin peer dependency with react-native-nitro-google-signin + react-native-nitro-modules, and swap the Expo config plugin accordingly.
+
+### Features
+
+* **google-signin:** migrate to react-native-nitro-google-signin ([85178ec](https://github.com/aimarchirico/commons/commit/85178ec8a1cb9c087b64d8523aad261701cf2332))
+* migrate google-signin to nitro + split firebase client by platform ([e7d877d](https://github.com/aimarchirico/commons/commit/e7d877d9707cf670bd2c017722c55f1d95cb9166))
+
 ## [1.2.1](https://github.com/aimarchirico/commons/compare/commons-google-signin-v1.2.0...commons-google-signin-v1.2.1) (2026-07-18)
 
 
