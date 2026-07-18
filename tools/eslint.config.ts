@@ -7,7 +7,6 @@ export default [
   ...tsConfig,
   ...eslintPluginToml.configs['flat/recommended'],
   ...eslintPluginYml.configs['flat/recommended'],
-
   {
     ignores: ['**/npm/packages/**', '**/pnpm-lock.yaml'],
   },
