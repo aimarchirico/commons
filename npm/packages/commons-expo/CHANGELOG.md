@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/aimarchirico/commons/compare/commons-expo-v2.0.0...commons-expo-v2.0.1) (2026-07-18)
+
+
+### Bug Fixes
+
+* **eslint:** update eslint configurations to include specific rules for eslint.ts files ([8210eef](https://github.com/aimarchirico/commons/commit/8210eef5e1d7bf0e66b3627e7cb80ab41635a882))
+
 ## [2.0.0](https://github.com/aimarchirico/commons/compare/commons-expo-v1.3.2...commons-expo-v2.0.0) (2026-07-18)
 
 

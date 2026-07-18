@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.1](https://github.com/aimarchirico/commons/compare/commons-convention-v1.5.0...commons-convention-v1.5.1) (2026-07-18)
+
+
+### Bug Fixes
+
+* **commons-convention:** force release ([c55cb89](https://github.com/aimarchirico/commons/commit/c55cb89e371b3884ff855ad460aaadd8990595d0))
+* **commons-convention:** remove release trigger comment ([58b82ba](https://github.com/aimarchirico/commons/commit/58b82baaf0138a60d5329e9a8dd2bfa97eea7ef4))
+
 ## [1.5.0](https://github.com/aimarchirico/commons/compare/commons-convention-v1.4.0...commons-convention-v1.5.0) (2026-07-07)
 
 

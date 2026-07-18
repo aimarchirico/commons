@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.1](https://github.com/aimarchirico/commons/compare/commons-ts-v1.4.0...commons-ts-v1.4.1) (2026-07-18)
+
+
+### Bug Fixes
+
+* **eslint:** update eslint configurations to include specific rules for eslint.ts files ([8210eef](https://github.com/aimarchirico/commons/commit/8210eef5e1d7bf0e66b3627e7cb80ab41635a882))
+* **eslint:** update file patterns and rules for config files ([c061d00](https://github.com/aimarchirico/commons/commit/c061d002a832dde5bae45257b13d5c5e60a94dad))
+
 ## [1.4.0](https://github.com/aimarchirico/commons/compare/commons-ts-v1.3.1...commons-ts-v1.4.0) (2026-07-18)
 
 
