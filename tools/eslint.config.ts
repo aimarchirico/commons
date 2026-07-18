@@ -1,13 +1,11 @@
 import eslintPluginToml from 'eslint-plugin-toml';
 import eslintPluginYml from 'eslint-plugin-yml';
-
 import tsConfig from '@aimarchirico/commons-ts/eslint';
 
 export default [
   ...tsConfig,
   ...eslintPluginToml.configs['flat/recommended'],
   ...eslintPluginYml.configs['flat/recommended'],
-
   {
     ignores: ['**/npm/packages/**', '**/pnpm-lock.yaml'],
   },
@@ -15,7 +13,8 @@ export default [
     files: ['**/*.ts'],
     languageOptions: {
       parserOptions: {
-        project: 'tools/tsconfig.json',
+        project: 'tsconfig.json',
+        tsconfigRootDir: import.meta.dirname,
       },
     },
   },

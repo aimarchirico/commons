@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.3.2](https://github.com/aimarchirico/commons/compare/commons-expo-v1.3.1...commons-expo-v1.3.2) (2026-07-18)
+
+
+### Bug Fixes
+
+* correct tsconfig export path in package.json ([1bf4f2b](https://github.com/aimarchirico/commons/commit/1bf4f2bee2a2a3b39483df6afb689ef10ae99f17))
+* update TypeScript configuration file references to use consistent naming ([fc0958b](https://github.com/aimarchirico/commons/commit/fc0958b47d5be5317cce61ca91be8ddcc864510d))
+
+## [1.3.1](https://github.com/aimarchirico/commons/compare/commons-expo-v1.3.0...commons-expo-v1.3.1) (2026-07-18)
+
+
+### Bug Fixes
+
+* disable filename-naming-convention rule for specific file patterns in eslint configs ([ea975fe](https://github.com/aimarchirico/commons/commit/ea975fe640986f7b9abb8c1901e66d94dab30bd0))
+
+## [1.3.0](https://github.com/aimarchirico/commons/compare/commons-expo-v1.2.0...commons-expo-v1.3.0) (2026-07-17)
+
+
+### Features
+
+* **expo:** restore commons-expo for configuration deduplication ([7d2b293](https://github.com/aimarchirico/commons/commit/7d2b293e83523da73337a8b0f248ff096d407077))
+
 ## [1.2.0](https://github.com/aimarchirico/commons/compare/commons-expo-v1.1.1...commons-expo-v1.2.0) (2026-07-07)
 
 

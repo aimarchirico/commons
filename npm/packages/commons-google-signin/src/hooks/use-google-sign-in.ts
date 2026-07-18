@@ -1,5 +1,5 @@
 import {GoogleSignInService} from '../services/google-sign-in-service';
-import type {DevCredentials} from '../types/google-sign-in';
+import type {DevCredentials, GoogleSignInResult} from '../types/google-sign-in';
 import {
   getAuth,
   signInWithCredential,
@@ -15,7 +15,7 @@ export interface UseGoogleSignInOptions {
 }
 
 export const useGoogleSignIn = (options?: UseGoogleSignInOptions) => {
-  const signIn = async () => {
+  const signIn = async (): Promise<GoogleSignInResult['data']> => {
     try {
       await GoogleSignInService.configure({
         webClientId: options?.webClientId ?? 'autoDetect',
@@ -33,7 +33,9 @@ export const useGoogleSignIn = (options?: UseGoogleSignInOptions) => {
         );
         await signInWithCredential(getAuth(), googleCredential);
         return signInResult.data;
-      } else if (signInResult.type === 'noSavedCredentialFound') {
+      }
+
+      if (signInResult.type === 'noSavedCredentialFound') {
         const createResponse = await GoogleSignInService.createAccount();
         if (createResponse.type === 'success' && createResponse.data?.idToken) {
           console.log('Account created successfully:', createResponse);
@@ -44,6 +46,9 @@ export const useGoogleSignIn = (options?: UseGoogleSignInOptions) => {
           return createResponse.data;
         }
       }
+
+      // Cancelled, errored, or account creation did not complete: no session.
+      return undefined;
     } catch (error) {
       console.error('Google Sign In failed:', error);
       throw error;

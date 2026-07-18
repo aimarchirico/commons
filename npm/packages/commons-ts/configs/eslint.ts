@@ -45,7 +45,7 @@ export default [
       'import/no-default-export': ['error'],
       'check-file/filename-naming-convention': [
         'error',
-        {'**/*.{ts,tsx,mjs}': 'KEBAB_CASE'},
+        {'**/*.{ts,tsx,mjs,cjs,json}': 'KEBAB_CASE'},
       ],
       'max-lines': [
         'error',
@@ -68,6 +68,12 @@ export default [
     rules: {
       'check-file/filename-naming-convention': 'off',
       'import/no-default-export': 'off',
+    },
+  },
+  {
+    files: ['*.config.{ts,cjs}'],
+    rules: {
+      'check-file/filename-naming-convention': 'off',
     },
   },
 ];

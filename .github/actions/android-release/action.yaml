@@ -40,7 +40,7 @@ runs:
         distribution: temurin
         java-version: '17'
     - name: Run CI Build for Android
-      uses: aimarchirico/commons/.github/actions/node-task@dev
+      uses: aimarchirico/commons/.github/actions/node-task@main
       with:
         command: ${{ inputs.command }}
         node_cache_path: ${{ inputs.node_cache_path }}
