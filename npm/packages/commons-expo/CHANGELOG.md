@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.2](https://github.com/aimarchirico/commons/compare/commons-expo-v1.3.1...commons-expo-v1.3.2) (2026-07-18)
+
+
+### Bug Fixes
+
+* correct tsconfig export path in package.json ([1bf4f2b](https://github.com/aimarchirico/commons/commit/1bf4f2bee2a2a3b39483df6afb689ef10ae99f17))
+* update TypeScript configuration file references to use consistent naming ([fc0958b](https://github.com/aimarchirico/commons/commit/fc0958b47d5be5317cce61ca91be8ddcc864510d))
+
 ## [1.3.1](https://github.com/aimarchirico/commons/compare/commons-expo-v1.3.0...commons-expo-v1.3.1) (2026-07-18)
 
 
