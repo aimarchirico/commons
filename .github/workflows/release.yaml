@@ -35,32 +35,6 @@ jobs:
   # ==========================================
   # MAVEN ARTIFACTS
   # ==========================================
-  publish-commons-security:
-    name: Publish commons-security
-    needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'maven/commons-security')
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: ./.github/actions/java-task
-        with:
-          command: maven:publish
-          task_env: |
-            MODULE=commons-security
-
-  publish-commons-test:
-    name: Publish commons-test
-    needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'maven/commons-test')
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: ./.github/actions/java-task
-        with:
-          command: maven:publish
-          task_env: |
-            MODULE=commons-test
-
   publish-commons-convention:
     name: Publish commons-convention
     needs: release-please
@@ -87,13 +61,39 @@ jobs:
           task_env: |
             MODULE=commons-firebase-admin
 
+  publish-commons-security:
+    name: Publish commons-security
+    needs: release-please
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'maven/commons-security')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/java-task
+        with:
+          command: maven:publish
+          task_env: |
+            MODULE=commons-security
+
+  publish-commons-test:
+    name: Publish commons-test
+    needs: release-please
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'maven/commons-test')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/java-task
+        with:
+          command: maven:publish
+          task_env: |
+            MODULE=commons-test
+
   # ==========================================
   # NPM PACKAGES
   # ==========================================
-  publish-commons-ts:
-    name: Publish commons-ts
+  publish-commons-cloudflare:
+    name: Publish commons-cloudflare
     needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-ts')
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-cloudflare')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -103,37 +103,7 @@ jobs:
           node_cache_path: npm/pnpm-lock.yaml
           task_env: |
             NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
-            PACKAGE='@aimarchirico/commons-ts'
-
-  publish-commons-expo:
-    name: Publish commons-expo
-    needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-expo')
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: ./.github/actions/node-task
-        with:
-          command: npm:publish
-          node_cache_path: npm/pnpm-lock.yaml
-          task_env: |
-            NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
-            PACKAGE='@aimarchirico/commons-expo'
-
-  publish-commons-openapi:
-    name: Publish commons-openapi
-    needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-openapi')
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: ./.github/actions/node-task
-        with:
-          command: npm:publish
-          node_cache_path: npm/pnpm-lock.yaml
-          task_env: |
-            NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
-            PACKAGE='@aimarchirico/commons-openapi'
+            PACKAGE='@aimarchirico/commons-cloudflare'
 
   publish-commons-docs:
     name: Publish commons-docs
@@ -150,10 +120,10 @@ jobs:
             NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
             PACKAGE='@aimarchirico/commons-docs'
 
-  publish-commons-cloudflare:
-    name: Publish commons-cloudflare
+  publish-commons-expo:
+    name: Publish commons-expo
     needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-cloudflare')
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-expo')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -163,7 +133,7 @@ jobs:
           node_cache_path: npm/pnpm-lock.yaml
           task_env: |
             NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
-            PACKAGE='@aimarchirico/commons-cloudflare'
+            PACKAGE='@aimarchirico/commons-expo'
 
   publish-commons-firebase-client:
     name: Publish commons-firebase-client
@@ -194,3 +164,33 @@ jobs:
           task_env: |
             NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
             PACKAGE='@aimarchirico/commons-google-signin'
+
+  publish-commons-openapi:
+    name: Publish commons-openapi
+    needs: release-please
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-openapi')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/node-task
+        with:
+          command: npm:publish
+          node_cache_path: npm/pnpm-lock.yaml
+          task_env: |
+            NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+            PACKAGE='@aimarchirico/commons-openapi'
+
+  publish-commons-ts:
+    name: Publish commons-ts
+    needs: release-please
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-ts')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/node-task
+        with:
+          command: npm:publish
+          node_cache_path: npm/pnpm-lock.yaml
+          task_env: |
+            NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+            PACKAGE='@aimarchirico/commons-ts'

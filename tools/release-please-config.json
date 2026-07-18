@@ -2,7 +2,30 @@
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
   "separate-pull-requests": false,
   "packages": {
-    "npm/packages/commons-ts": {
+    "maven/commons-convention": {
+      "release-type": "simple",
+      "package-name": "commons-convention",
+      "extra-files": ["build.gradle.kts"]
+    },
+    "maven/commons-security": {
+      "release-type": "simple",
+      "package-name": "commons-security",
+      "extra-files": ["build.gradle.kts"]
+    },
+    "maven/commons-test": {
+      "release-type": "simple",
+      "package-name": "commons-test",
+      "extra-files": ["build.gradle.kts"]
+    },
+    "maven/commons-firebase-admin": {
+      "release-type": "simple",
+      "package-name": "commons-firebase-admin",
+      "extra-files": ["build.gradle.kts"]
+    },
+    "npm/packages/commons-cloudflare": {
+      "release-type": "node"
+    },
+    "npm/packages/commons-docs": {
       "release-type": "node"
     },
     "npm/packages/commons-expo": {
@@ -17,31 +40,8 @@
     "npm/packages/commons-openapi": {
       "release-type": "node"
     },
-    "npm/packages/commons-docs": {
+    "npm/packages/commons-ts": {
       "release-type": "node"
-    },
-    "npm/packages/commons-cloudflare": {
-      "release-type": "node"
-    },
-    "maven/commons-security": {
-      "release-type": "simple",
-      "package-name": "commons-security",
-      "extra-files": ["build.gradle.kts"]
-    },
-    "maven/commons-test": {
-      "release-type": "simple",
-      "package-name": "commons-test",
-      "extra-files": ["build.gradle.kts"]
-    },
-    "maven/commons-convention": {
-      "release-type": "simple",
-      "package-name": "commons-convention",
-      "extra-files": ["build.gradle.kts"]
-    },
-    "maven/commons-firebase-admin": {
-      "release-type": "simple",
-      "package-name": "commons-firebase-admin",
-      "extra-files": ["build.gradle.kts"]
     }
   }
 }
