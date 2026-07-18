@@ -26,7 +26,6 @@ configure<org.gradle.api.plugins.JavaPluginExtension> {
 }
 
 tasks.withType<Test>().configureEach {
-    // Standardize test execution on the JUnit Platform.
     useJUnitPlatform()
 }
 
