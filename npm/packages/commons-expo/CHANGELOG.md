@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/aimarchirico/commons/compare/commons-expo-v1.3.0...commons-expo-v1.3.1) (2026-07-18)
+
+
+### Bug Fixes
+
+* disable filename-naming-convention rule for specific file patterns in eslint configs ([ea975fe](https://github.com/aimarchirico/commons/commit/ea975fe640986f7b9abb8c1901e66d94dab30bd0))
+
 ## [1.3.0](https://github.com/aimarchirico/commons/compare/commons-expo-v1.2.0...commons-expo-v1.3.0) (2026-07-17)
 
 

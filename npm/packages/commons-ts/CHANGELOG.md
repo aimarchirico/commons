@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.1](https://github.com/aimarchirico/commons/compare/commons-ts-v1.2.0...commons-ts-v1.2.1) (2026-07-18)
+
+
+### Bug Fixes
+
+* disable filename-naming-convention rule for specific file patterns in eslint configs ([ea975fe](https://github.com/aimarchirico/commons/commit/ea975fe640986f7b9abb8c1901e66d94dab30bd0))
+* update filename-naming-convention rule to include cjs files ([7a703df](https://github.com/aimarchirico/commons/commit/7a703df9768234575e6a5473ca97800fd1a5c339))
+
 ## [1.2.0](https://github.com/aimarchirico/commons/compare/commons-ts-v1.1.1...commons-ts-v1.2.0) (2026-07-17)
 
 
