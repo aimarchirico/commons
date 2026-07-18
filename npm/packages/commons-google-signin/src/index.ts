@@ -1,3 +1,8 @@
-export * from './google-sign-in-service';
-export * from './use-google-sign-in';
-export * from './auth-context';
+export * from './services/google-sign-in-service';
+export type {
+  DevCredentials,
+  GoogleSignInResult,
+  SignInOptions,
+} from './types/google-sign-in';
+export * from './hooks/use-google-sign-in';
+export * from './providers/auth-context';
