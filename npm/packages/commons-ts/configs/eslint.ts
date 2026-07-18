@@ -45,7 +45,7 @@ export default [
       'import/no-default-export': ['error'],
       'check-file/filename-naming-convention': [
         'error',
-        {'**/*.{ts,tsx,mjs,cjs}': 'KEBAB_CASE'},
+        {'**/*.{ts,tsx,mjs,cjs,json}': 'KEBAB_CASE'},
       ],
       'max-lines': [
         'error',
