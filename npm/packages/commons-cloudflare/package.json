@@ -20,7 +20,7 @@
     "bin"
   ],
   "scripts": {
-    "check": "eslint",
+    "check": "eslint && tsc",
     "fix": "eslint --fix"
   },
   "dependencies": {
@@ -28,9 +28,10 @@
     "shelljs": "^0.10.0"
   },
   "devDependencies": {
+    "@aimarchirico/commons-ts": "workspace:^",
     "@types/node": "^26.0.1",
+    "@types/shelljs": "^0.8.17",
     "eslint": "^9.39.2",
-    "typescript": "^6.0.3",
-    "@aimarchirico/commons-ts": "workspace:^"
+    "typescript": "^6.0.3"
   }
 }

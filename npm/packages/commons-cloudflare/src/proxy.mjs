@@ -3,6 +3,9 @@
 // this from `functions/api/[[path]].js`:
 //
 //   export { onRequest } from '@aimarchirico/commons-cloudflare/proxy';
+/**
+ * @param {{env: {API_URL?: string, PROXY_SECRET?: string}, request: Request}} context
+ */
 export async function onRequest(context) {
   const apiUrl = context.env.API_URL;
 
@@ -20,7 +23,9 @@ export async function onRequest(context) {
   headers.set('X-Forwarded-Prefix', '/api');
   headers.set('X-Forwarded-Host', url.host);
   headers.set('X-Forwarded-Proto', url.protocol.replace(':', ''));
-  headers.set('X-Proxy-Secret', context.env.PROXY_SECRET);
+  if (context.env.PROXY_SECRET) {
+    headers.set('X-Proxy-Secret', context.env.PROXY_SECRET);
+  }
 
   const response = await fetch(backendUrl, {
     method: context.request.method,
