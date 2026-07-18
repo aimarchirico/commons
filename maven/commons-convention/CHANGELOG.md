@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.2](https://github.com/aimarchirico/commons/compare/commons-convention-v1.5.1...commons-convention-v1.5.2) (2026-07-18)
+
+
+### Bug Fixes
+
+* add detekt dependency to check task ([47b2da3](https://github.com/aimarchirico/commons/commit/47b2da37f77a400b97d9348245a1e0815b27158a))
+* remove detekt dependency from check task ([5ebe6b0](https://github.com/aimarchirico/commons/commit/5ebe6b08e4aa63d5a22e9c98217e72fcf23db7ee))
+
 ## [1.5.1](https://github.com/aimarchirico/commons/compare/commons-convention-v1.5.0...commons-convention-v1.5.1) (2026-07-18)
 
 

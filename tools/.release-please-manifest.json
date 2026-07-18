@@ -8,6 +8,6 @@
   "npm/packages/commons-cloudflare": "2.0.0",
   "maven/commons-security": "2.0.1",
   "maven/commons-test": "2.0.0",
-  "maven/commons-convention": "1.5.1",
+  "maven/commons-convention": "1.5.2",
   "maven/commons-firebase-admin": "1.0.1"
 }
