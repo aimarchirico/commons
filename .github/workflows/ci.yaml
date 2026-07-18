@@ -38,8 +38,8 @@ jobs:
             config:
               - '**/*.ts'
               - '**/*.json'
-              - '**/*.toml'
               - '**/*.yaml'
+              - '**/*.toml'
               - '!npm/packages/**'
             docs:
               - '**/*.md'
