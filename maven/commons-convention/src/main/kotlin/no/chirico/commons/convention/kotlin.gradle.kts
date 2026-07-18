@@ -5,6 +5,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     kotlin("jvm")
     id("com.ncorti.ktfmt.gradle")
+    id("dev.detekt")
 }
 
 configure<com.ncorti.ktfmt.gradle.KtfmtExtension> {
@@ -29,5 +30,5 @@ tasks.withType<Test>().configureEach {
 }
 
 tasks.named("check") {
-    dependsOn("ktfmtCheck")
+    dependsOn("ktfmtCheck", "detekt")
 }
