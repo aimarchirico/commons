@@ -43,10 +43,8 @@ class FirebaseAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  fun firebaseAuthenticationFilter(
-    firebaseApp: FirebaseApp,
-    properties: FirebaseProperties,
-  ): FirebaseAuthenticationFilter = FirebaseAuthenticationFilter(properties)
+  fun firebaseAuthenticationFilter(properties: FirebaseProperties): FirebaseAuthenticationFilter =
+    FirebaseAuthenticationFilter(properties)
 
   @Bean
   @ConditionalOnMissingBean
