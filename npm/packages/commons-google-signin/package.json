@@ -24,7 +24,8 @@
     "@aimarchirico/commons-firebase-client": "workspace:^"
   },
   "devDependencies": {
-    "@react-native-google-signin/google-signin": "*",
+    "react-native-nitro-google-signin": "*",
+    "react-native-nitro-modules": "*",
     "@types/react": "^19.0.0",
     "eslint": "^9.39.2",
     "expo": "*",
@@ -35,7 +36,8 @@
     "@aimarchirico/commons-ts": "workspace:^"
   },
   "peerDependencies": {
-    "@react-native-google-signin/google-signin": "*",
+    "react-native-nitro-google-signin": "*",
+    "react-native-nitro-modules": "*",
     "react": "*",
     "react-native": "*"
   }

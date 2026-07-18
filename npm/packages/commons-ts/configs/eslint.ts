@@ -64,7 +64,7 @@ export default [
     },
   },
   {
-    files: ['**/eslint.config.ts', '**/eslint.ts'],
+    files: ['**/*.config.{ts,cjs}', '**/eslint.ts'],
     rules: {
       'check-file/filename-naming-convention': 'off',
       'import/no-default-export': 'off',

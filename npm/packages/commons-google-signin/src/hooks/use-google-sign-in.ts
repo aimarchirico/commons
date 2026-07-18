@@ -1,7 +1,5 @@
-import {
-  GoogleSignInService,
-  type DevCredentials,
-} from './google-sign-in-service';
+import {GoogleSignInService} from '../services/google-sign-in-service';
+import type {DevCredentials} from '../types/google-sign-in';
 import {
   getAuth,
   signInWithCredential,
