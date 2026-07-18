@@ -11,7 +11,7 @@
   },
   "exports": {
     "./eslint": "./configs/eslint.ts",
-    "./tsconfig": "./configs/tsconfig.base.json"
+    "./tsconfig": "./configs/tsconfig-base.json"
   },
   "bin": {
     "commons-expo-build-android": "bin/build-android.mjs"
