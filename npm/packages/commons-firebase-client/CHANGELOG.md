@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.0.0](https://github.com/aimarchirico/commons/compare/commons-firebase-client-v1.1.0...commons-firebase-client-v2.0.0) (2026-07-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* bin invocations now require a subcommand. The old bare bin keys (commons-cloudflare-fix, commons-expo-build-android, commons-firebase-client-decode-google-services) are removed.
+
+### Features
+
+* **firebase-client:** split auth wrapper into platform files ([2ceea86](https://github.com/aimarchirico/commons/commit/2ceea86238d22495875b41a654aad2297c9cd458))
+* migrate google-signin to nitro + split firebase client by platform ([e7d877d](https://github.com/aimarchirico/commons/commit/e7d877d9707cf670bd2c017722c55f1d95cb9166))
+* standardize commons bins on &lt;package&gt; &lt;verb&gt; subcommands ([e61ea8e](https://github.com/aimarchirico/commons/commit/e61ea8e26fb19960a52fe2249d3f231b502cfca7))
+
 ## [1.1.0](https://github.com/aimarchirico/commons/compare/commons-firebase-client-v1.0.2...commons-firebase-client-v1.1.0) (2026-07-17)
 
 

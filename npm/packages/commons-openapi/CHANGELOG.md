@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/aimarchirico/commons/compare/commons-openapi-v1.2.0...commons-openapi-v2.0.0) (2026-07-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* bin invocations now require a subcommand. The old bare bin keys (commons-cloudflare-fix, commons-expo-build-android, commons-firebase-client-decode-google-services) are removed.
+
+### Features
+
+* standardize commons bins on &lt;package&gt; &lt;verb&gt; subcommands ([e61ea8e](https://github.com/aimarchirico/commons/commit/e61ea8e26fb19960a52fe2249d3f231b502cfca7))
+
 ## [1.2.0](https://github.com/aimarchirico/commons/compare/commons-openapi-v1.1.3...commons-openapi-v1.2.0) (2026-07-17)
 
 
