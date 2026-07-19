@@ -30,8 +30,8 @@ publishing {
       name = "GitHubPackages"
       url = uri("https://maven.pkg.github.com/aimarchirico/commons")
       credentials {
-        username = System.getenv("GITHUB_ACTOR")
-        password = System.getenv("GITHUB_TOKEN")
+        username = System.getenv("GITHUB_ACTOR") ?: providers.gradleProperty("gpr.user").orNull
+        password = System.getenv("GITHUB_TOKEN") ?: providers.gradleProperty("gpr.key").orNull
       }
     }
   }
