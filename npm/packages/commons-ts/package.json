@@ -1,6 +1,6 @@
 {
   "name": "@aimarchirico/commons-ts",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "type": "module",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
