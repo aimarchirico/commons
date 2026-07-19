@@ -9,20 +9,23 @@
     "type": "git",
     "url": "https://github.com/aimarchirico/commons.git"
   },
+  "type": "module",
   "main": "src/index.ts",
   "exports": {
     ".": "./src/index.ts"
   },
   "bin": {
-    "commons-firebase-client": "bin/cli.mjs"
+    "commons-firebase-client": "dist/bin/cli.js"
   },
   "files": [
     "src",
-    "bin"
+    "dist"
   ],
   "scripts": {
     "check": "eslint && tsc",
-    "fix": "eslint --fix"
+    "fix": "eslint --fix",
+    "build": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "pnpm build"
   },
   "devDependencies": {
     "@react-native-firebase/auth": "*",

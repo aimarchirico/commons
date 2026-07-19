@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 
-/** @type {Record<string, string>} */
-const commands = {
-  'materialize-templates': './materialize-templates.mjs',
+const commands: Record<string, string> = {
+  'fix-assets': './fix-cloudflare.js',
 };
 
 const verb = process.argv[2];
@@ -10,10 +9,10 @@ const script = verb ? commands[verb] : undefined;
 
 if (!script) {
   const usage = Object.keys(commands)
-    .map(name => `  commons-docs ${name}`)
+    .map(name => `  commons-cloudflare ${name}`)
     .join('\n');
   console.error(`Usage:\n${usage}`);
   process.exit(1);
 }
 
-import(script);
+void import(script);

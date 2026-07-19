@@ -7,8 +7,6 @@
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
     "noEmit": true,
-    "allowJs": true,
-    "checkJs": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "types": ["node"],
@@ -19,7 +17,6 @@
   "include": [
     "${configDir}/**/*.ts",
     "${configDir}/**/*.tsx",
-    "${configDir}/**/*.mjs",
-    "${configDir}/**/*.cjs"
+    "${configDir}/**/*.json"
   ]
 }

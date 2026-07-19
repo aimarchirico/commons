@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 
-/** @type {Record<string, string>} */
-const commands = {
-  'generate-client': './generate-client.mjs',
+const commands: Record<string, string> = {
+  'generate-client': './generate-client.js',
 };
 
 const verb = process.argv[2];
@@ -16,4 +15,4 @@ if (!script) {
   process.exit(1);
 }
 
-import(script);
+void import(script);

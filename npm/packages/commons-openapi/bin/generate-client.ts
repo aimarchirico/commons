@@ -11,7 +11,7 @@ import {fileURLToPath} from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const packageRoot = path.resolve(__dirname, '..');
+const packageRoot = path.resolve(__dirname, '..', '..');
 
 const apiUrl = process.env.API_URL;
 if (!apiUrl) {
@@ -22,10 +22,9 @@ if (!apiUrl) {
 const cfClientId = process.env.CF_ACCESS_CLIENT_ID;
 const cfClientSecret = process.env.CF_ACCESS_CLIENT_SECRET;
 
-async function fetchSpec() {
+async function fetchSpec(): Promise<string> {
   const specUrl = `${apiUrl}/v3/api-docs`;
-  /** @type {Record<string, string>} */
-  const headers = {};
+  const headers: Record<string, string> = {};
 
   if (cfClientId && cfClientSecret) {
     console.log('Using Cloudflare Access service token');
@@ -48,10 +47,7 @@ async function fetchSpec() {
   });
 }
 
-/**
- * @param {string} specPath
- */
-function generateClient(specPath) {
+function generateClient(specPath: string): void {
   console.log('Generating API client...');
   const outputDir =
     process.env.API_CLIENT_OUTPUT_DIR ||
@@ -62,10 +58,7 @@ function generateClient(specPath) {
   console.log(`OpenAPI client generated at ${outputDir}`);
 }
 
-/**
- * @param {string} specPath
- */
-function generateDocs(specPath) {
+function generateDocs(specPath: string): void {
   console.log('Generating API documentation...');
   const docsDir =
     process.env.API_DOCS_OUTPUT_DIR || path.resolve(process.cwd(), 'docs');
@@ -79,7 +72,7 @@ function generateDocs(specPath) {
   console.log(`OpenAPI documentation generated at ${outputPath}`);
 }
 
-async function main() {
+async function main(): Promise<void> {
   try {
     console.log('Fetching OpenAPI spec from', apiUrl);
     const spec = await fetchSpec();
@@ -98,4 +91,4 @@ async function main() {
   }
 }
 
-main();
+void main();

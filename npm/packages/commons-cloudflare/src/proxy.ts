@@ -3,10 +3,13 @@
 // this from `functions/api/[[path]].js`:
 //
 //   export { onRequest } from '@aimarchirico/commons-cloudflare/proxy';
-/**
- * @param {{env: {API_URL?: string, PROXY_SECRET?: string}, request: Request}} context
- */
-export async function onRequest(context) {
+
+interface ProxyContext {
+  env: {API_URL?: string; PROXY_SECRET?: string};
+  request: Request;
+}
+
+export async function onRequest(context: ProxyContext): Promise<Response> {
   const apiUrl = context.env.API_URL;
 
   if (!apiUrl) {
