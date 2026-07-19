@@ -24,7 +24,7 @@ tools/
 ├── Taskfile.yaml                  # Task command definitions
 ├── .commitlintrc.yaml             # commitlint configuration (extends config-conventional)
 ├── .markdownlint-cli2.yaml        # markdownlint configuration
-├── eslint.config.ts               # ESLint configuration for tool configs (YAML, TOML)
+├── eslint.config.ts               # ESLint configuration for tool configs (TS, JSON, YAML, TOML)
 ├── tsconfig.json                  # TypeScript configuration for ESLint
 ├── release-please-config.json     # release-please package config
 ├── .release-please-manifest.json  # release-please version manifest
