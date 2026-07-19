@@ -2,7 +2,7 @@
   "maven/commons-convention": "1.6.0",
   "maven/commons-security": "2.0.1",
   "maven/commons-test": "2.0.0",
-  "maven/commons-firebase-admin": "1.0.1",
+  "maven/commons-firebase-admin": "1.0.2",
   "npm/packages/commons-cloudflare": "2.1.0",
   "npm/packages/commons-docs": "2.1.0",
   "npm/packages/commons-expo": "2.1.0",
