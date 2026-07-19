@@ -6,7 +6,7 @@ inputs:
   node_cache_path:
     required: false
     default: 'pnpm-lock.yaml'
-  output_directory:
+  working_directory:
     required: true
   cloudflare_account_id:
     required: true
@@ -27,6 +27,7 @@ runs:
     - name: Deploy to Cloudflare Pages
       uses: cloudflare/wrangler-action@v3
       with:
+        workingDirectory: ${{ inputs.working_directory }}
         apiToken: ${{ inputs.cloudflare_api_token }}
         accountId: ${{ inputs.cloudflare_account_id }}
-        command: pages deploy ${{ inputs.output_directory }} --project-name=${{ github.event.repository.name }}
+        command: pages deploy dist --project-name=${{ github.event.repository.name }}
