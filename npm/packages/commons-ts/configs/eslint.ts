@@ -1,7 +1,6 @@
 import checkFile from 'eslint-plugin-check-file';
 import eslintPluginImport from 'eslint-plugin-import';
 import eslintPluginJsonc from 'eslint-plugin-jsonc';
-import globals from 'globals';
 import gts from 'gts';
 import {execFileSync} from 'node:child_process';
 import gtsPrettier from 'gts/.prettierrc.json';
@@ -45,7 +44,7 @@ export default [
       'import/no-default-export': ['error'],
       'check-file/filename-naming-convention': [
         'error',
-        {'**/*.{ts,tsx,mjs,cjs,json}': 'KEBAB_CASE'},
+        {'**/*.{ts,tsx,json}': 'KEBAB_CASE'},
       ],
       'max-lines': [
         'error',
@@ -58,13 +57,7 @@ export default [
     },
   },
   {
-    files: ['**/*.mjs'],
-    languageOptions: {
-      globals: {...globals.node},
-    },
-  },
-  {
-    files: ['**/*.config.{ts,cjs}', '**/*.d.ts'],
+    files: ['**/*.config.ts', '**/*.d.ts', '**/tsconfig.build.json'],
     rules: {
       'check-file/filename-naming-convention': 'off',
       'import/no-default-export': 'off',

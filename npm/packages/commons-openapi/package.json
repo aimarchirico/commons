@@ -2,6 +2,7 @@
   "name": "@aimarchirico/commons-openapi",
   "version": "2.0.0",
   "private": false,
+  "type": "module",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
@@ -10,14 +11,16 @@
     "url": "https://github.com/aimarchirico/commons.git"
   },
   "bin": {
-    "commons-openapi": "bin/cli.mjs"
+    "commons-openapi": "dist/bin/cli.js"
   },
   "files": [
-    "bin"
+    "dist"
   ],
   "scripts": {
     "check": "eslint && tsc",
-    "fix": "eslint --fix"
+    "fix": "eslint --fix",
+    "build": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "pnpm build"
   },
   "dependencies": {
     "@openapitools/openapi-generator-cli": "^2.39.1",

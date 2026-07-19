@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 
-/** @type {Record<string, string>} */
-const commands = {
-  'fix-assets': './fix-cloudflare.mjs',
+const commands: Record<string, string> = {
+  'decode-google-services': './decode-google-services.js',
 };
 
 const verb = process.argv[2];
@@ -10,10 +9,10 @@ const script = verb ? commands[verb] : undefined;
 
 if (!script) {
   const usage = Object.keys(commands)
-    .map(name => `  commons-cloudflare ${name}`)
+    .map(name => `  commons-firebase-client ${name}`)
     .join('\n');
   console.error(`Usage:\n${usage}`);
   process.exit(1);
 }
 
-import(script);
+void import(script);

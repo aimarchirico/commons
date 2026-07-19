@@ -2,6 +2,7 @@
   "name": "@aimarchirico/commons-cloudflare",
   "version": "2.0.0",
   "private": false,
+  "type": "module",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
@@ -10,18 +11,20 @@
     "url": "https://github.com/aimarchirico/commons.git"
   },
   "exports": {
-    "./proxy": "./src/proxy.mjs"
+    "./proxy": "./src/proxy.ts"
   },
   "bin": {
-    "commons-cloudflare": "bin/cli.mjs"
+    "commons-cloudflare": "dist/bin/cli.js"
   },
   "files": [
-    "src",
-    "bin"
+    "dist",
+    "src"
   ],
   "scripts": {
     "check": "eslint && tsc",
-    "fix": "eslint --fix"
+    "fix": "eslint --fix",
+    "build": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "pnpm build"
   },
   "dependencies": {
     "replace-in-file": "^8.4.0",
