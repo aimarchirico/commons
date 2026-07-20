@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@openapitools/openapi-generator-cli": "^2.39.1",
-    "widdershins": "^4.0.1"
+    "swagger-markdown": "^3.1.1"
   },
   "devDependencies": {
     "@types/node": "^26.0.1",
