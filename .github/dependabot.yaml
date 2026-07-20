@@ -23,22 +23,22 @@ updates:
 
   - package-ecosystem: 'gradle'
     directory: '/maven'
-    registries:
-      - github-maven
     schedule:
       interval: 'weekly'
     groups:
       gradle-minor-patch:
         update-types: ["minor", "patch"]
+    registries:
+      - github-maven
 
   - package-ecosystem: 'npm'
     directory: ["/npm", "/tools"]
-    registries:
-      - github-npm
     schedule:
       interval: 'weekly'
     groups:
       npm-minor-patch:
         update-types: ["minor", "patch"]
+    registries:
+      - github-npm
     cooldown:
       default-days: 1
