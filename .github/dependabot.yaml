@@ -19,20 +19,13 @@ registries:
     token: ${{secrets.GH_PACKAGES_TOKEN}}
 
 updates:
-  - package-ecosystem: 'npm'
-    directory: '/tools'
-    registries:
-      - github-npm
-      - github-npm-google-signin
-    schedule:
-      interval: 'weekly'
-    cooldown:
-      default-days: 1
-
   - package-ecosystem: 'github-actions'
     directory: '/.github'
     schedule:
       interval: 'weekly'
+    groups:
+      actions:
+        patterns: ["*"]
 
   - package-ecosystem: 'gradle'
     directory: '/maven'
@@ -40,13 +33,19 @@ updates:
       - github-maven
     schedule:
       interval: 'weekly'
+    groups:
+      gradle-minor-patch:
+        update-types: ["minor", "patch"]
 
   - package-ecosystem: 'npm'
-    directory: '/npm'
+    directory: ["/npm", "/tools"]
     registries:
       - github-npm
       - github-npm-google-signin
     schedule:
       interval: 'weekly'
+    groups:
+      npm-minor-patch:
+        update-types: ["minor", "patch"]
     cooldown:
       default-days: 1
