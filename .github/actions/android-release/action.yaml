@@ -46,6 +46,7 @@ runs:
         node_cache_path: ${{ inputs.node_cache_path }}
         task_env: |
           NODE_ENV=production
+          NPM_CONFIG_PRODUCTION=false
           ANDROID_KEY_ALIAS=${{ inputs.android_key_alias }}
           ANDROID_KEY_PASSWORD=${{ inputs.android_key_password }}
           ANDROID_KEYSTORE_BASE64=${{ inputs.android_keystore_base64 }}
