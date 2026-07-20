@@ -12,12 +12,6 @@ registries:
     scope: '@aimarchirico'
     token: ${{secrets.GH_PACKAGES_TOKEN}}
 
-  github-npm-google-signin:
-    type: npm-registry
-    url: https://npm.pkg.github.com
-    scope: '@react-native-google-signin'
-    token: ${{secrets.GH_PACKAGES_TOKEN}}
-
 updates:
   - package-ecosystem: 'github-actions'
     directory: '/.github'
@@ -41,7 +35,6 @@ updates:
     directory: ["/npm", "/tools"]
     registries:
       - github-npm
-      - github-npm-google-signin
     schedule:
       interval: 'weekly'
     groups:
