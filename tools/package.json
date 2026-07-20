@@ -18,7 +18,7 @@
     "markdownlint-cli2": "^0.23.0",
     "eslint-plugin-toml": "^0.11.1",
     "eslint-plugin-yml": "^1.14.0",
-    "typescript": "^6.0.3",
+    "typescript": "^7.0.2",
     "@types/node": "^26.0.1"
   }
 }
