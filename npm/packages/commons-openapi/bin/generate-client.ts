@@ -67,7 +67,7 @@ function generateDocs(specPath: string): void {
   }
 
   const outputPath = path.resolve(docsDir, 'API.md');
-  const cmd = `npx widdershins --code "${specPath}" -o "${outputPath}"`;
+  const cmd = `npx swagger-markdown -i "${specPath}" -o "${outputPath}"`;
   execSync(cmd, {stdio: 'inherit', cwd: packageRoot});
   console.log(`OpenAPI documentation generated at ${outputPath}`);
 }
