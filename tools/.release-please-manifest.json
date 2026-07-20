@@ -8,6 +8,6 @@
   "npm/packages/commons-expo": "2.1.0",
   "npm/packages/commons-firebase-client": "2.1.0",
   "npm/packages/commons-google-signin": "2.0.0",
-  "npm/packages/commons-openapi": "2.1.0",
+  "npm/packages/commons-openapi": "2.1.1",
   "npm/packages/commons-ts": "1.5.0"
 }

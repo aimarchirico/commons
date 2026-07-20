@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.1.1](https://github.com/aimarchirico/commons/compare/commons-openapi-v2.1.0...commons-openapi-v2.1.1) (2026-07-20)
+
+
+### Bug Fixes
+
+* **commons-openapi:** replace unmaintained widdershins with swagger-markdown ([22f83dd](https://github.com/aimarchirico/commons/commit/22f83ddda6aa65a622a6f36be2da20af457223d0))
+* **commons-openapi:** replace unmaintained widdershins with swagger-markdown ([5612bf1](https://github.com/aimarchirico/commons/commit/5612bf175852172e4e10aa06d46b6f682eafa307))
+
 ## [2.1.0](https://github.com/aimarchirico/commons/compare/commons-openapi-v2.0.0...commons-openapi-v2.1.0) (2026-07-19)
 
 
