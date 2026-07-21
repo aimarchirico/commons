@@ -22,7 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableConfigurationProperties(FirebaseProperties::class)
 class FirebaseAutoConfiguration {
 
-  private val publicPaths = arrayOf("/swagger-ui/**", "/v3/api-docs/**")
+  private val publicPaths = arrayOf("/swagger-ui/**", "/v3/api-docs/**", "/actuator/health")
 
   @Bean
   @ConditionalOnMissingBean
