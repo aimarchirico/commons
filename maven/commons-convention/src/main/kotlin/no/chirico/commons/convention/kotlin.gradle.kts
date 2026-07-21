@@ -15,7 +15,7 @@ configure<com.ncorti.ktfmt.gradle.KtfmtExtension> {
 configure<org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension> {
     compilerOptions {
         jvmTarget.set(JvmTarget.JVM_25)
-        freeCompilerArgs.addAll("-Xjsr305=strict")
+        freeCompilerArgs.addAll("-Xjsr305=strict", "-java-parameters")
     }
 }
 
