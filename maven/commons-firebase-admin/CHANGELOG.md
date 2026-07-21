@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/aimarchirico/commons/compare/commons-firebase-admin-v1.0.2...commons-firebase-admin-v1.0.3) (2026-07-21)
+
+
+### Bug Fixes
+
+* **FirebaseAutoConfiguration.kt:** add health endpoint to public paths ([3a189d7](https://github.com/aimarchirico/commons/commit/3a189d7fe5798cc36a5caf55ba8172fdd12d9b8e))
+
 ## [1.0.2](https://github.com/aimarchirico/commons/compare/commons-firebase-admin-v1.0.1...commons-firebase-admin-v1.0.2) (2026-07-19)
 
 
