@@ -28,6 +28,10 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - name: Free Disk Space
+      uses: jlumbroso/free-disk-space@v1.3.1
+      with:
+        android: false
     - name: Set Up Java
       uses: actions/setup-java@v5
       with:
