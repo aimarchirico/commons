@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/aimarchirico/commons/compare/commons-openapi-v2.1.1...commons-openapi-v2.2.0) (2026-07-22)
+
+
+### Features
+
+* **commons:** implement base folder logic and update openapi generation path ([2df60a5](https://github.com/aimarchirico/commons/commit/2df60a53ea07144e7c981c839de78066ef052f98))
+
 ## [2.1.1](https://github.com/aimarchirico/commons/compare/commons-openapi-v2.1.0...commons-openapi-v2.1.1) (2026-07-20)
 
 
