@@ -11,11 +11,11 @@ const packageRoot = path.resolve(__dirname, '..', '..');
 const cwd = process.cwd();
 
 fs.copyFileSync(
-  path.join(packageRoot, 'templates', 'CONTRIBUTING.md'),
+  path.join(packageRoot, 'src', 'assets', 'CONTRIBUTING.md'),
   path.join(cwd, 'CONTRIBUTING.md'),
 );
 fs.cpSync(
-  path.join(packageRoot, 'templates', 'github'),
+  path.join(packageRoot, 'src', 'assets', 'github'),
   path.join(cwd, '.github'),
   {recursive: true},
 );
