@@ -27,11 +27,6 @@ const combined = (
 export default [
   ...combined,
   {
-    settings: {
-      react: {version: '19.0'},
-    },
-  },
-  {
     files: ['**/*.{web,android}.ts'],
     rules: {
       'check-file/filename-naming-convention': 'off',
