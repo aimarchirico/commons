@@ -12,6 +12,7 @@ published as Maven artifacts under the `no.chirico.commons` group.
 - **ktfmt** 0.26.0 (via `com.ncorti.ktfmt.gradle`)
 - **detekt** 2.0.0-alpha.5 (via `dev.detekt`)
 - **ArchUnit** 1.4.2 (JUnit 5)
+- **MapStruct** 1.6.3 (via `org.mapstruct`)
 
 ## Folder Structure
 
@@ -26,9 +27,9 @@ maven/
 
 - **`commons-convention/`** — precompiled script plugins under
   `no.chirico.commons.convention`: `kotlin` (Kotlin/JVM + ktfmt + detekt),
-  `spring` (Spring Boot), and `architecture` (module-dependency architecture
-  enforcement). Wired in via
-  `includeBuild("commons-convention")`.
+  `spring` (Spring Boot), `mapstruct` (MapStruct compilation/annotation
+  processor), and `architecture` (module-dependency architecture enforcement).
+  Wired in via `includeBuild("commons-convention")`.
 - **`commons-security/`** — publishes `commons-security`; applies
   `id("no.chirico.commons.convention.kotlin")`
   and depends on `:commons-test` for

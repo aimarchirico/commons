@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/aimarchirico/commons/compare/commons-ts-v1.4.1...commons-ts-v1.5.0) (2026-07-19)
+
+
+### Features
+
+* **npm:** migrate package CLI scripts from mjs to ts ([f834145](https://github.com/aimarchirico/commons/commit/f834145b5c9eb8330c41b352e378f92cb89b1566))
+
 ## [1.4.1](https://github.com/aimarchirico/commons/compare/commons-ts-v1.4.0...commons-ts-v1.4.1) (2026-07-18)
 
 

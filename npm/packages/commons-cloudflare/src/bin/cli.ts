@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const commands: Record<string, string> = {
-  'fix-assets': './fix-cloudflare.js',
+  'fix-assets': './fix-assets.js',
 };
 
 const verb = process.argv[2];

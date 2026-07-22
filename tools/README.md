@@ -6,25 +6,26 @@ application code.
 
 ## Tech Stack
 
-| Technology                  | Version | Purpose                       |
-| :-------------------------- | :------ | :---------------------------- |
-| pnpm                        | -       | Package manager               |
-| Turborepo                   | ^2.10.2 | Monorepo task pipeline        |
-| commitlint                  | ^19.3.0 | Commit message linting        |
-| config-conventional         | ^21.2.0 | Conventional Commits ruleset  |
-| markdownlint-cli2           | ^0.23.0 | Markdown linting              |
-| Husky                       | ^9.1.7  | Git hooks                     |
-| @aimarchirico/commons-tools | ^1.1.2  | Shared linting config presets |
+| Technology          | Version | Purpose                      |
+| :------------------ | :------ | :--------------------------- |
+| pnpm                | -       | Package manager              |
+| commitlint          | ^19.0.0 | Commit message linting       |
+| config-conventional | ^19.0.0 | Conventional Commits ruleset |
+| markdownlint-cli2   | ^0.23.0 | Markdown linting             |
+| ESLint              | ^9.39.5 | Configuration file linting   |
+| TypeScript          | ^6.0.3  | Typing support for ESLint    |
+| Husky               | ^9.1.7  | Git hooks                    |
 
 ## Folder Structure
 
 ```text
 tools/
 ├── .husky/                        # Git hooks (commit-msg → commitlint)
-├── Taskfile.yaml                   # Task command definitions
-├── turbo.json                     # Turborepo pipeline
-├── commitlint.config.js           # commitlint config (commons-tools preset)
-├── .markdownlint-cli2.cjs         # markdownlint config (commons-tools preset)
+├── Taskfile.yaml                  # Task command definitions
+├── .commitlintrc.yaml             # commitlint configuration (extends config-conventional)
+├── .markdownlint-cli2.yaml        # markdownlint configuration
+├── eslint.config.ts               # ESLint configuration for tool configs (TS, JSON, YAML, TOML)
+├── tsconfig.json                  # TypeScript configuration for ESLint
 ├── release-please-config.json     # release-please package config
 ├── .release-please-manifest.json  # release-please version manifest
 ├── pnpm-workspace.yaml            # Isolated tooling workspace
@@ -58,11 +59,12 @@ and run from the repository root:
 
 ## Code Quality
 
-- **Markdown**: `markdownlint-cli2` configured in `.markdownlint-cli2.cjs`,
-  extending the `@aimarchirico/commons-tools` preset.
-- **Commits**: `commitlint` with the Conventional Commits ruleset via the
-  `@aimarchirico/commons-tools` preset, enforced by the `.husky/commit-msg`
-  hook.
+- **Markdown**: `markdownlint-cli2` configured in `.markdownlint-cli2.yaml`.
+- **Commits**: `commitlint` with the Conventional Commits ruleset configured
+  in `.commitlintrc.yaml` (extending `@commitlint/config-conventional`),
+  enforced by the `.husky/commit-msg` hook.
+- **Tool Configs**: ESLint flat config defined in `eslint.config.ts` for
+  validating TS, JSON, YAML and TOML tool files.
 
 ## Deployment
 

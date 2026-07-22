@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.6.1](https://github.com/aimarchirico/commons/compare/commons-convention-v1.6.0...commons-convention-v1.6.1) (2026-07-21)
+
+
+### Bug Fixes
+
+* **kotlin:** add -java-parameters to freeCompilerArgs ([d4fbde1](https://github.com/aimarchirico/commons/commit/d4fbde14ff25abc502208ac14368d51110a00cdb))
+* **kotlin:** add -java-parameters to freeCompilerArgs ([1390834](https://github.com/aimarchirico/commons/commit/1390834b71e6af1b8b0ed73f5458834b7adb2b22))
+
+## [1.6.0](https://github.com/aimarchirico/commons/compare/commons-convention-v1.5.2...commons-convention-v1.6.0) (2026-07-19)
+
+
+### Features
+
+* **maven:** add mapstruct convention plugin ([4f4ceba](https://github.com/aimarchirico/commons/commit/4f4cebab38fb5164a650c9603069cf86350a6fdd))
+
 ## [1.5.2](https://github.com/aimarchirico/commons/compare/commons-convention-v1.5.1...commons-convention-v1.5.2) (2026-07-18)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/aimarchirico/commons/compare/commons-docs-v2.0.0...commons-docs-v2.1.0) (2026-07-19)
+
+
+### Features
+
+* **npm:** migrate package CLI scripts from mjs to ts ([f834145](https://github.com/aimarchirico/commons/commit/f834145b5c9eb8330c41b352e378f92cb89b1566))
+
 ## [2.0.0](https://github.com/aimarchirico/commons/compare/commons-docs-v1.4.0...commons-docs-v2.0.0) (2026-07-18)
 
 

@@ -1,6 +1,6 @@
 // Cloudflare Pages Function that reverse-proxies `/api/*` requests to the
 // backend defined by the `API_URL` environment variable. Consumer repos re-export
-// this from `functions/api/[[path]].js`:
+// this from `functions/api/[[path]].ts`:
 //
 //   export { onRequest } from '@aimarchirico/commons-cloudflare/proxy';
 
