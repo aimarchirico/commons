@@ -33,7 +33,7 @@
     "expo": "*",
     "firebase": "*",
     "react-native": "*",
-    "typescript": "^6.0.3",
+    "typescript": "^7.0.2",
     "@aimarchirico/commons-expo": "workspace:^",
     "@aimarchirico/commons-ts": "workspace:^"
   },
