@@ -1,6 +1,6 @@
 {
   "name": "@aimarchirico/commons-expo",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "private": false,
   "type": "module",
   "publishConfig": {
@@ -12,6 +12,9 @@
   },
   "exports": {
     "./eslint": "./configs/eslint.ts",
+    "./eslint-ui": "./configs/eslint-ui.ts",
+    "./eslint-app": "./configs/eslint-app.ts",
+    "./folders": "./configs/folders.ts",
     "./tsconfig": "./configs/tsconfig-base.json"
   },
   "bin": {

@@ -51,7 +51,7 @@ function generateClient(specPath: string): void {
   console.log('Generating API client...');
   const outputDir =
     process.env.API_CLIENT_OUTPUT_DIR ||
-    path.resolve(process.cwd(), 'src/generated');
+    path.resolve(process.cwd(), 'src/services/generated');
   const safeSpecPath = specPath.replace(/\\/g, '/');
   const cmd = `rm -rf "${outputDir}" && npx @openapitools/openapi-generator-cli generate -i "${safeSpecPath}" -g typescript-axios -o "${outputDir}"`;
   execSync(cmd, {stdio: 'inherit', cwd: packageRoot});
