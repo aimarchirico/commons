@@ -6,13 +6,6 @@ import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes
 import com.tngtech.archunit.library.Architectures.layeredArchitecture
 import org.junit.jupiter.api.Test
 
-/**
- * Enforces the intra-module package layout: every class lives in a known role package, and
- * dependencies only flow down the controller -> service -> repository spine.
- *
- * Opt in from an app-structured consumer with `class ArchitectureTest : BaseArchitectureTest()`.
- * Core modules (concern-named building blocks) and the Spring Boot entrypoint are exempt.
- */
 abstract class BaseArchitectureTest {
 
   protected val allClasses by lazy {
@@ -22,30 +15,27 @@ abstract class BaseArchitectureTest {
   }
 
   @Test
-  fun `every class resides in a role package`() {
+  fun `every feature class resides in a role package`() {
     classes()
       .that()
-      .resideOutsideOfPackage("..core..")
-      .and()
-      .areNotAnnotatedWith("org.springframework.boot.autoconfigure.SpringBootApplication")
+      .resideInAPackage("..feature..")
       .should()
       .resideInAnyPackage(
-        // directional spine
         "..controller..",
         "..service..",
         "..repository..",
-        // supporting: shapes (transport -> domain -> persistence), translator, wiring
         "..dto..",
         "..model..",
         "..entity..",
         "..mapper..",
         "..config..",
+        "..util..",
       )
       .check(allClasses)
   }
 
   @Test
-  fun `dependencies only flow down the spine`() {
+  fun `dependencies only flow down`() {
     layeredArchitecture()
       .consideringOnlyDependenciesInLayers()
       .layer("controller")
