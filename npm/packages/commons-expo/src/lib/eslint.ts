@@ -24,4 +24,12 @@ const combined = (
   return config;
 });
 
-export default combined;
+export default [
+  ...combined,
+  {
+    files: ['**/*.{web,android}.ts'],
+    rules: {
+      'check-file/filename-naming-convention': 'off',
+    },
+  },
+];
