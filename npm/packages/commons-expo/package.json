@@ -11,8 +11,12 @@
     "url": "https://github.com/aimarchirico/commons.git"
   },
   "exports": {
-    "./eslint": "./configs/eslint.ts",
-    "./tsconfig": "./configs/tsconfig-base.json"
+    "./eslint": "./src/lib/eslint.ts",
+    "./eslint-architecture": "./src/lib/eslint-architecture.ts",
+    "./eslint-ui": "./src/lib/eslint-ui.ts",
+    "./eslint-app": "./src/lib/eslint-app.ts",
+    "./folders": "./src/lib/folders.ts",
+    "./tsconfig": "./src/assets/tsconfig-base.json"
   },
   "bin": {
     "commons-expo": "dist/bin/cli.js"
@@ -24,7 +28,7 @@
     "prepublishOnly": "pnpm build"
   },
   "files": [
-    "configs",
+    "src",
     "dist"
   ],
   "dependencies": {

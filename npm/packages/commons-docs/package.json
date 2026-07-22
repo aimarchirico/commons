@@ -14,7 +14,7 @@
     "commons-docs": "dist/bin/cli.js"
   },
   "files": [
-    "templates",
+    "src/assets",
     "dist"
   ],
   "scripts": {

@@ -7,8 +7,8 @@
     "sourceMap": false,
     "module": "nodenext",
     "moduleResolution": "nodenext",
-    "rootDir": "${configDir}",
+    "rootDir": "${configDir}/src",
     "outDir": "${configDir}/dist"
   },
-  "include": ["${configDir}/bin/**/*.ts"]
+  "include": ["${configDir}/src/bin/**/*.ts"]
 }
