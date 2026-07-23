@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/aimarchirico/commons/compare/commons-expo-v2.2.0...commons-expo-v3.0.0) (2026-07-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* **eslint:** remove eslint-architecture export and integrate folderRule
+
+### Features
+
+* **eslint:** remove eslint-architecture export and integrate folderRule ([e921ce7](https://github.com/aimarchirico/commons/commit/e921ce786881d065f6ac311a3c1d488c76e00155))
+
 ## [2.2.0](https://github.com/aimarchirico/commons/compare/commons-expo-v2.1.0...commons-expo-v2.2.0) (2026-07-22)
 
 

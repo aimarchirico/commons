@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/aimarchirico/commons/compare/commons-ts-v1.6.0...commons-ts-v2.0.0) (2026-07-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* **eslint:** remove eslint-architecture export and integrate folderRule
+
+### Features
+
+* **eslint:** remove eslint-architecture export and integrate folderRule ([e921ce7](https://github.com/aimarchirico/commons/commit/e921ce786881d065f6ac311a3c1d488c76e00155))
+
 ## [1.6.0](https://github.com/aimarchirico/commons/compare/commons-ts-v1.5.0...commons-ts-v1.6.0) (2026-07-22)
 
 

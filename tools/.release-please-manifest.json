@@ -5,9 +5,9 @@
   "maven/commons-firebase-admin": "1.0.3",
   "npm/packages/commons-cloudflare": "2.1.0",
   "npm/packages/commons-docs": "2.1.0",
-  "npm/packages/commons-expo": "2.2.0",
+  "npm/packages/commons-expo": "3.0.0",
   "npm/packages/commons-firebase-client": "2.1.0",
-  "npm/packages/commons-google-signin": "2.0.0",
+  "npm/packages/commons-google-signin": "3.0.0",
   "npm/packages/commons-openapi": "2.2.0",
-  "npm/packages/commons-ts": "1.6.0"
+  "npm/packages/commons-ts": "2.0.0"
 }
