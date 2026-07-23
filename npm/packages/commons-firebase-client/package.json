@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@react-native-firebase/auth": "*",
-    "eslint": "^9.39.2",
+    "eslint": "^10.7.0",
     "expo": "*",
     "firebase": "*",
     "react-native": "*",
