@@ -10,7 +10,6 @@
   },
   "exports": {
     "./eslint": "./src/lib/eslint.ts",
-    "./eslint-architecture": "./src/lib/eslint-architecture.ts",
     "./folders": "./src/lib/folders.ts",
     "./tsconfig": "./src/assets/tsconfig-base.json",
     "./tsconfig-build": "./src/assets/tsconfig-build.json"

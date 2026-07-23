@@ -5,4 +5,4 @@ export type {
   SignInOptions,
 } from './types/google-sign-in';
 export * from './hooks/use-google-sign-in';
-export * from './providers/auth-context';
+export * from './contexts/auth-context';

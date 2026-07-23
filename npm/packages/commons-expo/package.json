@@ -12,7 +12,6 @@
   },
   "exports": {
     "./eslint": "./src/lib/eslint.ts",
-    "./eslint-architecture": "./src/lib/eslint-architecture.ts",
     "./eslint-ui": "./src/lib/eslint-ui.ts",
     "./eslint-app": "./src/lib/eslint-app.ts",
     "./folders": "./src/lib/folders.ts",
