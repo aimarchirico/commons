@@ -36,6 +36,7 @@
     "eslint-config-expo": "~57.0.0"
   },
   "devDependencies": {
+    "@expo/dom-webview": "^57.0.0",
     "@types/node": "^26.0.1",
     "eslint": "^9.39.2",
     "expo": "*",
