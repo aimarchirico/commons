@@ -19,7 +19,7 @@ updates:
       interval: 'weekly'
     groups:
       actions:
-        patterns: ["*"]
+        patterns: ['*']
 
   - package-ecosystem: 'gradle'
     directory: '/maven'
@@ -27,17 +27,17 @@ updates:
       interval: 'weekly'
     groups:
       gradle-minor-patch:
-        update-types: ["minor", "patch"]
+        update-types: ['minor', 'patch']
     registries:
       - github-maven
 
   - package-ecosystem: 'npm'
-    directories: ["/npm", "/tools"]
+    directories: ['/npm', '/tools']
     schedule:
       interval: 'weekly'
     groups:
       npm-minor-patch:
-        update-types: ["minor", "patch"]
+        update-types: ['minor', 'patch']
     registries:
       - github-npm
     cooldown:
