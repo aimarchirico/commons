@@ -15,7 +15,7 @@
     "@commitlint/cli": "^19.0.0",
     "eslint": "^9.39.5",
     "husky": "^9.1.7",
-    "markdownlint-cli2": "^0.23.0",
+    "markdownlint-cli2": "^0.23.1",
     "eslint-plugin-toml": "^0.11.1",
     "eslint-plugin-yml": "^1.14.0",
     "typescript": "^6.0.3",
