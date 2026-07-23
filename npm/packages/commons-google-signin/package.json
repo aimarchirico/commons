@@ -27,7 +27,7 @@
     "react-native-nitro-google-signin": "*",
     "react-native-nitro-modules": "*",
     "@types/react": "^19.0.0",
-    "eslint": "^9.39.2",
+    "eslint": "^10.7.0",
     "expo": "*",
     "react": "*",
     "react-native": "*",

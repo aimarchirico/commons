@@ -34,7 +34,7 @@
     "@aimarchirico/commons-ts": "workspace:^",
     "@types/node": "^26.0.1",
     "@types/shelljs": "^0.8.17",
-    "eslint": "^9.39.2",
+    "eslint": "^10.7.0",
     "typescript": "^6.0.3"
   }
 }
