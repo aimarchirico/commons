@@ -1,9 +1,9 @@
 import eslintPluginToml from 'eslint-plugin-toml';
 import eslintPluginYml from 'eslint-plugin-yml';
-import baseConfig from '@aimarchirico/commons-ts/eslint';
+import tsConfig from '@aimarchirico/commons-ts/eslint';
 
 export default [
-  ...baseConfig,
+  ...tsConfig,
   ...eslintPluginToml.configs['flat/recommended'],
   ...eslintPluginYml.configs['flat/recommended'],
   {
