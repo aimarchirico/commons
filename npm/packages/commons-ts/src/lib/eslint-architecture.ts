@@ -1,4 +1,3 @@
-import {folderRule} from './folders';
-import baseConfig from './eslint';
+import baseConfig from './eslint-folders';
 
-export default [...baseConfig, folderRule()];
+export default baseConfig;
