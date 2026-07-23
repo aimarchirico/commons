@@ -1,5 +1,5 @@
 import type {Linter} from 'eslint';
-import baseConfig from '@aimarchirico/commons-ts/eslint';
+import baseConfig from '@aimarchirico/commons-ts/eslint-architecture';
 import {expoConfig} from './eslint-config-expo';
 
 const flatExpo = expoConfig.flat(Infinity) as Linter.Config[];
