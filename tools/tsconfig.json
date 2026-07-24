@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "extends": "@aimarchirico/commons-ts/tsconfig",
+  "extends": "@aimarchirico/commons-ts/tsconfig-base",
   "include": ["../**/*.ts", "../**/*.tsx", "../**/*.json"],
   "exclude": ["../**/npm/packages/**"]
 }
