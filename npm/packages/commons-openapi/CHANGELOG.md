@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.1](https://github.com/aimarchirico/commons/compare/commons-openapi-v2.2.0...commons-openapi-v2.2.1) (2026-07-24)
+
+
+### Bug Fixes
+
+* update tsconfig extends to use tsconfig-base across multiple packages ([1b2bb2a](https://github.com/aimarchirico/commons/commit/1b2bb2a02ab320dd7750965927186aa56c4cb19a))
+
 ## [2.2.0](https://github.com/aimarchirico/commons/compare/commons-openapi-v2.1.1...commons-openapi-v2.2.0) (2026-07-22)
 
 

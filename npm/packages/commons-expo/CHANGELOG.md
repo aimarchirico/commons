@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.0.2](https://github.com/aimarchirico/commons/compare/commons-expo-v3.0.1...commons-expo-v3.0.2) (2026-07-24)
+
+
+### Bug Fixes
+
+* update export paths for tsconfig in package.json files ([376d617](https://github.com/aimarchirico/commons/commit/376d617789bd2b1b23aa5642b3db184ab3201f87))
+* update tsconfig extends to use tsconfig-base across multiple packages ([1b2bb2a](https://github.com/aimarchirico/commons/commit/1b2bb2a02ab320dd7750965927186aa56c4cb19a))
+
 ## [3.0.1](https://github.com/aimarchirico/commons/compare/commons-expo-v3.0.0...commons-expo-v3.0.1) (2026-07-24)
 
 
