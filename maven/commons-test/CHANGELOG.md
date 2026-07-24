@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/aimarchirico/commons/compare/commons-test-v2.1.0...commons-test-v2.1.1) (2026-07-24)
+
+
+### Bug Fixes
+
+* **commons-test:** allow empty layers in architecture test ([0ce150b](https://github.com/aimarchirico/commons/commit/0ce150b68df7d13af95ca1d70863acb2b67ae1b2))
+
 ## [2.1.0](https://github.com/aimarchirico/commons/compare/commons-test-v2.0.0...commons-test-v2.1.0) (2026-07-22)
 
 
