@@ -1,16 +1,14 @@
+import {CORE_FOLDERS as TS_FOLDERS} from '@aimarchirico/commons-ts/folders';
+
 export const CORE_FOLDERS = [
+  ...FOLDERS,
   'contexts',
   'hooks',
-  'lib',
   'locales',
-  'services',
-  'types',
-  'utils',
 ];
 
 export const UI_FOLDERS = [
   ...CORE_FOLDERS,
-  'assets',
   'components',
   'screens',
   'styles',
