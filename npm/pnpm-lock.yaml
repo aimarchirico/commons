@@ -95,6 +95,9 @@ importers:
       expo:
         specifier: '*'
         version: 57.0.1(@babel/core@7.29.7)(@expo/dom-webview@57.0.1)(react-native@0.86.0(@babel/core@7.29.7)(@types/react@19.2.17)(react@19.2.7))(react@19.2.7)(typescript@6.0.3)
+      jiti:
+        specifier: ^2.7.0
+        version: 2.7.0
       react:
         specifier: '*'
         version: 19.2.7
