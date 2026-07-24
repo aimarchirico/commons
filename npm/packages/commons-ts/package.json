@@ -12,7 +12,7 @@
     "./eslint-base": "./src/lib/eslint-base.ts",
     "./eslint-core": "./src/lib/eslint-core.ts",
     "./folders": "./src/lib/folders.ts",
-    "./tsconfig": "./src/assets/tsconfig-base.json",
+    "./tsconfig-base": "./src/assets/tsconfig-base.json",
     "./tsconfig-build": "./src/assets/tsconfig-build.json"
   },
   "dependencies": {

@@ -15,7 +15,7 @@
     "./eslint-ui": "./src/lib/eslint-ui.ts",
     "./eslint-app": "./src/lib/eslint-app.ts",
     "./folders": "./src/lib/folders.ts",
-    "./tsconfig": "./src/assets/tsconfig-base.json"
+    "./tsconfig-base": "./src/assets/tsconfig-base.json"
   },
   "bin": {
     "commons-expo": "dist/bin/cli.js"
