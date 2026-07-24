@@ -9,10 +9,8 @@
     "fix": "eslint --fix"
   },
   "exports": {
-    "./eslint": "./src/lib/eslint.ts",
     "./eslint-base": "./src/lib/eslint-base.ts",
-    "./eslint-folders": "./src/lib/eslint-folders.ts",
-    "./eslint-architecture": "./src/lib/eslint-architecture.ts",
+    "./eslint-core": "./src/lib/eslint-core.ts",
     "./folders": "./src/lib/folders.ts",
     "./tsconfig": "./src/assets/tsconfig-base.json",
     "./tsconfig-build": "./src/assets/tsconfig-build.json"
