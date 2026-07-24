@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/aimarchirico/commons/compare/commons-test-v2.0.0...commons-test-v2.1.0) (2026-07-22)
+
+
+### Features
+
+* **commons-test:** add BaseArchitectureTest for role packages and layering ([3048284](https://github.com/aimarchirico/commons/commit/304828473b58280f03e09cc66dac01871fad676d))
+
 ## [2.0.0](https://github.com/aimarchirico/commons/compare/commons-test-v1.1.4...commons-test-v2.0.0) (2026-07-06)
 
 

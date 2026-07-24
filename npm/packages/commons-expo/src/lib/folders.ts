@@ -11,6 +11,7 @@ export const UI_FOLDERS = [
   ...CORE_FOLDERS,
   'assets',
   'components',
+  'locales',
   'screens',
   'styles',
 ];
