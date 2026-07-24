@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.0.1](https://github.com/aimarchirico/commons/compare/commons-expo-v3.0.0...commons-expo-v3.0.1) (2026-07-24)
+
+
+### Bug Fixes
+
+* **expo:** extend eslint-architecture instead of eslint in commons-expo ([2b6eccc](https://github.com/aimarchirico/commons/commit/2b6ecccf636202d8656803ae2b07b85be3c14fa2))
+* **folders.ts:** add inport from commons-ts ([aeb836d](https://github.com/aimarchirico/commons/commit/aeb836dafdcc27d1d0452d86c773118cf10c888b))
+* **folders.ts:** rename incorrect import ([9bf2811](https://github.com/aimarchirico/commons/commit/9bf28118c120bd79d99a5cbe35fbed28c3efe49a))
+
 ## [3.0.0](https://github.com/aimarchirico/commons/compare/commons-expo-v2.2.0...commons-expo-v3.0.0) (2026-07-23)
 
 
