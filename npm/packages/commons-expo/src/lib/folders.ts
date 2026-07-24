@@ -1,7 +1,7 @@
 import {CORE_FOLDERS as TS_FOLDERS} from '@aimarchirico/commons-ts/folders';
 
 export const CORE_FOLDERS = [
-  ...FOLDERS,
+  ...TS_FOLDERS,
   'contexts',
   'hooks',
   'locales',
