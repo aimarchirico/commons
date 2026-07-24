@@ -37,14 +37,12 @@
   "devDependencies": {
     "@types/node": "^26.0.1",
     "eslint": "^9.39.2",
-    "jiti": "^2.7.0",
     "expo": "*",
     "react": "*",
     "typescript": "^6.0.3"
   },
   "peerDependencies": {
     "eslint": "^9.39.2",
-    "jiti": "^2.7.0",
     "expo": "*",
     "react": "*",
     "typescript": "^6.0.3"
