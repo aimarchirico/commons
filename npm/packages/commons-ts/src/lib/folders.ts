@@ -20,4 +20,3 @@ export const folderRule = (folders: string[] = CORE_FOLDERS) => ({
     ],
   },
 });
-// trigger release
