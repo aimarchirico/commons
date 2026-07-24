@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.2](https://github.com/aimarchirico/commons/compare/commons-ts-v2.0.1...commons-ts-v2.0.2) (2026-07-24)
+
+
+### Bug Fixes
+
+* **commons-ts:** add jiti dependency for typescript eslint config loading ([97b33dd](https://github.com/aimarchirico/commons/commit/97b33dd7e5817a20cf8e61992389bc95bf60d65c))
+
 ## [2.0.1](https://github.com/aimarchirico/commons/compare/commons-ts-v2.0.0...commons-ts-v2.0.1) (2026-07-24)
 
 
