@@ -1,7 +1,7 @@
 export const CORE_FOLDERS = [
+  'assets',
   'bin',
   'lib',
-  'locales',
   'services',
   'types',
   'utils',
