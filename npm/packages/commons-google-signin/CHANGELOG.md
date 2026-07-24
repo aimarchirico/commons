@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.1](https://github.com/aimarchirico/commons/compare/commons-google-signin-v3.0.0...commons-google-signin-v3.0.1) (2026-07-24)
+
+
+### Bug Fixes
+
+* update tsconfig extends to use tsconfig-base in firebase-client and google-signin packages ([b159416](https://github.com/aimarchirico/commons/commit/b1594166d59ac205e70c592d711dfde3ae3e3563))
+
 ## [3.0.0](https://github.com/aimarchirico/commons/compare/commons-google-signin-v2.0.0...commons-google-signin-v3.0.0) (2026-07-23)
 
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.1](https://github.com/aimarchirico/commons/compare/commons-ts-v2.0.0...commons-ts-v2.0.1) (2026-07-24)
+
+
+### Bug Fixes
+
+* add comment to trigger release ([85a5af2](https://github.com/aimarchirico/commons/commit/85a5af28400c8967fbd1b9e450448571277052bb))
+* update export paths for tsconfig in package.json files ([376d617](https://github.com/aimarchirico/commons/commit/376d617789bd2b1b23aa5642b3db184ab3201f87))
+
 ## [2.0.0](https://github.com/aimarchirico/commons/compare/commons-ts-v1.6.0...commons-ts-v2.0.0) (2026-07-23)
 
 

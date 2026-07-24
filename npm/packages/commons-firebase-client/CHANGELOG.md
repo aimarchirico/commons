@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/aimarchirico/commons/compare/commons-firebase-client-v2.1.0...commons-firebase-client-v2.1.1) (2026-07-24)
+
+
+### Bug Fixes
+
+* update tsconfig extends to use tsconfig-base in firebase-client and google-signin packages ([b159416](https://github.com/aimarchirico/commons/commit/b1594166d59ac205e70c592d711dfde3ae3e3563))
+
 ## [2.1.0](https://github.com/aimarchirico/commons/compare/commons-firebase-client-v2.0.0...commons-firebase-client-v2.1.0) (2026-07-19)
 
 
