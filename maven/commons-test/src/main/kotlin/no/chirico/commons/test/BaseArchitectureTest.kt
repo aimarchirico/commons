@@ -38,6 +38,7 @@ abstract class BaseArchitectureTest {
   fun `dependencies only flow down`() {
     layeredArchitecture()
       .consideringOnlyDependenciesInLayers()
+      .withOptionalLayers(true)
       .layer("controller")
       .definedBy("..controller..")
       .layer("service")
