@@ -4,7 +4,6 @@ import eslintPluginJsonc from 'eslint-plugin-jsonc';
 import gts from 'gts';
 import {execFileSync} from 'node:child_process';
 import gtsPrettier from 'gts/.prettierrc.json';
-import {folderRule} from './folders';
 
 const gitignored = (cwd: string): string[] => {
   try {
@@ -64,5 +63,4 @@ export default [
       'import/no-default-export': 'off',
     },
   },
-  folderRule(),
 ];

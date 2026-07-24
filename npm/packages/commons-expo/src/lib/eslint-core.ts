@@ -1,6 +1,8 @@
 import type {Linter} from 'eslint';
-import baseConfig from '@aimarchirico/commons-ts/eslint';
+import baseConfig from '@aimarchirico/commons-ts/eslint-base';
+import {folderRule} from '@aimarchirico/commons-ts/folders';
 import {expoConfig} from './eslint-config-expo';
+import {CORE_FOLDERS} from './folders';
 
 const flatExpo = expoConfig.flat(Infinity) as Linter.Config[];
 const primaryTsPlugin = flatExpo.find(c => c.plugins?.['@typescript-eslint'])
@@ -26,6 +28,7 @@ const combined = (
 
 export default [
   ...combined,
+  folderRule(CORE_FOLDERS),
   {
     files: ['**/*.{web,android}.ts'],
     rules: {

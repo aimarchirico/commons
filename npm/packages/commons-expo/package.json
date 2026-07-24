@@ -11,7 +11,7 @@
     "url": "https://github.com/aimarchirico/commons.git"
   },
   "exports": {
-    "./eslint": "./src/lib/eslint.ts",
+    "./eslint-core": "./src/lib/eslint-core.ts",
     "./eslint-ui": "./src/lib/eslint-ui.ts",
     "./eslint-app": "./src/lib/eslint-app.ts",
     "./folders": "./src/lib/folders.ts",

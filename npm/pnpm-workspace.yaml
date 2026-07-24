@@ -1,13 +1,11 @@
 packages:
   - 'packages/*'
-
-overrides:
-  '@typescript-eslint/eslint-plugin': 8.62.1
-  '@typescript-eslint/parser': 8.62.1
-
 allowBuilds:
   '@firebase/util': true
   '@openapitools/openapi-generator-cli': true
-  core-js: true
-  protobufjs: true
-  unrs-resolver: true
+  'core-js': true
+  'protobufjs': true
+  'unrs-resolver': true
+overrides:
+  '@typescript-eslint/eslint-plugin': '8.62.1'
+  '@typescript-eslint/parser': '8.62.1'
