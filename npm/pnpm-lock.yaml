@@ -35,6 +35,9 @@ importers:
 
   packages/commons-cloudflare:
     dependencies:
+      '@aimarchirico/commons-ts':
+        specifier: workspace:^
+        version: link:../commons-ts
       replace-in-file:
         specifier: ^8.4.0
         version: 8.4.0
@@ -42,9 +45,6 @@ importers:
         specifier: ^0.10.0
         version: 0.10.0
     devDependencies:
-      '@aimarchirico/commons-ts':
-        specifier: workspace:^
-        version: link:../commons-ts
       '@types/node':
         specifier: ^26.0.1
         version: 26.0.1

@@ -1,0 +1,73 @@
+#!/usr/bin/env node
+
+import {resolveEnv} from '@aimarchirico/commons-ts/env';
+import {fail, printSummary, report} from '@aimarchirico/commons-ts/report';
+import {api} from '../services/api.js';
+
+type EnvVar = {type: string; value?: string};
+type Project = {
+  deployment_configs: Record<
+    string,
+    {env_vars?: Record<string, EnvVar | null>}
+  >;
+};
+
+const env = resolveEnv(
+  [
+    'CLOUDFLARE_ACCOUNT_ID',
+    'CLOUDFLARE_API_TOKEN',
+    'PAGES_PROJECT_NAME',
+    'PAGES_VARIABLES',
+  ],
+  ['PAGES_ENVIRONMENT'],
+);
+
+const cf = api(env.CLOUDFLARE_API_TOKEN);
+const project = `/accounts/${env.CLOUDFLARE_ACCOUNT_ID}/pages/projects/${env.PAGES_PROJECT_NAME}`;
+const target = env.PAGES_ENVIRONMENT ?? 'production';
+const names = env.PAGES_VARIABLES.split(/[,\s]+/)
+  .map(name => name.trim())
+  .filter(Boolean);
+
+const run = async (): Promise<void> => {
+  const current = await cf.get<Project>(project);
+  if (!current) {
+    fail(
+      `No Pages project "${env.PAGES_PROJECT_NAME}". Run create-pages-project first.`,
+    );
+  }
+
+  const existing = current.deployment_configs?.[target]?.env_vars ?? {};
+  const changes: Record<string, EnvVar> = {};
+
+  for (const name of names) {
+    const value = process.env[name];
+    if (value === undefined || value === '') {
+      report(
+        `pages ${target} ${name}`,
+        'skipped',
+        'not set in the environment',
+      );
+      continue;
+    }
+    const before = existing[name];
+    if (before?.value === value) {
+      report(`pages ${target} ${name}`, 'present', 'value already correct');
+      continue;
+    }
+    changes[name] = {type: 'plain_text', value};
+    report(`pages ${target} ${name}`, before ? 'updated' : 'created');
+  }
+
+  if (Object.keys(changes).length) {
+    await cf.send('PATCH', project, {
+      deployment_configs: {[target]: {env_vars: changes}},
+    });
+  }
+};
+
+run()
+  .then(() => printSummary('set-pages-env'))
+  .catch((error: unknown) => {
+    fail(error instanceof Error ? error.message : String(error));
+  });
