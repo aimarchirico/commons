@@ -40,6 +40,9 @@
     "npm/packages/commons-openapi": {
       "release-type": "node"
     },
+    "npm/packages/commons-scaffold": {
+      "release-type": "node"
+    },
     "npm/packages/commons-ts": {
       "release-type": "node"
     }
