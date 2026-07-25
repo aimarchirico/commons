@@ -1,0 +1,33 @@
+{
+  "name": "@aimarchirico/commons-github",
+  "version": "0.0.0",
+  "private": false,
+  "type": "module",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aimarchirico/commons.git"
+  },
+  "bin": {
+    "commons-github": "dist/bin/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "check": "eslint && tsc",
+    "fix": "eslint --fix",
+    "build": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "pnpm build"
+  },
+  "dependencies": {
+    "@aimarchirico/commons-ts": "workspace:^"
+  },
+  "devDependencies": {
+    "@types/node": "^26.0.1",
+    "eslint": "^9.39.2",
+    "typescript": "^6.0.3"
+  }
+}

@@ -71,7 +71,9 @@ export const printSummary = (title: string): void => {
   );
 };
 
-export const fail = (message: string): never => {
+// Annotated rather than inferred so callers get control-flow narrowing after a
+// `fail(...)` call.
+export const fail: (message: string) => never = message => {
   console.error(message);
   process.exit(1);
 };
