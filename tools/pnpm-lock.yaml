@@ -21,7 +21,7 @@ importers:
         specifier: ^26.0.1
         version: 26.0.1
       eslint:
-        specifier: ^9.39.5
+        specifier: ^9.39.2
         version: 9.39.5(jiti@2.6.1)
       eslint-plugin-toml:
         specifier: ^0.11.1
