@@ -1,20 +1,39 @@
 {
   "name": "@aimarchirico/commons-ts",
   "version": "2.0.2",
+  "type": "module",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
   "scripts": {
     "check": "eslint && tsc",
-    "fix": "eslint --fix"
+    "fix": "eslint --fix",
+    "build": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "pnpm build"
   },
   "exports": {
     "./eslint-base": "./src/lib/eslint-base.ts",
     "./eslint-core": "./src/lib/eslint-core.ts",
     "./folders": "./src/lib/folders.ts",
     "./tsconfig-base": "./src/assets/tsconfig-base.json",
-    "./tsconfig-build": "./src/assets/tsconfig-build.json"
+    "./tsconfig-build": "./src/assets/tsconfig-build.json",
+    "./env": {
+      "types": "./src/services/env.ts",
+      "default": "./dist/services/env.js"
+    },
+    "./report": {
+      "types": "./src/services/report.ts",
+      "default": "./dist/services/report.js"
+    },
+    "./outputs": {
+      "types": "./src/services/outputs.ts",
+      "default": "./dist/services/outputs.js"
+    }
   },
+  "files": [
+    "dist",
+    "src"
+  ],
   "dependencies": {
     "eslint-plugin-check-file": "^3.3.1",
     "eslint-plugin-import": "^2.32.0",
