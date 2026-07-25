@@ -28,21 +28,12 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Free Disk Space
-      uses: jlumbroso/free-disk-space@v1.3.1
-      with:
-        android: false
     - name: Set Up Java
       uses: actions/setup-java@v5
       with:
         distribution: temurin
-        java-version: 25
-        cache: gradle
-    - name: JDK 17 for Android Native Build
-      uses: actions/setup-java@v5
-      with:
-        distribution: temurin
         java-version: '17'
+        cache: gradle
     - name: Run CI Build for Android
       uses: aimarchirico/commons/.github/actions/node-task@main
       with:
