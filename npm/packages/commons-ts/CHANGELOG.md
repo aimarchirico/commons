@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.3](https://github.com/aimarchirico/commons/compare/commons-ts-v2.0.2...commons-ts-v2.0.3) (2026-07-25)
+
+
+### Bug Fixes
+
+* **tsconfig-base.json:** remove @ alias ([116ee1b](https://github.com/aimarchirico/commons/commit/116ee1bfba6cb820e69b8dcbfc59e86b43a8590b))
+
 ## [2.0.2](https://github.com/aimarchirico/commons/compare/commons-ts-v2.0.1...commons-ts-v2.0.2) (2026-07-24)
 
 
