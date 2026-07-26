@@ -203,10 +203,10 @@ jobs:
             NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
             PACKAGE='@aimarchirico/commons-openapi'
 
-  publish-commons-scaffold:
-    name: Publish commons-scaffold
+  publish-commons-project:
+    name: Publish commons-project
     needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-scaffold')
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-project')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -216,7 +216,7 @@ jobs:
           node_cache_path: npm/pnpm-lock.yaml
           task_env: |
             NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
-            PACKAGE='@aimarchirico/commons-scaffold'
+            PACKAGE='@aimarchirico/commons-project'
 
   publish-commons-ts:
     name: Publish commons-ts

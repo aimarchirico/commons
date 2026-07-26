@@ -10,6 +10,6 @@
   "npm/packages/commons-github": "0.0.0",
   "npm/packages/commons-google-signin": "3.0.1",
   "npm/packages/commons-openapi": "2.2.1",
-  "npm/packages/commons-scaffold": "0.0.0",
+  "npm/packages/commons-project": "0.0.0",
   "npm/packages/commons-ts": "2.0.2"
 }

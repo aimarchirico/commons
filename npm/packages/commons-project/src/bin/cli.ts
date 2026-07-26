@@ -9,7 +9,7 @@ const script = verb ? commands[verb] : undefined;
 
 if (!script) {
   const usage = Object.keys(commands)
-    .map(name => `  commons-scaffold ${name}`)
+    .map(name => `  commons-project ${name}`)
     .join('\n');
   console.error(`Usage:\n${usage}`);
   process.exit(1);

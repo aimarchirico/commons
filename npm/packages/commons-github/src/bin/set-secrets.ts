@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import {resolveEnv} from '@aimarchirico/commons-ts/env';
-import {fail, printSummary, report} from '@aimarchirico/commons-ts/report';
+import {resolveEnv} from '@aimarchirico/commons-project/env';
+import {fail, printSummary, report} from '@aimarchirico/commons-project/report';
 import {ghOrThrow, repoContext} from '../services/gh.js';
 import {parseEnvironmentScopes, parseNames} from '../services/scopes.js';
 
