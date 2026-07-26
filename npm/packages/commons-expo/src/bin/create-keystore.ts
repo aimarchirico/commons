@@ -1,68 +1,101 @@
 #!/usr/bin/env node
 
-import fs from 'fs';
 import {resolveEnv} from '@aimarchirico/commons-project/env';
 import {writeOutputs} from '@aimarchirico/commons-project/outputs';
 import {fail, printSummary, report} from '@aimarchirico/commons-project/report';
 import {
-  generate,
-  linkEasProject,
-  password,
-  verify,
-} from '../services/keystore.js';
+  createAppCredentials,
+  createBuildCredentials,
+  createKeystore,
+  resolveApp,
+} from '../services/eas.js';
+import type {Keystore} from '../services/eas.js';
+import {generate, password} from '../services/keystore.js';
 
 const env = resolveEnv(
-  ['EXPO_TOKEN', 'EAS_PROJECT_ID'],
+  ['EAS_PROJECT_ID', 'ANDROID_APPLICATION_ID'],
   [
-    'ANDROID_KEYSTORE_FILE',
+    'EXPO_TOKEN',
     'ANDROID_KEY_ALIAS',
     'ANDROID_KEYSTORE_PASSWORD',
     'ANDROID_KEY_PASSWORD',
     'ANDROID_KEY_DNAME',
+    'ANDROID_BUILD_CREDENTIALS_NAME',
   ],
 );
 
-const file = env.ANDROID_KEYSTORE_FILE ?? 'release.keystore';
 const alias = env.ANDROID_KEY_ALIAS ?? 'release';
+const profile = env.ANDROID_BUILD_CREDENTIALS_NAME ?? 'production';
 
-try {
-  linkEasProject(env.EAS_PROJECT_ID);
-  report(`eas project ${env.EAS_PROJECT_ID}`, 'present', 'linked to the app');
+const run = async (): Promise<void> => {
+  const app = await resolveApp(env.EAS_PROJECT_ID);
+  report(`eas project ${app.fullName}`, 'present', app.id);
 
-  let storePassword = env.ANDROID_KEYSTORE_PASSWORD;
-  let keyPassword = env.ANDROID_KEY_PASSWORD;
+  const appCredentials = app.androidAppCredentials.find(
+    entry => entry.applicationIdentifier === env.ANDROID_APPLICATION_ID,
+  );
+  const existing = appCredentials?.androidAppBuildCredentialsList.find(
+    entry => entry.name === profile,
+  );
 
-  if (fs.existsSync(file)) {
+  let keystore: Keystore;
+
+  if (existing?.androidKeystore) {
     // Replacing signing keys breaks updates for every installed copy of the
     // app, so an existing keystore is only ever read back.
-    if (!storePassword || !keyPassword) {
-      fail(
-        `A keystore already exists at ${file} but ANDROID_KEYSTORE_PASSWORD and ANDROID_KEY_PASSWORD are not set. Supply the stored passwords, or rotate deliberately by moving the keystore aside first.`,
-      );
-    }
-    verify(file, alias, storePassword);
-    report(`keystore ${file}`, 'present', 'read back, not regenerated');
+    keystore = existing.androidKeystore;
+    report(
+      `keystore for "${profile}"`,
+      'present',
+      'read back from EAS, not regenerated',
+    );
   } else {
-    storePassword ??= password();
-    keyPassword ??= storePassword;
-    generate({
-      file,
+    const storePassword = env.ANDROID_KEYSTORE_PASSWORD ?? password();
+    const keyPassword = env.ANDROID_KEY_PASSWORD ?? storePassword;
+    const base64EncodedKeystore = generate({
       alias,
       storePassword,
       keyPassword,
       dname: env.ANDROID_KEY_DNAME ?? `CN=${alias}`,
     });
-    report(`keystore ${file}`, 'created', `alias ${alias}`);
+
+    keystore = await createKeystore(app.ownerAccount.id, {
+      base64EncodedKeystore,
+      keystorePassword: storePassword,
+      keyAlias: alias,
+      keyPassword,
+    });
+    report(`keystore for "${profile}"`, 'created', `alias ${alias}`);
+
+    const target =
+      appCredentials ??
+      (await createAppCredentials(app.id, env.ANDROID_APPLICATION_ID));
+    if (!appCredentials) {
+      report(
+        `android credentials ${env.ANDROID_APPLICATION_ID}`,
+        'created',
+        target.id,
+      );
+    }
+
+    await createBuildCredentials(target.id, {
+      name: profile,
+      isDefault: true,
+      keystoreId: keystore.id,
+    });
+    report(`build credentials "${profile}"`, 'created', 'stored in EAS');
   }
 
   writeOutputs({
-    ANDROID_KEY_ALIAS: alias,
-    ANDROID_KEYSTORE_BASE64: fs.readFileSync(file).toString('base64'),
-    ANDROID_KEYSTORE_PASSWORD: storePassword,
-    ANDROID_KEY_PASSWORD: keyPassword,
+    ANDROID_KEY_ALIAS: keystore.keyAlias,
+    ANDROID_KEYSTORE_BASE64: keystore.keystore,
+    ANDROID_KEYSTORE_PASSWORD: keystore.keystorePassword,
+    ANDROID_KEY_PASSWORD: keystore.keyPassword ?? keystore.keystorePassword,
   });
-} catch (error) {
-  fail(error instanceof Error ? error.message : String(error));
-}
+};
 
-printSummary('create-keystore');
+run()
+  .then(() => printSummary('create-keystore'))
+  .catch((error: unknown) => {
+    fail(error instanceof Error ? error.message : String(error));
+  });

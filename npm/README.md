@@ -226,21 +226,31 @@ account reuses one application for its APIs.
 
 ### `commons-expo create-keystore`
 
-| Key                         | Required | Purpose                                                 |
-| :-------------------------- | :------- | :------------------------------------------------------ |
-| `EXPO_TOKEN`                | Yes      | Expo credentials.                                       |
-| `EAS_PROJECT_ID`            | Yes      | EAS project to link the app to.                         |
-| `ANDROID_KEYSTORE_FILE`     | No       | Keystore path. Defaults to `./release.keystore`.        |
-| `ANDROID_KEY_ALIAS`         | No       | Key alias. Defaults to `release`.                       |
-| `ANDROID_KEYSTORE_PASSWORD` | No       | Store password. Generated when creating a new keystore. |
-| `ANDROID_KEY_PASSWORD`      | No       | Key password. Defaults to the store password.           |
-| `ANDROID_KEY_DNAME`         | No       | Certificate subject. Defaults to `CN=<alias>`.          |
+| Key                              | Required | Purpose                                                        |
+| :------------------------------- | :------- | :------------------------------------------------------------- |
+| `EAS_PROJECT_ID`                 | Yes      | EAS project (app) the keystore belongs to.                     |
+| `ANDROID_APPLICATION_ID`         | Yes      | Android package the credentials apply to.                      |
+| `EXPO_TOKEN`                     | No       | Expo credentials. Falls back to the local `eas login` session. |
+| `ANDROID_BUILD_CREDENTIALS_NAME` | No       | Build credentials to use. Defaults to `production`.            |
+| `ANDROID_KEY_ALIAS`              | No       | Key alias for a new keystore. Defaults to `release`.           |
+| `ANDROID_KEYSTORE_PASSWORD`      | No       | Store password. Generated when creating a new keystore.        |
+| `ANDROID_KEY_PASSWORD`           | No       | Key password. Defaults to the store password.                  |
+| `ANDROID_KEY_DNAME`              | No       | Certificate subject. Defaults to `CN=<alias>`.                 |
 
 Emits `ANDROID_KEY_ALIAS`, `ANDROID_KEYSTORE_BASE64`,
-`ANDROID_KEYSTORE_PASSWORD`, and `ANDROID_KEY_PASSWORD`. An existing keystore is
-read back and never regenerated, since replacing signing keys breaks updates for
-every installed copy of the app; if its passwords are absent from the
-environment the command fails rather than replacing it.
+`ANDROID_KEYSTORE_PASSWORD`, and `ANDROID_KEY_PASSWORD`.
+
+EAS is the store of record. The keystore is generated with `keytool` and stored
+through the Expo API as the named build credentials for the app, so no signing
+key is left on disk — the temporary file `keytool` requires is removed
+immediately. Later runs read the stored keystore back and report it as already
+present. An existing keystore is never regenerated, since replacing signing keys
+breaks updates for every installed copy of the app.
+
+These are the same records the interactive `eas credentials` flow creates, so a
+keystore created either way is visible and downloadable through the other. The
+CLI cannot be used here: `eas credentials` hardcodes interactive mode and exposes
+no keystore flags.
 
 ## Environment Variables
 

@@ -3,6 +3,6 @@
   "extends": "@aimarchirico/commons-ts/tsconfig-build",
   "include": [
     "${configDir}/src/bin/**/*.ts",
-    "${configDir}/src/services/keystore.ts"
+    "${configDir}/src/services/**/*.ts"
   ]
 }
