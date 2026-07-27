@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/aimarchirico/commons/compare/commons-ts-v2.0.3...commons-ts-v3.0.0) (2026-07-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* subpaths `./env`, `./report`, and `./outputs` are removed in favor of root exports.
+
+### Features
+
+* add reusable provisioning commands for scaffolded projects ([#200](https://github.com/aimarchirico/commons/issues/200)) ([153f5e8](https://github.com/aimarchirico/commons/commit/153f5e862eb2ad39feecca5d8bcd8b63ca957477))
+
 ## [2.0.3](https://github.com/aimarchirico/commons/compare/commons-ts-v2.0.2...commons-ts-v2.0.3) (2026-07-25)
 
 
