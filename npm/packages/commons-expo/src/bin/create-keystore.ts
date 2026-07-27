@@ -1,8 +1,12 @@
 #!/usr/bin/env node
 
-import {resolveEnv} from '@aimarchirico/commons-project/env';
-import {writeOutputs} from '@aimarchirico/commons-project/outputs';
-import {fail, printSummary, report} from '@aimarchirico/commons-project/report';
+import {
+  fail,
+  printSummary,
+  report,
+  resolveEnv,
+  writeOutputs,
+} from '@aimarchirico/commons-project';
 import {
   createAppCredentials,
   createBuildCredentials,

@@ -11,17 +11,9 @@
     "url": "https://github.com/aimarchirico/commons.git"
   },
   "exports": {
-    "./env": {
-      "types": "./src/services/env.ts",
-      "default": "./dist/services/env.js"
-    },
-    "./report": {
-      "types": "./src/services/report.ts",
-      "default": "./dist/services/report.js"
-    },
-    "./outputs": {
-      "types": "./src/services/outputs.ts",
-      "default": "./dist/services/outputs.js"
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./dist/index.js"
     }
   },
   "bin": {

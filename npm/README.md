@@ -36,7 +36,7 @@ npm/
 | :-------------------------------------- | :----------------------------------------------------------------------------------------------------------------- |
 | `@aimarchirico/commons-ts`              | `./eslint`, `./tsconfig.json` — base TypeScript config.                                                            |
 | `@aimarchirico/commons-expo`            | `./eslint`, `./tsconfig.json` config + `commons-expo build-android` and `create-keystore` bins.                    |
-| `@aimarchirico/commons-project`         | `./env`, `./report`, `./outputs` helpers + `commons-project rename-project` bin.                                   |
+| `@aimarchirico/commons-project`         | root exports (`env`, `report`, `outputs` helpers) + `commons-project rename-project` bin.                          |
 | `@aimarchirico/commons-github`          | `commons-github create-project`, `create-environments`, `sync-variables`, `set-secrets` bins.                      |
 | `@aimarchirico/commons-tools`           | `./markdownlint`, `./commitlint` configs.                                                                          |
 | `@aimarchirico/commons-docs`            | `commons-docs materialize-templates` bin (`dist/bin/cli.js`) materializing `CONTRIBUTING.md` and GitHub templates. |

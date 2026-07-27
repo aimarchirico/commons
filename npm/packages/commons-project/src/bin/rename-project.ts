@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import {fail, printSummary, report} from '@aimarchirico/commons-project/report';
+import {fail, printSummary, report} from '@aimarchirico/commons-project';
 import {applyDelete, applyMove, applyReplacement} from '../services/apply.js';
 import {loadManifest, manifestPath} from '../services/manifest.js';
 

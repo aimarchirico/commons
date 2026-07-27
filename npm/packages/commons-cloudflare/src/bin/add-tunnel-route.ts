@@ -1,7 +1,11 @@
 #!/usr/bin/env node
 
-import {resolveEnv} from '@aimarchirico/commons-project/env';
-import {fail, printSummary, report} from '@aimarchirico/commons-project/report';
+import {
+  fail,
+  printSummary,
+  report,
+  resolveEnv,
+} from '@aimarchirico/commons-project';
 import {api} from '../services/api.js';
 
 type Ingress = {hostname?: string; service: string; path?: string};
