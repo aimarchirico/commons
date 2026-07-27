@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 
 const commands: Record<string, string> = {
-  'build-android': './build-android.js',
-  'create-keystore': './create-keystore.js',
+  'create-project': './create-project.js',
+  'create-environments': './create-environments.js',
+  'sync-variables': './sync-variables.js',
+  'set-secrets': './set-secrets.js',
 };
 
 const verb = process.argv[2];
@@ -10,7 +12,7 @@ const script = verb ? commands[verb] : undefined;
 
 if (!script) {
   const usage = Object.keys(commands)
-    .map(name => `  commons-expo ${name}`)
+    .map(name => `  commons-github ${name}`)
     .join('\n');
   console.error(`Usage:\n${usage}`);
   process.exit(1);

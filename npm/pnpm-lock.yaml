@@ -35,6 +35,9 @@ importers:
 
   packages/commons-cloudflare:
     dependencies:
+      '@aimarchirico/commons-project':
+        specifier: workspace:^
+        version: link:../commons-project
       replace-in-file:
         specifier: ^8.4.0
         version: 8.4.0
@@ -75,6 +78,9 @@ importers:
 
   packages/commons-expo:
     dependencies:
+      '@aimarchirico/commons-project':
+        specifier: workspace:^
+        version: link:../commons-project
       '@aimarchirico/commons-ts':
         specifier: workspace:^
         version: link:../commons-ts
@@ -121,6 +127,25 @@ importers:
       react-native:
         specifier: '*'
         version: 0.86.0(@babel/core@7.29.7)(@types/react@19.2.17)(react@19.2.7)
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
+  packages/commons-github:
+    dependencies:
+      '@aimarchirico/commons-project':
+        specifier: workspace:^
+        version: link:../commons-project
+    devDependencies:
+      '@aimarchirico/commons-ts':
+        specifier: workspace:^
+        version: link:../commons-ts
+      '@types/node':
+        specifier: ^26.0.1
+        version: 26.0.1
+      eslint:
+        specifier: ^9.39.2
+        version: 9.39.4(jiti@2.7.0)
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
@@ -184,11 +209,27 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
 
-  packages/commons-ts:
+  packages/commons-project:
     dependencies:
+      tinyglobby:
+        specifier: ^0.2.15
+        version: 0.2.17
+    devDependencies:
+      '@aimarchirico/commons-ts':
+        specifier: workspace:^
+        version: link:../commons-ts
+      '@types/node':
+        specifier: ^26.0.1
+        version: 26.0.1
       eslint:
         specifier: ^9.39.2
         version: 9.39.4(jiti@2.7.0)
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
+  packages/commons-ts:
+    dependencies:
       eslint-plugin-check-file:
         specifier: ^3.3.1
         version: 3.3.1(eslint@9.39.4(jiti@2.7.0))
@@ -207,6 +248,13 @@ importers:
       jiti:
         specifier: ^2.7.0
         version: 2.7.0
+    devDependencies:
+      '@types/node':
+        specifier: ^26.0.1
+        version: 26.0.1
+      eslint:
+        specifier: ^9.39.2
+        version: 9.39.4(jiti@2.7.0)
       typescript:
         specifier: ^6.0.3
         version: 6.0.3

@@ -31,6 +31,7 @@
     "dist"
   ],
   "dependencies": {
+    "@aimarchirico/commons-project": "workspace:^",
     "@aimarchirico/commons-ts": "workspace:^",
     "eslint-config-expo": "~57.0.0"
   },

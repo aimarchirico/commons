@@ -34,10 +34,16 @@
     "npm/packages/commons-firebase-client": {
       "release-type": "node"
     },
+    "npm/packages/commons-github": {
+      "release-type": "node"
+    },
     "npm/packages/commons-google-signin": {
       "release-type": "node"
     },
     "npm/packages/commons-openapi": {
+      "release-type": "node"
+    },
+    "npm/packages/commons-project": {
       "release-type": "node"
     },
     "npm/packages/commons-ts": {
