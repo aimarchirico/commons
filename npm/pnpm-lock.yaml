@@ -192,6 +192,9 @@ importers:
 
   packages/commons-openapi:
     dependencies:
+      '@aimarchirico/commons-project':
+        specifier: workspace:^
+        version: link:../commons-project
       '@openapitools/openapi-generator-cli':
         specifier: ^2.39.1
         version: 2.39.1(supports-color@8.1.1)

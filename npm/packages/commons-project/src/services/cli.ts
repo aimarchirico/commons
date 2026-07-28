@@ -60,6 +60,25 @@ export const runJson = <T>(command: Command, args: string[]): T =>
   JSON.parse(runOrThrow(command, args)) as T;
 
 /**
+ * Run a command with its streams attached to this process, for generators
+ * whose progress output is the point. Nothing is captured, so the caller
+ * learns only the exit status.
+ */
+export const runStreamed = (command: Command, args: string[]): number => {
+  const [executable, ...prefix] = argv(command);
+  const result = spawnSync(executable, [...prefix, ...args], {
+    stdio: 'inherit',
+    shell: process.platform === 'win32',
+  });
+  if (result.error) {
+    throw new Error(
+      `Could not run "${name(command)}": ${result.error.message}.`,
+    );
+  }
+  return result.status ?? 1;
+};
+
+/**
  * Locate an executable belonging to a package this one depends on, so the
  * version that runs is the one the lockfile pinned rather than whatever a
  * global install happened to leave on `PATH`. `from` is the calling module's
@@ -143,17 +162,33 @@ export const requireCli = (
 };
 
 /**
- * Resolve a CLI a package depends on, preferring the copy the lockfile pinned
- * and falling back to `PATH` for tools that are not distributed on npm.
+ * Resolve a CLI a package depends on, preferring the copy the lockfile pinned.
+ *
+ * With `minVersion`, `PATH` is an accepted fallback and the version is
+ * checked — the shape for a tool that may legitimately be installed globally.
+ * Without it, resolution must succeed locally, since a declared dependency
+ * that cannot be resolved means the install is incomplete rather than that the
+ * tool lives elsewhere. Some generators also pay a real cost to answer
+ * `--version`, which is reason enough not to ask them.
  */
 export const resolveTool = (options: {
   from: string;
   package: string;
   bin: string;
-  minVersion: string;
+  minVersion?: string;
   installHint: string;
 }): Command => {
   const local = packageBin(options.from, options.package, options.bin);
+
+  if (!options.minVersion) {
+    if (!local) {
+      fail(
+        `"${options.bin}" could not be resolved from ${options.package}. ${options.installHint}`,
+      );
+    }
+    return {argv: local, name: options.bin};
+  }
+
   const command: Command = local
     ? {argv: local, name: options.bin}
     : options.bin;
