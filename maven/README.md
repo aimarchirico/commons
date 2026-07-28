@@ -68,8 +68,17 @@ The underlying commands are `./gradlew build`, `check`, and `ktfmtFormat`.
 
 - **Formatting** — ktfmt, applied through the convention plugin and run via
   `task maven:fix` (`ktfmtFormat`).
-- **Static analysis** — detekt (default ruleset), applied through the convention
-  plugin and run as part of `task maven:check` (`detekt`).
+- **Static analysis** — detekt, applied through the convention plugin and run as
+  part of `task maven:check` (`detekt`). The plugin layers its own configuration
+  onto detekt's defaults, so consuming builds need no detekt configuration of
+  their own.
+- **Documentation** — every public class, function, and property needs a KDoc
+  block. Overridden and protected members are exempt, so an implementation never
+  has to repeat its supertype.
+- **Comments** — only KDoc blocks are allowed (`commons/NonDocComment`). Line and
+  block comments are rejected wherever they appear, on their own line or trailing
+  code. The rule reads lexer tokens rather than text, so delimiters inside string
+  literals are never mistaken for comments. Build scripts are excluded.
 - **Conventions** — file naming and length rules; modules extend
   `BaseConventionTest` from `commons-test`.
 - **Architecture** — module-dependency rules for the api/impl/core layout,

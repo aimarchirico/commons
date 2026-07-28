@@ -68,6 +68,13 @@ repository root:
 
 - **Linting** — ESLint 9 flat config; every package extends the shared config
   from `commons-ts`.
+- **Documentation** — every exported function and class needs a JSDoc block
+  (`jsdoc/require-jsdoc`).
+- **Comments** — only JSDoc blocks are allowed (`commons/no-non-doc-comment`).
+  Line and block comments are rejected wherever they appear, on their own line
+  or trailing code, so explanation stays attached to what it describes. Tooling
+  directives such as `eslint-disable` and `@ts-expect-error` remain legal,
+  because the tools that read them recognise only the plain forms.
 - **Types** — `tsc` against the shared `tsconfig.json`.
 - **Caching** — Turborepo caches `check` runs (`turbo.json`).
 
