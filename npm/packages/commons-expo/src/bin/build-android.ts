@@ -23,10 +23,21 @@ if (keystoreBase64) {
     `-Pandroid.injected.signing.key.alias=${process.env.ANDROID_KEY_ALIAS || ''}`,
     `-Pandroid.injected.signing.key.password=${process.env.ANDROID_KEY_PASSWORD || ''}`,
   );
-} else {
+} else if (process.env.ANDROID_ALLOW_UNSIGNED) {
   console.log(
     'ANDROID_KEYSTORE_BASE64 not set, building with default (debug) signing.',
   );
+} else {
+  // Falling through to debug signing produces an APK that looks like a release
+  // build and cannot be shipped, so an unset keystore fails here rather than
+  // several steps later. Provisioning that never reached "import-keystore"
+  // would otherwise look complete.
+  console.error(
+    'ANDROID_KEYSTORE_BASE64 is not set, so this release build would be signed\n' +
+      'with the debug key. Run "commons-expo import-keystore" and pass the values\n' +
+      'it emits, or set ANDROID_ALLOW_UNSIGNED=1 to build unsigned deliberately.',
+  );
+  process.exit(1);
 }
 
 const result = spawnSync('bash', ['gradlew', ...args], {
