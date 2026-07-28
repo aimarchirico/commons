@@ -12,6 +12,26 @@ configure<com.ncorti.ktfmt.gradle.KtfmtExtension> {
     googleStyle()
 }
 
+/**
+ * Unpack the documentation rules bundled in this plugin so consuming builds
+ * inherit them without declaring a detekt configuration of their own. The
+ * anonymous object resolves the resource against this plugin's own jar.
+ */
+val bundledDetektConfig =
+    checkNotNull(object {}.javaClass.getResource("/detekt.yaml")) {
+        "commons-convention is missing its bundled detekt.yaml"
+    }
+
+val detektConfigFile = layout.buildDirectory.file("detekt/commons-detekt.yaml").get().asFile
+
+detektConfigFile.parentFile.mkdirs()
+detektConfigFile.writeText(bundledDetektConfig.readText())
+
+configure<dev.detekt.gradle.extensions.DetektExtension> {
+    buildUponDefaultConfig.set(true)
+    config.setFrom(detektConfigFile)
+}
+
 configure<org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension> {
     compilerOptions {
         jvmTarget.set(JvmTarget.JVM_25)
