@@ -19,15 +19,16 @@ type Initialized = {
   dashboardUrl: string;
 };
 
-// eas-cli is a dependency of this package, so the version that runs is the one
-// the lockfile pinned. `PATH` is only the fallback.
+// eas-cli is an optional peer, so the consuming repository pins it and only
+// the projects that provision an Expo app carry the weight. `PATH` is the
+// fallback for a global install.
 const eas = resolveTool({
   from: import.meta.url,
   package: 'eas-cli',
   bin: 'eas',
   minVersion: '21.0.0',
   installHint:
-    'Run "pnpm install" so the pinned eas-cli is present, then authenticate with "pnpm exec eas login" or set EXPO_TOKEN.',
+    'Add it to the project with "pnpm add -D eas-cli", then authenticate with "pnpm exec eas login" or set EXPO_TOKEN.',
 });
 
 // The account is derived from the app config's `owner` field, which eas-cli

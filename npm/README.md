@@ -89,11 +89,14 @@ Commands that drive a vendor CLI check its version first, since the output they
 parse is version-specific and a floor turns a confusing parse failure into a
 message naming what to fix.
 
-`commons-expo` depends on `eas-cli`, so the copy the lockfile pinned is the one
-that runs and nothing needs installing globally. `commons-github` needs `gh`
-2.40+ on `PATH`: the GitHub CLI is a Go binary, and the `gh` package on npm is
-an unrelated project. Any tool resolved from a dependency falls back to `PATH`
-when it is missing, so a global install still works where one exists.
+`commons-expo` declares `eas-cli` as an optional peer dependency, so the
+consuming repository pins it and the copy the lockfile resolved is the one that
+runs — nothing needs installing globally. It is optional because this package
+is also the shared ESLint and TypeScript config, and a project that only wants
+those should not carry a provisioning CLI. `commons-github` needs `gh` 2.40+ on
+`PATH`: the GitHub CLI is a Go binary, and the `gh` package on npm is an
+unrelated project. Any tool resolved from a dependency falls back to `PATH`
+when it is absent, so a global install still works where one exists.
 
 ### `commons-project rename-project`
 

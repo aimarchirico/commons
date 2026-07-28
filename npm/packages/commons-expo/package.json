@@ -33,20 +33,26 @@
   "dependencies": {
     "@aimarchirico/commons-project": "workspace:^",
     "@aimarchirico/commons-ts": "workspace:^",
-    "eas-cli": "^21.3.0",
     "eslint-config-expo": "~57.0.0"
   },
   "devDependencies": {
     "@types/node": "^26.0.1",
+    "eas-cli": "^21.3.0",
     "eslint": "^9.39.2",
     "expo": "*",
     "react": "*",
     "typescript": "^6.0.3"
   },
   "peerDependencies": {
+    "eas-cli": "^21.3.0",
     "eslint": "^9.39.2",
     "expo": "*",
     "react": "*",
     "typescript": "^6.0.3"
+  },
+  "peerDependenciesMeta": {
+    "eas-cli": {
+      "optional": true
+    }
   }
 }
