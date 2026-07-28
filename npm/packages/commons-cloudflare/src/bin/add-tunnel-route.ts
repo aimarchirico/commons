@@ -6,27 +6,26 @@ import {
   report,
   resolveEnv,
 } from '@aimarchirico/commons-project';
-import {api} from '../services/api.js';
+import {api, resolveAccount} from '../services/api-client.js';
 
 type Ingress = {hostname?: string; service: string; path?: string};
 type Configuration = {config?: {ingress?: Ingress[]}};
 
-const env = resolveEnv([
-  'CLOUDFLARE_ACCOUNT_ID',
-  'CLOUDFLARE_API_TOKEN',
-  'TUNNEL_ID',
-  'TUNNEL_HOSTNAME',
-  'TUNNEL_SERVICE',
-]);
+const env = resolveEnv(
+  ['CLOUDFLARE_API_TOKEN', 'TUNNEL_ID', 'TUNNEL_HOSTNAME', 'TUNNEL_SERVICE'],
+  ['CLOUDFLARE_ACCOUNT_ID'],
+);
 
 const cf = api(env.CLOUDFLARE_API_TOKEN);
-const path = `/accounts/${env.CLOUDFLARE_ACCOUNT_ID}/cfd_tunnel/${env.TUNNEL_ID}/configurations`;
 const resource = `tunnel route ${env.TUNNEL_HOSTNAME}`;
 
 const run = async (): Promise<void> => {
+  const account = await resolveAccount(cf, env.CLOUDFLARE_ACCOUNT_ID);
+  const path = `/accounts/${account}/cfd_tunnel/${env.TUNNEL_ID}/configurations`;
+
   const current = await cf.get<Configuration>(path);
   if (!current) {
-    fail(`No tunnel ${env.TUNNEL_ID} in account ${env.CLOUDFLARE_ACCOUNT_ID}.`);
+    fail(`No tunnel ${env.TUNNEL_ID} in account ${account}.`);
   }
 
   const config = current.config ?? {};

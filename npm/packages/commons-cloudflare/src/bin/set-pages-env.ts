@@ -6,7 +6,7 @@ import {
   report,
   resolveEnv,
 } from '@aimarchirico/commons-project';
-import {api} from '../services/api.js';
+import {api, resolveAccount} from '../services/api-client.js';
 
 type EnvVar = {type: string; value?: string};
 type Project = {
@@ -17,23 +17,20 @@ type Project = {
 };
 
 const env = resolveEnv(
-  [
-    'CLOUDFLARE_ACCOUNT_ID',
-    'CLOUDFLARE_API_TOKEN',
-    'PAGES_PROJECT_NAME',
-    'PAGES_VARIABLES',
-  ],
-  ['PAGES_ENVIRONMENT'],
+  ['CLOUDFLARE_API_TOKEN', 'PAGES_PROJECT_NAME', 'PAGES_VARIABLES'],
+  ['CLOUDFLARE_ACCOUNT_ID', 'PAGES_ENVIRONMENT'],
 );
 
 const cf = api(env.CLOUDFLARE_API_TOKEN);
-const project = `/accounts/${env.CLOUDFLARE_ACCOUNT_ID}/pages/projects/${env.PAGES_PROJECT_NAME}`;
 const target = env.PAGES_ENVIRONMENT ?? 'production';
 const names = env.PAGES_VARIABLES.split(/[,\s]+/)
   .map(name => name.trim())
   .filter(Boolean);
 
 const run = async (): Promise<void> => {
+  const account = await resolveAccount(cf, env.CLOUDFLARE_ACCOUNT_ID);
+  const project = `/accounts/${account}/pages/projects/${env.PAGES_PROJECT_NAME}`;
+
   const current = await cf.get<Project>(project);
   if (!current) {
     fail(

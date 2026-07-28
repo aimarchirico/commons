@@ -7,7 +7,7 @@ import {
   resolveEnv,
   writeOutputs,
 } from '@aimarchirico/commons-project';
-import {api} from '../services/api.js';
+import {api, resolveAccount} from '../services/api-client.js';
 
 type ServiceToken = {
   id: string;
@@ -17,25 +17,22 @@ type ServiceToken = {
 };
 type Policy = {include?: Array<Record<string, unknown>>};
 
-const env = resolveEnv([
-  'CLOUDFLARE_ACCOUNT_ID',
-  'CLOUDFLARE_API_TOKEN',
-  'SERVICE_TOKEN_NAME',
-  'ACCESS_POLICY_ID',
-]);
+const env = resolveEnv(
+  ['CLOUDFLARE_API_TOKEN', 'SERVICE_TOKEN_NAME', 'ACCESS_POLICY_ID'],
+  ['CLOUDFLARE_ACCOUNT_ID'],
+);
 
 const cf = api(env.CLOUDFLARE_API_TOKEN);
-const account = `/accounts/${env.CLOUDFLARE_ACCOUNT_ID}`;
-const tokens = `${account}/access/service_tokens`;
-const policyPath = `${account}/access/policies/${env.ACCESS_POLICY_ID}`;
 const name = env.SERVICE_TOKEN_NAME;
 
-const attach = async (token: ServiceToken): Promise<void> => {
+const attach = async (
+  token: ServiceToken,
+  policyPath: string,
+  account: string,
+): Promise<void> => {
   const policy = await cf.get<Policy>(policyPath);
   if (!policy) {
-    fail(
-      `No Access policy ${env.ACCESS_POLICY_ID} in account ${env.CLOUDFLARE_ACCOUNT_ID}.`,
-    );
+    fail(`No Access policy ${env.ACCESS_POLICY_ID} in account ${account}.`);
   }
   const include = policy.include ?? [];
   const attached = include.some(
@@ -55,6 +52,11 @@ const attach = async (token: ServiceToken): Promise<void> => {
 };
 
 const run = async (): Promise<void> => {
+  const account = await resolveAccount(cf, env.CLOUDFLARE_ACCOUNT_ID);
+  const base = `/accounts/${account}`;
+  const tokens = `${base}/access/service_tokens`;
+  const policyPath = `${base}/access/policies/${env.ACCESS_POLICY_ID}`;
+
   const existing = ((await cf.get<ServiceToken[]>(tokens)) ?? []).find(
     token => token.name === name,
   );
@@ -69,7 +71,7 @@ const run = async (): Promise<void> => {
       'secret cannot be re-read; reuse the stored value or rotate deliberately',
     );
     writeOutputs({CF_ACCESS_CLIENT_ID: existing.client_id});
-    await attach(existing);
+    await attach(existing, policyPath, account);
     return;
   }
 
@@ -79,7 +81,7 @@ const run = async (): Promise<void> => {
     CF_ACCESS_CLIENT_ID: created.client_id,
     CF_ACCESS_CLIENT_SECRET: created.client_secret ?? '',
   });
-  await attach(created);
+  await attach(created, policyPath, account);
 };
 
 run()

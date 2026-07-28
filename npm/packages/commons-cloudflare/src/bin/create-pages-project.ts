@@ -1,36 +1,60 @@
 #!/usr/bin/env node
 
 import {
+  context,
+  defaultBranch,
   fail,
   printSummary,
   report,
   resolveEnv,
 } from '@aimarchirico/commons-project';
-import {api} from '../services/api.js';
+import {api, resolveAccount} from '../services/api-client.js';
 
 const env = resolveEnv(
-  [
-    'CLOUDFLARE_ACCOUNT_ID',
-    'CLOUDFLARE_API_TOKEN',
-    'PAGES_PROJECT_NAME',
-    'PAGES_CUSTOM_DOMAIN',
-  ],
-  ['PAGES_PRODUCTION_BRANCH'],
+  ['CLOUDFLARE_API_TOKEN', 'PAGES_PROJECT_NAME', 'PAGES_CUSTOM_DOMAIN'],
+  ['CLOUDFLARE_ACCOUNT_ID', 'PAGES_PRODUCTION_BRANCH'],
 );
 
 const cf = api(env.CLOUDFLARE_API_TOKEN);
-const projects = `/accounts/${env.CLOUDFLARE_ACCOUNT_ID}/pages/projects`;
 const name = env.PAGES_PROJECT_NAME;
 const domain = env.PAGES_CUSTOM_DOMAIN;
 
+/**
+ * The production branch is a fact about the repository, not a choice, and
+ * defaulting to a literal "main" silently points the project at a branch that
+ * may not exist.
+ */
+const productionBranch = (): string => {
+  if (env.PAGES_PRODUCTION_BRANCH) {
+    context(
+      'production branch',
+      env.PAGES_PRODUCTION_BRANCH,
+      'from PAGES_PRODUCTION_BRANCH',
+    );
+    return env.PAGES_PRODUCTION_BRANCH;
+  }
+  const derived = defaultBranch();
+  context(
+    'production branch',
+    derived ?? 'main',
+    derived
+      ? "derived from the remote's default branch"
+      : 'no remote — assumed',
+  );
+  return derived ?? 'main';
+};
+
 const run = async (): Promise<void> => {
+  const account = await resolveAccount(cf, env.CLOUDFLARE_ACCOUNT_ID);
+  const projects = `/accounts/${account}/pages/projects`;
+
   const existing = await cf.get<{name: string}>(`${projects}/${name}`);
   if (existing) {
     report(`pages project ${name}`, 'present');
   } else {
     await cf.send('POST', projects, {
       name,
-      production_branch: env.PAGES_PRODUCTION_BRANCH ?? 'main',
+      production_branch: productionBranch(),
     });
     report(`pages project ${name}`, 'created');
   }

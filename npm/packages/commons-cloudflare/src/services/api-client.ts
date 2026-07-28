@@ -1,3 +1,5 @@
+import {context, fail} from '@aimarchirico/commons-project';
+
 const BASE = 'https://api.cloudflare.com/client/v4';
 
 type Envelope<T> = {
@@ -6,7 +8,7 @@ type Envelope<T> = {
   result: T;
 };
 
-export type Api = {
+export type ApiClient = {
   get: <T>(path: string) => Promise<T | undefined>;
   send: <T>(
     method: 'POST' | 'PATCH' | 'PUT' | 'DELETE',
@@ -19,7 +21,7 @@ export type Api = {
  * Minimal Cloudflare REST client. A missing resource resolves to undefined so
  * a command can distinguish "absent" from "failed".
  */
-export const api = (token: string): Api => {
+export const api = (token: string): ApiClient => {
   const request = async (
     method: string,
     path: string,
@@ -67,4 +69,42 @@ export const api = (token: string): Api => {
       return payload.result as T;
     },
   };
+};
+
+/**
+ * The account to act in. A token scoped to exactly one account already names
+ * it, so the override only has to settle the ambiguous case — and an ambiguous
+ * case fails rather than picking, since the wrong account is not a mistake a
+ * re-run corrects.
+ */
+export const resolveAccount = async (
+  client: ApiClient,
+  override?: string,
+): Promise<string> => {
+  if (override) {
+    context('cloudflare account', override, 'from CLOUDFLARE_ACCOUNT_ID');
+    return override;
+  }
+
+  const accounts =
+    (await client.get<Array<{id: string; name: string}>>('/accounts')) ?? [];
+  if (!accounts.length) {
+    fail(
+      'The Cloudflare token can see no accounts. Check CLOUDFLARE_API_TOKEN, or set CLOUDFLARE_ACCOUNT_ID.',
+    );
+  }
+  if (accounts.length > 1) {
+    const names = accounts
+      .map(account => `  - ${account.name} (${account.id})`)
+      .join('\n');
+    fail(
+      `The Cloudflare token can see ${accounts.length} accounts. Set CLOUDFLARE_ACCOUNT_ID to one of:\n${names}`,
+    );
+  }
+  context(
+    'cloudflare account',
+    `${accounts[0].name} (${accounts[0].id})`,
+    'derived — the token sees one account',
+  );
+  return accounts[0].id;
 };
