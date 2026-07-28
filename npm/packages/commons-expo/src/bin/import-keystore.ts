@@ -23,7 +23,7 @@ type CredentialsJson = {
 };
 
 const STEPS = [
-  'eas credentials --platform android',
+  'pnpm exec eas credentials --platform android',
   '  → "Keystore: Manage everything needed to build your project"',
   '      → "Set up a new keystore"          (skip if one already exists)',
   '  → "credentials.json: Upload/Download credentials between EAS servers and your local json"',

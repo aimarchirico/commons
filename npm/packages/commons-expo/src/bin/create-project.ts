@@ -5,8 +5,8 @@ import {
   fail,
   printSummary,
   report,
-  requireCli,
   resolveEnv,
+  resolveTool,
   runJson,
   writeOutputs,
 } from '@aimarchirico/commons-project';
@@ -19,10 +19,15 @@ type Initialized = {
   dashboardUrl: string;
 };
 
-requireCli('eas', {
+// eas-cli is a dependency of this package, so the version that runs is the one
+// the lockfile pinned. `PATH` is only the fallback.
+const eas = resolveTool({
+  from: import.meta.url,
+  package: 'eas-cli',
+  bin: 'eas',
   minVersion: '21.0.0',
   installHint:
-    'Install it with "npm install -g eas-cli", then authenticate with "eas login" or set EXPO_TOKEN.',
+    'Run "pnpm install" so the pinned eas-cli is present, then authenticate with "pnpm exec eas login" or set EXPO_TOKEN.',
 });
 
 // The account is derived from the app config's `owner` field, which eas-cli
@@ -48,7 +53,7 @@ context(
 );
 
 try {
-  const result = runJson<Initialized>('eas', args);
+  const result = runJson<Initialized>(eas, args);
   report(
     `eas project ${result.owner}/${result.slug}`,
     result.status === 'created' ? 'created' : 'present',

@@ -4,5 +4,8 @@ allowBuilds:
   '@firebase/util': true
   '@openapitools/openapi-generator-cli': true
   'core-js': true
+  # Optional native DTrace bindings for bunyan, which eas-cli pulls in. Bunyan
+  # runs without them, so the native build is not worth requiring a toolchain.
+  dtrace-provider: false
   'protobufjs': true
   'unrs-resolver': true

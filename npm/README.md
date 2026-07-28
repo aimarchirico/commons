@@ -85,11 +85,15 @@ the Cloudflare account, the production branch — before it reports any resource
 so a derivation made in the wrong directory is visible before its consequences
 are. Every derived value has an override.
 
-Commands that drive a vendor CLI expect it on `PATH` rather than carrying it as
-a dependency, and check its version first: `gh` 2.40+ for `commons-github`,
-`eas` 21+ for `commons-expo`. The output these commands parse is
-version-specific, so the floor turns a confusing parse failure into a message
-naming what to install.
+Commands that drive a vendor CLI check its version first, since the output they
+parse is version-specific and a floor turns a confusing parse failure into a
+message naming what to fix.
+
+`commons-expo` depends on `eas-cli`, so the copy the lockfile pinned is the one
+that runs and nothing needs installing globally. `commons-github` needs `gh`
+2.40+ on `PATH`: the GitHub CLI is a Go binary, and the `gh` package on npm is
+an unrelated project. Any tool resolved from a dependency falls back to `PATH`
+when it is missing, so a global install still works where one exists.
 
 ### `commons-project rename-project`
 
@@ -248,7 +252,7 @@ account reuses one application for its APIs.
 | Key            | Required | Purpose                                                          |
 | :------------- | :------- | :--------------------------------------------------------------- |
 | `EXPO_ACCOUNT` | No       | Account that owns the project. Defaults to the config's `owner`. |
-| `EXPO_TOKEN`   | No       | Expo credentials. Falls back to the local `eas login` session.   |
+| `EXPO_TOKEN`   | No       | Expo credentials. Falls back to a `pnpm exec eas login` session. |
 
 Emits `EAS_PROJECT_ID`.
 

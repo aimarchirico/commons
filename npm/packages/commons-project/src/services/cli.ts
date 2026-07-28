@@ -1,25 +1,39 @@
+import fs from 'fs';
+import path from 'path';
+import {createRequire} from 'module';
 import {spawnSync} from 'child_process';
 import {fail} from './report.js';
 
 export type CliResult = {status: number; stdout: string; stderr: string};
 
 /**
- * Run an external CLI resolved from `PATH`. These are one-shot provisioning
- * tools, so a globally installed CLI is the contract rather than a dependency
- * every consumer of the package would otherwise have to carry.
+ * Either a name to find on `PATH`, or a resolved executable carrying the name
+ * to use when talking about it — `node /…/eas-cli/bin/run` should still be
+ * reported as "eas".
  */
+export type Command = string | {argv: string[]; name: string};
+
+const argv = (command: Command): string[] =>
+  typeof command === 'string' ? [command] : command.argv;
+
+const name = (command: Command): string =>
+  typeof command === 'string' ? command : command.name;
+
 export const run = (
-  command: string,
+  command: Command,
   args: string[],
   input?: string,
 ): CliResult => {
-  const result = spawnSync(command, args, {
+  const [executable, ...prefix] = argv(command);
+  const result = spawnSync(executable, [...prefix, ...args], {
     encoding: 'utf8',
     input,
     shell: process.platform === 'win32',
   });
   if (result.error) {
-    throw new Error(`Could not run "${command}": ${result.error.message}.`);
+    throw new Error(
+      `Could not run "${name(command)}": ${result.error.message}.`,
+    );
   }
   return {
     status: result.status ?? 1,
@@ -29,19 +43,52 @@ export const run = (
 };
 
 export const runOrThrow = (
-  command: string,
+  command: Command,
   args: string[],
   input?: string,
 ): string => {
   const result = run(command, args, input);
   if (result.status !== 0) {
-    throw new Error(`${command} ${args.join(' ')} failed:\n${result.stderr}`);
+    throw new Error(
+      `${name(command)} ${args.join(' ')} failed:\n${result.stderr}`,
+    );
   }
   return result.stdout;
 };
 
-export const runJson = <T>(command: string, args: string[]): T =>
+export const runJson = <T>(command: Command, args: string[]): T =>
   JSON.parse(runOrThrow(command, args)) as T;
+
+/**
+ * Locate an executable belonging to a package this one depends on, so the
+ * version that runs is the one the lockfile pinned rather than whatever a
+ * global install happened to leave on `PATH`. `from` is the calling module's
+ * `import.meta.url`, since resolution has to start at the package that
+ * declares the dependency.
+ *
+ * The script is invoked through the current Node binary rather than executed
+ * directly, which sidesteps both the shebang and the executable bit.
+ */
+export const packageBin = (
+  from: string,
+  packageName: string,
+  binName: string,
+): string[] | undefined => {
+  try {
+    const manifestPath = createRequire(from).resolve(
+      `${packageName}/package.json`,
+    );
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8')) as {
+      bin?: string | Record<string, string>;
+    };
+    const entry =
+      typeof manifest.bin === 'string' ? manifest.bin : manifest.bin?.[binName];
+    if (!entry) return undefined;
+    return [process.execPath, path.join(path.dirname(manifestPath), entry)];
+  } catch {
+    return undefined;
+  }
+};
 
 const VERSION = /(\d+)\.(\d+)\.(\d+)/;
 
@@ -62,12 +109,12 @@ const isBelow = (found: number[], minimum: number[]): boolean => {
 };
 
 /**
- * Assert an external CLI is installed and recent enough. The output these
- * commands parse is version-specific, so a floor turns a confusing parse
- * failure further in into a message naming exactly what to install.
+ * Assert a CLI is usable and recent enough. The output these commands parse is
+ * version-specific, so a floor turns a confusing parse failure further in into
+ * a message naming exactly what to install.
  */
 export const requireCli = (
-  command: string,
+  command: Command,
   options: {
     minVersion: string;
     installHint: string;
@@ -78,10 +125,10 @@ export const requireCli = (
   try {
     result = run(command, options.versionArgs ?? ['--version']);
   } catch {
-    fail(`"${command}" is not on PATH. ${options.installHint}`);
+    fail(`"${name(command)}" is not available. ${options.installHint}`);
   }
   if (result.status !== 0) {
-    fail(`"${command}" is installed but not usable. ${options.installHint}`);
+    fail(`"${name(command)}" is not usable. ${options.installHint}`);
   }
 
   const minimum = parseVersion(options.minVersion);
@@ -90,7 +137,29 @@ export const requireCli = (
 
   if (isBelow(found, minimum)) {
     fail(
-      `"${command}" ${found.join('.')} is older than the required ${options.minVersion}. ${options.installHint}`,
+      `"${name(command)}" ${found.join('.')} is older than the required ${options.minVersion}. ${options.installHint}`,
     );
   }
+};
+
+/**
+ * Resolve a CLI a package depends on, preferring the copy the lockfile pinned
+ * and falling back to `PATH` for tools that are not distributed on npm.
+ */
+export const resolveTool = (options: {
+  from: string;
+  package: string;
+  bin: string;
+  minVersion: string;
+  installHint: string;
+}): Command => {
+  const local = packageBin(options.from, options.package, options.bin);
+  const command: Command = local
+    ? {argv: local, name: options.bin}
+    : options.bin;
+  requireCli(command, {
+    minVersion: options.minVersion,
+    installHint: options.installHint,
+  });
+  return command;
 };
