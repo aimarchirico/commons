@@ -9,6 +9,7 @@
     "fix": "eslint --fix"
   },
   "exports": {
+    "./comments": "./src/lib/comments.ts",
     "./eslint-base": "./src/lib/eslint-base.ts",
     "./eslint-core": "./src/lib/eslint-core.ts",
     "./folders": "./src/lib/folders.ts",
@@ -18,6 +19,7 @@
   "dependencies": {
     "eslint-plugin-check-file": "^3.3.1",
     "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-jsdoc": "^63.3.1",
     "eslint-plugin-jsonc": "^2.16.0",
     "globals": "^17.7.0",
     "gts": "^7.0.0",

@@ -6,3 +6,5 @@ allowBuilds:
   'core-js': true
   'protobufjs': true
   'unrs-resolver': true
+minimumReleaseAgeExclude:
+  - eslint-plugin-jsdoc@63.3.1

@@ -1,7 +1,9 @@
 import checkFile from 'eslint-plugin-check-file';
 import eslintPluginImport from 'eslint-plugin-import';
+import eslintPluginJsdoc from 'eslint-plugin-jsdoc';
 import eslintPluginJsonc from 'eslint-plugin-jsonc';
 import gts from 'gts';
+import {commonsPlugin} from './comments';
 import {execFileSync} from 'node:child_process';
 import gtsPrettier from 'gts/.prettierrc.json';
 
@@ -37,7 +39,9 @@ export default [
   {
     plugins: {
       'check-file': checkFile,
+      commons: commonsPlugin,
       import: eslintPluginImport,
+      jsdoc: eslintPluginJsdoc,
     },
     rules: {
       'prettier/prettier': ['error', gtsPrettier],
@@ -52,6 +56,21 @@ export default [
           max: 300,
           skipBlankLines: false,
           skipComments: false,
+        },
+      ],
+      'commons/no-non-doc-comment': ['error'],
+      'jsdoc/require-jsdoc': [
+        'error',
+        {
+          publicOnly: true,
+          require: {
+            ArrowFunctionExpression: true,
+            ClassDeclaration: true,
+            ClassExpression: true,
+            FunctionDeclaration: true,
+            FunctionExpression: true,
+          },
+          enableFixer: false,
         },
       ],
     },
