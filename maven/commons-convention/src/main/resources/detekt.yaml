@@ -1,3 +1,9 @@
+commons:
+  active: true
+  NonDocComment:
+    active: true
+    excludes: ['**/*.gradle.kts']
+
 comments:
   active: true
   UndocumentedPublicClass:

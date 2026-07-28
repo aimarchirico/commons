@@ -20,6 +20,7 @@ dependencies {
     }
     implementation(libs.ktfmt.gradle.plugin)
     implementation(libs.detekt.gradle.plugin)
+    compileOnly(libs.detekt.api)
 }
 
 publishing {

@@ -32,6 +32,20 @@ configure<dev.detekt.gradle.extensions.DetektExtension> {
     config.setFrom(detektConfigFile)
 }
 
+/**
+ * Put this plugin's own artifact on detekt's rule classpath, which is how detekt discovers the rule
+ * set bundled alongside these scripts. Resolving the artifact from the enclosing class keeps the
+ * coordinates and version out of the script, so the rules can never drift from the plugin shipping
+ * them.
+ */
+val conventionArtifact = object {}.javaClass.protectionDomain?.codeSource?.location
+
+dependencies {
+    if (conventionArtifact != null) {
+        add("detektPlugins", files(java.io.File(conventionArtifact.toURI())))
+    }
+}
+
 configure<org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension> {
     compilerOptions {
         jvmTarget.set(JvmTarget.JVM_25)
