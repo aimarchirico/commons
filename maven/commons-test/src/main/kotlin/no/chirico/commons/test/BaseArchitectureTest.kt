@@ -6,6 +6,12 @@ import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes
 import com.tngtech.archunit.library.Architectures.layeredArchitecture
 import org.junit.jupiter.api.Test
 
+/**
+ * Architecture rules every service inherits by extending this class.
+ *
+ * The rules read the package of the concrete subclass, so a service gets them by placing its own
+ * empty subclass in its root package.
+ */
 abstract class BaseArchitectureTest {
 
   protected val allClasses by lazy {
@@ -14,6 +20,7 @@ abstract class BaseArchitectureTest {
       .importPackages(javaClass.packageName)
   }
 
+  /** Asserts that every class under a `feature` package sits in one of the role packages. */
   @Test
   fun `every feature class resides in a role package`() {
     classes()
@@ -34,6 +41,11 @@ abstract class BaseArchitectureTest {
       .check(allClasses)
   }
 
+  /**
+   * Asserts that controllers, services, and repositories depend downwards only.
+   *
+   * Layers are optional so a service that omits one still passes.
+   */
   @Test
   fun `dependencies only flow down`() {
     layeredArchitecture()

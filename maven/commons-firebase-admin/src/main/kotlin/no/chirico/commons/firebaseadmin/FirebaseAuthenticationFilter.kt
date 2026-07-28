@@ -10,6 +10,14 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.web.filter.OncePerRequestFilter
 
+/**
+ * Authenticates requests carrying a Firebase ID token in the `Authorization` header.
+ *
+ * A verified token whose email passes the allow list populates the security context. A missing or
+ * unverifiable token leaves the context empty and lets the chain continue, so the security
+ * configuration decides whether the endpoint was public. A verified token outside the allow list is
+ * rejected outright.
+ */
 class FirebaseAuthenticationFilter(private val properties: FirebaseProperties) :
   OncePerRequestFilter() {
 

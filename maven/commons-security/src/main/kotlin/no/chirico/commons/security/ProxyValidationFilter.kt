@@ -7,6 +7,12 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
+/**
+ * Rejects requests that did not arrive through the trusted reverse proxy.
+ *
+ * The proxy stamps every forwarded request with `X-Proxy-Secret`. When `proxy-secret` is unset the
+ * filter stands down, which keeps local runs and tests working without the header.
+ */
 @Component
 class ProxyValidationFilter : OncePerRequestFilter() {
   @Value("\${proxy-secret:}") private lateinit var proxySecret: String
