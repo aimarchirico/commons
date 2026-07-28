@@ -15,6 +15,10 @@ let configured = false;
 export let googleProvider: FirebaseAuthClient['googleProvider'];
 export let GoogleAuthProvider: GoogleAuthProviderStatic;
 
+/**
+ * Initialises the web app from the given config and builds the Google provider
+ * with the `email` and `profile` scopes. Repeat calls are ignored.
+ */
 export const configureFirebaseAuth: FirebaseAuthClient['configureFirebaseAuth'] =
   webConfig => {
     if (configured) {
@@ -31,8 +35,10 @@ export const configureFirebaseAuth: FirebaseAuthClient['configureFirebaseAuth'] 
     configured = true;
   };
 
+/** Returns the auth instance built by `configureFirebaseAuth`. */
 export const getAuth: FirebaseAuthClient['getAuth'] = () => auth;
 
+/** Runs the Google sign-in popup flow, the entry point on web. */
 export const signInWithPopup: FirebaseAuthClient['signInWithPopup'] = (
   authInstance,
   provider,
@@ -42,6 +48,7 @@ export const signInWithPopup: FirebaseAuthClient['signInWithPopup'] = (
     provider as webAuth.AuthProvider,
   );
 
+/** Signs in with an already-minted credential. */
 export const signInWithCredential: FirebaseAuthClient['signInWithCredential'] =
   (authInstance, credential) =>
     webAuth.signInWithCredential(
@@ -49,6 +56,7 @@ export const signInWithCredential: FirebaseAuthClient['signInWithCredential'] =
       credential as webAuth.AuthCredential,
     );
 
+/** Signs in with an email and password, used for the dev-only bypass. */
 export const signInWithEmailAndPassword: FirebaseAuthClient['signInWithEmailAndPassword'] =
   (authInstance, email, password) =>
     webAuth.signInWithEmailAndPassword(
@@ -57,13 +65,20 @@ export const signInWithEmailAndPassword: FirebaseAuthClient['signInWithEmailAndP
       password,
     );
 
+/** Clears the web session. */
 export const signOut: FirebaseAuthClient['signOut'] = authInstance =>
   webAuth.signOut(authInstance as unknown as WebAuth);
 
+/**
+ * Subscribes to sign-in state changes.
+ *
+ * @returns The unsubscribe handle, which callers must invoke on teardown.
+ */
 export const onAuthStateChanged: FirebaseAuthClient['onAuthStateChanged'] = (
   authInstance,
   callback,
 ) => webAuth.onAuthStateChanged(authInstance as unknown as WebAuth, callback);
 
+/** Returns a fresh ID token for the signed-in user, for backend calls. */
 export const getIdToken: FirebaseAuthClient['getIdToken'] = (user: AuthUser) =>
   webAuth.getIdToken(user as unknown as webAuth.User);
