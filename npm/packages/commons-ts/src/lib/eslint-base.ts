@@ -39,9 +39,7 @@ export default [
   {
     plugins: {
       'check-file': checkFile,
-      commons: commonsPlugin,
       import: eslintPluginImport,
-      jsdoc: eslintPluginJsdoc,
     },
     rules: {
       'prettier/prettier': ['error', gtsPrettier],
@@ -58,6 +56,15 @@ export default [
           skipComments: false,
         },
       ],
+    },
+  },
+  {
+    files: ['**/*.{ts,tsx,mts,cts,js,jsx,mjs,cjs}'],
+    plugins: {
+      commons: commonsPlugin,
+      jsdoc: eslintPluginJsdoc,
+    },
+    rules: {
       'commons/no-non-doc-comment': ['error'],
       'jsdoc/require-jsdoc': [
         'error',
