@@ -2,7 +2,8 @@
 
 const commands: Record<string, string> = {
   'build-android': './build-android.js',
-  'create-keystore': './create-keystore.js',
+  'create-project': './create-project.js',
+  'import-keystore': './import-keystore.js',
 };
 
 const verb = process.argv[2];
