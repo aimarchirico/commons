@@ -1,6 +1,9 @@
-export type Outcome = 'created' | 'updated' | 'present' | 'written' | 'skipped';
+export type Outcome =
+  'created' | 'updated' | 'present' | 'written' | 'skipped' | 'pending';
 
 type Entry = {resource: string; outcome: Outcome; detail?: string};
+
+type Instruction = {resource: string; steps: string[]};
 
 const MARKS: Record<Outcome, string> = {
   created: '+',
@@ -8,6 +11,7 @@ const MARKS: Record<Outcome, string> = {
   present: '=',
   written: '*',
   skipped: '-',
+  pending: '!',
 };
 
 const LABELS: Record<Outcome, string> = {
@@ -16,9 +20,11 @@ const LABELS: Record<Outcome, string> = {
   present: 'already present',
   written: 'written',
   skipped: 'skipped',
+  pending: 'action required',
 };
 
 const entries: Entry[] = [];
+const instructions: Instruction[] = [];
 
 export const report = (
   resource: string,
@@ -28,6 +34,31 @@ export const report = (
   entries.push({resource, outcome, detail});
   const suffix = detail ? ` (${detail})` : '';
   console.log(`${MARKS[outcome]} ${resource}: ${LABELS[outcome]}${suffix}`);
+};
+
+/**
+ * Print how a value the command is about to act on was resolved. A derived
+ * value that is wrong is otherwise indistinguishable from a supplied one, and
+ * the consequences — writing to the wrong repository, say — are not reversible
+ * by re-running.
+ */
+export const context = (label: string, value: string, source: string): void => {
+  console.log(`· ${label} ${value} (${source})`);
+};
+
+/**
+ * Record a step only a human can take. It reports like any other outcome so a
+ * run reads consistently, and repeats in full at the end of the summary so it
+ * cannot be lost in the middle of the output. Distinct from a failure: the
+ * command did everything it could, and the rest is waiting on someone.
+ */
+export const instruct = (
+  resource: string,
+  detail: string,
+  steps: string[],
+): void => {
+  instructions.push({resource, steps});
+  report(resource, 'pending', detail);
 };
 
 /**
@@ -64,11 +95,19 @@ export const printSummary = (title: string): void => {
   const changed = entries.some(
     entry => entry.outcome === 'created' || entry.outcome === 'updated',
   );
+  const settled = !changed && !instructions.length;
   console.log(
     `\n${title}: ${parts.length ? parts.join(', ') : 'nothing to do'}${
-      changed ? '' : ' — no changes'
+      settled ? ' — no changes' : ''
     }`,
   );
+
+  for (const instruction of instructions) {
+    console.log(`\nAction required — ${instruction.resource}:`);
+    for (const line of instruction.steps) {
+      console.log(`  ${line}`);
+    }
+  }
 };
 
 // Annotated rather than inferred so callers get control-flow narrowing after a
