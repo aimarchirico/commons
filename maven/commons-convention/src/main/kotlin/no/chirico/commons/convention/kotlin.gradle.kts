@@ -1,5 +1,6 @@
 package no.chirico.commons.convention
 
+import java.io.File
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -42,7 +43,7 @@ val conventionArtifact = object {}.javaClass.protectionDomain?.codeSource?.locat
 
 dependencies {
     if (conventionArtifact != null) {
-        add("detektPlugins", files(java.io.File(conventionArtifact.toURI())))
+        add("detektPlugins", files(File(conventionArtifact.toURI())))
     }
 }
 
