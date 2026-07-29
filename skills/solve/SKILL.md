@@ -25,9 +25,9 @@ argument-hint: "--issue <issue-id> [--draft] [--auto]"
    details.
 4. Determine `<branch-name>` following the naming rules in `CONTRIBUTING.md`,
    then execute `git worktree add -b <branch-name> <worktree-path>` to create
-   the branch in an isolated worktree (see `skills/README.md#conventions` for
-   the `<worktree-path>` naming rule). Perform every subsequent step within
-   `<worktree-path>`.
+   the branch in an isolated worktree, where `<worktree-path>` is
+   `../<branch-name>` (a sibling of the repository root). Perform every
+   subsequent step within `<worktree-path>`.
 5. Analyze requirements. If sub-issues exist, implement them sequentially. If no
    sub-issues exist, break the issue down into logical technical steps.
 6. Execute the `commit` skill iteratively as each sub-issue or logical step is

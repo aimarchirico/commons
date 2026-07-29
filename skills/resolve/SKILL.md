@@ -23,9 +23,9 @@ argument-hint: "--pr <pr-number> [--auto]"
    if it was not provided.
 3. Execute `gh pr view <pr-number> --json headRefName` to resolve
    `<branch-name>`, then `git worktree add <worktree-path> <branch-name>` to
-   check the pull request's existing branch out into an isolated worktree (see
-   `skills/README.md#conventions` for the `<worktree-path>` naming rule).
-   Perform every subsequent step within `<worktree-path>`.
+   check the pull request's existing branch out into an isolated worktree,
+   where `<worktree-path>` is `../<branch-name>` (a sibling of the repository
+   root). Perform every subsequent step within `<worktree-path>`.
 4. Fetch the pull request's feedback:
 
    - Conversation comments via `gh pr view <pr-number> --json comments`.
