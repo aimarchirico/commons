@@ -1,6 +1,6 @@
 {
-  "name": "@aimarchirico/commons-docs",
-  "version": "2.1.1",
+  "name": "@aimarchirico/commons-github",
+  "version": "0.0.0",
   "private": false,
   "type": "module",
   "publishConfig": {
@@ -11,7 +11,7 @@
     "url": "https://github.com/aimarchirico/commons.git"
   },
   "bin": {
-    "commons-docs": "dist/bin/cli.js"
+    "commons-github": "dist/bin/cli.js"
   },
   "files": [
     "src/assets",
@@ -23,10 +23,13 @@
     "build": "tsc -p tsconfig.build.json",
     "prepublishOnly": "pnpm build"
   },
+  "dependencies": {
+    "@aimarchirico/commons-project": "workspace:^"
+  },
   "devDependencies": {
+    "@aimarchirico/commons-ts": "workspace:^",
     "@types/node": "^26.0.1",
     "eslint": "^9.39.2",
-    "typescript": "^6.0.3",
-    "@aimarchirico/commons-ts": "workspace:^"
+    "typescript": "^6.0.3"
   }
 }

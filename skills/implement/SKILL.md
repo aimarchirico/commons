@@ -10,8 +10,8 @@ Use when the user asks to implement an issue.
 
 ## Execution Steps
 
-1. Preflight: Verify that `CONTRIBUTING.md` exists in the repository root. If it
-   is missing, run `npx @aimarchirico/commons-docs materialize-templates` to
+1. Preflight: Verify that `.github/CONTRIBUTING.md` exists. If it
+   is missing, run `npx @aimarchirico/commons-github materialize-templates` to
    materialize the documentation.
 2. Parse the `--issue` flag to extract the `<issue-id>`. Prompt the user if the
    flag is missing.

@@ -113,21 +113,6 @@ jobs:
             NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
             PACKAGE='@aimarchirico/commons-cloudflare'
 
-  publish-commons-docs:
-    name: Publish commons-docs
-    needs: release-please
-    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-docs')
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: ./.github/actions/node-task
-        with:
-          command: npm:publish
-          node_cache_path: npm/pnpm-lock.yaml
-          task_env: |
-            NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
-            PACKAGE='@aimarchirico/commons-docs'
-
   publish-commons-expo:
     name: Publish commons-expo
     needs: release-please
@@ -158,6 +143,21 @@ jobs:
             NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
             PACKAGE='@aimarchirico/commons-firebase-client'
 
+  publish-commons-github:
+    name: Publish commons-github
+    needs: release-please
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-github')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/node-task
+        with:
+          command: npm:publish
+          node_cache_path: npm/pnpm-lock.yaml
+          task_env: |
+            NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+            PACKAGE='@aimarchirico/commons-github'
+
   publish-commons-google-signin:
     name: Publish commons-google-signin
     needs: release-please
@@ -187,6 +187,21 @@ jobs:
           task_env: |
             NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
             PACKAGE='@aimarchirico/commons-openapi'
+
+  publish-commons-project:
+    name: Publish commons-project
+    needs: release-please
+    if: contains(fromJSON(needs.release-please.outputs.paths_released), 'npm/packages/commons-project')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/node-task
+        with:
+          command: npm:publish
+          node_cache_path: npm/pnpm-lock.yaml
+          task_env: |
+            NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+            PACKAGE='@aimarchirico/commons-project'
 
   publish-commons-ts:
     name: Publish commons-ts

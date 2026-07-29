@@ -56,3 +56,51 @@ graph LR
 ├── docs/       # system-level documentation
 └── .github/    # CI/release workflows and issue/PR templates
 ```
+
+## Provisioning Flow
+
+Alongside the libraries and configs it publishes, Commons publishes CLI commands
+that provision the external resources a newly scaffolded project needs. The
+division of responsibility is deliberate: Commons owns the mechanics and stays
+generic, while the downstream repository owns every project-specific value and
+the order the commands run in.
+
+No domain name, account identifier, tunnel identifier, policy identifier,
+naming convention, or consuming-repository path appears in any command. Each
+takes no arguments, reads its inputs from the environment, names every missing
+variable at once, and reports each resource as created, updated, or already
+present so a re-run reads as a summary in which nothing changed. A step only a
+human can take is reported as action required, which is distinct from a failure.
+Commands whose output later steps consume emit it for the caller to chain
+onward.
+
+```mermaid
+graph LR
+    subgraph Downstream["Downstream repository"]
+        config["project config<br/>+ rename manifest"]
+        orchestrator["setup task<br/>(orchestration + values)"]
+    end
+
+    subgraph Commands["Commons provisioning commands"]
+        project["commons-project<br/>rename-project"]
+        github["commons-github<br/>project, environments,<br/>variables, secrets"]
+        cloudflare["commons-cloudflare<br/>pages, tunnel route,<br/>service token"]
+        expo["commons-expo<br/>project, keystore import"]
+    end
+
+    resources["External resources<br/>(GitHub · Cloudflare · EAS)"]
+
+    config --> orchestrator
+    orchestrator -->|env| project
+    orchestrator -->|env| github
+    orchestrator -->|env| cloudflare
+    orchestrator -->|env| expo
+    project --> resources
+    github --> resources
+    cloudflare --> resources
+    expo --> resources
+    cloudflare -.->|emitted values| orchestrator
+    expo -.->|emitted values| orchestrator
+```
+
+Command and variable reference: [`npm/README.md`](../npm/README.md).
