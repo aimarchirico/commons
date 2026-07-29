@@ -74,7 +74,10 @@ The underlying commands are `./gradlew build`, `check`, and `ktfmtFormat`.
   their own.
 - **Documentation** — every public class, function, and property needs a KDoc
   block. Overridden and protected members are exempt, so an implementation never
-  has to repeat its supertype.
+  has to repeat its supertype. Nested and inner declarations count too, since
+  they are public by default in Kotlin. Any KDoc present is also checked
+  against the actual signature (`OutdatedDocumentation`), so a stale `@param`
+  is caught even on members that were never required to be documented.
 - **Comments** — only KDoc blocks are allowed (`commons/NonDocComment`). Line and
   block comments are rejected wherever they appear, on their own line or trailing
   code. The rule reads lexer tokens rather than text, so delimiters inside string
