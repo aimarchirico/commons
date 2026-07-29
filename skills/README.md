@@ -17,6 +17,7 @@ skills/
 ├── docs/SKILL.md        # update project documentation
 ├── issues/SKILL.md      # create hierarchical issues
 ├── pr/SKILL.md          # create a standardized pull request
+├── resolve/SKILL.md     # orchestrate the lifecycle from PR review feedback
 └── solve/SKILL.md       # orchestrate the lifecycle from an existing issue
 ```
 

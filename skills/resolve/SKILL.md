@@ -1,0 +1,42 @@
+---
+name: resolve
+description:
+  Orchestrate the development lifecycle starting from an existing pull request's
+  review feedback
+---
+
+## When to Use
+
+Use when the user asks to resolve or address feedback on an existing pull
+request.
+
+## Execution Steps
+
+1. Preflight: Verify that `CONTRIBUTING.md` exists in the repository root. If it
+   is missing, run `npx @aimarchirico/commons-docs materialize-templates` to
+   materialize the documentation.
+2. Parse the `--pr` flag to extract the `<pr-number>`. Prompt the user if the
+   flag is missing.
+3. Execute `gh pr view <pr-number> --json headRefName` and `git checkout
+   <branch-name>` to switch to the pull request's existing branch.
+4. Fetch the pull request's feedback:
+
+   - Conversation comments via `gh pr view <pr-number> --json comments`.
+   - Line/file review comments via
+     `gh api repos/{owner}/{repo}/pulls/<pr-number>/comments`.
+
+5. Investigate and draft a solution addressing each piece of feedback.
+6. Present the proposed changes to the user, and wait for explicit user
+   approval.
+7. Apply the approved fixes, executing the `commit` skill iteratively as each
+   fix is completed.
+8. Execute `git push` to push the commits to the pull request's existing
+   remote branch.
+9. Reply to each resolved line/file review comment with a concise, resolving
+   reply.
+10. Post a single summarizing reply on the pull request's conversation thread,
+    incorporating any conversation-level (non-line) comments.
+
+## Supported Flags
+
+- `--pr`: The number of the existing pull request to improve.
