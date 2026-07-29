@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.0](https://github.com/aimarchirico/commons/compare/commons-cloudflare-v3.0.0...commons-cloudflare-v3.1.0) (2026-07-29)
+
+
+### Features
+
+* clean up package exports and make Cloudflare proxy a root export ([cf45ef8](https://github.com/aimarchirico/commons/commit/cf45ef8612bc7b37b81373a7bca618016cd91d8c))
+
 ## [3.0.0](https://github.com/aimarchirico/commons/compare/commons-cloudflare-v2.1.1...commons-cloudflare-v3.0.0) (2026-07-29)
 
 
