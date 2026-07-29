@@ -1,24 +1,24 @@
 ---
 name: solve
 description:
-  Orchestrate the development lifecycle starting from an existing issue
+  Orchestrate the development lifecycle starting from an existing issue. Use
+  when the user asks to solve or implement an issue.
 ---
 
-## When to Use
-
-Use when the user asks to solve or implement an issue.
-
-## Execution Steps
+## Workflow
 
 1. Preflight: Verify that `CONTRIBUTING.md` exists in the repository root. If it
    is missing, run `npx @aimarchirico/commons-docs materialize-templates` to
    materialize the documentation.
-2. Parse the `--issue` flag to extract the `<issue-id>`. Prompt the user if the
-   flag is missing.
+2. Extract `<issue-id>` from the `--issue` flag. Prompt the user if it was not
+   provided.
 3. Execute `gh issue view <issue-id> --json title,labels` to fetch the issue
    details.
-4. Execute `git checkout -b <branch-name>` following the naming rules in
-   `CONTRIBUTING.md`.
+4. Determine `<branch-name>` following the naming rules in `CONTRIBUTING.md`,
+   then execute `git worktree add -b <branch-name> <worktree-path>` to create
+   the branch in an isolated worktree (see `skills/README.md#conventions` for
+   the `<worktree-path>` naming rule). Perform every subsequent step within
+   `<worktree-path>`.
 5. Analyze requirements. If sub-issues exist, implement them sequentially. If no
    sub-issues exist, break the issue down into logical technical steps.
 6. Execute the `commit` skill iteratively as each sub-issue or logical step is

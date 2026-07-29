@@ -1,13 +1,11 @@
 ---
 name: pr
-description: Create a standardized pull request
+description:
+  Create a standardized pull request. Use when the user asks to create a
+  pull request.
 ---
 
-## When to Use
-
-Use when the user asks to create a pull request.
-
-## Execution Steps
+## Workflow
 
 1. Preflight: Verify that `CONTRIBUTING.md` exists in the repository root and
    `.github/PULL_REQUEST_TEMPLATE.md` exists. If any are missing, run
@@ -34,8 +32,8 @@ Use when the user asks to create a pull request.
 7. Present the proposed PR Title and Body, and wait for explicit user approval.
    Skip this step if the `--auto` flag is set, and proceed directly with the
    drafted title and body.
-8. Execute `gh pr create --title "<title>" --body "<body>"` (supporting
-   `--draft` to create a draft PR).
+8. Execute `gh pr create --title "<title>" --body "<body>"`, passing `--draft`
+   if the `--draft` flag was provided.
 
 ## Supported Flags
 

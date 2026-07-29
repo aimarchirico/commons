@@ -1,13 +1,11 @@
 ---
 name: docs
-description: Update project documentation
+description:
+  Update project documentation. Use when the user asks to update project
+  documentation.
 ---
 
-## When to Use
-
-Use when the user asks to update project documentation.
-
-## Execution Steps
+## Workflow
 
 1. Preflight: Verify that `CONTRIBUTING.md` exists in the repository root. If it
    is missing, run `npx @aimarchirico/commons-docs materialize-templates` to

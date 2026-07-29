@@ -1,13 +1,11 @@
 ---
 name: issues
-description: Create new hierarchical issues
+description:
+  Create new hierarchical issues. Use when the user asks to create new
+  issues.
 ---
 
-## When to Use
-
-Use when the user asks to create new issues.
-
-## Execution Steps
+## Workflow
 
 1. Preflight: Verify that `CONTRIBUTING.md` exists in the repository root and
    the `.github/ISSUE_TEMPLATE/` directory exists. If any are missing, run

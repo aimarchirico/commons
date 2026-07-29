@@ -1,14 +1,12 @@
 ---
 name: commit
-description: Analyze unstaged changes and create logical, atomic git commits
+description:
+  Analyze unstaged changes and create logical, atomic git commits. Use when
+  the user explicitly asks to commit unstaged changes, analyze git diffs for
+  committing, or run the commit skill.
 ---
 
-## When to Use
-
-Use when the user explicitly asks to commit unstaged changes, analyze git diffs
-for committing, or run the commit skill.
-
-## Execution Steps
+## Workflow
 
 1. Preflight: Verify that `CONTRIBUTING.md` exists in the repository root. If it
    is missing, run `npx @aimarchirico/commons-docs materialize-templates` to
