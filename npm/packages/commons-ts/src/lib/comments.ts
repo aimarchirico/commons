@@ -20,6 +20,7 @@ export const DIRECTIVE_PREFIXES = [
   'ts-ignore',
   'ts-nocheck',
   'typescript-eslint',
+  'x-release-please-version',
 ];
 
 const directivePattern = new RegExp(
