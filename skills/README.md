@@ -1,14 +1,15 @@
 # Skills
 
-Reusable agent skills covering the development lifecycle, consumed by downstream
-repositories through a skills-capable agent runtime.
+Reusable agent skills covering the development lifecycle, distributed to
+downstream repositories as the `commons` Claude Code plugin.
 
 ## Tech Stack
 
 - **Markdown** `SKILL.md` definitions (`name`/`description`/`argument-hint`
   frontmatter — `description` covers both what the skill does and when to use
   it — plus a `## Workflow` section).
-- Consumed by skills-capable agent runtimes (e.g. Claude Code).
+- Packaged as a Claude Code plugin (`.claude-plugin/plugin.json` at the
+  repository root).
 
 ## Folder Structure
 
@@ -32,11 +33,12 @@ None.
 
 ## Local Development
 
-Edit the relevant `SKILL.md`. Add a skill to a consumer repository with the
-skills CLI:
+Edit the relevant `SKILL.md`. Consumers add the plugin once and get every
+skill in this directory:
 
 ```sh
-npx skills add aimarchirico/commons --skill <name>
+/plugin marketplace add aimarchirico/commons
+/plugin install commons
 ```
 
 ## Code Quality
@@ -46,6 +48,7 @@ Markdown is linted with the shared `markdownlint` config via `task docs:check`
 
 ## Deployment
 
-Skills are distributed directly from this repository — there is no publish
-pipeline. Consumers pull a skill on demand with the skills CLI, so changes are
-available as soon as they are merged.
+Skills are distributed directly from this repository as a Claude Code plugin
+— there is no separate publish pipeline. `plugin.json` sets no `version`, so
+every merged commit is a new version; consumers pick it up on their next
+`/plugin marketplace update` or background auto-update.
