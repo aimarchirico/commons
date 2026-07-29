@@ -12,6 +12,7 @@ overrides:
   - filter:
       - '**/SKILL.md'
       - '**/PULL_REQUEST_TEMPLATE.md'
+      - 'plugin/agents/*.md'
     config:
       MD041: false
     combine: merge

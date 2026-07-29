@@ -34,7 +34,8 @@ Implementation-level setup and usage live in each subsystem's README:
 - [`maven/`](maven/README.md) — Kotlin backend modules and the convention plugin.
 - [`npm/`](npm/README.md) — frontend configuration packages and the API CLI.
 - [`tools/`](tools/README.md) — shared linting configs and release tooling.
-- [`skills/`](skills/README.md) — agent skills.
+- [`plugin/`](plugin/README.md) — the `commons` Claude Code plugin (skills
+  and agents).
 - [`.github/actions/`](.github/actions/README.md) — shared GitHub Actions for
   CI/CD workflows.
 

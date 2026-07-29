@@ -15,7 +15,7 @@ graph LR
         maven_src["maven/<br/>Kotlin modules"]
         npm_src["npm/<br/>config packages + CLI"]
         tools_src["tools/<br/>linting + release config"]
-        skills["skills/<br/>agent skills"]
+        plugin["plugin/<br/>agent skills"]
     end
 
     rp["Release Please<br/>(GitHub Actions)"]
@@ -32,18 +32,18 @@ graph LR
 
     maven_reg -->|Gradle dependency| consumers
     npm_reg -->|npm dependency| consumers
-    skills -->|skills add| consumers
+    plugin -->|plugin install| consumers
 ```
 
 ## Infrastructure Overview
 
-| Layer             | Technology                                               | Hosting                          |
-| :---------------- | :------------------------------------------------------- | :------------------------------- |
-| Backend libraries | Java 25 · Kotlin 2.4 · Gradle 9.6 · Spring Boot 4.1      | GitHub Packages (Maven registry) |
-| Frontend configs  | Node 20+ · PNPM 11.9 · TypeScript 6 · ESLint 9 · Turbo 2 | GitHub Packages (npm registry)   |
-| Tooling configs   | PNPM 11.9 · markdownlint-cli2 · commitlint               | `tools/` (not published)         |
-| Agent skills      | Markdown `SKILL.md`                                      | GitHub repository (`skills add`) |
-| CI/CD             | GitHub Actions · Release Please                          | GitHub-hosted runners            |
+| Layer             | Technology                                               | Hosting                                |
+| :---------------- | :------------------------------------------------------- | :------------------------------------- |
+| Backend libraries | Java 25 · Kotlin 2.4 · Gradle 9.6 · Spring Boot 4.1      | GitHub Packages (Maven registry)       |
+| Frontend configs  | Node 20+ · PNPM 11.9 · TypeScript 6 · ESLint 9 · Turbo 2 | GitHub Packages (npm registry)         |
+| Tooling configs   | PNPM 11.9 · markdownlint-cli2 · commitlint               | `tools/` (not published)               |
+| Agent skills      | Markdown `SKILL.md`                                      | GitHub repository (Claude Code plugin) |
+| CI/CD             | GitHub Actions · Release Please                          | GitHub-hosted runners                  |
 
 ## Project Structure
 
@@ -52,7 +52,7 @@ graph LR
 ├── maven/      # Kotlin backend modules and the Gradle convention plugin
 ├── npm/        # frontend configuration packages and the API CLI
 ├── tools/      # shared linting configs, commitlint, and release-please config
-├── skills/     # agent skills
+├── plugin/     # Claude Code plugin (skills/, agents/), the only tree consumers install
 ├── docs/       # system-level documentation
 └── .github/    # CI/release workflows and issue/PR templates
 ```
