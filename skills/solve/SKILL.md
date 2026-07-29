@@ -1,12 +1,12 @@
 ---
-name: implement
+name: solve
 description:
   Orchestrate the development lifecycle starting from an existing issue
 ---
 
 ## When to Use
 
-Use when the user asks to implement an issue.
+Use when the user asks to solve or implement an issue.
 
 ## Execution Steps
 

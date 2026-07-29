@@ -15,9 +15,9 @@ repositories through a skills-capable agent runtime.
 skills/
 ├── commit/SKILL.md      # create logical, atomic commits
 ├── docs/SKILL.md        # update project documentation
-├── implement/SKILL.md   # orchestrate the lifecycle from an existing issue
 ├── issues/SKILL.md      # create hierarchical issues
-└── pr/SKILL.md          # create a standardized pull request
+├── pr/SKILL.md          # create a standardized pull request
+└── solve/SKILL.md       # orchestrate the lifecycle from an existing issue
 ```
 
 Each skill is a self-contained directory holding a single `SKILL.md`. Skills
