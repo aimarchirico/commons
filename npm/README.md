@@ -31,17 +31,17 @@ npm/
 └── turbo.json             # check/fix task pipeline
 ```
 
-| Package                                 | Provides                                                                                                               |
-| :-------------------------------------- | :--------------------------------------------------------------------------------------------------------------------- |
-| `@aimarchirico/commons-ts`              | `./eslint`, `./tsconfig.json` — base TypeScript config.                                                                |
-| `@aimarchirico/commons-expo`            | `./eslint`, `./tsconfig.json` config + `commons-expo build-android`, `create-project` and `import-keystore` bins.      |
-| `@aimarchirico/commons-project`         | root exports (`env`, `report`, `outputs`, `cli`, `git` helpers) + `commons-project rename-project` bin.                |
+| Package                                 | Provides                                                                                             |
+| :-------------------------------------- | :--------------------------------------------------------------------------------------------------- |
+| `@aimarchirico/commons-ts`              | `./eslint`, `./tsconfig.json` — base TypeScript config.                                              |
+| `@aimarchirico/commons-expo`            | `./eslint`, `./tsconfig.json` config + `commons-expo build-android`, `create-project` and `import-keystore` bins. |
+| `@aimarchirico/commons-project`         | root exports (`env`, `report`, `outputs`, `cli`, `git` helpers) + `commons-project rename-project` bin. |
 | `@aimarchirico/commons-github`          | `commons-github create-project`, `create-environments`, `sync-variables`, `set-secrets`, `materialize-templates` bins. |
-| `@aimarchirico/commons-tools`           | `./markdownlint`, `./commitlint` configs.                                                                              |
-| `@aimarchirico/commons-openapi`         | `commons-openapi generate-client` bin (`dist/bin/cli.js`) generating the OpenAPI client and docs.                      |
-| `@aimarchirico/commons-cloudflare`      | `./proxy` Pages Function + `commons-cloudflare fix-assets` and provisioning bins.                                      |
-| `@aimarchirico/commons-firebase-client` | Firebase client config and `commons-firebase-client decode-google-services` bin.                                       |
-| `@aimarchirico/commons-google-signin`   | Google Sign-In React context and authentication hooks.                                                                 |
+| `@aimarchirico/commons-tools`           | `./markdownlint`, `./commitlint` configs.                                                            |
+| `@aimarchirico/commons-openapi`         | `commons-openapi generate-client` bin (`dist/bin/cli.js`) generating the OpenAPI client and docs.    |
+| `@aimarchirico/commons-cloudflare`      | `./proxy` Pages Function + `commons-cloudflare fix-assets` and provisioning bins.                    |
+| `@aimarchirico/commons-firebase-client` | Firebase client config and `commons-firebase-client decode-google-services` bin.                     |
+| `@aimarchirico/commons-google-signin`   | Google Sign-In React context and authentication hooks.                                               |
 
 `commons-expo`, `commons-tools`, and `commons-openapi` extend
 `commons-ts` as a `workspace:*` dependency, so `commons-ts` is the base every
@@ -198,12 +198,12 @@ directory's `.github/`, overwriting anything already there.
 
 ### `commons-cloudflare create-pages-project`
 
-| Key                       | Required | Purpose                                               |
-| :------------------------ | :------- | :---------------------------------------------------- |
-| `CLOUDFLARE_API_TOKEN`    | Yes      | Token with Pages write and DNS scopes.                |
-| `PAGES_PROJECT_NAME`      | Yes      | Pages project to create.                              |
-| `PAGES_CUSTOM_DOMAIN`     | Yes      | Custom domain to attach.                              |
-| `CLOUDFLARE_ACCOUNT_ID`   | No       | Account. Derived when the token sees exactly one.     |
+| Key                     | Required | Purpose                                           |
+| :---------------------- | :------- | :------------------------------------------------ |
+| `CLOUDFLARE_API_TOKEN`  | Yes      | Token with Pages write and DNS scopes.            |
+| `PAGES_PROJECT_NAME`    | Yes      | Pages project to create.                          |
+| `PAGES_CUSTOM_DOMAIN`   | Yes      | Custom domain to attach.                          |
+| `CLOUDFLARE_ACCOUNT_ID` | No       | Account. Derived when the token sees exactly one. |
 
 The production branch is derived from the remote's default branch, falling
 back to `main` when there is no remote to ask.
@@ -213,12 +213,12 @@ reports each as created or already present.
 
 ### `commons-cloudflare set-pages-env`
 
-| Key                     | Required | Purpose                                                |
-| :---------------------- | :------- | :----------------------------------------------------- |
-| `CLOUDFLARE_API_TOKEN`  | Yes      | Token with Pages write scope.                          |
-| `PAGES_PROJECT_NAME`    | Yes      | Pages project to configure.                            |
-| `PAGES_VARIABLES`       | Yes      | Names of the environment variables to push.            |
-| `CLOUDFLARE_ACCOUNT_ID` | No       | Account. Derived when the token sees exactly one.      |
+| Key                     | Required | Purpose                                           |
+| :---------------------- | :------- | :------------------------------------------------ |
+| `CLOUDFLARE_API_TOKEN`  | Yes      | Token with Pages write scope.                     |
+| `PAGES_PROJECT_NAME`    | Yes      | Pages project to configure.                       |
+| `PAGES_VARIABLES`       | Yes      | Names of the environment variables to push.       |
+| `CLOUDFLARE_ACCOUNT_ID` | No       | Account. Derived when the token sees exactly one. |
 
 Always targets the `production` deployment config. Reads current values first
 and reports each variable as created, updated, or already correct.
@@ -231,11 +231,11 @@ and reports each variable as created, updated, or already correct.
 | `TUNNEL_ID`             | Yes      | Existing tunnel to add the rule to.                  |
 | `TUNNEL_HOSTNAME`       | Yes      | Hostname to route.                                   |
 | `TUNNEL_SERVICE`        | Yes      | Local service address, e.g. `http://localhost:8082`. |
-| `TUNNEL_PATH`           | No       | Path to scope the rule to, e.g. `bios`.               |
+| `TUNNEL_PATH`           | No       | Path to scope the rule to, e.g. `app`.               |
 | `CLOUDFLARE_ACCOUNT_ID` | No       | Account. Derived when the token sees exactly one.    |
 
 A hostname with no `TUNNEL_PATH` matches every path, so one hostname can front
-several backends by giving each a distinct `TUNNEL_PATH` (e.g. `api.example.com/bios`
+several backends by giving each a distinct `TUNNEL_PATH` (e.g. `api.example.com/app`
 and `api.example.com/other`, each a separate invocation with its own `TUNNEL_SERVICE`).
 The rule is keyed on the hostname+path pair; inserts before the catch-all (and
 before any less-specific rule for the same hostname) and preserves every
