@@ -3,7 +3,7 @@ import eslintPluginImport from 'eslint-plugin-import';
 import eslintPluginJsdoc from 'eslint-plugin-jsdoc';
 import eslintPluginJsonc from 'eslint-plugin-jsonc';
 import gts from 'gts';
-import {commonsPlugin} from './comments';
+import {commonsPlugin} from './commons-plugin';
 import {execFileSync} from 'node:child_process';
 import gtsPrettier from 'gts/.prettierrc.json';
 
@@ -39,14 +39,14 @@ export default [
   {
     plugins: {
       'check-file': checkFile,
-      import: eslintPluginImport,
     },
     rules: {
       'prettier/prettier': ['error', gtsPrettier],
-      'import/no-default-export': ['error'],
       'check-file/filename-naming-convention': [
         'error',
-        {'**/*.{ts,tsx,json}': 'KEBAB_CASE'},
+        {
+          '**/*.{ts,tsx,mts,cts,js,jsx,mjs,cjs,json,jsonc,json5}': 'KEBAB_CASE',
+        },
       ],
       'max-lines': [
         'error',
@@ -61,11 +61,13 @@ export default [
   {
     files: ['**/*.{ts,tsx,mts,cts,js,jsx,mjs,cjs}'],
     plugins: {
+      import: eslintPluginImport,
       commons: commonsPlugin,
       jsdoc: eslintPluginJsdoc,
     },
     rules: {
-      'commons/no-non-doc-comment': ['error'],
+      'import/no-default-export': ['error'],
+      'commons/no-non-jsdoc-comment': ['error'],
       'jsdoc/require-jsdoc': [
         'error',
         {
@@ -80,6 +82,12 @@ export default [
           enableFixer: false,
         },
       ],
+      'jsdoc/check-param-names': ['error'],
+      'jsdoc/check-tag-names': ['error'],
+      'jsdoc/check-types': ['error'],
+      'jsdoc/require-param': ['error'],
+      'jsdoc/require-returns': ['error'],
+      'jsdoc/valid-types': ['error'],
     },
   },
   {
