@@ -1,6 +1,6 @@
 {
-  "name": "@aimarchirico/commons-cloudflare",
-  "version": "2.1.1",
+  "name": "@aimarchirico/commons-project",
+  "version": "0.0.0",
   "private": false,
   "type": "module",
   "publishConfig": {
@@ -11,10 +11,13 @@
     "url": "https://github.com/aimarchirico/commons.git"
   },
   "exports": {
-    "./proxy": "./src/services/proxy.ts"
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./dist/index.js"
+    }
   },
   "bin": {
-    "commons-cloudflare": "dist/bin/cli.js"
+    "commons-project": "dist/bin/cli.js"
   },
   "files": [
     "dist",
@@ -27,14 +30,11 @@
     "prepublishOnly": "pnpm build"
   },
   "dependencies": {
-    "@aimarchirico/commons-project": "workspace:^",
-    "replace-in-file": "^8.4.0",
-    "shelljs": "^0.10.0"
+    "tinyglobby": "^0.2.15"
   },
   "devDependencies": {
     "@aimarchirico/commons-ts": "workspace:^",
     "@types/node": "^26.0.1",
-    "@types/shelljs": "^0.8.17",
     "eslint": "^9.39.2",
     "typescript": "^6.0.3"
   }

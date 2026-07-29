@@ -9,14 +9,14 @@ const __dirname = path.dirname(__filename);
 
 const packageRoot = path.resolve(__dirname, '..', '..');
 const cwd = process.cwd();
+const githubDir = path.join(cwd, '.github');
 
+fs.mkdirSync(githubDir, {recursive: true});
 fs.copyFileSync(
   path.join(packageRoot, 'src', 'assets', 'CONTRIBUTING.md'),
-  path.join(cwd, 'CONTRIBUTING.md'),
+  path.join(githubDir, 'CONTRIBUTING.md'),
 );
-fs.cpSync(
-  path.join(packageRoot, 'src', 'assets', 'github'),
-  path.join(cwd, '.github'),
-  {recursive: true},
-);
+fs.cpSync(path.join(packageRoot, 'src', 'assets', 'github'), githubDir, {
+  recursive: true,
+});
 console.log('Materialized CONTRIBUTING.md and .github templates.');
