@@ -53,6 +53,7 @@ graph LR
 ├── npm/        # frontend configuration packages and the API CLI
 ├── tools/      # shared linting configs, commitlint, and release-please config
 ├── skills/     # agent skills
+├── agents/     # subagents skills delegate to (planner, worktree-runner)
 ├── docs/       # system-level documentation
 └── .github/    # CI/release workflows and issue/PR templates
 ```

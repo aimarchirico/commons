@@ -6,10 +6,13 @@ downstream repositories as the `commons` Claude Code plugin.
 ## Tech Stack
 
 - **Markdown** `SKILL.md` definitions (`name`/`description`/`argument-hint`
-  frontmatter — `description` covers both what the skill does and when to use
-  it — plus a `## Workflow` section).
+  frontmatter, where `description` covers both what the skill does and when
+  to use it, plus a `## Workflow` section).
 - Packaged as a Claude Code plugin (`.claude-plugin/plugin.json` and
   `.claude-plugin/marketplace.json` at the repository root).
+- `solve` and `resolve` delegate to the `planner` and `worktree-runner`
+  agents in [`../agents/`](../agents), a sibling directory auto-discovered by
+  the same plugin.
 
 ## Folder Structure
 
@@ -25,7 +28,8 @@ skills/
 
 Each skill is a self-contained directory holding a single `SKILL.md`. Skills
 rely on the conventions materialized by `@aimarchirico/commons-docs`
-(`CONTRIBUTING.md` and the GitHub templates) rather than on each other.
+(`CONTRIBUTING.md` and the GitHub templates) rather than on each other, except
+for `solve`/`resolve` delegating to the shared agents noted above.
 
 ## Environment Variables
 
@@ -48,7 +52,7 @@ Markdown is linted with the shared `markdownlint` config via `task docs:check`
 
 ## Deployment
 
-Skills are distributed directly from this repository as a Claude Code plugin
-— there is no separate publish pipeline. `plugin.json` sets no `version`, so
+Skills are distributed directly from this repository as a Claude Code plugin,
+there is no separate publish pipeline. `plugin.json` sets no `version`, so
 every merged commit is a new version; consumers pick it up on their next
 `/plugin marketplace update` or background auto-update.

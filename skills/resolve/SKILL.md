@@ -9,10 +9,10 @@ argument-hint: "--pr <pr-number> [--auto]"
 
 ## Arguments
 
-| Flag     | Required | Description                                                                                                          |
-| :------- | :------- | :------------------------------------------------------------------------------------------------------------------- |
-| `--pr`   | Yes      | The number of the existing pull request to improve.                                                                  |
-| `--auto` | No       | Skip every approval prompt in this skill and the `commit` skill it invokes, running the full lifecycle autonomously. |
+| Flag     | Required | Description                                                                                             |
+| :------- | :------- | :------------------------------------------------------------------------------------------------------ |
+| `--pr`   | Yes      | The number of the existing pull request to improve.                                                     |
+| `--auto` | No       | Skip the plan-approval and reply-approval steps in this skill, running the full lifecycle autonomously. |
 
 ## Workflow
 
@@ -25,31 +25,28 @@ argument-hint: "--pr <pr-number> [--auto]"
    `<branch-name>`, then `git worktree add <worktree-path> <branch-name>` to
    check the pull request's existing branch out into an isolated worktree,
    where `<worktree-path>` is `../<branch-name>` (a sibling of the repository
-   root). Perform every subsequent step within `<worktree-path>`.
-4. Fetch the pull request's feedback:
-
-   - Conversation comments via `gh pr view <pr-number> --json comments`.
-   - Line/file review comments via
-     `gh api repos/{owner}/{repo}/pulls/<pr-number>/comments`.
-
-5. Investigate and draft a solution addressing each piece of feedback.
-6. Present the proposed changes to the user, and wait for explicit user
-   approval. Skip this step if the `--auto` flag is set, and proceed directly
-   with the proposed changes.
-7. Apply the approved fixes, executing the `commit` skill iteratively as each
-   fix is completed, passing the `--auto` flag through if it was provided by
-   the user.
-8. Execute `git push` to push the commits to the pull request's existing
+   root).
+4. Delegate to the `planner` agent, passing `<pr-number>` and
+   `<worktree-path>`, to fetch the pull request's feedback (conversation and
+   line/file comments) and draft a fix plan mapping each piece of feedback to
+   the fix addressing it.
+5. Present the drafted plan, and wait for explicit user approval. Skip this
+   step if the `--auto` flag is set, and proceed directly with the drafted
+   plan.
+6. Delegate to the `worktree-runner` agent, passing the approved plan and
+   `<worktree-path>`, to implement it (it invokes `commons:commit` and
+   `commons:docs` itself as it goes).
+7. Execute `git push` to push the commits to the pull request's existing
    remote branch.
-9. Draft a concise, resolving reply for each resolved line/file review
+8. Draft a concise, resolving reply for each resolved line/file review
    comment, and a single summarizing reply for the pull request's
    conversation thread incorporating any conversation-level (non-line)
-   comments.
-10. Present the drafted replies, and wait for explicit user approval. Skip
-    this step if the `--auto` flag is set, and proceed directly with posting
-    them.
-11. Post each approved line/file reply, then post the approved summarizing
+   comments, using the planner's feedback-to-fix mapping.
+9. Present the drafted replies, and wait for explicit user approval. Skip
+   this step if the `--auto` flag is set, and proceed directly with posting
+   them.
+10. Post each approved line/file reply, then post the approved summarizing
     reply on the conversation thread.
-12. Execute `git worktree remove <worktree-path>` to remove the isolated
+11. Execute `git worktree remove <worktree-path>` to remove the isolated
     worktree; `<branch-name>` and its commits remain intact in the repository
     and on the remote.

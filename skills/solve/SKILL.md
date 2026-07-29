@@ -8,11 +8,11 @@ argument-hint: "--issue <issue-id> [--draft] [--auto]"
 
 ## Arguments
 
-| Flag      | Required | Description                                                                                                                             |
-| :-------- | :------- | :-------------------------------------------------------------------------------------------------------------------------------------- |
-| `--issue` | Yes      | The ID of the existing GitHub issue.                                                                                                    |
-| `--draft` | No       | Create the resulting pull request as a draft.                                                                                           |
-| `--auto`  | No       | Skip every approval prompt in this skill and the `commit`, `docs`, and `pr` skills it invokes, running the full lifecycle autonomously. |
+| Flag      | Required | Description                                                                                                                  |
+| :-------- | :------- | :--------------------------------------------------------------------------------------------------------------------------- |
+| `--issue` | Yes      | The ID of the existing GitHub issue.                                                                                         |
+| `--draft` | No       | Create the resulting pull request as a draft.                                                                                |
+| `--auto`  | No       | Skip the plan-approval step in this skill and the `pr` skill's own approval prompt, running the full lifecycle autonomously. |
 
 ## Workflow
 
@@ -26,23 +26,20 @@ argument-hint: "--issue <issue-id> [--draft] [--auto]"
 4. Determine `<branch-name>` following the naming rules in `CONTRIBUTING.md`,
    then execute `git worktree add -b <branch-name> <worktree-path>` to create
    the branch in an isolated worktree, where `<worktree-path>` is
-   `../<branch-name>` (a sibling of the repository root). Perform every
-   subsequent step within `<worktree-path>`.
-5. Analyze requirements. If sub-issues exist, implement them sequentially. If no
-   sub-issues exist, break the issue down into logical technical steps.
-6. Execute the `commit` skill iteratively as each sub-issue or logical step is
-   completed, passing the `--auto` flag through if it was provided by the
-   user.
-7. Execute the `docs` skill to update project documentation once implementation
-   is complete, passing the `--auto` flag through if it was provided by the
-   user.
-8. Execute the `commit` skill one final time to commit the documentation
-   updates, passing the `--auto` flag through if it was provided by the user.
-9. Execute `git push -u origin <branch-name>` to push the commits to the remote
+   `../<branch-name>` (a sibling of the repository root).
+5. Delegate to the `planner` agent, passing the issue details and
+   `<worktree-path>`, to draft an implementation plan.
+6. Present the drafted plan, and wait for explicit user approval. Skip this
+   step if the `--auto` flag is set, and proceed directly with the drafted
+   plan.
+7. Delegate to the `worktree-runner` agent, passing the approved plan and
+   `<worktree-path>`, to implement it (it invokes `commons:commit` and
+   `commons:docs` itself as it goes).
+8. Execute `git push -u origin <branch-name>` to push the commits to the remote
    repository.
-10. Execute the `pr` skill to open a pull request. Pass the `--draft` and
-    `--auto` flags through to the `pr` skill if they were provided by the
-    user.
-11. Execute `git worktree remove <worktree-path>` to remove the isolated
+9. Invoke the `commons:pr` skill to open a pull request (its own title/body
+   approval is the final review). Pass the `--draft` and `--auto` flags
+   through if they were provided by the user.
+10. Execute `git worktree remove <worktree-path>` to remove the isolated
     worktree; `<branch-name>` and its commits remain intact in the repository
     and on the remote.
