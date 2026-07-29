@@ -19,6 +19,7 @@ hypersistence-utils = { module = "io.hypersistence:hypersistence-utils-hibernate
 springdoc-openapi = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc" }
 ktfmt-gradle-plugin = { module = "com.ncorti.ktfmt.gradle:com.ncorti.ktfmt.gradle.gradle.plugin", version.ref = "ktfmt" }
 detekt-gradle-plugin = { module = "dev.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+detekt-api = { module = "dev.detekt:detekt-api", version.ref = "detekt" }
 archunit = { module = "com.tngtech.archunit:archunit-junit5", version.ref = "archunit" }
 firebase-admin = { module = "com.google.firebase:firebase-admin", version.ref = "firebase-admin" }
 mapstruct = { module = "org.mapstruct:mapstruct", version.ref = "mapstruct" }

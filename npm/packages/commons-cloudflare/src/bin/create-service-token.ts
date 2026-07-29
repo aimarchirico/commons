@@ -62,9 +62,11 @@ const run = async (): Promise<void> => {
   );
 
   if (existing) {
-    // A service token's secret is returned only at creation, so an existing
-    // token is left alone: reuse the stored secret, or rotate deliberately by
-    // deleting the token first.
+    /**
+     * A service token's secret is returned only at creation, so an existing
+     * token is left alone: reuse the stored secret, or rotate deliberately by
+     * deleting the token first.
+     */
     report(
       `service token ${name}`,
       'present',

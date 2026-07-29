@@ -19,6 +19,13 @@ const argv = (command: Command): string[] =>
 const name = (command: Command): string =>
   typeof command === 'string' ? command : command.name;
 
+/**
+ * Run a command and return its exit code and stdout/stderr output.
+ * @param command The command name or command config.
+ * @param args The arguments to pass.
+ * @param input Optional stdin input.
+ * @returns The command execution results.
+ */
 export const run = (
   command: Command,
   args: string[],
@@ -42,6 +49,13 @@ export const run = (
   };
 };
 
+/**
+ * Run a command and throw an error if the command fails (exit code not 0).
+ * @param command The command name or command config.
+ * @param args The arguments to pass.
+ * @param input Optional stdin input.
+ * @returns The stdout of the command.
+ */
 export const runOrThrow = (
   command: Command,
   args: string[],
@@ -56,6 +70,12 @@ export const runOrThrow = (
   return result.stdout;
 };
 
+/**
+ * Run a command, throw if it fails, and parse the stdout as JSON.
+ * @param command The command name or command config.
+ * @param args The arguments to pass.
+ * @returns The parsed JSON object of type T.
+ */
 export const runJson = <T>(command: Command, args: string[]): T =>
   JSON.parse(runOrThrow(command, args)) as T;
 
@@ -63,6 +83,9 @@ export const runJson = <T>(command: Command, args: string[]): T =>
  * Run a command with its streams attached to this process, for generators
  * whose progress output is the point. Nothing is captured, so the caller
  * learns only the exit status.
+ * @param command
+ * @param args
+ * @returns The process exit status.
  */
 export const runStreamed = (command: Command, args: string[]): number => {
   const [executable, ...prefix] = argv(command);
@@ -87,6 +110,10 @@ export const runStreamed = (command: Command, args: string[]): number => {
  *
  * The script is invoked through the current Node binary rather than executed
  * directly, which sidesteps both the shebang and the executable bit.
+ * @param from
+ * @param packageName
+ * @param binName
+ * @returns The command arguments if resolved, otherwise undefined.
  */
 export const packageBin = (
   from: string,
@@ -131,6 +158,11 @@ const isBelow = (found: number[], minimum: number[]): boolean => {
  * Assert a CLI is usable and recent enough. The output these commands parse is
  * version-specific, so a floor turns a confusing parse failure further in into
  * a message naming exactly what to install.
+ * @param command
+ * @param options
+ * @param options.minVersion
+ * @param options.installHint
+ * @param options.versionArgs
  */
 export const requireCli = (
   command: Command,
@@ -170,6 +202,13 @@ export const requireCli = (
  * that cannot be resolved means the install is incomplete rather than that the
  * tool lives elsewhere. Some generators also pay a real cost to answer
  * `--version`, which is reason enough not to ask them.
+ * @param options
+ * @param options.from
+ * @param options.package
+ * @param options.bin
+ * @param options.minVersion
+ * @param options.installHint
+ * @returns The resolved command.
  */
 export const resolveTool = (options: {
   from: string;

@@ -12,9 +12,14 @@ import {parseEnvironmentScopes, parseNames} from '../services/scopes.js';
 const env = resolveEnv([], ['GITHUB_SECRETS', 'GITHUB_ENVIRONMENT_SECRETS']);
 const {slug} = repoContext();
 
-// A secret's current value cannot be read back, so a secret is reported as
-// written rather than as unchanged, and an absent value is left alone instead
-// of overwriting a working one with an empty string.
+/**
+ * A secret's current value cannot be read back, so a secret is reported as
+ * written rather than as unchanged, and an absent value is left alone instead
+ * of overwriting a working one with an empty string.
+ * @param name The name of the secret.
+ * @param label The label for the secret.
+ * @param environment Optional environment name.
+ */
 const set = (name: string, label: string, environment?: string): void => {
   const value = process.env[name];
   if (value === undefined || value === '') {

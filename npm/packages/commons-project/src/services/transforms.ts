@@ -28,8 +28,19 @@ const TRANSFORMS: Record<string, (value: string) => string> = {
 
 export const TRANSFORM_NAMES = Object.keys(TRANSFORMS);
 
+/**
+ * Check if the given string is a valid transform name.
+ * @param name The name to check.
+ * @returns True if the name is a valid transform, false otherwise.
+ */
 export const isTransform = (name: string): boolean => name in TRANSFORMS;
 
+/**
+ * Apply the specified transform to the value.
+ * @param name The name of the transform.
+ * @param value The value to transform.
+ * @returns The transformed value.
+ */
 export const transform = (name: string, value: string): string => {
   const fn = TRANSFORMS[name];
   if (!fn) {

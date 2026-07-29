@@ -35,19 +35,23 @@ const env = resolveEnv([], ['ANDROID_KEYSTORE_BASE64']);
 const file = 'credentials.json';
 const resource = 'android signing key';
 
-// A keystore already in the environment is the finished state: the value came
-// from a store the build reads, and re-importing could only replace a working
-// signing key with a different one.
+/**
+ * A keystore already in the environment is the finished state: the value came
+ * from a store the build reads, and re-importing could only replace a working
+ * signing key with a different one.
+ */
 if (env.ANDROID_KEYSTORE_BASE64) {
   report(resource, 'present', 'ANDROID_KEYSTORE_BASE64 already set');
   printSummary('import-keystore');
   process.exit(0);
 }
 
-// eas-cli exposes keystore creation and download only through an interactive
-// menu, whose neighbouring entry deletes the keystore outright. Driving that
-// menu unattended is not worth the failure mode, so the menu is the operator's
-// to drive and the mechanical half is this command's.
+/**
+ * eas-cli exposes keystore creation and download only through an interactive
+ * menu, whose neighbouring entry deletes the keystore outright. Driving that
+ * menu unattended is not worth the failure mode, so the menu is the operator's
+ * to drive and the mechanical half is this command's.
+ */
 if (!fs.existsSync(file)) {
   instruct(resource, `no ${file} found`, STEPS);
   printSummary('import-keystore');
@@ -79,8 +83,10 @@ try {
   });
   report(resource, 'written', `imported from ${file}`);
 
-  // EAS remains the store of record, so the local copies are a transfer
-  // artefact. Leaving them behind is how a signing key ends up committed.
+  /**
+   * EAS remains the store of record, so the local copies are a transfer
+   * artefact. Leaving them behind is how a signing key ends up committed.
+   */
   fs.rmSync(keystorePath, {force: true});
   fs.rmSync(file, {force: true});
   const parent = path.dirname(keystorePath);

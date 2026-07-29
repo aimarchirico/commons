@@ -20,6 +20,8 @@ export type ApiClient = {
 /**
  * Minimal Cloudflare REST client. A missing resource resolves to undefined so
  * a command can distinguish "absent" from "failed".
+ * @param token
+ * @returns A Cloudflare API client.
  */
 export const api = (token: string): ApiClient => {
   const request = async (
@@ -76,6 +78,9 @@ export const api = (token: string): ApiClient => {
  * it, so the override only has to settle the ambiguous case — and an ambiguous
  * case fails rather than picking, since the wrong account is not a mistake a
  * re-run corrects.
+ * @param client
+ * @param override
+ * @returns The resolved account ID.
  */
 export const resolveAccount = async (
   client: ApiClient,

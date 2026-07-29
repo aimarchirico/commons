@@ -26,6 +26,13 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+/**
+ * Tracks the Firebase sign-in state and publishes it to the tree below.
+ *
+ * @param props - The component props.
+ * @param props.children - The subtree that consumes the auth context.
+ * @returns The provider wrapping `children`.
+ */
 export const AuthProvider = ({children}: {children: ReactNode}) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -75,6 +82,12 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
   );
 };
 
+/**
+ * Reads the auth context.
+ *
+ * @returns The current user, the loading flag, and the ID token getter.
+ * @throws If called outside an {@link AuthProvider}.
+ */
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {

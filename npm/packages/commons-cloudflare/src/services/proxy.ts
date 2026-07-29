@@ -1,14 +1,21 @@
-// Cloudflare Pages Function that reverse-proxies `/api/*` requests to the
-// backend defined by the `API_URL` environment variable. Consumer repos re-export
-// this from `functions/api/[[path]].ts`:
-//
-//   export { onRequest } from '@aimarchirico/commons-cloudflare/proxy';
-
 interface ProxyContext {
   env: {API_URL?: string; PROXY_SECRET?: string};
   request: Request;
 }
 
+/**
+ * Cloudflare Pages Function that reverse-proxies `/api/*` requests to the
+ * backend defined by the `API_URL` environment variable.
+ *
+ * Consumer repositories re-export this from `functions/api/[[path]].ts`:
+ *
+ * ```ts
+ * export {onRequest} from '@aimarchirico/commons-cloudflare/proxy';
+ * ```
+ *
+ * @param context The Pages Function context carrying the request and bindings.
+ * @returns The backend response, streamed back unchanged.
+ */
 export async function onRequest(context: ProxyContext): Promise<Response> {
   const apiUrl = context.env.API_URL;
 

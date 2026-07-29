@@ -22,6 +22,9 @@ type Pair = {from: string; to: string};
 /**
  * Derive the literal pairs a rule replaces. Longer literals go first so a
  * shorter variant cannot corrupt a longer one that contains it.
+ * @param replacement
+ * @param manifest
+ * @returns The derived replacement pairs.
  */
 const pairs = (
   replacement: ManifestReplacement,
@@ -45,6 +48,12 @@ const pairs = (
     .sort((a, b) => b.from.length - a.from.length);
 };
 
+/**
+ * Apply a replacement rule to the matched files.
+ * @param replacement The replacement config.
+ * @param manifest The project manifest.
+ * @returns The number of files changed.
+ */
 export const applyReplacement = async (
   replacement: ManifestReplacement,
   manifest: Manifest,
@@ -80,6 +89,12 @@ const pruneEmptyParents = (from: string, stopAt: string): void => {
   }
 };
 
+/**
+ * Move a file or directory.
+ * @param move The move instruction config.
+ * @param manifest The project manifest.
+ * @returns The status and final paths.
+ */
 export const applyMove = (
   move: ManifestMove,
   manifest: Manifest,
@@ -99,6 +114,11 @@ export const applyMove = (
   return {moved: true, from, to};
 };
 
+/**
+ * Delete a file or directory.
+ * @param target The target path to delete.
+ * @returns The outcome status.
+ */
 export const applyDelete = (target: string): 'deleted' | 'skipped' => {
   if (!fs.existsSync(target)) return 'skipped';
   fs.rmSync(target, {recursive: true, force: true});
