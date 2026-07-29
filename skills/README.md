@@ -15,7 +15,7 @@ repositories through a skills-capable agent runtime.
 - **Flags**: Declared via each skill's `argument-hint` frontmatter and parsed
   from `$ARGUMENTS`, the freeform arguments string passed when a skill is
   invoked (e.g. `--issue 123 --auto`). Each skill documents its individual
-  flags under a `## Supported Flags` section in its `SKILL.md`.
+  flags in an `## Arguments` table in its `SKILL.md`.
 - **Worktrees**: Skills that check out a branch (`resolve`, `solve`) do so in
   a dedicated git worktree at `<worktree-path>` = `../<branch-name>` (a
   sibling of the repository root) rather than switching the caller's current

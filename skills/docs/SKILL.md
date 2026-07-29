@@ -21,6 +21,8 @@ argument-hint: "[--auto]"
    with the proposed updates.
 4. Apply the edits.
 
-## Supported Flags
+## Arguments
 
-- `--auto`: Skip the approval step and apply the proposed updates directly.
+| Flag     | Required | Description                                                     |
+| :------- | :------- | :-------------------------------------------------------------- |
+| `--auto` | No       | Skip the approval step and apply the proposed updates directly. |

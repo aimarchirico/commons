@@ -36,9 +36,10 @@ argument-hint: "--issue <issue-id> [--draft] [--auto]"
     `--auto` flags through to the `pr` skill if they were provided by the
     user.
 
-## Supported Flags
+## Arguments
 
-- `--issue`: The ID of the existing GitHub issue.
-- `--draft`: Create the resulting pull request as a draft.
-- `--auto`: Skip every approval prompt in this skill and the `commit`, `docs`,
-  and `pr` skills it invokes, running the full lifecycle autonomously.
+| Flag      | Required | Description                                                                                                                             |
+| :-------- | :------- | :-------------------------------------------------------------------------------------------------------------------------------------- |
+| `--issue` | Yes      | The ID of the existing GitHub issue.                                                                                                    |
+| `--draft` | No       | Create the resulting pull request as a draft.                                                                                           |
+| `--auto`  | No       | Skip every approval prompt in this skill and the `commit`, `docs`, and `pr` skills it invokes, running the full lifecycle autonomously. |

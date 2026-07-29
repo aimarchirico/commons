@@ -23,6 +23,8 @@ argument-hint: "[--auto]"
 6. For each approved unit, execute `git add` for those specific files followed
    by `git commit -m` with the approved message.
 
-## Supported Flags
+## Arguments
 
-- `--auto`: Skip the approval step and commit the drafted plan directly.
+| Flag     | Required | Description                                                  |
+| :------- | :------- | :----------------------------------------------------------- |
+| `--auto` | No       | Skip the approval step and commit the drafted plan directly. |

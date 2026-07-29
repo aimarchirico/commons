@@ -39,8 +39,9 @@ argument-hint: "--pr <pr-number> [--auto]"
 10. Post a single summarizing reply on the pull request's conversation thread,
     incorporating any conversation-level (non-line) comments.
 
-## Supported Flags
+## Arguments
 
-- `--pr`: The number of the existing pull request to improve.
-- `--auto`: Skip every approval prompt in this skill and the `commit` skill it
-  invokes, running the full lifecycle autonomously.
+| Flag     | Required | Description                                                                                                          |
+| :------- | :------- | :------------------------------------------------------------------------------------------------------------------- |
+| `--pr`   | Yes      | The number of the existing pull request to improve.                                                                  |
+| `--auto` | No       | Skip every approval prompt in this skill and the `commit` skill it invokes, running the full lifecycle autonomously. |

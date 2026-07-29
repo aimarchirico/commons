@@ -36,7 +36,9 @@ argument-hint: "[--draft] [--auto]"
 8. Execute `gh pr create --title "<title>" --body "<body>"`, passing `--draft`
    if the `--draft` flag was provided.
 
-## Supported Flags
+## Arguments
 
-- `--draft`: Submit the pull request as a draft.
-- `--auto`: Skip the approval step and create the drafted PR directly.
+| Flag      | Required | Description                                                |
+| :-------- | :------- | :--------------------------------------------------------- |
+| `--draft` | No       | Submit the pull request as a draft.                        |
+| `--auto`  | No       | Skip the approval step and create the drafted PR directly. |

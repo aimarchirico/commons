@@ -43,6 +43,8 @@ argument-hint: "[--auto]"
 6. Execute `python3 .agents/skills/issues/scripts/create_issues.py issues.json`
    (the script automatically deletes the temporary file upon completion).
 
-## Supported Flags
+## Arguments
 
-- `--auto`: Skip the approval step and create the drafted hierarchy directly.
+| Flag     | Required | Description                                                       |
+| :------- | :------- | :---------------------------------------------------------------- |
+| `--auto` | No       | Skip the approval step and create the drafted hierarchy directly. |
