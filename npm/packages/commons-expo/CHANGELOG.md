@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.0](https://github.com/aimarchirico/commons/compare/commons-expo-v4.0.0...commons-expo-v4.1.0) (2026-07-29)
+
+
+### Features
+
+* clean up package exports and make Cloudflare proxy a root export ([cf45ef8](https://github.com/aimarchirico/commons/commit/cf45ef8612bc7b37b81373a7bca618016cd91d8c))
+
 ## [4.0.0](https://github.com/aimarchirico/commons/compare/commons-expo-v3.0.2...commons-expo-v4.0.0) (2026-07-29)
 
 
