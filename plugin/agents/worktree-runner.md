@@ -11,7 +11,7 @@ genuine blocker, note it in your report rather than guessing destructively.
 
 The approved plan, and the worktree path to work in.
 
-## What to do
+## Workflow
 
 1. Work only inside the given worktree path.
 2. Implement the plan's changes.

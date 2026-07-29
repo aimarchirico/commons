@@ -16,7 +16,7 @@ Either:
   feedback yourself via `gh pr view --json comments` and
   `gh api repos/{owner}/{repo}/pulls/<pr-number>/comments`.
 
-## What to do
+## Workflow
 
 1. Read enough of the codebase in the given worktree to see how the
    requirement maps onto it, following any conventions in

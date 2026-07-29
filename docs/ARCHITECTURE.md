@@ -15,7 +15,7 @@ graph LR
         maven_src["maven/<br/>Kotlin modules"]
         npm_src["npm/<br/>config packages + CLI"]
         tools_src["tools/<br/>linting + release config"]
-        skills["plugin/<br/>agent skills"]
+        plugin["plugin/<br/>agent skills"]
     end
 
     rp["Release Please<br/>(GitHub Actions)"]
@@ -32,7 +32,7 @@ graph LR
 
     maven_reg -->|Gradle dependency| consumers
     npm_reg -->|npm dependency| consumers
-    skills -->|plugin install| consumers
+    plugin -->|plugin install| consumers
 ```
 
 ## Infrastructure Overview

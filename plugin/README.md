@@ -66,8 +66,8 @@ and get every skill and agent in this directory:
 
 Markdown is linted with the shared `markdownlint` config via `task docs:check`
 (and auto-fixed with `task docs:fix`) from the repository root. Python
-scripts (`skills/issue/scripts/`) are checked with `task skills:check` (and
-fixed with `task skills:fix`).
+scripts (`skills/issue/scripts/`) are checked with `task plugin:check` (and
+fixed with `task plugin:fix`).
 
 ## Deployment
 

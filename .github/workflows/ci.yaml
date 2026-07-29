@@ -23,7 +23,7 @@ jobs:
       maven: ${{ steps.filter.outputs.maven }}
       npm: ${{ steps.filter.outputs.npm }}
       docs: ${{ steps.filter.outputs.docs }}
-      skills: ${{ steps.filter.outputs.skills }}
+      plugin: ${{ steps.filter.outputs.plugin }}
       github: ${{ steps.filter.outputs.github }}
       tools: ${{ steps.filter.outputs.tools }}
     steps:
@@ -52,10 +52,8 @@ jobs:
             npm:
               - 'npm/**'
               - '.github/workflows/ci.yaml'
-            skills:
-              - 'plugin/skills/**'
-              - 'plugin/Taskfile.yaml'
-              - 'plugin/pyproject.toml'
+            plugin:
+              - 'plugin/**'
               - '.github/workflows/ci.yaml'
 
   # ==========================================
@@ -158,15 +156,15 @@ jobs:
             NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
 
   # ==========================================
-  # SKILLS CI JOB
+  # PLUGIN CI JOB
   # ==========================================
-  skills:
-    name: Skills Check
+  plugin:
+    name: Plugin Check
     needs: changes
-    if: needs.changes.outputs.skills == 'true'
+    if: needs.changes.outputs.plugin == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/python-task
         with:
-          command: skills:check
+          command: plugin:check

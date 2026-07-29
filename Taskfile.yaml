@@ -16,7 +16,7 @@ includes:
   npm:
     taskfile: ./npm/Taskfile.yaml
     dir: ./npm
-  skills:
+  plugin:
     taskfile: ./plugin/Taskfile.yaml
     dir: ./plugin
 
