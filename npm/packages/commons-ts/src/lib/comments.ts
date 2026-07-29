@@ -1,4 +1,4 @@
-import type {ESLint, Rule, SourceCode} from 'eslint';
+import type {Rule, SourceCode} from 'eslint';
 
 type Comment = ReturnType<SourceCode['getAllComments']>[number];
 
@@ -26,50 +26,59 @@ const directivePattern = new RegExp(
   `^\\s*@?(${DIRECTIVE_PREFIXES.join('|')})\\b`,
 );
 
-/** Reports whether a comment is a documentation block, which stays legal. */
-const isDocBlock = (comment: Comment): boolean =>
+/**
+ * Reports whether a comment is a JSDoc block, which stays legal.
+ *
+ * @param comment - The comment to test.
+ * @returns Whether the comment is a JSDoc block.
+ */
+const isJSDoc = (comment: Comment): boolean =>
   comment.type === 'Block' && comment.value.startsWith('*');
 
-/** Reports whether a comment carries an instruction for another tool. */
+/**
+ * Reports whether a comment carries an instruction for another tool.
+ *
+ * @param comment - The comment to test.
+ * @returns Whether the comment is a tooling directive.
+ */
 const isDirective = (comment: Comment): boolean =>
   directivePattern.test(comment.value);
 
 /**
- * Bans every comment except documentation blocks and tooling directives.
+ * Bans every comment except JSDoc blocks and tooling directives.
  *
- * Explanation belongs in a documentation block attached to the construct it
+ * Explanation belongs in a JSDoc block attached to the construct it
  * describes. A line comment or a plain block comment is therefore always a
  * violation, whether it sits on its own line or trails code.
  */
-export const noNonDocComment: Rule.RuleModule = {
+export const noNonJSDocComment: Rule.RuleModule = {
   meta: {
     type: 'problem',
     docs: {
-      description: 'Allow only documentation blocks and tooling directives.',
+      description: 'Allow only JSDoc blocks and tooling directives.',
     },
     schema: [],
     messages: {
-      nonDocComment:
-        'Only documentation blocks are allowed. Attach the explanation to the construct it describes, or delete it.',
+      nonJSDocComment:
+        'Only JSDoc blocks are allowed. Attach the explanation to the construct it describes, or delete it.',
     },
   },
   create: context => ({
     Program: () => {
       for (const comment of context.sourceCode.getAllComments()) {
+        /**
+         * ESLint tags a `//` comment `Line` and a `/* *\/` comment `Block`;
+         * both count as plain comments here.
+         */
         const isPlain = comment.type === 'Line' || comment.type === 'Block';
-        if (!isPlain || isDocBlock(comment) || isDirective(comment)) {
+        if (!isPlain || isJSDoc(comment) || isDirective(comment)) {
           continue;
         }
         const {loc} = comment;
         if (loc) {
-          context.report({loc, messageId: 'nonDocComment'});
+          context.report({loc, messageId: 'nonJSDocComment'});
         }
       }
     },
   }),
-};
-
-/** Plugin namespace holding the documentation rules shared with consumers. */
-export const commonsPlugin: ESLint.Plugin = {
-  rules: {'no-non-doc-comment': noNonDocComment},
 };
