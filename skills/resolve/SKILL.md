@@ -34,11 +34,16 @@ argument-hint: "--pr <pr-number> [--auto]"
    the user.
 8. Execute `git push` to push the commits to the pull request's existing
    remote branch.
-9. Reply to each resolved line/file review comment with a concise, resolving
-   reply.
-10. Post a single summarizing reply on the pull request's conversation thread,
-    incorporating any conversation-level (non-line) comments.
-11. Execute `git worktree remove <worktree-path>` to remove the isolated
+9. Draft a concise, resolving reply for each resolved line/file review
+   comment, and a single summarizing reply for the pull request's
+   conversation thread incorporating any conversation-level (non-line)
+   comments.
+10. Present the drafted replies, and wait for explicit user approval. Skip
+    this step if the `--auto` flag is set, and proceed directly with posting
+    them.
+11. Post each approved line/file reply, then post the approved summarizing
+    reply on the conversation thread.
+12. Execute `git worktree remove <worktree-path>` to remove the isolated
     worktree; `<branch-name>` and its commits remain intact in the repository
     and on the remote.
 
