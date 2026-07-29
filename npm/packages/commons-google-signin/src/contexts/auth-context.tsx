@@ -29,7 +29,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 /**
  * Tracks the Firebase sign-in state and publishes it to the tree below.
  *
- * @param props.children The subtree that consumes the auth context.
+ * @param props - The component props.
+ * @param props.children - The subtree that consumes the auth context.
  * @returns The provider wrapping `children`.
  */
 export const AuthProvider = ({children}: {children: ReactNode}) => {
