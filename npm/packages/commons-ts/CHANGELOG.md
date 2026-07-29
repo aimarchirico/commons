@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.1](https://github.com/aimarchirico/commons/compare/commons-ts-v3.1.0...commons-ts-v3.1.1) (2026-07-29)
+
+
+### Bug Fixes
+
+* **commons-ts:** allow x-release-please-version marker comments ([13cea02](https://github.com/aimarchirico/commons/commit/13cea02807578826207c9749cd017d30d3b2dcc2))
+
 ## [3.1.0](https://github.com/aimarchirico/commons/compare/commons-ts-v3.0.0...commons-ts-v3.1.0) (2026-07-29)
 
 
