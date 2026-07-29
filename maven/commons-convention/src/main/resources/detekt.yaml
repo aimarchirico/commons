@@ -6,6 +6,9 @@ commons:
 
 comments:
   active: true
+  # Kotlin nested/inner declarations are public by default, same as top-level
+  # ones, so they are part of the public API surface and need documentation
+  # too.
   UndocumentedPublicClass:
     active: true
     searchInNestedClass: true
@@ -15,4 +18,6 @@ comments:
   UndocumentedPublicFunction:
     active: true
   UndocumentedPublicProperty:
+    active: true
+  OutdatedDocumentation:
     active: true

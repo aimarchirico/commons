@@ -35,9 +35,11 @@ configure<dev.detekt.gradle.extensions.DetektExtension> {
 
 /**
  * Put this plugin's own artifact on detekt's rule classpath, which is how detekt discovers the rule
- * set bundled alongside these scripts. Resolving the artifact from the enclosing class keeps the
- * coordinates and version out of the script, so the rules can never drift from the plugin shipping
- * them.
+ * set bundled alongside these scripts. Applying this plugin via `plugins { }` only puts it on the
+ * buildscript classpath; detekt's Gradle task loads custom rule providers exclusively from jars
+ * declared on the `detektPlugins` configuration, so the `RuleSetProvider` here would otherwise never
+ * be found. Resolving the artifact from the enclosing class keeps the coordinates and version out of
+ * the script, so the rules can never drift from the plugin shipping them.
  */
 val conventionArtifact = object {}.javaClass.protectionDomain?.codeSource?.location
 
