@@ -5,6 +5,7 @@ const commands: Record<string, string> = {
   'create-environments': './create-environments.js',
   'sync-variables': './sync-variables.js',
   'set-secrets': './set-secrets.js',
+  'materialize-templates': './materialize-templates.js',
 };
 
 const verb = process.argv[2];

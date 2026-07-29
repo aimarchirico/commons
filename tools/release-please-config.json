@@ -25,9 +25,6 @@
     "npm/packages/commons-cloudflare": {
       "release-type": "node"
     },
-    "npm/packages/commons-docs": {
-      "release-type": "node"
-    },
     "npm/packages/commons-expo": {
       "release-type": "node"
     },

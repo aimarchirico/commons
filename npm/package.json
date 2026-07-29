@@ -9,7 +9,6 @@
   },
   "devDependencies": {
     "@aimarchirico/commons-cloudflare": "workspace:^",
-    "@aimarchirico/commons-docs": "workspace:^",
     "@aimarchirico/commons-firebase-client": "workspace:^",
     "@aimarchirico/commons-google-signin": "workspace:^",
     "@aimarchirico/commons-openapi": "workspace:^",

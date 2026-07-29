@@ -21,11 +21,10 @@ npm/
 │   ├── commons-ts/           # shared ESLint + tsconfig (base config)
 │   ├── commons-expo/         # shared Expo / React Native ESLint + tsconfig
 │   ├── commons-tools/        # shared markdownlint + commitlint configs
-│   ├── commons-docs/         # documentation templates and materializer CLI
 │   ├── commons-openapi/      # OpenAPI client/docs generator CLI
 │   ├── commons-cloudflare/   # Cloudflare Pages proxy, web-export fixup + provisioning CLI
 │   ├── commons-project/      # project rename CLI + shared provisioning helpers
-│   ├── commons-github/       # GitHub repository provisioning CLI
+│   ├── commons-github/       # GitHub repository provisioning + documentation materializer CLI
 │   ├── commons-firebase-client/ # Firebase client initialization and CLI
 │   └── commons-google-signin/   # Google Sign-In React hooks and context
 ├── pnpm-workspace.yaml    # workspace globs (packages/*)
@@ -37,15 +36,14 @@ npm/
 | `@aimarchirico/commons-ts`              | `./eslint`, `./tsconfig.json` — base TypeScript config.                                                            |
 | `@aimarchirico/commons-expo`            | `./eslint`, `./tsconfig.json` config + `commons-expo build-android`, `create-project` and `import-keystore` bins.  |
 | `@aimarchirico/commons-project`         | root exports (`env`, `report`, `outputs`, `cli`, `git` helpers) + `commons-project rename-project` bin.            |
-| `@aimarchirico/commons-github`          | `commons-github create-project`, `create-environments`, `sync-variables`, `set-secrets` bins.                      |
+| `@aimarchirico/commons-github`          | `commons-github create-project`, `create-environments`, `sync-variables`, `set-secrets`, `materialize-templates` bins. |
 | `@aimarchirico/commons-tools`           | `./markdownlint`, `./commitlint` configs.                                                                          |
-| `@aimarchirico/commons-docs`            | `commons-docs materialize-templates` bin (`dist/bin/cli.js`) materializing `CONTRIBUTING.md` and GitHub templates. |
 | `@aimarchirico/commons-openapi`         | `commons-openapi generate-client` bin (`dist/bin/cli.js`) generating the OpenAPI client and docs.                  |
 | `@aimarchirico/commons-cloudflare`      | `./proxy` Pages Function + `commons-cloudflare fix-assets` and provisioning bins.                                  |
 | `@aimarchirico/commons-firebase-client` | Firebase client config and `commons-firebase-client decode-google-services` bin.                                   |
 | `@aimarchirico/commons-google-signin`   | Google Sign-In React context and authentication hooks.                                                             |
 
-`commons-expo`, `commons-tools`, `commons-docs`, and `commons-openapi` extend
+`commons-expo`, `commons-tools`, and `commons-openapi` extend
 `commons-ts` as a `workspace:*` dependency, so `commons-ts` is the base every
 other package builds on. `commons-ts` exports raw TypeScript consumed by ESLint
 and `tsc`; the runtime helpers the provisioning commands share live in
@@ -192,6 +190,12 @@ removed, and a name absent from the environment is skipped.
 Same naming convention as `sync-variables`. A secret's current value cannot be
 read back, so each is reported as written rather than unchanged; a name absent
 from the environment is skipped rather than blanking a working value.
+
+### `commons-github materialize-templates`
+
+Takes no environment variables. Copies `CONTRIBUTING.md` and the
+`ISSUE_TEMPLATE`/`PULL_REQUEST_TEMPLATE.md` templates into the working
+directory's `.github/`, overwriting anything already there.
 
 ### `commons-cloudflare create-pages-project`
 

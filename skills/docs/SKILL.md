@@ -9,8 +9,8 @@ Use when the user asks to update project documentation.
 
 ## Execution Steps
 
-1. Preflight: Verify that `CONTRIBUTING.md` exists in the repository root. If it
-   is missing, run `npx @aimarchirico/commons-docs materialize-templates` to
+1. Preflight: Verify that `.github/CONTRIBUTING.md` exists. If it
+   is missing, run `npx @aimarchirico/commons-github materialize-templates` to
    materialize the documentation.
 2. Identify the details and context of the documentation changes. If these
    details are not already clear from the user's prompt or context, inspect the
