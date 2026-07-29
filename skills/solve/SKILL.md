@@ -22,17 +22,22 @@ Use when the user asks to solve or implement an issue.
 5. Analyze requirements. If sub-issues exist, implement them sequentially. If no
    sub-issues exist, break the issue down into logical technical steps.
 6. Execute the `commit` skill iteratively as each sub-issue or logical step is
-   completed.
+   completed, passing the `--auto` flag through if it was provided by the
+   user.
 7. Execute the `docs` skill to update project documentation once implementation
-   is complete.
+   is complete, passing the `--auto` flag through if it was provided by the
+   user.
 8. Execute the `commit` skill one final time to commit the documentation
-   updates.
+   updates, passing the `--auto` flag through if it was provided by the user.
 9. Execute `git push -u origin <branch-name>` to push the commits to the remote
    repository.
-10. Execute the `pr` skill to open a pull request. Pass the --draft flag to the
-    `pr` skill if it was provided by the user.
+10. Execute the `pr` skill to open a pull request. Pass the `--draft` and
+    `--auto` flags through to the `pr` skill if they were provided by the
+    user.
 
 ## Supported Flags
 
 - `--issue`: The ID of the existing GitHub issue.
 - `--draft`: Create the resulting pull request as a draft.
+- `--auto`: Skip every approval prompt in this skill and the `commit`, `docs`,
+  and `pr` skills it invokes, running the full lifecycle autonomously.

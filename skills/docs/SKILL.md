@@ -18,5 +18,10 @@ Use when the user asks to update project documentation.
    if needed.
 3. Present proposed updates strictly following the structure and conventions
    defined in `CONTRIBUTING.md#documentation`, and wait for explicit user
-   approval.
+   approval. Skip this step if the `--auto` flag is set, and proceed directly
+   with the proposed updates.
 4. Apply the edits.
+
+## Supported Flags
+
+- `--auto`: Skip the approval step and apply the proposed updates directly.

@@ -18,6 +18,12 @@ for committing, or run the commit skill.
 3. If there are no changes to commit, notify the user and exit.
 4. Group the changes into logical, atomic units and draft a commit message for
    each group strictly following the rules in `CONTRIBUTING.md#commits`.
-5. Present the proposed commit plan, and wait for explicit user approval.
+5. Present the proposed commit plan, and wait for explicit user approval. Skip
+   this step if the `--auto` flag is set, and proceed directly with the
+   drafted plan.
 6. For each approved unit, execute `git add` for those specific files followed
    by `git commit -m` with the approved message.
+
+## Supported Flags
+
+- `--auto`: Skip the approval step and commit the drafted plan directly.

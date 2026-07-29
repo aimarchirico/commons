@@ -32,9 +32,12 @@ Use when the user asks to create a pull request.
      `git push -u origin <branch-name>` to set upstream.
 
 7. Present the proposed PR Title and Body, and wait for explicit user approval.
+   Skip this step if the `--auto` flag is set, and proceed directly with the
+   drafted title and body.
 8. Execute `gh pr create --title "<title>" --body "<body>"` (supporting
    `--draft` to create a draft PR).
 
 ## Supported Flags
 
 - `--draft`: Submit the pull request as a draft.
+- `--auto`: Skip the approval step and create the drafted PR directly.

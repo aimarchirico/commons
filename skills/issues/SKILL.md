@@ -21,7 +21,9 @@ Use when the user asks to create new issues.
    issues to completely represent the hierarchy of work. Ensure each issue is
    assigned its type and priority in their respective fields based on the
    definitions in `CONTRIBUTING.md`.
-4. Show the drafted hierarchy and wait for user approval.
+4. Show the drafted hierarchy and wait for user approval. Skip this step if
+   the `--auto` flag is set, and proceed directly with the drafted
+   hierarchy.
 5. Generate a temporary `issues.json` file containing an `items` array where
    every node in the hierarchy matches this recursive JSON schema:
 
@@ -41,3 +43,7 @@ Use when the user asks to create new issues.
 
 6. Execute `python3 .agents/skills/issues/scripts/create_issues.py issues.json`
    (the script automatically deletes the temporary file upon completion).
+
+## Supported Flags
+
+- `--auto`: Skip the approval step and create the drafted hierarchy directly.
