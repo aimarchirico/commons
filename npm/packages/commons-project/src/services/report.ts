@@ -26,6 +26,12 @@ const LABELS: Record<Outcome, string> = {
 const entries: Entry[] = [];
 const instructions: Instruction[] = [];
 
+/**
+ * Report the outcome of a provisioning resource.
+ * @param resource The name of the resource.
+ * @param outcome The outcome of the action.
+ * @param detail Optional detail string.
+ */
 export const report = (
   resource: string,
   outcome: Outcome,
@@ -41,6 +47,9 @@ export const report = (
  * value that is wrong is otherwise indistinguishable from a supplied one, and
  * the consequences — writing to the wrong repository, say — are not reversible
  * by re-running.
+ * @param label
+ * @param value
+ * @param source
  */
 export const context = (label: string, value: string, source: string): void => {
   console.log(`· ${label} ${value} (${source})`);
@@ -51,6 +60,9 @@ export const context = (label: string, value: string, source: string): void => {
  * run reads consistently, and repeats in full at the end of the summary so it
  * cannot be lost in the middle of the output. Distinct from a failure: the
  * command did everything it could, and the rest is waiting on someone.
+ * @param resource
+ * @param detail
+ * @param steps
  */
 export const instruct = (
   resource: string,
@@ -64,6 +76,9 @@ export const instruct = (
 /**
  * Wrap a provisioning step so its outcome is reported consistently and an
  * unexpected failure names the resource it was working on.
+ * @param resource
+ * @param action
+ * @returns The resolved value of type T, or undefined.
  */
 export const step = async <T>(
   resource: string,
@@ -83,6 +98,7 @@ export const step = async <T>(
 /**
  * Print a one-line tally so a re-run reads at a glance as a run in which
  * nothing changed.
+ * @param title
  */
 export const printSummary = (title: string): void => {
   const counts = entries.reduce<Record<string, number>>((acc, entry) => {
@@ -110,8 +126,12 @@ export const printSummary = (title: string): void => {
   }
 };
 
-// Annotated rather than inferred so callers get control-flow narrowing after a
-// `fail(...)` call.
+/**
+ * Annotated rather than inferred so callers get control-flow narrowing after a
+ * `fail(...)` call.
+ * @param message The error message.
+ * @returns Never returns as it exits the process.
+ */
 export const fail: (message: string) => never = message => {
   console.error(message);
   process.exit(1);

@@ -22,6 +22,12 @@ export const requireGh = (): void => {
   requireCli('gh', {minVersion: '2.40.0', installHint: INSTALL_HINT});
 };
 
+/**
+ * Run a GitHub CLI command.
+ * @param args The arguments to pass.
+ * @param input Optional stdin input.
+ * @returns The command execution results.
+ */
 export const gh = (args: string[], input?: string): GhResult => {
   try {
     return run('gh', args, input);
@@ -31,14 +37,27 @@ export const gh = (args: string[], input?: string): GhResult => {
   }
 };
 
+/**
+ * Run a GitHub CLI command and throw if it fails.
+ * @param args The arguments to pass.
+ * @param input Optional stdin input.
+ * @returns The stdout of the command.
+ */
 export const ghOrThrow = (args: string[], input?: string): string =>
   runCliOrThrow('gh', args, input);
 
+/**
+ * Run a GitHub CLI command and parse the stdout as JSON.
+ * @param args The arguments to pass.
+ * @returns The parsed JSON object of type T.
+ */
 export const ghJson = <T>(args: string[]): T => runCliJson<T>('gh', args);
 
 /**
  * Read a REST resource, returning undefined when it does not exist so a
  * command can distinguish "absent" from "failed".
+ * @param endpoint
+ * @returns The requested resource of type T, or undefined if it does not exist.
  */
 export const apiGet = <T>(endpoint: string): T | undefined => {
   const result = gh(['api', endpoint]);
@@ -49,6 +68,12 @@ export const apiGet = <T>(endpoint: string): T | undefined => {
   return JSON.parse(result.stdout) as T;
 };
 
+/**
+ * Write to a GitHub API endpoint.
+ * @param method The HTTP method to use.
+ * @param endpoint The API endpoint.
+ * @param fields The fields to write.
+ */
 export const apiWrite = (
   method: 'POST' | 'PATCH' | 'PUT',
   endpoint: string,
@@ -65,6 +90,7 @@ export const apiWrite = (
  * Resolve the target repository from the working directory. The resolved
  * value is reported, because a derivation made from the wrong directory
  * writes to the wrong repository and nothing else in the output would say so.
+ * @returns The owner, repo name, and slug of the repository.
  */
 export const repoContext = (): {owner: string; repo: string; slug: string} => {
   requireGh();

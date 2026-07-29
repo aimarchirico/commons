@@ -19,6 +19,10 @@ const isStringArray = (value: unknown): value is string[] =>
  * against the manifest's values. Unqualified placeholders take the side of the
  * field they appear in, so a move's `from` reads source values and its `to`
  * reads target values.
+ * @param template
+ * @param side
+ * @param values
+ * @returns The interpolated string.
  */
 export const interpolate = (
   template: string,
@@ -149,10 +153,15 @@ const validate = (data: unknown): Manifest => {
 /**
  * Resolve the manifest path from `MANIFEST_PATH`, defaulting to
  * `manifest.json` in the working directory.
+ * @returns The resolved manifest file path.
  */
 export const manifestPath = (): string =>
   path.resolve(process.env.MANIFEST_PATH ?? 'manifest.json');
 
+/**
+ * Load and validate the manifest.
+ * @returns The loaded and validated Manifest object.
+ */
 export const loadManifest = (): Manifest => {
   const file = manifestPath();
   if (!fs.existsSync(file)) {

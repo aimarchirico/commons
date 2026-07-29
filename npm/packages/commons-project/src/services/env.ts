@@ -13,6 +13,9 @@ const read = (name: string): string | undefined => {
  * Resolve environment variables, reporting every missing required variable at
  * once instead of failing on the first one. Optional variables that are unset
  * or empty resolve to `undefined`.
+ * @param required
+ * @param optional
+ * @returns The resolved environment variables object.
  */
 export const resolveEnv = <
   const R extends readonly string[],
@@ -53,6 +56,8 @@ export const resolveEnv = <
 /**
  * Collect the variables of `names` that are set, so a caller can push a subset
  * of a documented surface without writing empty values over working ones.
+ * @param names
+ * @returns The collected environment variables.
  */
 export const collectEnv = (
   names: readonly string[],
@@ -68,6 +73,8 @@ export const collectEnv = (
 /**
  * Read the variables named by a `KEY=KEY2` style list, so a caller can pass an
  * arbitrary, caller-owned set of variables through a single variable.
+ * @param list
+ * @returns The resolved key-value environment variables.
  */
 export const resolveEnvList = (list: string): Record<string, string> =>
   collectEnv(

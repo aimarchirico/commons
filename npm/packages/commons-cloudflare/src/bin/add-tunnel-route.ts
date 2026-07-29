@@ -42,8 +42,10 @@ const run = async (): Promise<void> => {
     service: env.TUNNEL_SERVICE,
   };
 
-  // The catch-all rule has no hostname and must stay last, so an inserted rule
-  // goes before it and every existing rule is preserved.
+  /**
+   * The catch-all rule has no hostname and must stay last, so an inserted rule
+   * goes before it and every existing rule is preserved.
+   */
   const kept = ingress.filter(entry => entry.hostname !== env.TUNNEL_HOSTNAME);
   const catchAllAt = kept.findIndex(entry => !entry.hostname);
   const updated =
