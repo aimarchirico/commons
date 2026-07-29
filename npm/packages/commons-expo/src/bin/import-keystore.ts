@@ -31,11 +31,8 @@ const STEPS = [
   'then re-run this command to import and shred the downloaded files.',
 ];
 
-const env = resolveEnv(
-  [],
-  ['CREDENTIALS_JSON_PATH', 'ANDROID_KEYSTORE_BASE64'],
-);
-const file = env.CREDENTIALS_JSON_PATH ?? 'credentials.json';
+const env = resolveEnv([], ['ANDROID_KEYSTORE_BASE64']);
+const file = 'credentials.json';
 const resource = 'android signing key';
 
 // A keystore already in the environment is the finished state: the value came

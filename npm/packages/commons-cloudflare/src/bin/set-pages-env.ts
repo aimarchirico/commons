@@ -18,11 +18,11 @@ type Project = {
 
 const env = resolveEnv(
   ['CLOUDFLARE_API_TOKEN', 'PAGES_PROJECT_NAME', 'PAGES_VARIABLES'],
-  ['CLOUDFLARE_ACCOUNT_ID', 'PAGES_ENVIRONMENT'],
+  ['CLOUDFLARE_ACCOUNT_ID'],
 );
 
 const cf = api(env.CLOUDFLARE_API_TOKEN);
-const target = env.PAGES_ENVIRONMENT ?? 'production';
+const target = 'production';
 const names = env.PAGES_VARIABLES.split(/[,\s]+/)
   .map(name => name.trim())
   .filter(Boolean);

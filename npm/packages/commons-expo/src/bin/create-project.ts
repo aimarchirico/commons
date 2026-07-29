@@ -1,11 +1,9 @@
 #!/usr/bin/env node
 
 import {
-  context,
   fail,
   printSummary,
   report,
-  resolveEnv,
   resolveTool,
   runJson,
   writeOutputs,
@@ -31,11 +29,6 @@ const eas = resolveTool({
     'Add it to the project with "pnpm add -D eas-cli", then authenticate with "pnpm exec eas login" or set EXPO_TOKEN.',
 });
 
-// The account is derived from the app config's `owner` field, which eas-cli
-// reads itself. The override exists because a token with access to several
-// accounts cannot resolve one without being told.
-const env = resolveEnv([], ['EXPO_ACCOUNT']);
-
 const args = [
   'init',
   '--non-interactive',
@@ -45,13 +38,6 @@ const args = [
   // ask for here.
   '--force',
 ];
-if (env.EXPO_ACCOUNT) args.push('--account', env.EXPO_ACCOUNT);
-
-context(
-  'eas account',
-  env.EXPO_ACCOUNT ?? 'from app config',
-  env.EXPO_ACCOUNT ? 'from EXPO_ACCOUNT' : 'derived from the "owner" field',
-);
 
 try {
   const result = runJson<Initialized>(eas, args);

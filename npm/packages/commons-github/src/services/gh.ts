@@ -62,20 +62,12 @@ export const apiWrite = (
 };
 
 /**
- * Resolve the target repository from `GITHUB_REPOSITORY`, falling back to the
- * repository of the working directory. The resolved value is reported, because
- * a derivation made from the wrong directory writes to the wrong repository
- * and nothing else in the output would say so.
+ * Resolve the target repository from the working directory. The resolved
+ * value is reported, because a derivation made from the wrong directory
+ * writes to the wrong repository and nothing else in the output would say so.
  */
 export const repoContext = (): {owner: string; repo: string; slug: string} => {
   requireGh();
-
-  const fromEnv = process.env.GITHUB_REPOSITORY;
-  if (fromEnv?.includes('/')) {
-    const [owner, repo] = fromEnv.split('/');
-    context('repository', `${owner}/${repo}`, 'from GITHUB_REPOSITORY');
-    return {owner, repo, slug: `${owner}/${repo}`};
-  }
 
   const data = ghJson<{owner: {login: string}; name: string}>([
     'repo',

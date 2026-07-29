@@ -148,11 +148,10 @@ anything is written:
 Copies the public `aimarchirico/Commons Template` project, the source of
 truth every scaffolded project's board is copied from, and links the copy.
 The project's title is derived from the repository name, e.g. `my-repo`
-becomes `My Repo`.
+becomes `My Repo`. The target repository is derived from the working
+directory.
 
-| Key                 | Required | Purpose                                                                |
-| :------------------ | :------- | :--------------------------------------------------------------------- |
-| `GITHUB_REPOSITORY` | No       | Target `owner/repo`. Defaults to the working directory's repository.   |
+Takes no environment variables.
 
 On a re-run it reports the already-linked project. If a project with the title
 exists but is unlinked it links it.
@@ -162,9 +161,9 @@ exists but is unlinked it links it.
 | Key                   | Required | Purpose                                      |
 | :-------------------- | :------- | :------------------------------------------- |
 | `GITHUB_ENVIRONMENTS` | Yes      | Environment names, comma or space separated. |
-| `GITHUB_REPOSITORY`   | No       | Target `owner/repo`.                         |
 
-Creates each environment, skipping any that already exists.
+Creates each environment, skipping any that already exists. The target
+repository is derived from the working directory.
 
 ### `commons-github sync-variables`
 
@@ -172,12 +171,12 @@ Creates each environment, skipping any that already exists.
 | :----------------------------- | :------- | :--------------------------------------------------- |
 | `GITHUB_VARIABLES`             | No       | Names of repository-level variables to push.         |
 | `GITHUB_ENVIRONMENT_VARIABLES` | No       | Environment-scoped names, `env=NAME,NAME;env2=NAME`. |
-| `GITHUB_REPOSITORY`            | No       | Target `owner/repo`.                                 |
 
 Both variables name *other* environment variables, whose values are the values
 pushed. Current values are read first, so each variable is reported as created,
 updated, or already correct. Variables the caller did not mention are never
-removed, and a name absent from the environment is skipped.
+removed, and a name absent from the environment is skipped. The target
+repository is derived from the working directory.
 
 ### `commons-github set-secrets`
 
@@ -185,9 +184,9 @@ removed, and a name absent from the environment is skipped.
 | :--------------------------- | :------- | :--------------------------------------------------- |
 | `GITHUB_SECRETS`             | No       | Names of repository-level secrets to push.           |
 | `GITHUB_ENVIRONMENT_SECRETS` | No       | Environment-scoped names, `env=NAME,NAME;env2=NAME`. |
-| `GITHUB_REPOSITORY`          | No       | Target `owner/repo`.                                 |
 
-Same naming convention as `sync-variables`. A secret's current value cannot be
+Same naming convention as `sync-variables`, and the target repository is
+likewise derived from the working directory. A secret's current value cannot be
 read back, so each is reported as written rather than unchanged; a name absent
 from the environment is skipped rather than blanking a working value.
 
@@ -205,7 +204,9 @@ directory's `.github/`, overwriting anything already there.
 | `PAGES_PROJECT_NAME`      | Yes      | Pages project to create.                              |
 | `PAGES_CUSTOM_DOMAIN`     | Yes      | Custom domain to attach.                              |
 | `CLOUDFLARE_ACCOUNT_ID`   | No       | Account. Derived when the token sees exactly one.     |
-| `PAGES_PRODUCTION_BRANCH` | No       | Production branch. Derived from the remote's default. |
+
+The production branch is derived from the remote's default branch, falling
+back to `main` when there is no remote to ask.
 
 Creates the project and attaches the domain, requesting automatic DNS, and
 reports each as created or already present.
@@ -218,10 +219,9 @@ reports each as created or already present.
 | `PAGES_PROJECT_NAME`    | Yes      | Pages project to configure.                            |
 | `PAGES_VARIABLES`       | Yes      | Names of the environment variables to push.            |
 | `CLOUDFLARE_ACCOUNT_ID` | No       | Account. Derived when the token sees exactly one.      |
-| `PAGES_ENVIRONMENT`     | No       | Deployment config to target. Defaults to `production`. |
 
-Reads current values first and reports each variable as created, updated, or
-already correct.
+Always targets the `production` deployment config. Reads current values first
+and reports each variable as created, updated, or already correct.
 
 ### `commons-cloudflare add-tunnel-route`
 
@@ -253,24 +253,24 @@ account reuses one application for its APIs.
 
 ### `commons-expo create-project`
 
-| Key            | Required | Purpose                                                          |
-| :------------- | :------- | :--------------------------------------------------------------- |
-| `EXPO_ACCOUNT` | No       | Account that owns the project. Defaults to the config's `owner`. |
-| `EXPO_TOKEN`   | No       | Expo credentials. Falls back to a `pnpm exec eas login` session. |
+| Key          | Required | Purpose                                                          |
+| :----------- | :------- | :--------------------------------------------------------------- |
+| `EXPO_TOKEN` | No       | Expo credentials. Falls back to a `pnpm exec eas login` session. |
 
 Emits `EAS_PROJECT_ID`.
 
 Runs `eas init`, which links the project when `@account/slug` already exists and
 creates it otherwise, writing `extra.eas.projectId` into the app config. The
-account only has to be supplied when the token can see more than one; otherwise
-eas-cli reads it from the config's `owner` field.
+account is resolved by eas-cli itself from the authenticated token; `eas init`
+fails naming the choices when the token can see more than one.
 
 ### `commons-expo import-keystore`
 
-| Key                       | Required | Purpose                                                         |
-| :------------------------ | :------- | :-------------------------------------------------------------- |
-| `ANDROID_KEYSTORE_BASE64` | No       | An already-provisioned keystore. Present means nothing to do.   |
-| `CREDENTIALS_JSON_PATH`   | No       | Where to read credentials from. Defaults to `credentials.json`. |
+| Key                       | Required | Purpose                                                       |
+| :------------------------ | :------- | :------------------------------------------------------------ |
+| `ANDROID_KEYSTORE_BASE64` | No       | An already-provisioned keystore. Present means nothing to do. |
+
+Reads credentials from `credentials.json` in the working directory.
 
 Emits `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`,
 `ANDROID_KEY_ALIAS`, and `ANDROID_KEY_PASSWORD`, for `set-secrets` to store.

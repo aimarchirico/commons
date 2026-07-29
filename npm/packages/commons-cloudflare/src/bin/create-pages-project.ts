@@ -12,7 +12,7 @@ import {api, resolveAccount} from '../services/api-client.js';
 
 const env = resolveEnv(
   ['CLOUDFLARE_API_TOKEN', 'PAGES_PROJECT_NAME', 'PAGES_CUSTOM_DOMAIN'],
-  ['CLOUDFLARE_ACCOUNT_ID', 'PAGES_PRODUCTION_BRANCH'],
+  ['CLOUDFLARE_ACCOUNT_ID'],
 );
 
 const cf = api(env.CLOUDFLARE_API_TOKEN);
@@ -25,14 +25,6 @@ const domain = env.PAGES_CUSTOM_DOMAIN;
  * may not exist.
  */
 const productionBranch = (): string => {
-  if (env.PAGES_PRODUCTION_BRANCH) {
-    context(
-      'production branch',
-      env.PAGES_PRODUCTION_BRANCH,
-      'from PAGES_PRODUCTION_BRANCH',
-    );
-    return env.PAGES_PRODUCTION_BRANCH;
-  }
   const derived = defaultBranch();
   context(
     'production branch',
