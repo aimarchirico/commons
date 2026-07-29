@@ -15,7 +15,7 @@ graph LR
         maven_src["maven/<br/>Kotlin modules"]
         npm_src["npm/<br/>config packages + CLI"]
         tools_src["tools/<br/>linting + release config"]
-        skills["skills/<br/>agent skills"]
+        skills["plugin/<br/>agent skills"]
     end
 
     rp["Release Please<br/>(GitHub Actions)"]
@@ -52,8 +52,7 @@ graph LR
 ├── maven/      # Kotlin backend modules and the Gradle convention plugin
 ├── npm/        # frontend configuration packages and the API CLI
 ├── tools/      # shared linting configs, commitlint, and release-please config
-├── skills/     # agent skills
-├── agents/     # subagents skills delegate to (planner, worktree-runner)
+├── plugin/     # Claude Code plugin (skills/, agents/), the only tree consumers install
 ├── docs/       # system-level documentation
 └── .github/    # CI/release workflows and issue/PR templates
 ```

@@ -17,8 +17,8 @@ includes:
     taskfile: ./npm/Taskfile.yaml
     dir: ./npm
   skills:
-    taskfile: ./skills/Taskfile.yaml
-    dir: ./skills
+    taskfile: ./plugin/skills/Taskfile.yaml
+    dir: ./plugin/skills
 
 tasks:
   default:

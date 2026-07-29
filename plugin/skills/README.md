@@ -8,8 +8,10 @@ downstream repositories as the `commons` Claude Code plugin.
 - **Markdown** `SKILL.md` definitions (`name`/`description`/`argument-hint`
   frontmatter, where `description` covers both what the skill does and when
   to use it, plus a `## Workflow` section).
-- Packaged as a Claude Code plugin (`.claude-plugin/plugin.json` and
-  `.claude-plugin/marketplace.json` at the repository root).
+- Packaged as a Claude Code plugin: `../.claude-plugin/plugin.json` here in
+  `plugin/`, discovered via `.claude-plugin/marketplace.json` at the
+  repository root, which points its `source` at this directory so consumers
+  only fetch `plugin/`, not the whole monorepo.
 - `solve` and `resolve` delegate to the `planner` and `worktree-runner`
   agents in [`../agents/`](../agents), a sibling directory auto-discovered by
   the same plugin.

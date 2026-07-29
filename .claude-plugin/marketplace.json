@@ -6,7 +6,7 @@
   "plugins": [
     {
       "name": "commons",
-      "source": "./",
+      "source": "./plugin",
       "description": "Development lifecycle skills: commit, docs, issue, pr, resolve, solve"
     }
   ]

@@ -53,7 +53,7 @@ jobs:
               - 'npm/**'
               - '.github/workflows/ci.yaml'
             skills:
-              - 'skills/**'
+              - 'plugin/skills/**'
               - '.github/workflows/ci.yaml'
 
   # ==========================================
