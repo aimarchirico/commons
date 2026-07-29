@@ -15,30 +15,28 @@ argument-hint: "[--draft] [--auto]"
 
 ## Workflow
 
-1. Preflight: Verify that `CONTRIBUTING.md` exists in the repository root and
-   `.github/PULL_REQUEST_TEMPLATE.md` exists. If any are missing, run
-   `npx @aimarchirico/commons-docs materialize-templates` to materialize the documentation.
-2. Verify GitHub CLI (`gh`) authentication (`gh auth status`). If not logged in,
+1. Verify GitHub CLI (`gh`) authentication (`gh auth status`). If not logged in,
    provide instructions for `gh auth login` and exit.
-3. Analyze the current branch and recent commits:
+2. Analyze the current branch and recent commits:
 
    - **Branch Naming**: Extract the type and issue ID from the branch name
-     according to `CONTRIBUTING.md#branching`.
+     according to `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md#branching`.
    - **PR Title**: Format the PR title according to
-     `CONTRIBUTING.md#pull-requests`.
+     `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md#pull-requests`.
    - **PR Commits**: Summarize recent commits on the branch using `git log`.
 
-4. Request related issue IDs if they were not successfully extracted in the
+3. Request related issue IDs if they were not successfully extracted in the
    previous step.
-5. Draft the PR description by populating `.github/PULL_REQUEST_TEMPLATE.md`
-   using the gathered context.
-6. Verify remote state:
+4. Draft the PR description by populating
+   `${CLAUDE_PLUGIN_ROOT}/.github/PULL_REQUEST_TEMPLATE.md` using the
+   gathered context.
+5. Verify remote state:
 
    - Check if the local branch is pushed to remote. If not, execute
      `git push -u origin <branch-name>` to set upstream.
 
-7. Present the proposed PR Title and Body, and wait for explicit user approval.
+6. Present the proposed PR Title and Body, and wait for explicit user approval.
    Skip this step if the `--auto` flag is set, and proceed directly with the
    drafted title and body.
-8. Execute `gh pr create --title "<title>" --body "<body>"`, passing `--draft`
+7. Execute `gh pr create --title "<title>" --body "<body>"`, passing `--draft`
    if the `--draft` flag was provided.

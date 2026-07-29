@@ -1,0 +1,23 @@
+name: Bug
+description: A problem which impairs functionality.
+body:
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: The environment where the failure occurs.
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: Step-by-step instructions to reproduce the bug.
+  - type: textarea
+    id: expected-results
+    attributes:
+      label: Expected Results
+      description: What should happen.
+  - type: textarea
+    id: actual-results
+    attributes:
+      label: Actual Results
+      description: What happens instead.

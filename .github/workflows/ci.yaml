@@ -54,6 +54,8 @@ jobs:
               - '.github/workflows/ci.yaml'
             skills:
               - 'plugin/skills/**'
+              - 'plugin/Taskfile.yaml'
+              - 'plugin/pyproject.toml'
               - '.github/workflows/ci.yaml'
 
   # ==========================================

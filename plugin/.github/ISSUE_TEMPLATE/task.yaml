@@ -1,0 +1,8 @@
+name: Task
+description: A technical piece of work.
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What needs doing and why.

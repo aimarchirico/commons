@@ -14,22 +14,20 @@ argument-hint: "[--auto]"
 
 ## Workflow
 
-1. Preflight: Verify that `CONTRIBUTING.md` exists in the repository root and
-   the `.github/ISSUE_TEMPLATE/` directory exists. If any are missing, run
-   `npx @aimarchirico/commons-docs materialize-templates` to materialize the documentation.
-2. Identify the details and context of the issues to create. If these details
+1. Identify the details and context of the issues to create. If these details
    are not already clear from the user's prompt or context, ask the user for
    clarification.
-3. Map and format the identified work strictly following the hierarchy and
-   conventions defined in `CONTRIBUTING.md#issues` and
-   `.github/ISSUE_TEMPLATE/`. Automatically infer any required logical child
-   issues to completely represent the hierarchy of work. Ensure each issue is
-   assigned its type and priority in their respective fields based on the
-   definitions in `CONTRIBUTING.md`.
-4. Show the drafted hierarchy and wait for user approval. Skip this step if
+2. Map and format the identified work strictly following the hierarchy and
+   conventions defined in `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md#issues`
+   and `${CLAUDE_PLUGIN_ROOT}/.github/ISSUE_TEMPLATE/`. Automatically infer any
+   required logical child issues to completely represent the hierarchy of
+   work. Ensure each issue is assigned its type and priority in their
+   respective fields based on the definitions in
+   `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md`.
+3. Show the drafted hierarchy and wait for user approval. Skip this step if
    the `--auto` flag is set, and proceed directly with the drafted
    hierarchy.
-5. Generate a temporary `issues.json` file containing an `items` array where
+4. Generate a temporary `issues.json` file containing an `items` array where
    every node in the hierarchy matches this recursive JSON schema:
 
    ```json
@@ -46,6 +44,6 @@ argument-hint: "[--auto]"
    }
    ```
 
-6. Execute
+5. Execute
    `python3 "${CLAUDE_PLUGIN_ROOT}/skills/issue/scripts/create_issues.py" issues.json`
    (the script automatically deletes the temporary file upon completion).
