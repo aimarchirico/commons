@@ -1,17 +1,11 @@
 #!/usr/bin/env node
 
-import {execSync} from 'child_process';
+import {resolveTool, runStreamed} from '@aimarchirico/commons-project';
 import path from 'path';
 import fs from 'fs';
 import os from 'os';
 import https from 'https';
 import http from 'http';
-import {fileURLToPath} from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const packageRoot = path.resolve(__dirname, '..', '..');
 
 const apiUrl = process.env.API_URL;
 if (!apiUrl) {
@@ -53,8 +47,27 @@ function generateClient(specPath: string): void {
     process.env.API_CLIENT_OUTPUT_DIR ||
     path.resolve(process.cwd(), 'src/services/generated');
   const safeSpecPath = specPath.replace(/\\/g, '/');
-  const cmd = `rm -rf "${outputDir}" && npx @openapitools/openapi-generator-cli generate -i "${safeSpecPath}" -g typescript-axios -o "${outputDir}"`;
-  execSync(cmd, {stdio: 'inherit', cwd: packageRoot});
+
+  const generator = resolveTool({
+    from: import.meta.url,
+    package: '@openapitools/openapi-generator-cli',
+    bin: 'openapi-generator-cli',
+    installHint: 'Run "pnpm install" to restore it.',
+  });
+
+  fs.rmSync(outputDir, {recursive: true, force: true});
+  const status = runStreamed(generator, [
+    'generate',
+    '-i',
+    safeSpecPath,
+    '-g',
+    'typescript-axios',
+    '-o',
+    outputDir,
+  ]);
+  if (status !== 0) {
+    throw new Error(`openapi-generator-cli exited with status ${status}.`);
+  }
   console.log(`OpenAPI client generated at ${outputDir}`);
 }
 
@@ -67,8 +80,18 @@ function generateDocs(specPath: string): void {
   }
 
   const outputPath = path.resolve(docsDir, 'API.md');
-  const cmd = `npx swagger-markdown -i "${specPath}" -o "${outputPath}"`;
-  execSync(cmd, {stdio: 'inherit', cwd: packageRoot});
+
+  const markdown = resolveTool({
+    from: import.meta.url,
+    package: 'swagger-markdown',
+    bin: 'swagger-markdown',
+    installHint: 'Run "pnpm install" to restore it.',
+  });
+
+  const status = runStreamed(markdown, ['-i', specPath, '-o', outputPath]);
+  if (status !== 0) {
+    throw new Error(`swagger-markdown exited with status ${status}.`);
+  }
   console.log(`OpenAPI documentation generated at ${outputPath}`);
 }
 

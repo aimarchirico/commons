@@ -1,4 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "extends": "@aimarchirico/commons-ts/tsconfig-build"
+  "extends": "@aimarchirico/commons-ts/tsconfig-build",
+  "include": [
+    "${configDir}/src/bin/**/*.ts",
+    "${configDir}/src/services/api.ts"
+  ]
 }

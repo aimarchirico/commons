@@ -1,0 +1,41 @@
+{
+  "name": "@aimarchirico/commons-project",
+  "version": "0.0.0",
+  "private": false,
+  "type": "module",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aimarchirico/commons.git"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "bin": {
+    "commons-project": "dist/bin/cli.js"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "check": "eslint && tsc",
+    "fix": "eslint --fix",
+    "build": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "pnpm build"
+  },
+  "dependencies": {
+    "tinyglobby": "^0.2.15"
+  },
+  "devDependencies": {
+    "@aimarchirico/commons-ts": "workspace:^",
+    "@types/node": "^26.0.1",
+    "eslint": "^9.39.2",
+    "typescript": "^6.0.3"
+  }
+}

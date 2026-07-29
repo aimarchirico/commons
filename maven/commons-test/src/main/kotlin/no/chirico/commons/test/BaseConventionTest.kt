@@ -6,6 +6,12 @@ import java.io.File
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
 
+/**
+ * File-level conventions every service inherits by extending this class.
+ *
+ * The checks walk the working directory rather than the classpath, so they cover sources that never
+ * compile into a class.
+ */
 abstract class BaseConventionTest {
 
   protected val allClasses by lazy {
@@ -14,6 +20,7 @@ abstract class BaseConventionTest {
       .importPackages(javaClass.packageName)
   }
 
+  /** Asserts that every Kotlin file under `src/main` is named in PascalCase. */
   @Test
   fun `Kotlin files should use PascalCase naming`() {
     val rootDir = File(System.getProperty("user.dir"))
@@ -30,6 +37,7 @@ abstract class BaseConventionTest {
     assertAll(violations.map { { throw AssertionError("File '$it' does not follow PascalCase") } })
   }
 
+  /** Asserts that no Kotlin file under `src/main` exceeds 300 lines. */
   @Test
   fun `Kotlin files should not exceed 300 lines`() {
     val rootDir = File(System.getProperty("user.dir"))

@@ -14,7 +14,20 @@ export interface UseGoogleSignInOptions {
   devCredentials?: DevCredentials;
 }
 
+/**
+ * Exposes the Google sign-in, sign-out, and account deletion flows, keeping the
+ * Google Sign-In SDK and the Firebase session in step.
+ *
+ * @param options Overrides for the web client id and the dev-only bypass.
+ * @returns The `signIn`, `signOut`, and `deleteAccount` callbacks.
+ */
 export const useGoogleSignIn = (options?: UseGoogleSignInOptions) => {
+  /**
+   * Signs in and mirrors the result into Firebase.
+   *
+   * @returns The signed-in user, or `undefined` when the flow was cancelled,
+   *   errored, or account creation did not complete.
+   */
   const signIn = async (): Promise<GoogleSignInResult['data']> => {
     try {
       await GoogleSignInService.configure({
@@ -47,7 +60,6 @@ export const useGoogleSignIn = (options?: UseGoogleSignInOptions) => {
         }
       }
 
-      // Cancelled, errored, or account creation did not complete: no session.
       return undefined;
     } catch (error) {
       console.error('Google Sign In failed:', error);
