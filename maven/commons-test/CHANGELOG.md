@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/aimarchirico/commons/compare/commons-test-v2.1.1...commons-test-v3.0.0) (2026-07-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* enforce documentation standards via commons-ts and commons-convention
+
+### Features
+
+* enforce documentation standards via commons-ts and commons-convention ([d6f5028](https://github.com/aimarchirico/commons/commit/d6f5028dbedbd74cdb52d92568fadd44e797e40b))
+
 ## [2.1.1](https://github.com/aimarchirico/commons/compare/commons-test-v2.1.0...commons-test-v2.1.1) (2026-07-24)
 
 

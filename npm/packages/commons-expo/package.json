@@ -1,6 +1,6 @@
 {
   "name": "@aimarchirico/commons-expo",
-  "version": "3.0.2",
+  "version": "4.0.0",
   "private": false,
   "type": "module",
   "publishConfig": {

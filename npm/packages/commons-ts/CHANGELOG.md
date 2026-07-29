@@ -1,5 +1,27 @@
 # Changelog
 
+## [3.0.0](https://github.com/aimarchirico/commons/compare/commons-ts-v2.0.3...commons-ts-v3.0.0) (2026-07-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* enforce documentation standards via commons-ts and commons-convention
+* **commons-ts:** consumers of the shared ESLint configuration now fail `check` on undocumented exports and on any non-documentation comment.
+
+### Features
+
+* add reusable provisioning commands for scaffolded projects ([3c17e79](https://github.com/aimarchirico/commons/commit/3c17e79b7a7067784fe1ca24871b5fcbb4a5bedf))
+* **commons-github:** add repository provisioning commands ([5024ad6](https://github.com/aimarchirico/commons/commit/5024ad6a46373803459d12682c37e80e132262dd)), closes [#183](https://github.com/aimarchirico/commons/issues/183) [#184](https://github.com/aimarchirico/commons/issues/184) [#185](https://github.com/aimarchirico/commons/issues/185) [#186](https://github.com/aimarchirico/commons/issues/186) [#187](https://github.com/aimarchirico/commons/issues/187) [#182](https://github.com/aimarchirico/commons/issues/182)
+* **commons-ts:** add provisioning env and reporting helpers ([989754d](https://github.com/aimarchirico/commons/commit/989754dadebe457a70a40cb6d62f40054315a934)), closes [#175](https://github.com/aimarchirico/commons/issues/175) [#176](https://github.com/aimarchirico/commons/issues/176) [#174](https://github.com/aimarchirico/commons/issues/174)
+* **commons-ts:** require jsdoc and allow only doc comments ([e8e1c32](https://github.com/aimarchirico/commons/commit/e8e1c32394dbf7aebd4643f0b5126a7bb5764c26))
+* **commons-ts:** validate jsdoc content and scope prettier rules independently of code rules ([fe1fa9c](https://github.com/aimarchirico/commons/commit/fe1fa9c7b67a162aa9fc0d39a616863272759243))
+* enforce documentation standards via commons-ts and commons-convention ([d6f5028](https://github.com/aimarchirico/commons/commit/d6f5028dbedbd74cdb52d92568fadd44e797e40b))
+
+
+### Bug Fixes
+
+* **commons-ts:** scope documentation rules to typescript files ([569d130](https://github.com/aimarchirico/commons/commit/569d1309575f3f01e754888fca009592ea95dfc6))
+
 ## [2.0.3](https://github.com/aimarchirico/commons/compare/commons-ts-v2.0.2...commons-ts-v2.0.3) (2026-07-25)
 
 

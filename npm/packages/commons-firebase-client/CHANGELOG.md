@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.0.0](https://github.com/aimarchirico/commons/compare/commons-firebase-client-v2.1.1...commons-firebase-client-v3.0.0) (2026-07-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* enforce documentation standards via commons-ts and commons-convention
+
+### Features
+
+* enforce documentation standards via commons-ts and commons-convention ([d6f5028](https://github.com/aimarchirico/commons/commit/d6f5028dbedbd74cdb52d92568fadd44e797e40b))
+
+
+### Bug Fixes
+
+* **commons-firebase-client,commons-google-signin:** satisfy new jsdoc content rules ([43c1f79](https://github.com/aimarchirico/commons/commit/43c1f79b48754dbaee1491c77bff75a7e6f080e6))
+
 ## [2.1.1](https://github.com/aimarchirico/commons/compare/commons-firebase-client-v2.1.0...commons-firebase-client-v2.1.1) (2026-07-24)
 
 

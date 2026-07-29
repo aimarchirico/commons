@@ -1,0 +1,26 @@
+# Changelog
+
+## 1.0.0 (2026-07-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* enforce documentation standards via commons-ts and commons-convention
+* **commons-project:** subpaths `./env`, `./report`, and `./outputs` are removed in favor of root exports.
+
+### Features
+
+* add reusable provisioning commands for scaffolded projects ([3c17e79](https://github.com/aimarchirico/commons/commit/3c17e79b7a7067784fe1ca24871b5fcbb4a5bedf))
+* **commons-expo:** resolve eas-cli from the lockfile instead of PATH ([7249f8c](https://github.com/aimarchirico/commons/commit/7249f8ca5782f8e02ebe80f515f5f56ac91ebc2a))
+* **commons-project:** add cli, git and instruction helpers ([e019cdf](https://github.com/aimarchirico/commons/commit/e019cdf9fb8bf4f19f03ebf6fd496707e0b97c98))
+* enforce documentation standards via commons-ts and commons-convention ([d6f5028](https://github.com/aimarchirico/commons/commit/d6f5028dbedbd74cdb52d92568fadd44e797e40b))
+
+
+### Bug Fixes
+
+* **commons-firebase-client:** force release ([f6b030c](https://github.com/aimarchirico/commons/commit/f6b030c8645bbb290d955193962d09c7f02f3f94))
+
+
+### Code Refactoring
+
+* **commons-project:** export from root instead of subpaths ([6fda9b7](https://github.com/aimarchirico/commons/commit/6fda9b70ba31d370e53ca2df473c5f63baa2f37d))

@@ -1,5 +1,38 @@
 # Changelog
 
+## [4.0.0](https://github.com/aimarchirico/commons/compare/commons-expo-v3.0.2...commons-expo-v4.0.0) (2026-07-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* enforce documentation standards via commons-ts and commons-convention
+* **commons-expo:** `create-project` needs `eas-cli` declared by the consuming project; it is no longer installed transitively.
+* **commons-expo:** a release build without `ANDROID_KEYSTORE_BASE64` fails rather than falling back to debug signing. Set `ANDROID_ALLOW_UNSIGNED` to opt in.
+* **commons-expo:** `create-keystore` is replaced by `create-project` and `import-keystore`. `EAS_PROJECT_ID` and `ANDROID_APPLICATION_ID` are no longer inputs, and `eas` 21+ is expected on PATH.
+* **commons-project:** subpaths `./env`, `./report`, and `./outputs` are removed in favor of root exports.
+* **commons-expo:** `create-keystore` now requires `ANDROID_APPLICATION_ID` and no longer reads `ANDROID_KEYSTORE_FILE`. `EXPO_TOKEN` becomes optional, falling back to the local `eas login` session.
+
+### Features
+
+* add reusable provisioning commands for scaffolded projects ([3c17e79](https://github.com/aimarchirico/commons/commit/3c17e79b7a7067784fe1ca24871b5fcbb4a5bedf))
+* **commons-expo:** add create-keystore ([ebee217](https://github.com/aimarchirico/commons/commit/ebee21741874a9b99949c185ed008d5baa92d8f4)), closes [#194](https://github.com/aimarchirico/commons/issues/194) [#195](https://github.com/aimarchirico/commons/issues/195) [#193](https://github.com/aimarchirico/commons/issues/193)
+* **commons-expo:** provision through eas-cli instead of the Expo API ([7f1c683](https://github.com/aimarchirico/commons/commit/7f1c68395bc50c4f605d89c6ec5c8c877e5df0ae))
+* **commons-expo:** resolve eas-cli from the lockfile instead of PATH ([7249f8c](https://github.com/aimarchirico/commons/commit/7249f8ca5782f8e02ebe80f515f5f56ac91ebc2a))
+* **commons-expo:** store the Android keystore in EAS ([75de700](https://github.com/aimarchirico/commons/commit/75de70062c07cbb0aa9af8d7a7faaa9a85d910b3))
+* enforce documentation standards via commons-ts and commons-convention ([d6f5028](https://github.com/aimarchirico/commons/commit/d6f5028dbedbd74cdb52d92568fadd44e797e40b))
+
+
+### Bug Fixes
+
+* **commons-expo:** fail instead of debug-signing an unsigned release ([7e4fd4d](https://github.com/aimarchirico/commons/commit/7e4fd4d2276db3d4cce483b90fda32c90da4a098))
+* **commons-github,commons-cloudflare,commons-expo:** drop unused overrides, fail-fast keystore ([04b79a0](https://github.com/aimarchirico/commons/commit/04b79a075adb8062da2b605f31a3694b93354355))
+
+
+### Code Refactoring
+
+* **commons-expo:** make eas-cli an optional peer dependency ([ec695b4](https://github.com/aimarchirico/commons/commit/ec695b4121e631f2c46aaf9c47da7a1082eeb932))
+* **commons-project:** export from root instead of subpaths ([6fda9b7](https://github.com/aimarchirico/commons/commit/6fda9b70ba31d370e53ca2df473c5f63baa2f37d))
+
 ## [3.0.2](https://github.com/aimarchirico/commons/compare/commons-expo-v3.0.1...commons-expo-v3.0.2) (2026-07-24)
 
 

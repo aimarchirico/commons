@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/aimarchirico/commons/compare/commons-firebase-admin-v1.0.3...commons-firebase-admin-v2.0.0) (2026-07-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* enforce documentation standards via commons-ts and commons-convention
+
+### Features
+
+* enforce documentation standards via commons-ts and commons-convention ([d6f5028](https://github.com/aimarchirico/commons/commit/d6f5028dbedbd74cdb52d92568fadd44e797e40b))
+
 ## [1.0.3](https://github.com/aimarchirico/commons/compare/commons-firebase-admin-v1.0.2...commons-firebase-admin-v1.0.3) (2026-07-21)
 
 

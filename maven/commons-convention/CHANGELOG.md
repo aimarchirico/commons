@@ -1,5 +1,26 @@
 # Changelog
 
+## [2.0.0](https://github.com/aimarchirico/commons/compare/commons-convention-v1.6.1...commons-convention-v2.0.0) (2026-07-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* enforce documentation standards via commons-ts and commons-convention
+* **commons-convention:** consumers of the convention plugin now fail `check` on any comment that is not a KDoc block.
+* **commons-convention:** consumers of the convention plugin now fail `check` on undocumented public classes, functions, and properties.
+
+### Features
+
+* **commons-convention:** allow only kdoc comments ([2407ca2](https://github.com/aimarchirico/commons/commit/2407ca251cda697661a7b81ce5ef60ad73dd2a6b))
+* **commons-convention:** require kdoc on public declarations ([b7f3b47](https://github.com/aimarchirico/commons/commit/b7f3b471c1ce80c781b9389353af7c473d7d76a6))
+* **commons-convention:** validate kdoc content against the actual signature ([cba1cab](https://github.com/aimarchirico/commons/commit/cba1cab01efdb1fcc3a0a073f61d3253ee6a70b8))
+* enforce documentation standards via commons-ts and commons-convention ([d6f5028](https://github.com/aimarchirico/commons/commit/d6f5028dbedbd74cdb52d92568fadd44e797e40b))
+
+
+### Bug Fixes
+
+* **commons-convention:** import File in the kotlin convention plugin ([84a7c6a](https://github.com/aimarchirico/commons/commit/84a7c6ab4fb7609359103f4929ce98a3595d65b0))
+
 ## [1.6.1](https://github.com/aimarchirico/commons/compare/commons-convention-v1.6.0...commons-convention-v1.6.1) (2026-07-21)
 
 
