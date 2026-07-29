@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.0](https://github.com/aimarchirico/commons/compare/commons-cloudflare-v3.1.0...commons-cloudflare-v3.2.0) (2026-07-29)
+
+
+### Features
+
+* add TUNNEL_PATH support for Cloudflare tunnel routing ([8bd7a3d](https://github.com/aimarchirico/commons/commit/8bd7a3dc187dee2d98ee4568d8cc330f361923a3))
+
 ## [3.1.0](https://github.com/aimarchirico/commons/compare/commons-cloudflare-v3.0.0...commons-cloudflare-v3.1.0) (2026-07-29)
 
 
