@@ -231,10 +231,16 @@ and reports each variable as created, updated, or already correct.
 | `TUNNEL_ID`             | Yes      | Existing tunnel to add the rule to.                  |
 | `TUNNEL_HOSTNAME`       | Yes      | Hostname to route.                                   |
 | `TUNNEL_SERVICE`        | Yes      | Local service address, e.g. `http://localhost:8082`. |
+| `TUNNEL_PATH`           | No       | Path to scope the rule to, e.g. `bios`.               |
 | `CLOUDFLARE_ACCOUNT_ID` | No       | Account. Derived when the token sees exactly one.    |
 
-Inserts the rule before the catch-all and preserves every existing rule. When
-the hostname already routes to the same service it makes no write at all.
+A hostname with no `TUNNEL_PATH` matches every path, so one hostname can front
+several backends by giving each a distinct `TUNNEL_PATH` (e.g. `api.example.com/bios`
+and `api.example.com/other`, each a separate invocation with its own `TUNNEL_SERVICE`).
+The rule is keyed on the hostname+path pair; inserts before the catch-all (and
+before any less-specific rule for the same hostname) and preserves every
+existing rule. When the pair already routes to the same service it makes no
+write at all.
 
 ### `commons-cloudflare create-service-token`
 

@@ -13,11 +13,13 @@ type Configuration = {config?: {ingress?: Ingress[]}};
 
 const env = resolveEnv(
   ['CLOUDFLARE_API_TOKEN', 'TUNNEL_ID', 'TUNNEL_HOSTNAME', 'TUNNEL_SERVICE'],
-  ['CLOUDFLARE_ACCOUNT_ID'],
+  ['CLOUDFLARE_ACCOUNT_ID', 'TUNNEL_PATH'],
 );
 
 const cf = api(env.CLOUDFLARE_API_TOKEN);
-const resource = `tunnel route ${env.TUNNEL_HOSTNAME}`;
+const resource = env.TUNNEL_PATH
+  ? `tunnel route ${env.TUNNEL_HOSTNAME}/${env.TUNNEL_PATH}`
+  : `tunnel route ${env.TUNNEL_HOSTNAME}`;
 
 const run = async (): Promise<void> => {
   const account = await resolveAccount(cf, env.CLOUDFLARE_ACCOUNT_ID);
@@ -30,7 +32,9 @@ const run = async (): Promise<void> => {
 
   const config = current.config ?? {};
   const ingress = config.ingress ?? [];
-  const existing = ingress.find(rule => rule.hostname === env.TUNNEL_HOSTNAME);
+  const matches = (entry: Ingress): boolean =>
+    entry.hostname === env.TUNNEL_HOSTNAME && entry.path === env.TUNNEL_PATH;
+  const existing = ingress.find(matches);
 
   if (existing?.service === env.TUNNEL_SERVICE) {
     report(resource, 'present', `→ ${existing.service}`);
@@ -40,18 +44,26 @@ const run = async (): Promise<void> => {
   const rule: Ingress = {
     hostname: env.TUNNEL_HOSTNAME,
     service: env.TUNNEL_SERVICE,
+    ...(env.TUNNEL_PATH ? {path: env.TUNNEL_PATH} : {}),
   };
 
   /**
    * The catch-all rule has no hostname and must stay last, so an inserted rule
-   * goes before it and every existing rule is preserved.
+   * goes before it and every existing rule is preserved. Path-specific rules
+   * must precede the bare-hostname rule they'd otherwise be shadowed by, so
+   * they're inserted before the first same-hostname entry rather than at the
+   * end of the hostname group.
    */
-  const kept = ingress.filter(entry => entry.hostname !== env.TUNNEL_HOSTNAME);
-  const catchAllAt = kept.findIndex(entry => !entry.hostname);
+  const kept = ingress.filter(entry => !matches(entry));
+  const shadowedAt = env.TUNNEL_PATH
+    ? kept.findIndex(
+        entry => !entry.hostname || entry.hostname === env.TUNNEL_HOSTNAME,
+      )
+    : kept.findIndex(entry => !entry.hostname);
   const updated =
-    catchAllAt === -1
+    shadowedAt === -1
       ? [...kept, rule]
-      : [...kept.slice(0, catchAllAt), rule, ...kept.slice(catchAllAt)];
+      : [...kept.slice(0, shadowedAt), rule, ...kept.slice(shadowedAt)];
 
   await cf.send('PUT', path, {config: {...config, ingress: updated}});
   report(resource, existing ? 'updated' : 'created', `→ ${env.TUNNEL_SERVICE}`);
