@@ -1,3 +1,14 @@
 {
-  "includeCoAuthoredBy": false
+  "includeCoAuthoredBy": false,
+  "enabledPlugins": {
+    "commons@commons": true
+  },
+  "extraKnownMarketplaces": {
+    "commons": {
+      "source": {
+        "source": "directory",
+        "path": "."
+      }
+    }
+  }
 }
