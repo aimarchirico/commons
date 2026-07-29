@@ -7,6 +7,13 @@ description:
 argument-hint: "--pr <pr-number> [--auto]"
 ---
 
+## Arguments
+
+| Flag     | Required | Description                                                                                                          |
+| :------- | :------- | :------------------------------------------------------------------------------------------------------------------- |
+| `--pr`   | Yes      | The number of the existing pull request to improve.                                                                  |
+| `--auto` | No       | Skip every approval prompt in this skill and the `commit` skill it invokes, running the full lifecycle autonomously. |
+
 ## Workflow
 
 1. Preflight: Verify that `CONTRIBUTING.md` exists in the repository root. If it
@@ -46,10 +53,3 @@ argument-hint: "--pr <pr-number> [--auto]"
 12. Execute `git worktree remove <worktree-path>` to remove the isolated
     worktree; `<branch-name>` and its commits remain intact in the repository
     and on the remote.
-
-## Arguments
-
-| Flag     | Required | Description                                                                                                          |
-| :------- | :------- | :------------------------------------------------------------------------------------------------------------------- |
-| `--pr`   | Yes      | The number of the existing pull request to improve.                                                                  |
-| `--auto` | No       | Skip every approval prompt in this skill and the `commit` skill it invokes, running the full lifecycle autonomously. |

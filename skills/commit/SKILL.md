@@ -7,6 +7,12 @@ description:
 argument-hint: "[--auto]"
 ---
 
+## Arguments
+
+| Flag     | Required | Description                                                  |
+| :------- | :------- | :----------------------------------------------------------- |
+| `--auto` | No       | Skip the approval step and commit the drafted plan directly. |
+
 ## Workflow
 
 1. Preflight: Verify that `CONTRIBUTING.md` exists in the repository root. If it
@@ -22,9 +28,3 @@ argument-hint: "[--auto]"
    drafted plan.
 6. For each approved unit, execute `git add` for those specific files followed
    by `git commit -m` with the approved message.
-
-## Arguments
-
-| Flag     | Required | Description                                                  |
-| :------- | :------- | :----------------------------------------------------------- |
-| `--auto` | No       | Skip the approval step and commit the drafted plan directly. |

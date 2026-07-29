@@ -6,6 +6,12 @@ description:
 argument-hint: "[--auto]"
 ---
 
+## Arguments
+
+| Flag     | Required | Description                                                     |
+| :------- | :------- | :-------------------------------------------------------------- |
+| `--auto` | No       | Skip the approval step and apply the proposed updates directly. |
+
 ## Workflow
 
 1. Preflight: Verify that `CONTRIBUTING.md` exists in the repository root. If it
@@ -20,9 +26,3 @@ argument-hint: "[--auto]"
    approval. Skip this step if the `--auto` flag is set, and proceed directly
    with the proposed updates.
 4. Apply the edits.
-
-## Arguments
-
-| Flag     | Required | Description                                                     |
-| :------- | :------- | :-------------------------------------------------------------- |
-| `--auto` | No       | Skip the approval step and apply the proposed updates directly. |

@@ -6,6 +6,12 @@ description:
 argument-hint: "[--auto]"
 ---
 
+## Arguments
+
+| Flag     | Required | Description                                                       |
+| :------- | :------- | :---------------------------------------------------------------- |
+| `--auto` | No       | Skip the approval step and create the drafted hierarchy directly. |
+
 ## Workflow
 
 1. Preflight: Verify that `CONTRIBUTING.md` exists in the repository root and
@@ -42,9 +48,3 @@ argument-hint: "[--auto]"
 
 6. Execute `python3 .agents/skills/issues/scripts/create_issues.py issues.json`
    (the script automatically deletes the temporary file upon completion).
-
-## Arguments
-
-| Flag     | Required | Description                                                       |
-| :------- | :------- | :---------------------------------------------------------------- |
-| `--auto` | No       | Skip the approval step and create the drafted hierarchy directly. |

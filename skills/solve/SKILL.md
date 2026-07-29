@@ -6,6 +6,14 @@ description:
 argument-hint: "--issue <issue-id> [--draft] [--auto]"
 ---
 
+## Arguments
+
+| Flag      | Required | Description                                                                                                                             |
+| :-------- | :------- | :-------------------------------------------------------------------------------------------------------------------------------------- |
+| `--issue` | Yes      | The ID of the existing GitHub issue.                                                                                                    |
+| `--draft` | No       | Create the resulting pull request as a draft.                                                                                           |
+| `--auto`  | No       | Skip every approval prompt in this skill and the `commit`, `docs`, and `pr` skills it invokes, running the full lifecycle autonomously. |
+
 ## Workflow
 
 1. Preflight: Verify that `CONTRIBUTING.md` exists in the repository root. If it
@@ -38,11 +46,3 @@ argument-hint: "--issue <issue-id> [--draft] [--auto]"
 11. Execute `git worktree remove <worktree-path>` to remove the isolated
     worktree; `<branch-name>` and its commits remain intact in the repository
     and on the remote.
-
-## Arguments
-
-| Flag      | Required | Description                                                                                                                             |
-| :-------- | :------- | :-------------------------------------------------------------------------------------------------------------------------------------- |
-| `--issue` | Yes      | The ID of the existing GitHub issue.                                                                                                    |
-| `--draft` | No       | Create the resulting pull request as a draft.                                                                                           |
-| `--auto`  | No       | Skip every approval prompt in this skill and the `commit`, `docs`, and `pr` skills it invokes, running the full lifecycle autonomously. |

@@ -6,6 +6,13 @@ description:
 argument-hint: "[--draft] [--auto]"
 ---
 
+## Arguments
+
+| Flag      | Required | Description                                                |
+| :-------- | :------- | :--------------------------------------------------------- |
+| `--draft` | No       | Submit the pull request as a draft.                        |
+| `--auto`  | No       | Skip the approval step and create the drafted PR directly. |
+
 ## Workflow
 
 1. Preflight: Verify that `CONTRIBUTING.md` exists in the repository root and
@@ -35,10 +42,3 @@ argument-hint: "[--draft] [--auto]"
    drafted title and body.
 8. Execute `gh pr create --title "<title>" --body "<body>"`, passing `--draft`
    if the `--draft` flag was provided.
-
-## Arguments
-
-| Flag      | Required | Description                                                |
-| :-------- | :------- | :--------------------------------------------------------- |
-| `--draft` | No       | Submit the pull request as a draft.                        |
-| `--auto`  | No       | Skip the approval step and create the drafted PR directly. |
