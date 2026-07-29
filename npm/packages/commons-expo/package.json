@@ -14,7 +14,6 @@
     "./eslint-core": "./src/lib/eslint-core.ts",
     "./eslint-ui": "./src/lib/eslint-ui.ts",
     "./eslint-app": "./src/lib/eslint-app.ts",
-    "./folders": "./src/lib/folders.ts",
     "./tsconfig-base": "./src/assets/tsconfig-base.json"
   },
   "bin": {

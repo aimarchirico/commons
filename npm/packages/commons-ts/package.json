@@ -9,7 +9,6 @@
     "fix": "eslint --fix"
   },
   "exports": {
-    "./comments": "./src/lib/comments.ts",
     "./eslint-base": "./src/lib/eslint-base.ts",
     "./eslint-core": "./src/lib/eslint-core.ts",
     "./folders": "./src/lib/folders.ts",

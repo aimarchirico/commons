@@ -10,7 +10,7 @@ interface ProxyContext {
  * Consumer repositories re-export this from `functions/api/[[path]].ts`:
  *
  * ```ts
- * export {onRequest} from '@aimarchirico/commons-cloudflare/proxy';
+ * export {onRequest} from '@aimarchirico/commons-cloudflare';
  * ```
  *
  * @param context The Pages Function context carrying the request and bindings.
