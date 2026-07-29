@@ -19,7 +19,10 @@ repositories through a skills-capable agent runtime.
 - **Worktrees**: Skills that check out a branch (`resolve`, `solve`) do so in
   a dedicated git worktree at `<worktree-path>` = `../<branch-name>` (a
   sibling of the repository root) rather than switching the caller's current
-  checkout, so the invoking repo's working tree is never disturbed.
+  checkout, so the invoking repo's working tree is never disturbed. Each
+  skill removes its worktree with `git worktree remove` once its workflow
+  completes, since git refuses a second worktree for a branch that already
+  has one checked out.
 
 ## Folder Structure
 

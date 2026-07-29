@@ -35,6 +35,9 @@ argument-hint: "--issue <issue-id> [--draft] [--auto]"
 10. Execute the `pr` skill to open a pull request. Pass the `--draft` and
     `--auto` flags through to the `pr` skill if they were provided by the
     user.
+11. Execute `git worktree remove <worktree-path>` to remove the isolated
+    worktree; `<branch-name>` and its commits remain intact in the repository
+    and on the remote.
 
 ## Arguments
 

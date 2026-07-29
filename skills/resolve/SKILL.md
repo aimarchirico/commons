@@ -38,6 +38,9 @@ argument-hint: "--pr <pr-number> [--auto]"
    reply.
 10. Post a single summarizing reply on the pull request's conversation thread,
     incorporating any conversation-level (non-line) comments.
+11. Execute `git worktree remove <worktree-path>` to remove the isolated
+    worktree; `<branch-name>` and its commits remain intact in the repository
+    and on the remote.
 
 ## Arguments
 
