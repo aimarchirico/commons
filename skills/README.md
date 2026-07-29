@@ -8,8 +8,8 @@ downstream repositories as the `commons` Claude Code plugin.
 - **Markdown** `SKILL.md` definitions (`name`/`description`/`argument-hint`
   frontmatter — `description` covers both what the skill does and when to use
   it — plus a `## Workflow` section).
-- Packaged as a Claude Code plugin (`.claude-plugin/plugin.json` at the
-  repository root).
+- Packaged as a Claude Code plugin (`.claude-plugin/plugin.json` and
+  `.claude-plugin/marketplace.json` at the repository root).
 
 ## Folder Structure
 
@@ -38,7 +38,7 @@ skill in this directory:
 
 ```sh
 /plugin marketplace add aimarchirico/commons
-/plugin install commons
+/plugin install commons@commons
 ```
 
 ## Code Quality

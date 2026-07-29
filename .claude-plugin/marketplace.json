@@ -1,0 +1,13 @@
+{
+  "name": "commons",
+  "owner": {
+    "name": "aimarchirico"
+  },
+  "plugins": [
+    {
+      "name": "commons",
+      "source": "./",
+      "description": "Development lifecycle skills: commit, docs, issues, pr, resolve, solve"
+    }
+  ]
+}
