@@ -3,6 +3,7 @@ name: pr
 description:
   Create a standardized pull request. Use when the user asks to create a
   pull request.
+argument-hint: "[--draft] [--auto]"
 ---
 
 ## Workflow

@@ -3,6 +3,7 @@ name: issues
 description:
   Create new hierarchical issues. Use when the user asks to create new
   issues.
+argument-hint: "[--auto]"
 ---
 
 ## Workflow

@@ -3,6 +3,7 @@ name: solve
 description:
   Orchestrate the development lifecycle starting from an existing issue. Use
   when the user asks to solve or implement an issue.
+argument-hint: "--issue <issue-id> [--draft] [--auto]"
 ---
 
 ## Workflow
@@ -10,8 +11,8 @@ description:
 1. Preflight: Verify that `CONTRIBUTING.md` exists in the repository root. If it
    is missing, run `npx @aimarchirico/commons-docs materialize-templates` to
    materialize the documentation.
-2. Extract `<issue-id>` from the `--issue` flag. Prompt the user if it was not
-   provided.
+2. Extract `<issue-id>` from the `--issue` flag in `$ARGUMENTS`. Prompt the
+   user if it was not provided.
 3. Execute `gh issue view <issue-id> --json title,labels` to fetch the issue
    details.
 4. Determine `<branch-name>` following the naming rules in `CONTRIBUTING.md`,

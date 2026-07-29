@@ -4,6 +4,7 @@ description:
   Analyze unstaged changes and create logical, atomic git commits. Use when
   the user explicitly asks to commit unstaged changes, analyze git diffs for
   committing, or run the commit skill.
+argument-hint: "[--auto]"
 ---
 
 ## Workflow

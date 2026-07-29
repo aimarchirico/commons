@@ -3,6 +3,7 @@ name: docs
 description:
   Update project documentation. Use when the user asks to update project
   documentation.
+argument-hint: "[--auto]"
 ---
 
 ## Workflow

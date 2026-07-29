@@ -4,6 +4,7 @@ description:
   Orchestrate the development lifecycle starting from an existing pull
   request's review feedback. Use when the user asks to resolve or address
   feedback on an existing pull request.
+argument-hint: "--pr <pr-number> [--auto]"
 ---
 
 ## Workflow
@@ -11,8 +12,8 @@ description:
 1. Preflight: Verify that `CONTRIBUTING.md` exists in the repository root. If it
    is missing, run `npx @aimarchirico/commons-docs materialize-templates` to
    materialize the documentation.
-2. Extract `<pr-number>` from the `--pr` flag. Prompt the user if it was not
-   provided.
+2. Extract `<pr-number>` from the `--pr` flag in `$ARGUMENTS`. Prompt the user
+   if it was not provided.
 3. Execute `gh pr view <pr-number> --json headRefName` to resolve
    `<branch-name>`, then `git worktree add <worktree-path> <branch-name>` to
    check the pull request's existing branch out into an isolated worktree (see

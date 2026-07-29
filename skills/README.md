@@ -5,16 +5,17 @@ repositories through a skills-capable agent runtime.
 
 ## Tech Stack
 
-- **Markdown** `SKILL.md` definitions (`name`/`description` frontmatter —
-  `description` covers both what the skill does and when to use it — plus a
-  `## Workflow` section).
+- **Markdown** `SKILL.md` definitions (`name`/`description`/`argument-hint`
+  frontmatter — `description` covers both what the skill does and when to use
+  it — plus a `## Workflow` section).
 - Consumed by skills-capable agent runtimes (e.g. Claude Code).
 
 ## Conventions
 
-- **Flags**: Parsed from the freeform arguments string passed when a skill is
-  invoked (e.g. `--issue 123 --auto`). Each skill documents its own flags
-  under a `## Supported Flags` section in its `SKILL.md`.
+- **Flags**: Declared via each skill's `argument-hint` frontmatter and parsed
+  from `$ARGUMENTS`, the freeform arguments string passed when a skill is
+  invoked (e.g. `--issue 123 --auto`). Each skill documents its individual
+  flags under a `## Supported Flags` section in its `SKILL.md`.
 - **Worktrees**: Skills that check out a branch (`resolve`, `solve`) do so in
   a dedicated git worktree at `<worktree-path>` = `../<branch-name>` (a
   sibling of the repository root) rather than switching the caller's current
