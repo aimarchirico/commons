@@ -1,5 +1,5 @@
 ---
-name: issues
+name: issue
 description:
   Create new hierarchical issues. Use when the user asks to create new
   issues.
@@ -46,5 +46,6 @@ argument-hint: "[--auto]"
    }
    ```
 
-6. Execute `python3 .agents/skills/issues/scripts/create_issues.py issues.json`
+6. Execute
+   `python3 "${CLAUDE_PLUGIN_ROOT}/skills/issue/scripts/create_issues.py" issues.json`
    (the script automatically deletes the temporary file upon completion).

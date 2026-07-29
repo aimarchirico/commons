@@ -17,7 +17,7 @@ downstream repositories as the `commons` Claude Code plugin.
 skills/
 ├── commit/SKILL.md      # create logical, atomic commits
 ├── docs/SKILL.md        # update project documentation
-├── issues/SKILL.md      # create hierarchical issues
+├── issue/SKILL.md       # create hierarchical issues
 ├── pr/SKILL.md          # create a standardized pull request
 ├── resolve/SKILL.md     # orchestrate the lifecycle from PR review feedback
 └── solve/SKILL.md       # orchestrate the lifecycle from an existing issue
