@@ -1,5 +1,30 @@
 # Changelog
 
+## [3.0.0](https://github.com/aimarchirico/commons/compare/commons-cloudflare-v2.1.1...commons-cloudflare-v3.0.0) (2026-07-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* enforce documentation standards via commons-ts and commons-convention
+* **commons-project:** subpaths `./env`, `./report`, and `./outputs` are removed in favor of root exports.
+
+### Features
+
+* add reusable provisioning commands for scaffolded projects ([3c17e79](https://github.com/aimarchirico/commons/commit/3c17e79b7a7067784fe1ca24871b5fcbb4a5bedf))
+* **commons-cloudflare:** add provisioning commands ([581b5a8](https://github.com/aimarchirico/commons/commit/581b5a8b71caf8419a567e110f3641536f356a1b)), closes [#189](https://github.com/aimarchirico/commons/issues/189) [#190](https://github.com/aimarchirico/commons/issues/190) [#191](https://github.com/aimarchirico/commons/issues/191) [#192](https://github.com/aimarchirico/commons/issues/192) [#188](https://github.com/aimarchirico/commons/issues/188)
+* **commons-cloudflare:** derive the account and production branch ([a0cb8fb](https://github.com/aimarchirico/commons/commit/a0cb8fbc9111e80c979c1fe87b3585895fdfdfa6))
+* enforce documentation standards via commons-ts and commons-convention ([d6f5028](https://github.com/aimarchirico/commons/commit/d6f5028dbedbd74cdb52d92568fadd44e797e40b))
+
+
+### Bug Fixes
+
+* **commons-github,commons-cloudflare,commons-expo:** drop unused overrides, fail-fast keystore ([04b79a0](https://github.com/aimarchirico/commons/commit/04b79a075adb8062da2b605f31a3694b93354355))
+
+
+### Code Refactoring
+
+* **commons-project:** export from root instead of subpaths ([6fda9b7](https://github.com/aimarchirico/commons/commit/6fda9b70ba31d370e53ca2df473c5f63baa2f37d))
+
 ## [2.1.1](https://github.com/aimarchirico/commons/compare/commons-cloudflare-v2.1.0...commons-cloudflare-v2.1.1) (2026-07-24)
 
 

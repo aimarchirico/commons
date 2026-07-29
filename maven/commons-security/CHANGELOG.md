@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/aimarchirico/commons/compare/commons-security-v2.0.1...commons-security-v3.0.0) (2026-07-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* enforce documentation standards via commons-ts and commons-convention
+
+### Features
+
+* enforce documentation standards via commons-ts and commons-convention ([d6f5028](https://github.com/aimarchirico/commons/commit/d6f5028dbedbd74cdb52d92568fadd44e797e40b))
+
 ## [2.0.1](https://github.com/aimarchirico/commons/compare/commons-security-v2.0.0...commons-security-v2.0.1) (2026-07-06)
 
 

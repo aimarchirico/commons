@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.0](https://github.com/aimarchirico/commons/compare/commons-openapi-v2.2.1...commons-openapi-v2.3.0) (2026-07-29)
+
+
+### Features
+
+* add reusable provisioning commands for scaffolded projects ([3c17e79](https://github.com/aimarchirico/commons/commit/3c17e79b7a7067784fe1ca24871b5fcbb4a5bedf))
+
 ## [2.2.1](https://github.com/aimarchirico/commons/compare/commons-openapi-v2.2.0...commons-openapi-v2.2.1) (2026-07-24)
 
 

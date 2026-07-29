@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "no.chirico.commons"
-version = "1.6.1" // x-release-please-version
+version = "2.0.0" // x-release-please-version
 
 java {
     sourceCompatibility = JavaVersion.VERSION_25
