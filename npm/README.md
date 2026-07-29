@@ -147,9 +147,10 @@ anything is written:
 
 ### `commons-github create-project`
 
-Copies the `aimarchirico/Commons` project, the source of truth every
-scaffolded project's board is copied from, and links the copy. The project's
-title is derived from the repository name, e.g. `my-repo` becomes `My Repo`.
+Copies the public `aimarchirico/Commons Template` project, the source of
+truth every scaffolded project's board is copied from, and links the copy.
+The project's title is derived from the repository name, e.g. `my-repo`
+becomes `My Repo`.
 
 | Key                 | Required | Purpose                                                                |
 | :------------------ | :------- | :--------------------------------------------------------------------- |

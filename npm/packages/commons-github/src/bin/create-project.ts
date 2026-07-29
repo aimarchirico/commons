@@ -30,9 +30,13 @@ const link = (owner: string, slug: string, number: number): void => {
   ghOrThrow(['project', 'link', String(number), '--owner', owner, '-R', slug]);
 };
 
-/** The canonical project every scaffolded project's board is copied from. */
+/**
+ * The canonical, public project every scaffolded project's board is copied
+ * from. A dedicated copy of the private "Commons" project, kept in sync by
+ * hand, so scaffolded repos never link back to the private one.
+ */
 const COMMONS_OWNER = 'aimarchirico';
-const COMMONS_PROJECT_TITLE = 'Commons';
+const COMMONS_PROJECT_TITLE = 'Commons Template';
 
 /** "my-repo" -> "My Repo" */
 const titleCase = (value: string): string =>
