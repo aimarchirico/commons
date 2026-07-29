@@ -147,20 +147,16 @@ anything is written:
 
 ### `commons-github create-project`
 
-Copies the project linked to the repository this one was generated from and
-links the copy.
+Copies the `aimarchirico/Commons` project, the source of truth every
+scaffolded project's board is copied from, and links the copy. The project's
+title is derived from the repository name, e.g. `my-repo` becomes `My Repo`.
 
-| Key                     | Required | Purpose                                                              |
-| :---------------------- | :------- | :------------------------------------------------------------------- |
-| `PROJECT_TITLE`         | Yes      | Title of the project to find or create.                              |
-| `GITHUB_REPOSITORY`     | No       | Target `owner/repo`. Defaults to the working directory's repository. |
-| `PROJECT_SOURCE_OWNER`  | No       | Overrides the source owner instead of resolving the template.        |
-| `PROJECT_SOURCE_NUMBER` | No       | Overrides the source project number.                                 |
+| Key                 | Required | Purpose                                                                |
+| :------------------ | :------- | :--------------------------------------------------------------------- |
+| `GITHUB_REPOSITORY` | No       | Target `owner/repo`. Defaults to the working directory's repository.   |
 
 On a re-run it reports the already-linked project. If a project with the title
-exists but is unlinked it links it; the template relationship it would
-otherwise resolve is only readable for a freshly generated repository, which is
-what the overrides are for.
+exists but is unlinked it links it.
 
 ### `commons-github create-environments`
 

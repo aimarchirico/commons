@@ -1,11 +1,6 @@
 #!/usr/bin/env node
 
-import {
-  fail,
-  printSummary,
-  report,
-  resolveEnv,
-} from '@aimarchirico/commons-project';
+import {fail, printSummary, report} from '@aimarchirico/commons-project';
 import {gh, ghJson, ghOrThrow, repoContext} from '../services/gh.js';
 
 type Project = {number: number; title: string};
@@ -31,47 +26,22 @@ const ownedProject = (owner: string, title: string): Project | undefined => {
   return (data.projects ?? []).find(project => project.title === title);
 };
 
-/**
- * Resolve the project linked to the repository this one was generated from.
- * Only readable while the template relationship is still reported, which is
- * why an override exists.
- */
-const templateProject = (): {owner: string; number: number} | undefined => {
-  const result = gh(['repo', 'view', '--json', 'templateRepository']);
-  if (result.status !== 0) return undefined;
-  const template = (
-    JSON.parse(result.stdout) as {
-      templateRepository?: {owner?: {login: string}; name?: string};
-    }
-  ).templateRepository;
-  const owner = template?.owner?.login;
-  const name = template?.name;
-  if (!owner || !name) return undefined;
-
-  const source = gh([
-    'repo',
-    'view',
-    `${owner}/${name}`,
-    '--json',
-    'projectsV2',
-  ]);
-  if (source.status !== 0) return undefined;
-  const found = nodes(
-    (JSON.parse(source.stdout) as {projectsV2: {nodes?: Project[]}}).projectsV2,
-  )[0];
-  return found ? {owner, number: found.number} : undefined;
-};
-
 const link = (owner: string, slug: string, number: number): void => {
   ghOrThrow(['project', 'link', String(number), '--owner', owner, '-R', slug]);
 };
 
-const env = resolveEnv(
-  ['PROJECT_TITLE'],
-  ['PROJECT_SOURCE_OWNER', 'PROJECT_SOURCE_NUMBER'],
-);
-const title = env.PROJECT_TITLE;
-const {owner, slug} = repoContext();
+/** The canonical project every scaffolded project's board is copied from. */
+const COMMONS_OWNER = 'aimarchirico';
+const COMMONS_PROJECT_TITLE = 'Commons';
+
+/** "my-repo" -> "My Repo" */
+const titleCase = (value: string): string =>
+  (value.match(/[A-Za-z0-9]+/g) ?? [])
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+
+const {owner, repo, slug} = repoContext();
+const title = titleCase(repo);
 
 try {
   const linked = linkedProjects(slug).find(project => project.title === title);
@@ -87,17 +57,10 @@ try {
       link(owner, slug, existing.number);
       report(`project "${title}"`, 'updated', `#${existing.number} linked`);
     } else {
-      const override =
-        env.PROJECT_SOURCE_OWNER && env.PROJECT_SOURCE_NUMBER
-          ? {
-              owner: env.PROJECT_SOURCE_OWNER,
-              number: Number(env.PROJECT_SOURCE_NUMBER),
-            }
-          : undefined;
-      const source = override ?? templateProject();
+      const source = ownedProject(COMMONS_OWNER, COMMONS_PROJECT_TITLE);
       if (!source) {
         fail(
-          'Could not resolve a source project to copy. Set PROJECT_SOURCE_OWNER and PROJECT_SOURCE_NUMBER, or run this while the repository still reports the template it was generated from.',
+          `Could not find a project titled "${COMMONS_PROJECT_TITLE}" owned by ${COMMONS_OWNER} to copy.`,
         );
       }
       const copied = JSON.parse(
@@ -106,7 +69,7 @@ try {
           'copy',
           String(source.number),
           '--source-owner',
-          source.owner,
+          COMMONS_OWNER,
           '--target-owner',
           owner,
           '--title',
@@ -119,7 +82,7 @@ try {
       report(
         `project "${title}"`,
         'created',
-        `#${copied.number} copied from ${source.owner}/#${source.number}`,
+        `#${copied.number} copied from ${COMMONS_OWNER}/#${source.number}`,
       );
     }
   }
