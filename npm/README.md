@@ -31,17 +31,17 @@ npm/
 └── turbo.json             # check/fix task pipeline
 ```
 
-| Package                                 | Provides                                                                                                           |
-| :-------------------------------------- | :----------------------------------------------------------------------------------------------------------------- |
-| `@aimarchirico/commons-ts`              | `./eslint`, `./tsconfig.json` — base TypeScript config.                                                            |
-| `@aimarchirico/commons-expo`            | `./eslint`, `./tsconfig.json` config + `commons-expo build-android`, `create-project` and `import-keystore` bins.  |
-| `@aimarchirico/commons-project`         | root exports (`env`, `report`, `outputs`, `cli`, `git` helpers) + `commons-project rename-project` bin.            |
+| Package                                 | Provides                                                                                                               |
+| :-------------------------------------- | :--------------------------------------------------------------------------------------------------------------------- |
+| `@aimarchirico/commons-ts`              | `./eslint`, `./tsconfig.json` — base TypeScript config.                                                                |
+| `@aimarchirico/commons-expo`            | `./eslint`, `./tsconfig.json` config + `commons-expo build-android`, `create-project` and `import-keystore` bins.      |
+| `@aimarchirico/commons-project`         | root exports (`env`, `report`, `outputs`, `cli`, `git` helpers) + `commons-project rename-project` bin.                |
 | `@aimarchirico/commons-github`          | `commons-github create-project`, `create-environments`, `sync-variables`, `set-secrets`, `materialize-templates` bins. |
-| `@aimarchirico/commons-tools`           | `./markdownlint`, `./commitlint` configs.                                                                          |
-| `@aimarchirico/commons-openapi`         | `commons-openapi generate-client` bin (`dist/bin/cli.js`) generating the OpenAPI client and docs.                  |
-| `@aimarchirico/commons-cloudflare`      | `./proxy` Pages Function + `commons-cloudflare fix-assets` and provisioning bins.                                  |
-| `@aimarchirico/commons-firebase-client` | Firebase client config and `commons-firebase-client decode-google-services` bin.                                   |
-| `@aimarchirico/commons-google-signin`   | Google Sign-In React context and authentication hooks.                                                             |
+| `@aimarchirico/commons-tools`           | `./markdownlint`, `./commitlint` configs.                                                                              |
+| `@aimarchirico/commons-openapi`         | `commons-openapi generate-client` bin (`dist/bin/cli.js`) generating the OpenAPI client and docs.                      |
+| `@aimarchirico/commons-cloudflare`      | `./proxy` Pages Function + `commons-cloudflare fix-assets` and provisioning bins.                                      |
+| `@aimarchirico/commons-firebase-client` | Firebase client config and `commons-firebase-client decode-google-services` bin.                                       |
+| `@aimarchirico/commons-google-signin`   | Google Sign-In React context and authentication hooks.                                                                 |
 
 `commons-expo`, `commons-tools`, and `commons-openapi` extend
 `commons-ts` as a `workspace:*` dependency, so `commons-ts` is the base every
