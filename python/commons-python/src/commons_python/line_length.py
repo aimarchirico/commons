@@ -12,7 +12,9 @@ EXCLUDED_DIRS = {".venv", "__pycache__", ".git", "build", "dist"}
 
 
 def _is_excluded(path: Path) -> bool:
-    return any(part in EXCLUDED_DIRS or part.endswith(".egg-info") for part in path.parts)
+    return any(
+        part in EXCLUDED_DIRS or part.endswith(".egg-info") for part in path.parts
+    )
 
 
 def _iter_python_files(root: Path):
@@ -26,7 +28,10 @@ def _iter_python_files(root: Path):
 
 
 def check_line_length(paths: list[str]) -> int:
-    """Walk the given paths and flag files over ``MAX_LINES``. Returns a process exit code."""
+    """Walk the given paths and flag files over ``MAX_LINES``.
+
+    Returns a process exit code.
+    """
     violations: list[str] = []
 
     for arg in paths:
