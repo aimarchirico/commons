@@ -10,7 +10,6 @@ version = "3.0.0" // x-release-please-version
 dependencies {
   implementation(platform(libs.spring.boot.dependencies))
   implementation("org.springframework.boot:spring-boot-starter-web")
-  testImplementation(project(":commons-test"))
 }
 
 publishing {
