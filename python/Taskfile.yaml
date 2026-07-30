@@ -7,6 +7,7 @@ tasks:
       - uv run --package commons-python commons-python ruff check
       - uv run --package commons-python commons-python ty check
       - uv run --package commons-python commons-python line-length
+      - uv run --package commons-python commons-python comments
 
   fix:
     desc: Fix Python files

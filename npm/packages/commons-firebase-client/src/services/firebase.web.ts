@@ -12,9 +12,9 @@ type WebAuth = ReturnType<typeof webAuth.getAuth>;
 let auth: WebAuth;
 let configured = false;
 
-/** Google provider instance. */
+/** The Google auth provider built by `configureFirebaseAuth`, for `signInWithPopup`. */
 export let googleProvider: FirebaseAuthClient['googleProvider'];
-/** Google auth provider static constructor. */
+/** The web `GoogleAuthProvider`, bound by `configureFirebaseAuth`. */
 export let GoogleAuthProvider: GoogleAuthProviderStatic;
 
 /**

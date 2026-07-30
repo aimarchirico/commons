@@ -8,7 +8,8 @@ import {
 } from '@aimarchirico/commons-firebase-client';
 
 /**
- * Options for configuring the Google sign-in hook.
+ * Overrides for {@link useGoogleSignIn}: the Google web client id (defaults
+ * to `'autoDetect'`) and a dev-only email/password bypass of the Google flow.
  */
 export interface UseGoogleSignInOptions {
   webClientId?: string;

@@ -22,6 +22,9 @@ includes:
   plugin:
     taskfile: ./plugin/Taskfile.yaml
     dir: ./plugin
+  python:
+    taskfile: ./python/Taskfile.yaml
+    dir: ./python
 
 tasks:
   default:

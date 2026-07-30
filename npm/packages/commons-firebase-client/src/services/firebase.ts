@@ -11,9 +11,9 @@ type NativeAuth = ReturnType<typeof mobileAuth.getAuth>;
 let auth: NativeAuth;
 let configured = false;
 
-/** Google provider instance. */
+/** Unused on native, since `signInWithPopup` is not supported; kept for interface parity with web. */
 export let googleProvider: FirebaseAuthClient['googleProvider'];
-/** Google auth provider static constructor. */
+/** The native `GoogleAuthProvider`, bound by `configureFirebaseAuth`. */
 export let GoogleAuthProvider: GoogleAuthProviderStatic;
 
 /**

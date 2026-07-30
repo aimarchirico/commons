@@ -29,9 +29,7 @@ const toResult = (
   return {type: 'cancelled'};
 };
 
-/**
- * Cross-platform Google Sign-In service implementation for native devices.
- */
+/** Native `GoogleSignInServiceContract` implementation, backed by `react-native-nitro-google-signin`. */
 export const GoogleSignInService: GoogleSignInServiceContract = {
   async configure(config) {
     GoogleOneTapSignIn.configure(config);

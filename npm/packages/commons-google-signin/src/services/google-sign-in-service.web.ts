@@ -39,9 +39,7 @@ const signOut = async (): Promise<void> => {
   await firebaseSignOut(getAuth());
 };
 
-/**
- * Cross-platform Google Sign-In service implementation for web platforms.
- */
+/** Web `GoogleSignInServiceContract` implementation, backed by Firebase's popup sign-in. */
 export const GoogleSignInService: GoogleSignInServiceContract = {
   async configure() {},
   async checkPlayServices() {
