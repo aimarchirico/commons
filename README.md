@@ -36,6 +36,7 @@ Implementation-level setup and usage live in each subsystem's README:
 - [`tools/`](tools/README.md) — shared linting configs and release tooling.
 - [`plugin/`](plugin/README.md) — the `commons` Claude Code plugin (skills
   and agents).
+- [`python/`](python/README.md) — shared Python tooling (ruff config + CLI).
 - [`.github/actions/`](.github/actions/README.md) — shared GitHub Actions for
   CI/CD workflows.
 
