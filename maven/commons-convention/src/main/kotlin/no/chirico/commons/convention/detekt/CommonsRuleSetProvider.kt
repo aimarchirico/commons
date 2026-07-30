@@ -10,5 +10,13 @@ class CommonsRuleSetProvider : RuleSetProvider {
   override val ruleSetId = RuleSetId("commons")
 
   override fun instance(): RuleSet =
-    RuleSet(ruleSetId, listOf(::PublicKDocOnly, ::SuppressRequiresReason))
+    RuleSet(
+      ruleSetId,
+      listOf(
+        ::PublicKDocOnly,
+        ::SuppressRequiresReason,
+        ::FileLength,
+        ::FileNaming,
+      ),
+    )
 }

@@ -20,12 +20,13 @@ jobs:
     name: Detect Changed Paths
     runs-on: ubuntu-latest
     outputs:
+      tools: ${{ steps.filter.outputs.tools }}
+      github: ${{ steps.filter.outputs.github }}
+      docs: ${{ steps.filter.outputs.docs }}
       maven: ${{ steps.filter.outputs.maven }}
       npm: ${{ steps.filter.outputs.npm }}
-      docs: ${{ steps.filter.outputs.docs }}
+      python: ${{ steps.filter.outputs.python }}
       plugin: ${{ steps.filter.outputs.plugin }}
-      github: ${{ steps.filter.outputs.github }}
-      tools: ${{ steps.filter.outputs.tools }}
     steps:
       - name: Check Out Repo
         uses: actions/checkout@v7
@@ -41,16 +42,19 @@ jobs:
               - '**/*.yaml'
               - '**/*.toml'
               - '!npm/packages/**'
+            github:
+              - '.github/**'
             docs:
               - '**/*.md'
               - '.github/workflows/ci.yaml'
-            github:
-              - '.github/**'
             maven:
               - 'maven/**'
               - '.github/workflows/ci.yaml'
             npm:
               - 'npm/**'
+              - '.github/workflows/ci.yaml'
+            python:
+              - 'python/**'
               - '.github/workflows/ci.yaml'
             plugin:
               - 'plugin/**'
@@ -94,6 +98,20 @@ jobs:
             NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
 
   # ==========================================
+  # GITHUB CI JOB
+  # ==========================================
+  github:
+    name: GitHub Check
+    needs: changes
+    if: needs.changes.outputs.github == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/github-task
+        with:
+          command: github:check
+
+  # ==========================================
   # DOCS CI JOB
   # ==========================================
   docs:
@@ -109,20 +127,6 @@ jobs:
           node_cache_path: tools/pnpm-lock.yaml
           task_env: |
             NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
-
-  # ==========================================
-  # GITHUB CI JOB
-  # ==========================================
-  github:
-    name: GitHub Check
-    needs: changes
-    if: needs.changes.outputs.github == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: ./.github/actions/github-task
-        with:
-          command: github:check
 
   # ==========================================
   # MAVEN CI JOB
@@ -154,6 +158,20 @@ jobs:
           node_cache_path: npm/pnpm-lock.yaml
           task_env: |
             NODE_AUTH_TOKEN=${{ secrets.GH_PACKAGES_TOKEN }}
+
+  # ==========================================
+  # PYTHON CI JOB
+  # ==========================================
+  python:
+    name: Python Check
+    needs: changes
+    if: needs.changes.outputs.python == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/python-task
+        with:
+          command: python:check
 
   # ==========================================
   # PLUGIN CI JOB

@@ -16,6 +16,9 @@ includes:
   npm:
     taskfile: ./npm/Taskfile.yaml
     dir: ./npm
+  python:
+    taskfile: ./python/Taskfile.yaml
+    dir: ./python
   plugin:
     taskfile: ./plugin/Taskfile.yaml
     dir: ./plugin
