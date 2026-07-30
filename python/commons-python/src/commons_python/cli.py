@@ -8,12 +8,6 @@ import sys
 def _run_wrapped(
     binary: str, config_flag: str, asset_name: str, args: list[str]
 ) -> int:
-    """Invoke ``binary <subcommand> config_flag config_path ...`` for the given args.
-
-    ``config_flag`` names the flag used to pass the bundled ``asset_name``
-    config; it's placed after the subcommand since ``ty`` only accepts it
-    there (``ruff`` accepts it in either position).
-    """
     asset = importlib.resources.files("commons_python.assets") / asset_name
     with importlib.resources.as_file(asset) as config_path:
         subcommand, *rest = args
