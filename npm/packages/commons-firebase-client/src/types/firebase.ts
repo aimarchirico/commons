@@ -1,3 +1,4 @@
+/** The Firebase web app config passed to `configureFirebaseAuth` on web. */
 export interface FirebaseWebConfig {
   apiKey: string;
   authDomain: string;
@@ -6,6 +7,7 @@ export interface FirebaseWebConfig {
   appId: string;
 }
 
+/** A signed-in Firebase user, normalised across the native and web SDKs. */
 export interface AuthUser {
   uid: string;
   email: string | null;
@@ -14,14 +16,17 @@ export interface AuthUser {
   delete(): Promise<void>;
 }
 
+/** A bound Firebase auth instance, as returned by `getAuth`. */
 export interface Auth {
   currentUser: AuthUser | null;
 }
 
+/** The result of a successful sign-in call. */
 export interface UserCredential {
   user: AuthUser;
 }
 
+/** Unregisters a listener passed to `onAuthStateChanged`. */
 export type Unsubscribe = () => void;
 
 /**

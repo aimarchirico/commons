@@ -39,6 +39,7 @@ const signOut = async (): Promise<void> => {
   await firebaseSignOut(getAuth());
 };
 
+/** Web `GoogleSignInServiceContract` implementation, backed by Firebase's popup sign-in. */
 export const GoogleSignInService: GoogleSignInServiceContract = {
   async configure() {},
   async checkPlayServices() {

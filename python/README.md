@@ -48,7 +48,8 @@ repository root:
 
 ## Code Quality
 
-- **Linting** — ruff with bundled `assets/ruff.toml` (`commons-python ruff <args>`), selecting rule groups `E`, `F`, and `D`.
+- **Linting** — ruff with bundled `assets/ruff.toml`
+  (`commons-python ruff <args>`), selecting rule groups `E`, `F`, and `D`.
 - **Types** — ty with bundled `assets/ty.toml` (`commons-python ty <args>`).
 - **Documentation** — every public module, function, class, and method needs a
   Google-style docstring, enforced via ruff's `D` (`pydocstyle`) rule group

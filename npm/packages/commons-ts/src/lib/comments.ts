@@ -168,7 +168,8 @@ const resolveVariableDeclarationOwner = (
   declarator: DeclarationNode,
 ): DeclarationNode => {
   const declaration = declarator.parent;
-  const exportDeclaration = declaration?.parent;
+  if (!declaration) return declarator;
+  const exportDeclaration = declaration.parent;
   if (
     exportDeclaration &&
     (exportDeclaration.type === 'ExportNamedDeclaration' ||

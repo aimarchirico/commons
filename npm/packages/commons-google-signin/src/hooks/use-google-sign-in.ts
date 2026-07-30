@@ -7,10 +7,12 @@ import {
   GoogleAuthProvider,
 } from '@aimarchirico/commons-firebase-client';
 
+/**
+ * Overrides for {@link useGoogleSignIn}: the Google web client id (defaults
+ * to `'autoDetect'`) and a dev-only email/password bypass of the Google flow.
+ */
 export interface UseGoogleSignInOptions {
-  /** Overrides the Google web client id. Defaults to 'autoDetect'. */
   webClientId?: string;
-  /** Dev-only email/password bypass of the Google flow. */
   devCredentials?: DevCredentials;
 }
 
@@ -22,12 +24,6 @@ export interface UseGoogleSignInOptions {
  * @returns The `signIn`, `signOut`, and `deleteAccount` callbacks.
  */
 export const useGoogleSignIn = (options?: UseGoogleSignInOptions) => {
-  /**
-   * Signs in and mirrors the result into Firebase.
-   *
-   * @returns The signed-in user, or `undefined` when the flow was cancelled,
-   *   errored, or account creation did not complete.
-   */
   const signIn = async (): Promise<GoogleSignInResult['data']> => {
     try {
       await GoogleSignInService.configure({
