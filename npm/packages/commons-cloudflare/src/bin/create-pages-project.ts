@@ -19,12 +19,6 @@ const cf = api(env.CLOUDFLARE_API_TOKEN);
 const name = env.PAGES_PROJECT_NAME;
 const domain = env.PAGES_CUSTOM_DOMAIN;
 
-/**
- * The production branch is a fact about the repository, not a choice, and
- * defaulting to a literal "main" silently points the project at a branch that
- * may not exist.
- * @returns The production branch name.
- */
 const productionBranch = (): string => {
   const derived = defaultBranch();
   context(
@@ -52,10 +46,6 @@ const run = async (): Promise<void> => {
     report(`pages project ${name}`, 'created');
   }
 
-  /**
-   * A Pages project without its custom domain is never a wanted end state, so
-   * attaching it belongs to this command rather than a separate one.
-   */
   const domains =
     (await cf.get<Array<{name: string}>>(`${projects}/${name}/domains`)) ?? [];
   if (domains.some(entry => entry.name === domain)) {
@@ -63,10 +53,6 @@ const run = async (): Promise<void> => {
     return;
   }
   await cf.send('POST', `${projects}/${name}/domains`, {name: domain});
-  /**
-   * Requests verification, which creates the DNS record automatically when the
-   * domain's zone belongs to the same account.
-   */
   await cf.send('PATCH', `${projects}/${name}/domains/${domain}`, {});
   report(`custom domain ${domain}`, 'created', 'automatic DNS requested');
 };

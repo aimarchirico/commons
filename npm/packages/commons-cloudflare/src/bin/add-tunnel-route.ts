@@ -47,13 +47,6 @@ const run = async (): Promise<void> => {
     ...(env.TUNNEL_PATH ? {path: env.TUNNEL_PATH} : {}),
   };
 
-  /**
-   * The catch-all rule has no hostname and must stay last, so an inserted rule
-   * goes before it and every existing rule is preserved. Path-specific rules
-   * must precede the bare-hostname rule they'd otherwise be shadowed by, so
-   * they're inserted before the first same-hostname entry rather than at the
-   * end of the hostname group.
-   */
   const kept = ingress.filter(entry => !matches(entry));
   const shadowedAt = env.TUNNEL_PATH
     ? kept.findIndex(
