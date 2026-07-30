@@ -3,6 +3,7 @@
   "maven/commons-security": "3.0.0",
   "maven/commons-test": "3.0.0",
   "maven/commons-firebase-admin": "2.0.0",
+  "python/commons-python": "1.0.0",
   "npm/packages/commons-cloudflare": "3.2.0",
   "npm/packages/commons-expo": "4.1.0",
   "npm/packages/commons-firebase-client": "3.0.0",
