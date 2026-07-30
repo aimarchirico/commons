@@ -6,18 +6,26 @@ import sys
 
 
 def _run_wrapped(
-    binary: str, config_flag: str, asset_name: str, args: list[str]
+    binary: str,
+    config_flag: str,
+    asset_name: str,
+    args: list[str],
+    *,
+    config_after_subcommand: bool = False,
 ) -> int:
     """Invoke ``binary`` with the bundled ``asset_name`` config injected.
 
-    ``config_flag`` names the flag used to pass the config path.
+    ``config_flag`` names the flag used to pass the config path. Some tools
+    (e.g. ``ty``) only accept it after the subcommand rather than before.
     """
     asset = importlib.resources.files("commons_python.assets") / asset_name
     with importlib.resources.as_file(asset) as config_path:
-        result = subprocess.run(
-            [binary, config_flag, str(config_path), *args],
-            check=False,
-        )
+        if config_after_subcommand and args:
+            subcommand, *rest = args
+            command = [binary, subcommand, config_flag, str(config_path), *rest]
+        else:
+            command = [binary, config_flag, str(config_path), *args]
+        result = subprocess.run(command, check=False)
     return result.returncode
 
 
@@ -37,7 +45,11 @@ def main() -> None:
     if tool == "ruff":
         sys.exit(_run_wrapped("ruff", "--config", "ruff.toml", rest))
     if tool == "ty":
-        sys.exit(_run_wrapped("ty", "--config-file", "ty.toml", rest))
+        sys.exit(
+            _run_wrapped(
+                "ty", "--config-file", "ty.toml", rest, config_after_subcommand=True
+            )
+        )
 
     print("usage: commons-python <ruff|ty|line-length> ...", file=sys.stderr)
     sys.exit(2)
