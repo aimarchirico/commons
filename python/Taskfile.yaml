@@ -1,17 +1,15 @@
 version: '3'
 
-includes:
-  commons-python:
-    taskfile: ./commons-python/Taskfile.yaml
-    dir: ./commons-python
-
 tasks:
   check:
-    desc: Check all Python packages
+    desc: Check Python files
     cmds:
-      - task: commons-python:check
+      - uv run --package commons-python commons-python ruff check .
+      - uv run --package commons-python commons-python ty check .
+      - uv run --package commons-python commons-python line-length .
 
   fix:
-    desc: Fix all Python packages
+    desc: Fix Python files
     cmds:
-      - task: commons-python:fix
+      - uv run --package commons-python commons-python ruff check --fix .
+      - uv run --package commons-python commons-python ruff format .

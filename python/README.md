@@ -6,19 +6,23 @@ config files.
 ## Tech Stack
 
 - **Python** 3.13
-- **uv** (project/dependency management)
+- **uv** (workspace: `pyproject.toml` here is a virtual root with
+  `[tool.uv.workspace]`, listing member packages)
 - **ruff** 0.14+ (lint + format)
+- **ty** 0.0.60+ (type checking)
 - **hatchling** (build backend)
 
 ## Folder Structure
 
 ```text
 python/
-└── commons-python/   # shared ruff config + CLI (see its own README)
+├── pyproject.toml      # virtual workspace root (no [project] table)
+├── Taskfile.yaml         # single Taskfile for the whole workspace
+└── commons-python/     # shared ruff/ty config + CLI (see its own README)
 ```
 
-Only `commons-python` exists today; more packages may follow the same
-pattern.
+Only `commons-python` exists today; adding a package means adding it to
+`pyproject.toml`'s `members` list, following the same pattern.
 
 ## Local Development
 
