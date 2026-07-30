@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.1.0](https://github.com/aimarchirico/commons/compare/commons-convention-v2.0.0...commons-convention-v2.1.0) (2026-07-30)
+
+
+### Features
+
+* **commons-convention:** tighten Kotlin comment and suppression discipline ([c414cae](https://github.com/aimarchirico/commons/commit/c414caee96962a11d36effaf454dc9438770e371))
+* **convention:** add FileLength and FileNaming detekt rules ([3dd98ce](https://github.com/aimarchirico/commons/commit/3dd98cee1486a67f2106e531e66a1a2564e99810))
+* **convention:** move BaseConventionTest file checks into detekt ([024cde3](https://github.com/aimarchirico/commons/commit/024cde3573f0bd6137dd1ad2fc08af5e79e333a5))
+* tighten comment and suppression discipline ([b2f362e](https://github.com/aimarchirico/commons/commit/b2f362ecfce6271bfac3e9309e72c07c6982c74c))
+
+
+### Bug Fixes
+
+* **convention:** remove unneeded excludes from FileLength rule ([29bdb05](https://github.com/aimarchirico/commons/commit/29bdb054356a19bda3975f1f55ce3929f1ecd2a8))
+
 ## [2.0.0](https://github.com/aimarchirico/commons/compare/commons-convention-v1.6.1...commons-convention-v2.0.0) (2026-07-29)
 
 

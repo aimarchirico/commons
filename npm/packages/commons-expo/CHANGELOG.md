@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.2.0](https://github.com/aimarchirico/commons/compare/commons-expo-v4.1.0...commons-expo-v4.2.0) (2026-07-30)
+
+
+### Features
+
+* tighten comment and suppression discipline ([b2f362e](https://github.com/aimarchirico/commons/commit/b2f362ecfce6271bfac3e9309e72c07c6982c74c))
+
+
+### Bug Fixes
+
+* **commons-expo:** satisfy public-jsdoc-only in bin scripts and lib ([c567611](https://github.com/aimarchirico/commons/commit/c56761123c4b1e75ae6a2217b02808d8ceb8989b))
+
 ## [4.1.0](https://github.com/aimarchirico/commons/compare/commons-expo-v4.0.0...commons-expo-v4.1.0) (2026-07-29)
 
 

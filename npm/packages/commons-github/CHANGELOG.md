@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/aimarchirico/commons/compare/commons-github-v1.0.0...commons-github-v1.1.0) (2026-07-30)
+
+
+### Features
+
+* tighten comment and suppression discipline ([b2f362e](https://github.com/aimarchirico/commons/commit/b2f362ecfce6271bfac3e9309e72c07c6982c74c))
+
+
+### Bug Fixes
+
+* **commons-github:** satisfy public-jsdoc-only in bin scripts and gh service ([c89c5d9](https://github.com/aimarchirico/commons/commit/c89c5d97062df01343d462fe3c4f922b921c1802))
+
 ## 1.0.0 (2026-07-29)
 
 

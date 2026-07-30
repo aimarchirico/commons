@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/aimarchirico/commons/compare/commons-firebase-admin-v2.0.0...commons-firebase-admin-v2.1.0) (2026-07-30)
+
+
+### Features
+
+* **convention:** move BaseConventionTest file checks into detekt ([024cde3](https://github.com/aimarchirico/commons/commit/024cde3573f0bd6137dd1ad2fc08af5e79e333a5))
+
 ## [2.0.0](https://github.com/aimarchirico/commons/compare/commons-firebase-admin-v1.0.3...commons-firebase-admin-v2.0.0) (2026-07-29)
 
 

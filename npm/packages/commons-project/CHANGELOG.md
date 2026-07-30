@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/aimarchirico/commons/compare/commons-project-v1.0.0...commons-project-v1.1.0) (2026-07-30)
+
+
+### Features
+
+* tighten comment and suppression discipline ([b2f362e](https://github.com/aimarchirico/commons/commit/b2f362ecfce6271bfac3e9309e72c07c6982c74c))
+
+
+### Bug Fixes
+
+* **commons-project:** satisfy public-jsdoc-only across services and types ([a03f748](https://github.com/aimarchirico/commons/commit/a03f7486ffcdff208ae12f5f60d89314bf903962))
+
 ## 1.0.0 (2026-07-29)
 
 
