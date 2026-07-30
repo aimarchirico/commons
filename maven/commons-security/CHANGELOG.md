@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.0](https://github.com/aimarchirico/commons/compare/commons-security-v3.0.0...commons-security-v3.1.0) (2026-07-30)
+
+
+### Features
+
+* **convention:** move BaseConventionTest file checks into detekt ([024cde3](https://github.com/aimarchirico/commons/commit/024cde3573f0bd6137dd1ad2fc08af5e79e333a5))
+
 ## [3.0.0](https://github.com/aimarchirico/commons/compare/commons-security-v2.0.1...commons-security-v3.0.0) (2026-07-29)
 
 

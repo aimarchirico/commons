@@ -1,5 +1,22 @@
 # Changelog
 
+## [3.2.0](https://github.com/aimarchirico/commons/compare/commons-ts-v3.1.1...commons-ts-v3.2.0) (2026-07-30)
+
+
+### Features
+
+* **commons-python:** mirror doc-comment enforcement ([e844994](https://github.com/aimarchirico/commons/commit/e8449949c9c5ce3332e12e566171e69da0d921ef))
+* **commons-ts:** tighten comment and suppression discipline ([9893615](https://github.com/aimarchirico/commons/commit/989361590121db84ec1934ffa06b62ab34d80bed))
+* tighten comment and suppression discipline ([b2f362e](https://github.com/aimarchirico/commons/commit/b2f362ecfce6271bfac3e9309e72c07c6982c74c))
+
+
+### Bug Fixes
+
+* **comments:** handle undefined declaration in resolveVariableDeclarationOwner ([194d47f](https://github.com/aimarchirico/commons/commit/194d47fd24ed4e46eb55ea805dc97321c0ae6c48))
+* **commons-ts:** resolve variable-declarator JSDoc association bug ([f9716de](https://github.com/aimarchirico/commons/commit/f9716de7fcfa1ca8498663fbb8e1a0a2c3f1ecd9))
+* **commons-ts:** satisfy public-jsdoc-only in folders and gitignore ([dcde90c](https://github.com/aimarchirico/commons/commit/dcde90c884c53431a3a9e2e1ae1f7058c57cb9ad))
+* satisfy public-jsdoc-only, commons-ts type check, and docs line length ([232cf7d](https://github.com/aimarchirico/commons/commit/232cf7df1ce5779141f3a7071a4d379188e1c2b9))
+
 ## [3.1.1](https://github.com/aimarchirico/commons/compare/commons-ts-v3.1.0...commons-ts-v3.1.1) (2026-07-29)
 
 

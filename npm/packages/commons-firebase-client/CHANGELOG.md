@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.1.0](https://github.com/aimarchirico/commons/compare/commons-firebase-client-v3.0.0...commons-firebase-client-v3.1.0) (2026-07-30)
+
+
+### Features
+
+* **commons-python:** mirror doc-comment enforcement ([e844994](https://github.com/aimarchirico/commons/commit/e8449949c9c5ce3332e12e566171e69da0d921ef))
+* tighten comment and suppression discipline ([b2f362e](https://github.com/aimarchirico/commons/commit/b2f362ecfce6271bfac3e9309e72c07c6982c74c))
+
+
+### Bug Fixes
+
+* satisfy public-jsdoc-only, commons-ts type check, and docs line length ([232cf7d](https://github.com/aimarchirico/commons/commit/232cf7df1ce5779141f3a7071a4d379188e1c2b9))
+
 ## [3.0.0](https://github.com/aimarchirico/commons/compare/commons-firebase-client-v2.1.1...commons-firebase-client-v3.0.0) (2026-07-29)
 
 

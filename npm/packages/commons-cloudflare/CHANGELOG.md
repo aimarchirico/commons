@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.3.0](https://github.com/aimarchirico/commons/compare/commons-cloudflare-v3.2.0...commons-cloudflare-v3.3.0) (2026-07-30)
+
+
+### Features
+
+* tighten comment and suppression discipline ([b2f362e](https://github.com/aimarchirico/commons/commit/b2f362ecfce6271bfac3e9309e72c07c6982c74c))
+
+
+### Bug Fixes
+
+* **commons-cloudflare:** satisfy public-jsdoc-only in bin scripts and api-client ([c964ba1](https://github.com/aimarchirico/commons/commit/c964ba17520254855915ad93b5f2e7780eab73a0))
+
 ## [3.2.0](https://github.com/aimarchirico/commons/compare/commons-cloudflare-v3.1.0...commons-cloudflare-v3.2.0) (2026-07-29)
 
 
