@@ -4,7 +4,6 @@ Ruff has no rule expressing a maximum file length, so this script covers
 that convention on top of the bundled ruff config.
 """
 
-import sys
 from pathlib import Path
 
 MAX_LINES = 300
@@ -26,12 +25,11 @@ def _iter_python_files(root: Path):
             yield path
 
 
-def main() -> None:
-    """Walk the given paths (default ``.``) and flag files over ``MAX_LINES``."""
-    args = sys.argv[1:] or ["."]
+def check_line_length(paths: list[str]) -> int:
+    """Walk the given paths and flag files over ``MAX_LINES``. Returns a process exit code."""
     violations: list[str] = []
 
-    for arg in args:
+    for arg in paths:
         for file in _iter_python_files(Path(arg)):
             line_count = sum(1 for _ in file.open(encoding="utf-8"))
             if line_count > MAX_LINES:
@@ -40,10 +38,6 @@ def main() -> None:
     if violations:
         for violation in violations:
             print(violation)
-        sys.exit(1)
+        return 1
 
-    sys.exit(0)
-
-
-if __name__ == "__main__":
-    main()
+    return 0

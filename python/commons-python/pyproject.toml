@@ -3,11 +3,10 @@ name = "commons-python"
 version = "1.0.0" # x-release-please-version
 description = "Shared ruff configuration and Python conventions."
 requires-python = ">=3.13"
-dependencies = ["ruff>=0.14"]
+dependencies = ["ruff>=0.14", "ty>=0.0.60"]
 
 [project.scripts]
 commons-python = "commons_python.cli:main"
-commons-python-line-length = "commons_python.line_length:main"
 
 [build-system]
 requires = ["hatchling"]
