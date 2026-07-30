@@ -24,6 +24,7 @@ jobs:
       npm: ${{ steps.filter.outputs.npm }}
       docs: ${{ steps.filter.outputs.docs }}
       plugin: ${{ steps.filter.outputs.plugin }}
+      python: ${{ steps.filter.outputs.python }}
       github: ${{ steps.filter.outputs.github }}
       tools: ${{ steps.filter.outputs.tools }}
     steps:
@@ -54,6 +55,9 @@ jobs:
               - '.github/workflows/ci.yaml'
             plugin:
               - 'plugin/**'
+              - '.github/workflows/ci.yaml'
+            python:
+              - 'python/**'
               - '.github/workflows/ci.yaml'
 
   # ==========================================
@@ -168,3 +172,17 @@ jobs:
       - uses: ./.github/actions/python-task
         with:
           command: plugin:check
+
+  # ==========================================
+  # PYTHON CI JOB
+  # ==========================================
+  python:
+    name: Python Check
+    needs: changes
+    if: needs.changes.outputs.python == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/python-task
+        with:
+          command: python:check
