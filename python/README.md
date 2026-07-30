@@ -47,20 +47,22 @@ repository root:
 
 ## Code Quality
 
-`commons-python` is a single CLI with three subcommands, each a thin,
-single-responsibility wrapper — composition (which checks to run, in what
-order) is left to each consumer's own Taskfile/scripts, not baked into the
-package:
-
-- `commons-python ruff <args>` — forwards `<args>` to `ruff` with the bundled
-  `assets/ruff.toml` injected via `--config`. All ruff subcommands/flags
-  (`check`, `format`, `--fix`, paths) pass through untouched.
-- `commons-python ty <args>` — forwards `<args>` to `ty` with the bundled
-  `assets/ty.toml` injected via `--config-file`.
-- `commons-python line-length <paths>` — ruff has no rule for a maximum
-  *file* line count (only line-*width* rules), so this is a native Python
-  check enforcing a 300-line-per-file maximum, skipping `.venv/`,
-  `__pycache__/`, `.git/`, `build/`, `dist/`, and `*.egg-info/`.
+- **Linting** — ruff with bundled `assets/ruff.toml` (`commons-python ruff <args>`), selecting rule groups `E`, `F`, and `D`.
+- **Types** — ty with bundled `assets/ty.toml` (`commons-python ty <args>`).
+- **Documentation** — every public module, function, class, and method needs a
+  Google-style docstring, enforced via ruff's `D` (`pydocstyle`) rule group
+  configured with `convention = "google"`. Non-public declarations (prefixed
+  with `_`) do not carry docstrings.
+- **Comments** — only docstrings documenting a public declaration are allowed,
+  mirroring the owner-aware doc-comment enforcement across the repository:
+  whatever is required to have a doc comment is also the only thing allowed
+  to have one. Line comments (`# ...`), orphaned docstrings, and docstrings on
+  non-public declarations are rejected, so explanation stays attached to what
+  it describes. Tooling directives such as `# noqa` or `# type: ignore` remain
+  legal where required by tooling.
+- **Line length** — native Python check enforcing a 300-line-per-file maximum
+  (`commons-python line-length`), skipping `.venv/`, `__pycache__/`, `.git/`,
+  `build/`, `dist/`, and `*.egg-info/`.
 
 ## Deployment
 
