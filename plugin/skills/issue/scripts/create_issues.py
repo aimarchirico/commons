@@ -92,23 +92,20 @@ def get_project_context():
                 f"Found active linked project: '{proj.get('title')}' "
                 f"(number: {project_number}, id: {project_id})"
             )
-            return owner, project_number, project_id
+            return owner, project_number, project_id, None
     except Exception as e:
-        print(
-            f"Warning: Error querying linked projects via GraphQL. {e}",
-            file=sys.stderr,
-        )
+        return owner, None, None, f"Error querying linked projects: {e}"
 
-    print("No active linked projects found. Skipping project field setup.")
-    return owner, None, None
+    return owner, None, None, "No active project linked to this repository."
 
 def get_project_fields(owner, project_number):
     type_field_id = None
     priority_field_id = None
     fields_data = {}
+    errors = []
 
     if not project_number:
-        return type_field_id, priority_field_id, fields_data
+        return type_field_id, priority_field_id, fields_data, errors
 
     try:
         fields_output = run_cmd([
@@ -122,9 +119,92 @@ def get_project_fields(owner, project_number):
             elif field.get("name") == "Priority":
                 priority_field_id = field["id"]
     except Exception as e:
-        print(f"Warning: Could not retrieve project fields. {e}", file=sys.stderr)
+        errors.append(f"Could not retrieve project fields: {e}")
 
-    return type_field_id, priority_field_id, fields_data
+    if type_field_id is None:
+        errors.append("Project is missing required 'Type' field.")
+    if priority_field_id is None:
+        errors.append("Project is missing required 'Priority' field.")
+
+    return type_field_id, priority_field_id, fields_data, errors
+
+def collect_issue_type_priority_values(items):
+    types_used = set()
+    priorities_used = set()
+
+    def walk(item_list):
+        for item in item_list:
+            type_val = item.get("type")
+            priority_val = item.get("priority")
+            if type_val:
+                types_used.add(type_val)
+            if priority_val:
+                priorities_used.add(priority_val)
+            walk(item.get("children", []))
+
+    walk(items)
+    return types_used, priorities_used
+
+def validate_project_setup(
+    items,
+    project_number,
+    project_id,
+    type_field_id,
+    priority_field_id,
+    fields_data,
+    context_error,
+    fields_errors,
+):
+    errors = []
+
+    if context_error is not None:
+        errors.append(context_error)
+
+    if project_number is not None:
+        errors.extend(fields_errors)
+
+    types_used, priorities_used = collect_issue_type_priority_values(items)
+
+    if type_field_id is not None:
+        available = {
+            opt["name"]
+            for field in fields_data.get("fields", [])
+            if field.get("name") == "Type"
+            for opt in field.get("options", [])
+        }
+        for t in types_used:
+            if t not in available:
+                errors.append(
+                    f"Type value '{t}' does not match any option in the "
+                    f"project's Type field. Available: {sorted(available)}."
+                )
+
+    if priority_field_id is not None:
+        available = {
+            opt["name"]
+            for field in fields_data.get("fields", [])
+            if field.get("name") == "Priority"
+            for opt in field.get("options", [])
+        }
+        for p in priorities_used:
+            if p not in available:
+                errors.append(
+                    f"Priority value '{p}' does not match any option in the "
+                    f"project's Priority field. Available: {sorted(available)}."
+                )
+
+    return errors
+
+def fail_if_errors(errors):
+    if errors:
+        print(
+            f"Error: GitHub project setup is incomplete. Found {len(errors)} "
+            "problem(s):",
+            file=sys.stderr,
+        )
+        for e in errors:
+            print(f"  - {e}", file=sys.stderr)
+        sys.exit(1)
 
 def create_issue_recursive(
     item,
@@ -269,10 +349,16 @@ def main():
     # Ensure the temporary file is deleted on script exit
     try:
         check_dependencies()
-        owner, project_number, project_id = get_project_context()
-        type_field_id, priority_field_id, fields_data = get_project_fields(
-            owner, project_number
+        owner, project_number, project_id, context_error = get_project_context()
+        type_field_id, priority_field_id, fields_data, fields_errors = (
+            get_project_fields(owner, project_number)
         )
+        errors = validate_project_setup(
+            data.get("items", []), project_number, project_id,
+            type_field_id, priority_field_id, fields_data,
+            context_error, fields_errors,
+        )
+        fail_if_errors(errors)
 
         print("Processing and creating issues...")
         for item in data.get("items", []):
