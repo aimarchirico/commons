@@ -177,7 +177,7 @@ const resolveVariableDeclarationOwner = (
   ) {
     return exportDeclaration;
   }
-  return declaration;
+  return declaration ?? declarator;
 };
 
 const recordOwner = (

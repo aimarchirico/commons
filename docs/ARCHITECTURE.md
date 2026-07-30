@@ -12,11 +12,11 @@ downstream repositories consume them.
 ```mermaid
 graph LR
     subgraph Commons["Commons monorepo"]
+        tools_src["tools/<br/>linting + release config"]
         maven_src["maven/<br/>Kotlin modules"]
         npm_src["npm/<br/>config packages + CLI"]
-        tools_src["tools/<br/>linting + release config"]
-        plugin["plugin/<br/>agent skills"]
         python_src["python/<br/>Python packages"]
+        plugin["plugin/<br/>agent skills"]
     end
 
     rp["Release Please<br/>(GitHub Actions)"]
@@ -25,9 +25,9 @@ graph LR
 
     consumers["Downstream services<br/>(e.g. service template)"]
 
+    tools_src -->|release config| rp
     maven_src -->|release| rp
     npm_src -->|release| rp
-    tools_src -->|release config| rp
     rp -->|publish| maven_reg
     rp -->|publish| npm_reg
 
@@ -52,13 +52,13 @@ graph LR
 
 ```text
 .
+├── tools/      # shared linting configs, commitlint, and release-please config
+├── .github/    # CI/release workflows and issue/PR templates
+├── docs/       # system-level documentation
 ├── maven/      # Kotlin backend modules and the Gradle convention plugin
 ├── npm/        # frontend configuration packages and the API CLI
-├── tools/      # shared linting configs, commitlint, and release-please config
-├── plugin/     # Claude Code plugin (skills/, agents/), the only tree consumers install
 ├── python/     # Python package(s): shared ruff config + CLI, git dependency @ main
-├── docs/       # system-level documentation
-└── .github/    # CI/release workflows and issue/PR templates
+└── plugin/     # Claude Code plugin (skills/, agents/), the only tree consumers install
 ```
 
 ## Provisioning Flow
