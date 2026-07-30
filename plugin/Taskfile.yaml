@@ -4,12 +4,12 @@ tasks:
   check:
     desc: Check Python files
     cmds:
-      - uv run commons-python ruff check .
-      - uv run commons-python ty check .
-      - uv run commons-python line-length .
+      - uv run commons-python ruff check
+      - uv run commons-python ty check
+      - uv run commons-python line-length
 
   fix:
     desc: Fix Python files
     cmds:
-      - uv run commons-python ruff check --fix .
-      - uv run commons-python ruff format .
+      - uv run commons-python ruff check --fix
+      - uv run commons-python ruff format
