@@ -22,6 +22,11 @@
       "package-name": "commons-firebase-admin",
       "extra-files": ["build.gradle.kts"]
     },
+    "python/commons-python": {
+      "release-type": "simple",
+      "package-name": "commons-python",
+      "extra-files": ["pyproject.toml"]
+    },
     "npm/packages/commons-cloudflare": {
       "release-type": "node"
     },
