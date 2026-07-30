@@ -6,6 +6,7 @@ import type {Manifest, ManifestValue} from '../types/manifest.js';
 const PLACEHOLDER =
   /\{\{\s*([A-Za-z0-9_]+)(?:\.(from|to))?(?:\|([A-Za-z]+))?\s*\}\}/g;
 
+/** Which half of a manifest value a placeholder or field reads from. */
 export type Side = 'from' | 'to';
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>

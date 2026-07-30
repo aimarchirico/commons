@@ -4,6 +4,7 @@ import {createRequire} from 'module';
 import {spawnSync} from 'child_process';
 import {fail} from './report.js';
 
+/** The exit code and captured output of a finished command. */
 export type CliResult = {status: number; stdout: string; stderr: string};
 
 /**
