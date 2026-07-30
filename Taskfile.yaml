@@ -16,12 +16,12 @@ includes:
   npm:
     taskfile: ./npm/Taskfile.yaml
     dir: ./npm
-  plugin:
-    taskfile: ./plugin/Taskfile.yaml
-    dir: ./plugin
   python:
     taskfile: ./python/Taskfile.yaml
     dir: ./python
+  plugin:
+    taskfile: ./plugin/Taskfile.yaml
+    dir: ./plugin
 
 tasks:
   default:
