@@ -1,0 +1,17 @@
+version: '3'
+
+includes:
+  commons-python:
+    taskfile: ./commons-python/Taskfile.yaml
+    dir: ./commons-python
+
+tasks:
+  check:
+    desc: Check all Python packages
+    cmds:
+      - task: commons-python:check
+
+  fix:
+    desc: Fix all Python packages
+    cmds:
+      - task: commons-python:fix
