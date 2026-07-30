@@ -1,0 +1,15 @@
+version: '3'
+
+tasks:
+  check:
+    desc: Check Python files
+    cmds:
+      - uv run commons-python check .
+      - uv run commons-python-line-length .
+      - uvx ty check
+
+  fix:
+    desc: Fix Python files
+    cmds:
+      - uv run commons-python check --fix .
+      - uv run ruff format .
