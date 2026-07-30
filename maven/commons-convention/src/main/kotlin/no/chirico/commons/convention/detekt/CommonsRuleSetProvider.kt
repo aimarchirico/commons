@@ -9,5 +9,5 @@ class CommonsRuleSetProvider : RuleSetProvider {
 
   override val ruleSetId = RuleSetId("commons")
 
-  override fun instance(): RuleSet = RuleSet(ruleSetId, listOf(::NonDocComment))
+  override fun instance(): RuleSet = RuleSet(ruleSetId, listOf(::NonDocComment, ::FileLength, ::FileNaming))
 }
