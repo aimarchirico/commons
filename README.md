@@ -31,13 +31,14 @@ on GitHub Packages._
 
 Implementation-level setup and usage live in each subsystem's README:
 
-- [`maven/`](maven/README.md) — Kotlin backend modules and the convention plugin.
-- [`npm/`](npm/README.md) — frontend configuration packages and the API CLI.
 - [`tools/`](tools/README.md) — shared linting configs and release tooling.
-- [`plugin/`](plugin/README.md) — the `commons` Claude Code plugin (skills
-  and agents).
 - [`.github/actions/`](.github/actions/README.md) — shared GitHub Actions for
   CI/CD workflows.
+- [`maven/`](maven/README.md) — Kotlin backend modules and the convention plugin.
+- [`npm/`](npm/README.md) — frontend configuration packages and the API CLI.
+- [`python/`](python/README.md) — shared Python tooling (ruff config + CLI).
+- [`plugin/`](plugin/README.md) — the `commons` Claude Code plugin (skills
+  and agents).
 
 ## Documentation
 

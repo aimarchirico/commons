@@ -12,9 +12,10 @@ downstream repositories consume them.
 ```mermaid
 graph LR
     subgraph Commons["Commons monorepo"]
+        tools_src["tools/<br/>linting + release config"]
         maven_src["maven/<br/>Kotlin modules"]
         npm_src["npm/<br/>config packages + CLI"]
-        tools_src["tools/<br/>linting + release config"]
+        python_src["python/<br/>Python packages"]
         plugin["plugin/<br/>agent skills"]
     end
 
@@ -24,37 +25,40 @@ graph LR
 
     consumers["Downstream services<br/>(e.g. service template)"]
 
+    tools_src -->|release config| rp
     maven_src -->|release| rp
     npm_src -->|release| rp
-    tools_src -->|release config| rp
     rp -->|publish| maven_reg
     rp -->|publish| npm_reg
 
     maven_reg -->|Gradle dependency| consumers
     npm_reg -->|npm dependency| consumers
+    python_src -->|git dependency @ main| consumers
     plugin -->|plugin install| consumers
 ```
 
 ## Infrastructure Overview
 
-| Layer             | Technology                                               | Hosting                                |
-| :---------------- | :------------------------------------------------------- | :------------------------------------- |
-| Backend libraries | Java 25 · Kotlin 2.4 · Gradle 9.6 · Spring Boot 4.1      | GitHub Packages (Maven registry)       |
-| Frontend configs  | Node 20+ · PNPM 11.9 · TypeScript 6 · ESLint 9 · Turbo 2 | GitHub Packages (npm registry)         |
-| Tooling configs   | PNPM 11.9 · markdownlint-cli2 · commitlint               | `tools/` (not published)               |
-| Agent skills      | Markdown `SKILL.md`                                      | GitHub repository (Claude Code plugin) |
-| CI/CD             | GitHub Actions · Release Please                          | GitHub-hosted runners                  |
+| Layer             | Technology                                               | Hosting                                       |
+| :---------------- | :------------------------------------------------------- | :-------------------------------------------- |
+| Backend libraries | Java 25 · Kotlin 2.4 · Gradle 9.6 · Spring Boot 4.1      | GitHub Packages (Maven registry)              |
+| Frontend configs  | Node 20+ · PNPM 11.9 · TypeScript 6 · ESLint 9 · Turbo 2 | GitHub Packages (npm registry)                |
+| Tooling configs   | PNPM 11.9 · markdownlint-cli2 · commitlint               | `tools/` (not published)                      |
+| Python tooling    | Python 3.13 · uv · ruff · hatchling                      | git dependency pinned to `main` (no registry) |
+| Agent skills      | Markdown `SKILL.md`                                      | GitHub repository (Claude Code plugin)        |
+| CI/CD             | GitHub Actions · Release Please                          | GitHub-hosted runners                         |
 
 ## Project Structure
 
 ```text
 .
+├── tools/      # shared linting configs, commitlint, and release-please config
+├── .github/    # CI/release workflows and issue/PR templates
+├── docs/       # system-level documentation
 ├── maven/      # Kotlin backend modules and the Gradle convention plugin
 ├── npm/        # frontend configuration packages and the API CLI
-├── tools/      # shared linting configs, commitlint, and release-please config
-├── plugin/     # Claude Code plugin (skills/, agents/), the only tree consumers install
-├── docs/       # system-level documentation
-└── .github/    # CI/release workflows and issue/PR templates
+├── python/     # Python package(s): shared ruff config + CLI, git dependency @ main
+└── plugin/     # Claude Code plugin (skills/, agents/), the only tree consumers install
 ```
 
 ## Provisioning Flow
