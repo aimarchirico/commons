@@ -82,8 +82,10 @@ The underlying commands are `./gradlew build`, `check`, and `ktfmtFormat`.
   block comments are rejected wherever they appear, on their own line or trailing
   code. The rule reads lexer tokens rather than text, so delimiters inside string
   literals are never mistaken for comments. Build scripts are excluded.
-- **Conventions** — file naming and length rules; modules extend
-  `BaseConventionTest` from `commons-test`.
+- **Conventions** — file naming and length rules, enforced by the same detekt
+  rule set as documentation and comments (`commons/FileNaming`,
+  `commons/FileLength`). Kotlin files under `src/main` must be PascalCase-named
+  and stay under 300 lines.
 - **Architecture** — module-dependency rules for the api/impl/core layout,
   enforced at Gradle configuration time by the
   `no.chirico.commons.convention.architecture` plugin.
