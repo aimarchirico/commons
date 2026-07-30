@@ -1,6 +1,6 @@
 [project]
 name = "commons-python"
-version = "1.0.0" # x-release-please-version
+version = "1.0.0"
 description = "Shared ruff configuration and Python conventions."
 requires-python = ">=3.13"
 dependencies = ["ruff>=0.14", "ty>=0.0.60"]

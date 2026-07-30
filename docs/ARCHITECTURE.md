@@ -28,26 +28,25 @@ graph LR
     maven_src -->|release| rp
     npm_src -->|release| rp
     tools_src -->|release config| rp
-    python_src -->|release| rp
     rp -->|publish| maven_reg
     rp -->|publish| npm_reg
 
     maven_reg -->|Gradle dependency| consumers
     npm_reg -->|npm dependency| consumers
-    rp -->|git dependency @ tag| consumers
+    python_src -->|git dependency @ main| consumers
     plugin -->|plugin install| consumers
 ```
 
 ## Infrastructure Overview
 
-| Layer             | Technology                                               | Hosting                                |
-| :---------------- | :------------------------------------------------------- | :------------------------------------- |
-| Backend libraries | Java 25 · Kotlin 2.4 · Gradle 9.6 · Spring Boot 4.1      | GitHub Packages (Maven registry)       |
-| Frontend configs  | Node 20+ · PNPM 11.9 · TypeScript 6 · ESLint 9 · Turbo 2 | GitHub Packages (npm registry)         |
-| Tooling configs   | PNPM 11.9 · markdownlint-cli2 · commitlint               | `tools/` (not published)               |
-| Python tooling    | Python 3.13 · uv · ruff · hatchling                      | git dependency pinned to Release Please tags (no registry) |
-| Agent skills      | Markdown `SKILL.md`                                      | GitHub repository (Claude Code plugin) |
-| CI/CD             | GitHub Actions · Release Please                          | GitHub-hosted runners                  |
+| Layer             | Technology                                               | Hosting                                       |
+| :---------------- | :------------------------------------------------------- | :-------------------------------------------- |
+| Backend libraries | Java 25 · Kotlin 2.4 · Gradle 9.6 · Spring Boot 4.1      | GitHub Packages (Maven registry)              |
+| Frontend configs  | Node 20+ · PNPM 11.9 · TypeScript 6 · ESLint 9 · Turbo 2 | GitHub Packages (npm registry)                |
+| Tooling configs   | PNPM 11.9 · markdownlint-cli2 · commitlint               | `tools/` (not published)                      |
+| Python tooling    | Python 3.13 · uv · ruff · hatchling                      | git dependency pinned to `main` (no registry) |
+| Agent skills      | Markdown `SKILL.md`                                      | GitHub repository (Claude Code plugin)        |
+| CI/CD             | GitHub Actions · Release Please                          | GitHub-hosted runners                         |
 
 ## Project Structure
 
@@ -57,7 +56,7 @@ graph LR
 ├── npm/        # frontend configuration packages and the API CLI
 ├── tools/      # shared linting configs, commitlint, and release-please config
 ├── plugin/     # Claude Code plugin (skills/, agents/), the only tree consumers install
-├── python/     # Python package(s): shared ruff config + CLI, git-tag distributed
+├── python/     # Python package(s): shared ruff config + CLI, git dependency @ main
 ├── docs/       # system-level documentation
 └── .github/    # CI/release workflows and issue/PR templates
 ```
