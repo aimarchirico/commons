@@ -1,6 +1,6 @@
 [project]
 name = "plugin"
-version = "0.0.0"
+version = "1.0.0"
 requires-python = ">=3.13"
 dependencies = [
   "commons-python @ git+https://github.com/aimarchirico/commons@main#subdirectory=python/commons-python",
