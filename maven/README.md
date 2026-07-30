@@ -78,10 +78,20 @@ The underlying commands are `./gradlew build`, `check`, and `ktfmtFormat`.
   they are public by default in Kotlin. Any KDoc present is also checked
   against the actual signature (`OutdatedDocumentation`), so a stale `@param`
   is caught even on members that were never required to be documented.
-- **Comments** — only KDoc blocks are allowed (`commons/NonDocComment`). Line and
-  block comments are rejected wherever they appear, on their own line or trailing
-  code. The rule reads lexer tokens rather than text, so delimiters inside string
-  literals are never mistaken for comments. Build scripts are excluded.
+- **Comments** — only KDoc blocks documenting a public declaration are allowed
+  (`commons/PublicKDocOnly`), mirroring the documentation rule above exactly:
+  whatever is required to have a KDoc block is also the only thing allowed to
+  have one. Line comments, block comments, a KDoc block that documents nothing,
+  and a KDoc block on a non-public declaration are all rejected, wherever they
+  appear, on their own line or trailing code. The rule reads lexer tokens
+  rather than text, so delimiters inside string literals are never mistaken
+  for comments. A directive comment such as `// x-release-please-version` or
+  `// suppressed: <reason>` is recognised by content, so it stays legal
+  wherever it's written.
+- **Suppression discipline** — every `@Suppress` annotation must be preceded by
+  a `// suppressed: <reason>` comment of at least 10 characters
+  (`commons/SuppressRequiresReason`), mirroring this repository's
+  `commons-ts` convention of requiring a reason on suppressing comments.
 - **Conventions** — file naming and length rules, enforced by the same detekt
   rule set as documentation and comments (`commons/FileNaming`,
   `commons/FileLength`). Kotlin files under `src/main` must be PascalCase-named

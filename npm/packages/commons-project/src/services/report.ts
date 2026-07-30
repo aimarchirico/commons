@@ -1,3 +1,4 @@
+/** The result of acting on a single provisioning resource. */
 export type Outcome =
   'created' | 'updated' | 'present' | 'written' | 'skipped' | 'pending';
 

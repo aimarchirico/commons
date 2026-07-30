@@ -30,19 +30,9 @@ const link = (owner: string, slug: string, number: number): void => {
   ghOrThrow(['project', 'link', String(number), '--owner', owner, '-R', slug]);
 };
 
-/**
- * The canonical, public project every scaffolded project's board is copied
- * from. A dedicated copy of the private "Commons" project, kept in sync by
- * hand, so scaffolded repos never link back to the private one.
- */
 const COMMONS_OWNER = 'aimarchirico';
 const COMMONS_PROJECT_TITLE = 'Commons Template';
 
-/**
- * "my-repo" -> "My Repo"
- * @param value The string to convert.
- * @returns The title-cased string.
- */
 const titleCase = (value: string): string =>
   (value.match(/[A-Za-z0-9]+/g) ?? [])
     .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())

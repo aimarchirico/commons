@@ -7,6 +7,7 @@ import {
 } from '@aimarchirico/commons-project';
 import type {CliResult} from '@aimarchirico/commons-project';
 
+/** The exit code and captured output of a finished `gh` invocation. */
 export type GhResult = CliResult;
 
 const INSTALL_HINT =

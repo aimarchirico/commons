@@ -12,7 +12,9 @@ type WebAuth = ReturnType<typeof webAuth.getAuth>;
 let auth: WebAuth;
 let configured = false;
 
+/** Google provider instance. */
 export let googleProvider: FirebaseAuthClient['googleProvider'];
+/** Google auth provider static constructor. */
 export let GoogleAuthProvider: GoogleAuthProviderStatic;
 
 /**
