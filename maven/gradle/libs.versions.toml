@@ -1,12 +1,12 @@
 [versions]
-kotlin = "2.4.0"
+kotlin = "2.4.10"
 spring-boot = "4.1.0"
-hypersistence = "3.15.3"
+hypersistence = "3.15.4"
 springdoc = "3.0.3"
 ktfmt = "0.26.0"
 detekt = "2.0.0-alpha.5"
 archunit = "1.4.2"
-firebase-admin = "9.2.0"
+firebase-admin = "9.10.0"
 mapstruct = "1.6.3"
 
 [libraries]
