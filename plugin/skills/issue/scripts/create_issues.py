@@ -1,15 +1,26 @@
 #!/usr/bin/env python3
-import sys
-import os
-import json
-import subprocess
-import shutil
+"""Script for creating GitHub issues and linking them to GitHub Projects."""
 
-def run_cmd(args):
+import json
+import os
+import shutil
+import subprocess
+import sys
+
+from project_utils import (
+    get_project_context,
+    get_project_fields,
+    set_project_field,
+    validate_project_setup,
+)
+
+
+def _run_cmd(args):
     result = subprocess.run(args, capture_output=True, text=True, check=True)
     return result.stdout.strip()
 
-def check_dependencies():
+
+def _check_dependencies():
     if not shutil.which("gh"):
         print(
             "Error: GitHub CLI (gh) is not installed or not in PATH.",
@@ -17,7 +28,6 @@ def check_dependencies():
         )
         sys.exit(1)
 
-    # Check gh auth status
     try:
         subprocess.run(["gh", "auth", "status"], capture_output=True, check=True)
     except subprocess.CalledProcessError:
@@ -27,9 +37,8 @@ def check_dependencies():
         )
         sys.exit(1)
 
-    # Check/install gh-sub-issue extension
     try:
-        output = run_cmd(["gh", "extension", "list"])
+        output = _run_cmd(["gh", "extension", "list"])
         if "gh-sub-issue" not in output:
             print("Installing gh-sub-issue extension...")
             subprocess.run(
@@ -42,91 +51,20 @@ def check_dependencies():
             file=sys.stderr,
         )
 
-def get_project_context():
-    try:
-        repo_output = run_cmd(["gh", "repo", "view", "--json", "owner,name"])
-        repo_data = json.loads(repo_output)
-        owner = repo_data["owner"]["login"]
-        repo_name = repo_data["name"]
-    except Exception as e:
+
+def _fail_if_errors(errors):
+    if errors:
         print(
-            f"Error: Could not retrieve GitHub repository context. {e}",
+            "Error: GitHub project setup is incomplete. "
+            f"Found {len(errors)} problem(s):",
             file=sys.stderr,
         )
+        for e in errors:
+            print(f"  - {e}", file=sys.stderr)
         sys.exit(1)
 
-    print(f"Checking for projects linked to repository '{owner}/{repo_name}'...")
-    try:
-        query = """
-        query($owner: String!, $name: String!) {
-          repository(owner: $owner, name: $name) {
-            projectsV2(first: 10) {
-              nodes {
-                id
-                number
-                title
-                closed
-              }
-            }
-          }
-        }
-        """
-        api_output = run_cmd([
-            "gh", "api", "graphql",
-            "-f", f"owner={owner}",
-            "-f", f"name={repo_name}",
-            "-f", f"query={query}"
-        ])
-        api_data = json.loads(api_output)
-        repository = api_data.get("data", {}).get("repository", {})
-        linked_projects = repository.get("projectsV2", {}).get("nodes", [])
 
-        # Filter for open projects
-        open_projects = [p for p in linked_projects if not p.get("closed", False)]
-        if open_projects:
-            # Prefer the first open linked project
-            proj = open_projects[0]
-            project_number = proj["number"]
-            project_id = proj["id"]
-            print(
-                f"Found active linked project: '{proj.get('title')}' "
-                f"(number: {project_number}, id: {project_id})"
-            )
-            return owner, project_number, project_id
-    except Exception as e:
-        print(
-            f"Warning: Error querying linked projects via GraphQL. {e}",
-            file=sys.stderr,
-        )
-
-    print("No active linked projects found. Skipping project field setup.")
-    return owner, None, None
-
-def get_project_fields(owner, project_number):
-    type_field_id = None
-    priority_field_id = None
-    fields_data = {}
-
-    if not project_number:
-        return type_field_id, priority_field_id, fields_data
-
-    try:
-        fields_output = run_cmd([
-            "gh", "project", "field-list", str(project_number),
-            "--owner", owner, "--format", "json"
-        ])
-        fields_data = json.loads(fields_output)
-        for field in fields_data.get("fields", []):
-            if field.get("name") == "Type":
-                type_field_id = field["id"]
-            elif field.get("name") == "Priority":
-                priority_field_id = field["id"]
-    except Exception as e:
-        print(f"Warning: Could not retrieve project fields. {e}", file=sys.stderr)
-
-    return type_field_id, priority_field_id, fields_data
-
-def create_issue_recursive(
+def _create_issue_recursive(
     item,
     parent_id,
     owner,
@@ -145,94 +83,56 @@ def create_issue_recursive(
         print("Warning: Skipped creating issue due to missing title.")
         return
 
-    # Create issue
     if not parent_id:
         print(f"Creating top-level issue: '{title}'...")
         args = ["gh", "issue", "create", "--title", title, "--body", body]
-        issue_url_raw = run_cmd(args)
     else:
         print(f"Creating child issue: '{title}' under parent {parent_id}...")
         args = [
             "gh", "sub-issue", "create",
             "--title", title,
             "--body", body,
-            "--parent", str(parent_id)
+            "--parent", str(parent_id),
         ]
-        issue_url_raw = run_cmd(args)
 
-    issue_url = None
-    for word in issue_url_raw.split():
-        if word.startswith("http://") or word.startswith("https://"):
-            issue_url = word
-            break
-    if not issue_url:
-        issue_url = issue_url_raw
-
+    issue_url_raw = _run_cmd(args)
+    issue_url = next(
+        (
+            w for w in issue_url_raw.split()
+            if w.startswith("http://") or w.startswith("https://")
+        ),
+        issue_url_raw,
+    )
     issue_id = issue_url.split("/")[-1]
-    if not parent_id:
-        print(f"Created top-level issue: {issue_id}")
-    else:
-        print(f"Created child issue: {issue_id}")
+    level_str = "child" if parent_id else "top-level"
+    print(f"Created {level_str} issue: {issue_id}")
 
-    # Add to project and configure fields
     if project_id and issue_url:
         try:
             print(f"Adding issue {issue_id} to project #{project_number}...")
-            item_output = run_cmd([
+            item_output = _run_cmd([
                 "gh", "project", "item-add", str(project_number),
-                "--owner", owner, "--url", issue_url, "--format", "json"
+                "--owner", owner, "--url", issue_url, "--format", "json",
             ])
             item_data = json.loads(item_output)
-            item_id = item_data.get("id")
-
-            if item_id:
-                # Set Type field if defined
-                if type_val and type_field_id:
-                    option_id = None
-                    for field in fields_data.get("fields", []):
-                        if field.get("name") == "Type":
-                            for opt in field.get("options", []):
-                                if opt.get("name") == type_val:
-                                    option_id = opt["id"]
-                                    break
-                    if option_id:
-                        print(f"Setting project item Type to '{type_val}'...")
-                        run_cmd([
-                            "gh", "project", "item-edit",
-                            "--id", item_id,
-                            "--project-id", project_id,
-                            "--field-id", type_field_id,
-                            "--single-select-option-id", option_id
-                        ])
-
-                # Set Priority field if defined
-                if priority_val and priority_field_id:
-                    option_id = None
-                    for field in fields_data.get("fields", []):
-                        if field.get("name") == "Priority":
-                            for opt in field.get("options", []):
-                                if opt.get("name") == priority_val:
-                                    option_id = opt["id"]
-                                    break
-                    if option_id:
-                        print(f"Setting project item Priority to '{priority_val}'...")
-                        run_cmd([
-                            "gh", "project", "item-edit",
-                            "--id", item_id,
-                            "--project-id", project_id,
-                            "--field-id", priority_field_id,
-                            "--single-select-option-id", option_id
-                        ])
+            if item_id := item_data.get("id"):
+                set_project_field(
+                    _run_cmd, item_id, project_id, "Type",
+                    type_field_id, type_val, fields_data,
+                )
+                set_project_field(
+                    _run_cmd, item_id, project_id, "Priority",
+                    priority_field_id, priority_val, fields_data,
+                )
         except Exception as e:
             print(
-                "Warning: Failed to add/configure project fields for "
-                f"issue {issue_id}. {e}",
+                "Warning: Failed to add/configure project fields for issue "
+                f"{issue_id}. {e}",
                 file=sys.stderr,
             )
 
-    # Recurse for children
     for child in item.get("children", []):
-        create_issue_recursive(
+        _create_issue_recursive(
             child,
             issue_id,
             owner,
@@ -243,7 +143,9 @@ def create_issue_recursive(
             fields_data,
         )
 
+
 def main():
+    """Main entry point for parsing input JSON and creating issues."""
     if len(sys.argv) < 2:
         print("Error: JSON file path not specified.")
         print(f"Usage: {sys.argv[0]} <path-to-issues.json>")
@@ -259,32 +161,30 @@ def main():
             data = json.load(f)
     except Exception as e:
         print(f"Error: Failed to parse '{json_file}' as JSON. {e}", file=sys.stderr)
-        # Delete temporary file before exiting
         try:
             os.remove(json_file)
         except Exception:
             pass
         sys.exit(1)
 
-    # Ensure the temporary file is deleted on script exit
     try:
-        check_dependencies()
-        owner, project_number, project_id = get_project_context()
-        type_field_id, priority_field_id, fields_data = get_project_fields(
-            owner, project_number
+        _check_dependencies()
+        owner, project_number, project_id, context_error = get_project_context(_run_cmd)
+        type_field_id, priority_field_id, fields_data, fields_errors = (
+            get_project_fields(_run_cmd, owner, project_number)
         )
+        errors = validate_project_setup(
+            data.get("items", []), project_number, project_id,
+            type_field_id, priority_field_id, fields_data,
+            context_error, fields_errors,
+        )
+        _fail_if_errors(errors)
 
         print("Processing and creating issues...")
         for item in data.get("items", []):
-            create_issue_recursive(
-                item,
-                None,
-                owner,
-                project_number,
-                project_id,
-                type_field_id,
-                priority_field_id,
-                fields_data,
+            _create_issue_recursive(
+                item, None, owner, project_number, project_id,
+                type_field_id, priority_field_id, fields_data,
             )
 
         print("Successfully created all issues.")
@@ -293,6 +193,7 @@ def main():
             os.remove(json_file)
         except Exception:
             pass
+
 
 if __name__ == "__main__":
     main()
