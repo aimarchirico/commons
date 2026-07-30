@@ -56,7 +56,6 @@ export const jsdocContexts = DOC_ELIGIBLE_VISITORS.filter(
   type => !JSDOC_REQUIRE_KEYS.has(type),
 );
 
-/** Class member node types whose exported-ness follows their enclosing class. */
 const CLASS_MEMBER_TYPES = new Set<string>([
   'MethodDefinition',
   'PropertyDefinition',
@@ -64,7 +63,6 @@ const CLASS_MEMBER_TYPES = new Set<string>([
   'TSAbstractPropertyDefinition',
 ]);
 
-/** Settings passed to `getJSDocComment`; only `minLines`/`maxLines` are read. */
 const JSDOC_COMMENT_SETTINGS = {maxLines: 1, minLines: 0};
 
 /**
@@ -104,54 +102,28 @@ const directivePattern = new RegExp(
   `^\\s*@?(${DIRECTIVE_PREFIXES.join('|')})\\b`,
 );
 
-/**
- * Reports whether a comment is shaped like a JSDoc block.
- *
- * @param comment - The comment to test.
- * @returns Whether the comment has the JSDoc `/**` shape.
- */
 const isJSDocShaped = (comment: Comment): boolean =>
   comment.type === 'Block' && comment.value.startsWith('*');
 
-/**
- * Reports whether a comment carries an instruction for another tool.
- *
- * @param comment - The comment to test.
- * @returns Whether the comment is a tooling directive.
- */
 const isDirective = (comment: Comment): boolean =>
   directivePattern.test(comment.value);
 
-/**
- * Reports whether a class member is inaccessible from outside its class,
- * either through a `private`/`protected` TypeScript modifier or a `#private`
- * JavaScript field/method name.
- *
- * @param node - The class member node to test.
- * @returns Whether the member is non-public.
- */
-const isNonPublicMember = (node: DeclarationNode): boolean => {
+const isPrivateAccessModifier = (node: DeclarationNode): boolean => {
   const accessibility =
     'accessibility' in node
       ? (node as {accessibility?: string}).accessibility
       : undefined;
-  if (accessibility === 'private' || accessibility === 'protected') {
-    return true;
-  }
-  const key =
-    'key' in node ? (node as {key?: {type?: string}}).key : undefined;
+  return accessibility === 'private' || accessibility === 'protected';
+};
+
+const isPrivateFieldName = (node: DeclarationNode): boolean => {
+  const key = 'key' in node ? (node as {key?: {type?: string}}).key : undefined;
   return key?.type === 'PrivateIdentifier';
 };
 
-/**
- * Reports whether a declaration is directly exported, following `const`
- * bindings up to their `export` statement, and class members up to their
- * enclosing class.
- *
- * @param node - The declaration node to test.
- * @returns Whether the declaration is exported (or, for a class member,
- *   public and belonging to an exported class).
- */
+const isNonPublicMember = (node: DeclarationNode): boolean =>
+  isPrivateAccessModifier(node) || isPrivateFieldName(node);
+
 const isExported = (node: DeclarationNode): boolean => {
   let current: DeclarationNode = node;
 
@@ -186,18 +158,47 @@ const isExported = (node: DeclarationNode): boolean => {
   return false;
 };
 
-/**
- * Records the JSDoc comment owned by a doc-eligible declaration node, if any.
- *
- * @param sourceCode - The source under lint.
- * @param owners - The map being built from comment to owning declaration.
- * @param node - The declaration node to resolve a JSDoc comment for.
- */
+const VARIABLE_INITIALIZER_TYPES = new Set<string>([
+  'ArrowFunctionExpression',
+  'FunctionExpression',
+  'ClassExpression',
+]);
+
+const resolveVariableDeclarationOwner = (
+  declarator: DeclarationNode,
+): DeclarationNode => {
+  const declaration = declarator.parent;
+  const exportDeclaration = declaration?.parent;
+  if (
+    exportDeclaration &&
+    (exportDeclaration.type === 'ExportNamedDeclaration' ||
+      exportDeclaration.type === 'ExportDefaultDeclaration')
+  ) {
+    return exportDeclaration;
+  }
+  return declaration;
+};
+
 const recordOwner = (
   sourceCode: SourceCode,
   owners: Map<Comment, DeclarationNode>,
   node: DeclarationNode,
 ): void => {
+  if (
+    VARIABLE_INITIALIZER_TYPES.has(node.type) &&
+    node.parent?.type === 'VariableDeclarator'
+  ) {
+    return;
+  }
+  if (node.type === 'VariableDeclarator') {
+    const comment = sourceCode
+      .getCommentsBefore(resolveVariableDeclarationOwner(node))
+      .at(-1);
+    if (comment) {
+      owners.set(comment, node);
+    }
+    return;
+  }
   const comment = getJSDocComment(sourceCode, node, JSDOC_COMMENT_SETTINGS);
   if (comment) {
     owners.set(comment as Comment, node);
@@ -244,10 +245,6 @@ export const publicJSDocOnly: Rule.RuleModule = {
       ...visitors,
       'Program:exit': () => {
         for (const comment of sourceCode.getAllComments()) {
-          /**
-           * ESLint tags a `//` comment `Line` and a `/* *\/` comment `Block`;
-           * both count as plain comments here.
-           */
           const isPlain = comment.type === 'Line' || comment.type === 'Block';
           if (!isPlain || isDirective(comment)) {
             continue;
