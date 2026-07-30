@@ -1,8 +1,9 @@
 commons:
   active: true
-  NonDocComment:
+  PublicKDocOnly:
     active: true
-    excludes: ['**/*.gradle.kts']
+  SuppressRequiresReason:
+    active: true
 
 comments:
   active: true
