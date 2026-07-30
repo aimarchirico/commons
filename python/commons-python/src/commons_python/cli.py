@@ -20,11 +20,15 @@ def main() -> None:
     """Dispatch to a wrapped tool based on the first argument.
 
     ``ruff`` and ``ty`` forward their remaining arguments untouched to the
-    respective tool, with the bundled config injected. ``line-length`` runs
-    the file-length check natively (no equivalent tool to wrap).
+    respective tool, with the bundled config injected. ``line-length`` and
+    ``comments`` run native Python checks.
     """
     tool, *rest = sys.argv[1:] or [""]
 
+    if tool == "comments":
+        from commons_python.comments import check_comments
+
+        sys.exit(check_comments(rest or ["."]))
     if tool == "line-length":
         from commons_python.line_length import check_line_length
 
@@ -34,7 +38,10 @@ def main() -> None:
     if tool == "ty":
         sys.exit(_run_wrapped("ty", "--config-file", "ty.toml", rest))
 
-    print("usage: commons-python <ruff|ty|line-length> ...", file=sys.stderr)
+    print(
+        "usage: commons-python <ruff|ty|line-length|comments> ...",
+        file=sys.stderr,
+    )
     sys.exit(2)
 
 
