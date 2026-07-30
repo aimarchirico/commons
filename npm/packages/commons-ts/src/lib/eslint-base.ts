@@ -5,60 +5,10 @@ import eslintPluginJsdoc from 'eslint-plugin-jsdoc';
 import eslintPluginJsonc from 'eslint-plugin-jsonc';
 import gts from 'gts';
 import {commonsPlugin} from './commons-plugin';
-import {DOC_ELIGIBLE_VISITORS} from './comments';
-import {execFileSync} from 'node:child_process';
+import {jsdocContexts, jsdocRequire} from './comments';
+import {gitignoreConfig} from './gitignore';
 import gtsPrettier from 'gts/.prettierrc.json';
 import tseslint from 'typescript-eslint';
-
-/**
- * Node types `jsdoc/require-jsdoc`'s `require` option supports directly. Any
- * `DOC_ELIGIBLE_VISITORS` entry outside this set is passed through
- * `contexts` instead, so the require-side rule targets exactly the same
- * declarations that `commons/public-jsdoc-only` allows to carry a JSDoc
- * block.
- */
-const JSDOC_REQUIRE_KEYS = new Set([
-  'ArrowFunctionExpression',
-  'ClassDeclaration',
-  'ClassExpression',
-  'FunctionDeclaration',
-  'FunctionExpression',
-  'MethodDefinition',
-]);
-
-const jsdocRequire = Object.fromEntries(
-  DOC_ELIGIBLE_VISITORS.filter(type => JSDOC_REQUIRE_KEYS.has(type)).map(
-    type => [type, true],
-  ),
-);
-const jsdocContexts = DOC_ELIGIBLE_VISITORS.filter(
-  type => !JSDOC_REQUIRE_KEYS.has(type),
-);
-
-const gitignored = (cwd: string): string[] => {
-  try {
-    return execFileSync(
-      'git',
-      [
-        'ls-files',
-        '-z',
-        '--others',
-        '--ignored',
-        '--exclude-standard',
-        '--directory',
-      ],
-      {cwd, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024},
-    )
-      .split('\0')
-      .filter(Boolean)
-      .map(entry => (entry.endsWith('/') ? `${entry}**` : entry));
-  } catch {
-    return [];
-  }
-};
-
-const ignores = gitignored(process.cwd());
-const gitignoreConfig = ignores.length ? [{ignores}] : [];
 
 export default [
   ...gitignoreConfig,

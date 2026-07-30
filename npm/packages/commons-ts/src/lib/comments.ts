@@ -28,6 +28,34 @@ export const DOC_ELIGIBLE_VISITORS = [
   'TSAbstractPropertyDefinition',
 ] as const;
 
+/**
+ * Node types `jsdoc/require-jsdoc`'s `require` option supports directly. Any
+ * `DOC_ELIGIBLE_VISITORS` entry outside this set is passed through
+ * `contexts` instead, so the require-side rule targets exactly the same
+ * declarations that `commons/public-jsdoc-only` allows to carry a JSDoc
+ * block.
+ */
+export const JSDOC_REQUIRE_KEYS = new Set([
+  'ArrowFunctionExpression',
+  'ClassDeclaration',
+  'ClassExpression',
+  'FunctionDeclaration',
+  'FunctionExpression',
+  'MethodDefinition',
+]);
+
+/** `jsdoc/require-jsdoc`'s `require` option, derived from `DOC_ELIGIBLE_VISITORS`. */
+export const jsdocRequire = Object.fromEntries(
+  DOC_ELIGIBLE_VISITORS.filter(type => JSDOC_REQUIRE_KEYS.has(type)).map(
+    type => [type, true],
+  ),
+);
+
+/** `jsdoc/require-jsdoc`'s `contexts` option, derived from `DOC_ELIGIBLE_VISITORS`. */
+export const jsdocContexts = DOC_ELIGIBLE_VISITORS.filter(
+  type => !JSDOC_REQUIRE_KEYS.has(type),
+);
+
 /** Class member node types whose exported-ness follows their enclosing class. */
 const CLASS_MEMBER_TYPES = new Set<string>([
   'MethodDefinition',
@@ -42,9 +70,16 @@ const JSDOC_COMMENT_SETTINGS = {maxLines: 1, minLines: 0};
 /**
  * Comment prefixes that tooling reads as instructions rather than as prose.
  *
- * Compilers and formatters only recognise these in their plain form, so they
- * cannot be rewritten as documentation blocks. Banning them outright would
- * leave no way to write a suppression.
+ * Compilers only recognise these in their plain form, so they cannot be
+ * rewritten as documentation blocks. Banning them outright would leave no
+ * way to write a suppression.
+ *
+ * The four `eslint-disable*`/`eslint-enable` forms are exactly what
+ * `@eslint-community/eslint-comments`'s `no-unlimited-disable`,
+ * `no-unused-disable`, and `require-description` rules (configured in
+ * `eslint-base.ts`) govern: those rules require the comments to name specific
+ * rule(s) and include a `-- description`, but the comments themselves remain
+ * legitimate, so they must stay recognised as directives here.
  *
  * `ts-ignore` and `ts-nocheck` are deliberately absent: `ban-ts-comment`
  * hard-bans both, so treating them as a recognised directive here would let a
@@ -53,14 +88,15 @@ const JSDOC_COMMENT_SETTINGS = {maxLines: 1, minLines: 0};
  * legal comment shape (requiring a description) independent of that rule.
  */
 export const DIRECTIVE_PREFIXES = [
-  'eslint',
+  'eslint-disable',
+  'eslint-disable-line',
+  'eslint-disable-next-line',
+  'eslint-enable',
   'exported',
   'global',
   'globals',
-  'prettier-ignore',
   'ts-check',
   'ts-expect-error',
-  'typescript-eslint',
   'x-release-please-version',
 ];
 
