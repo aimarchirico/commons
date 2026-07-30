@@ -8,6 +8,7 @@ type Envelope<T> = {
   result: T;
 };
 
+/** A minimal Cloudflare REST client, as returned by {@link api}. */
 export type ApiClient = {
   get: <T>(path: string) => Promise<T | undefined>;
   send: <T>(

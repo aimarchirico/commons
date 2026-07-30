@@ -19,13 +19,6 @@ const IGNORE = [
 
 type Pair = {from: string; to: string};
 
-/**
- * Derive the literal pairs a rule replaces. Longer literals go first so a
- * shorter variant cannot corrupt a longer one that contains it.
- * @param replacement
- * @param manifest
- * @returns The derived replacement pairs.
- */
 const pairs = (
   replacement: ManifestReplacement,
   manifest: Manifest,

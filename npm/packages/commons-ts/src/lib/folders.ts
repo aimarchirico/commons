@@ -1,3 +1,4 @@
+/** Folder names allowed directly under `src` by default. */
 export const CORE_FOLDERS = [
   'assets',
   'bin',

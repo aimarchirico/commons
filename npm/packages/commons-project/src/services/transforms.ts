@@ -26,6 +26,7 @@ const TRANSFORMS: Record<string, (value: string) => string> = {
   path: value => value.split('.').join('/'),
 };
 
+/** The names of every available transform. */
 export const TRANSFORM_NAMES = Object.keys(TRANSFORMS);
 
 /**

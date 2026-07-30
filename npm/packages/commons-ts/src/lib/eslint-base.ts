@@ -1,36 +1,14 @@
+import eslintPluginEslintComments from '@eslint-community/eslint-plugin-eslint-comments';
 import checkFile from 'eslint-plugin-check-file';
 import eslintPluginImport from 'eslint-plugin-import';
 import eslintPluginJsdoc from 'eslint-plugin-jsdoc';
 import eslintPluginJsonc from 'eslint-plugin-jsonc';
 import gts from 'gts';
 import {commonsPlugin} from './commons-plugin';
-import {execFileSync} from 'node:child_process';
+import {jsdocContexts, jsdocRequire} from './comments';
+import {gitignoreConfig} from './gitignore';
 import gtsPrettier from 'gts/.prettierrc.json';
-
-const gitignored = (cwd: string): string[] => {
-  try {
-    return execFileSync(
-      'git',
-      [
-        'ls-files',
-        '-z',
-        '--others',
-        '--ignored',
-        '--exclude-standard',
-        '--directory',
-      ],
-      {cwd, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024},
-    )
-      .split('\0')
-      .filter(Boolean)
-      .map(entry => (entry.endsWith('/') ? `${entry}**` : entry));
-  } catch {
-    return [];
-  }
-};
-
-const ignores = gitignored(process.cwd());
-const gitignoreConfig = ignores.length ? [{ignores}] : [];
+import tseslint from 'typescript-eslint';
 
 export default [
   ...gitignoreConfig,
@@ -64,21 +42,17 @@ export default [
       import: eslintPluginImport,
       commons: commonsPlugin,
       jsdoc: eslintPluginJsdoc,
+      '@eslint-community/eslint-comments': eslintPluginEslintComments,
     },
     rules: {
       'import/no-default-export': ['error'],
-      'commons/no-non-jsdoc-comment': ['error'],
+      'commons/public-jsdoc-only': ['error'],
       'jsdoc/require-jsdoc': [
         'error',
         {
           publicOnly: true,
-          require: {
-            ArrowFunctionExpression: true,
-            ClassDeclaration: true,
-            ClassExpression: true,
-            FunctionDeclaration: true,
-            FunctionExpression: true,
-          },
+          require: jsdocRequire,
+          contexts: jsdocContexts,
           enableFixer: false,
         },
       ],
@@ -88,6 +62,27 @@ export default [
       'jsdoc/require-param': ['error'],
       'jsdoc/require-returns': ['error'],
       'jsdoc/valid-types': ['error'],
+      '@eslint-community/eslint-comments/no-unlimited-disable': 'error',
+      '@eslint-community/eslint-comments/no-unused-disable': 'error',
+      '@eslint-community/eslint-comments/require-description': 'error',
+    },
+  },
+  {
+    files: ['**/*.{ts,tsx,mts,cts}'],
+    plugins: {
+      '@typescript-eslint': tseslint.plugin,
+    },
+    rules: {
+      '@typescript-eslint/ban-ts-comment': [
+        'error',
+        {
+          'ts-expect-error': 'allow-with-description',
+          minimumDescriptionLength: 10,
+          'ts-ignore': true,
+          'ts-nocheck': true,
+          'ts-check': false,
+        },
+      ],
     },
   },
   {

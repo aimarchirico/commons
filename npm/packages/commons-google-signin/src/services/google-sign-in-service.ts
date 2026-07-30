@@ -29,6 +29,7 @@ const toResult = (
   return {type: 'cancelled'};
 };
 
+/** Native `GoogleSignInServiceContract` implementation, backed by `react-native-nitro-google-signin`. */
 export const GoogleSignInService: GoogleSignInServiceContract = {
   async configure(config) {
     GoogleOneTapSignIn.configure(config);

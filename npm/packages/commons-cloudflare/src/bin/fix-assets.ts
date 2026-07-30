@@ -3,11 +3,6 @@
 import shell from 'shelljs';
 import {replaceInFileSync} from 'replace-in-file';
 
-/**
- * Cloudflare Pages rejects upload paths containing "node_modules", so rename
- * the exported directory and rewrite references to it. Run from the app
- * directory that holds the exported `dist/`.
- */
 if (shell.test('-d', 'dist/assets/node_modules')) {
   shell.mv('dist/assets/node_modules', 'dist/assets/nodemodules');
   replaceInFileSync({

@@ -17,11 +17,6 @@ type Initialized = {
   dashboardUrl: string;
 };
 
-/**
- * eas-cli is an optional peer, so the consuming repository pins it and only
- * the projects that provision an Expo app carry the weight. `PATH` is the
- * fallback for a global install.
- */
 const eas = resolveTool({
   from: import.meta.url,
   package: 'eas-cli',
@@ -31,17 +26,7 @@ const eas = resolveTool({
     'Add it to the project with "pnpm add -D eas-cli", then authenticate with "pnpm exec eas login" or set EXPO_TOKEN.',
 });
 
-const args = [
-  'init',
-  '--non-interactive',
-  '--json',
-  /**
-   * Without --force, eas-cli treats both linking an existing project and
-   * creating a missing one as decisions needing confirmation, which it cannot
-   * ask for here.
-   */
-  '--force',
-];
+const args = ['init', '--non-interactive', '--json', '--force'];
 
 try {
   const result = runJson<Initialized>(eas, args);

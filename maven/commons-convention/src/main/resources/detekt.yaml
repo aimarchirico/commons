@@ -1,6 +1,13 @@
 commons:
   active: true
-  NonDocComment:
+  PublicKDocOnly:
+    active: true
+  SuppressRequiresReason:
+    active: true
+  FileLength:
+    active: true
+    maxLines: 300
+  FileNaming:
     active: true
     excludes: ['**/*.gradle.kts']
 
