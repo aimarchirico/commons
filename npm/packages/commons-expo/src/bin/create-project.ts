@@ -26,12 +26,7 @@ const eas = resolveTool({
     'Add it to the project with "pnpm add -D eas-cli", then authenticate with "pnpm exec eas login" or set EXPO_TOKEN.',
 });
 
-const args = [
-  'init',
-  '--non-interactive',
-  '--json',
-  '--force',
-];
+const args = ['init', '--non-interactive', '--json', '--force'];
 
 try {
   const result = runJson<Initialized>(eas, args);

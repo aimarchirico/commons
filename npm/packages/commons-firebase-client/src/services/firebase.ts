@@ -11,7 +11,9 @@ type NativeAuth = ReturnType<typeof mobileAuth.getAuth>;
 let auth: NativeAuth;
 let configured = false;
 
+/** Google provider instance. */
 export let googleProvider: FirebaseAuthClient['googleProvider'];
+/** Google auth provider static constructor. */
 export let GoogleAuthProvider: GoogleAuthProviderStatic;
 
 /**

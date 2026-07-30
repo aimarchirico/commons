@@ -1,3 +1,6 @@
+/**
+ * Firebase web app configuration options.
+ */
 export interface FirebaseWebConfig {
   apiKey: string;
   authDomain: string;
@@ -6,6 +9,9 @@ export interface FirebaseWebConfig {
   appId: string;
 }
 
+/**
+ * Represents an authenticated Firebase user.
+ */
 export interface AuthUser {
   uid: string;
   email: string | null;
@@ -14,14 +20,23 @@ export interface AuthUser {
   delete(): Promise<void>;
 }
 
+/**
+ * Firebase Auth service instance wrapper.
+ */
 export interface Auth {
   currentUser: AuthUser | null;
 }
 
+/**
+ * Result of an authentication operation.
+ */
 export interface UserCredential {
   user: AuthUser;
 }
 
+/**
+ * Function type to unsubscribe an auth listener.
+ */
 export type Unsubscribe = () => void;
 
 /**
