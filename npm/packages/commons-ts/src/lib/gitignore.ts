@@ -1,15 +1,6 @@
 import {execFileSync} from 'node:child_process';
 
-/**
- * Lists paths `git` ignores under `cwd`, formatted as ESLint glob patterns.
- * Directory entries get a trailing `**` so the pattern also matches
- * everything beneath them. Returns an empty array if `git` is unavailable or
- * the command fails (e.g. outside a git repository).
- *
- * @param cwd - The directory to run `git ls-files` from.
- * @returns The gitignored paths, as ESLint `ignores` glob patterns.
- */
-const gitignored = (cwd: string): string[] => {
+const listGitignoredAsEslintPatterns = (cwd: string): string[] => {
   try {
     return execFileSync(
       'git',
@@ -31,7 +22,7 @@ const gitignored = (cwd: string): string[] => {
   }
 };
 
-const ignores = gitignored(process.cwd());
+const ignores = listGitignoredAsEslintPatterns(process.cwd());
 
 /**
  * An ESLint flat config array ignoring every gitignored path, or an empty
