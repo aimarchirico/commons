@@ -1,8 +1,9 @@
 """Check docstrings and comments enforcement in Python files.
 
 Public declarations require docstrings (enforced by Ruff pydocstyle), while
-docstrings on non-public declarations (prefixed with ``_``) and plain `#`
-line/block comments are prohibited.
+docstrings on non-public declarations (prefixed with ``_``), orphaned string
+literals with no owning declaration, and plain `#` line/block comments are
+prohibited.
 """
 
 import ast
@@ -11,6 +12,15 @@ from pathlib import Path
 import tokenize
 
 EXCLUDED_DIRS = {".venv", "__pycache__", ".git", "build", "dist"}
+
+DocstringOwner = ast.Module | ast.ClassDef | ast.FunctionDef | ast.AsyncFunctionDef
+
+DOCSTRING_OWNER_TYPES = (
+    ast.Module,
+    ast.ClassDef,
+    ast.FunctionDef,
+    ast.AsyncFunctionDef,
+)
 
 
 def _is_excluded(path: Path) -> bool:
@@ -27,6 +37,32 @@ def _iter_python_files(root: Path):
     for path in root.rglob("*.py"):
         if not _is_excluded(path):
             yield path
+
+
+def _docstring_stmt(owner: DocstringOwner) -> ast.Expr | None:
+    body = getattr(owner, "body", None)
+    if not body:
+        return None
+    stmt = body[0]
+    if (
+        isinstance(stmt, ast.Expr)
+        and isinstance(stmt.value, ast.Constant)
+        and isinstance(stmt.value.value, str)
+    ):
+        return stmt
+    return None
+
+
+def _owner_label(owner: DocstringOwner, file: Path) -> str:
+    if isinstance(owner, ast.Module):
+        return f"module '{file.stem}'"
+    return f"declaration '{owner.name}'"
+
+
+def _is_public(owner: DocstringOwner, file: Path) -> bool:
+    if isinstance(owner, ast.Module):
+        return file.stem == "__init__" or not file.stem.startswith("_")
+    return not owner.name.startswith("_")
 
 
 def check_comments(paths: list[str]) -> int:
@@ -61,20 +97,32 @@ def check_comments(paths: list[str]) -> int:
             except (SyntaxError, UnicodeDecodeError):
                 continue
 
+            owners: dict[int, DocstringOwner] = {
+                id(stmt): node
+                for node in ast.walk(tree)
+                if isinstance(node, DOCSTRING_OWNER_TYPES)
+                and (stmt := _docstring_stmt(node)) is not None
+            }
+
             for node in ast.walk(tree):
-                if isinstance(
-                    node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
+                if not (
+                    isinstance(node, ast.Expr)
+                    and isinstance(node.value, ast.Constant)
+                    and isinstance(node.value.value, str)
                 ):
-                    if (
-                        node.name.startswith("_")
-                        and ast.get_docstring(node) is not None
-                    ):
-                        msg = (
-                            f"{file}:{node.lineno}: Docstring on "
-                            f"non-public declaration '{node.name}' "
-                            "is prohibited."
-                        )
-                        violations.append(msg)
+                    continue
+
+                owner = owners.get(id(node))
+                if owner is None:
+                    violations.append(
+                        f"{file}:{node.lineno}: Orphaned string literal "
+                        "treated as a comment is prohibited."
+                    )
+                elif not _is_public(owner, file):
+                    violations.append(
+                        f"{file}:{node.lineno}: Docstring on non-public "
+                        f"{_owner_label(owner, file)} is prohibited."
+                    )
 
     if violations:
         for violation in violations:
