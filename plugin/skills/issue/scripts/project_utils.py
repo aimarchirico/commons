@@ -41,6 +41,18 @@ def get_project_context(run_cmd):
         linked_projects = repository.get("projectsV2", {}).get("nodes", [])
         open_projects = [p for p in linked_projects if not p.get("closed", False)]
 
+        if len(open_projects) > 1:
+            project_list = "\n".join(
+                f"  - {p.get('title')} (number: {p['number']})"
+                for p in open_projects
+            )
+            return owner, None, None, (
+                f"Multiple active projects linked to '{owner}/{repo_name}':\n"
+                f"{project_list}\n"
+                "Close or unlink the projects that shouldn't receive new issues, "
+                "leaving only one active project linked to this repository."
+            )
+
         if open_projects:
             proj = open_projects[0]
             project_number = proj["number"]
