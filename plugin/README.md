@@ -14,9 +14,9 @@ of the monorepo.
   to use it, plus a `## Workflow` section) and agent `.md` definitions
   (`name`/`description` frontmatter plus free-form instructions).
 - Packaged as a Claude Code plugin (`.claude-plugin/plugin.json`).
-- **Python** 3.13, via `uv`, for scripts under `skills/issue/scripts/`.
-  Static analysis config (ruff, ty, line-length) comes from the
-  `commons-python` package rather than an in-repo config.
+- **Python** 3.13, via `uv`, for scripts under `skills/*/scripts/`. Static
+  analysis config (ruff, ty, line-length) comes from the `commons-python`
+  package rather than an in-repo config.
 - Self-contained: `.github/` bundles this repository's own
   `CONTRIBUTING.md` and GitHub templates, so skills reference
   `${CLAUDE_PLUGIN_ROOT}/.github/...` directly instead of depending on the
@@ -69,7 +69,7 @@ and get every skill and agent in this directory:
 
 Markdown is linted with the shared `markdownlint` config via `task docs:check`
 (and auto-fixed with `task docs:fix`) from the repository root. Python
-scripts (`skills/issue/scripts/`) are checked with `task plugin:check` (and
+scripts (`skills/*/scripts/`) are checked with `task plugin:check` (and
 fixed with `task plugin:fix`), which run ruff, ty, and the line-length
 convention via the `commons-python` git dependency (see
 [`python/commons-python`](../python/commons-python/README.md)) rather than
