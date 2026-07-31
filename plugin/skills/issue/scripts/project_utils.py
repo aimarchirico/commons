@@ -5,7 +5,7 @@ import json
 
 
 def _title_case_repo_name(repo_name):
-    """Convert a hyphen/underscore-separated repo name to Title Case, e.g. 'my-repo' -> 'My Repo'."""
+    """Convert a hyphen/underscore repo name to Title Case ('my-repo' -> 'My Repo')."""
     words = repo_name.replace("_", "-").split("-")
     return " ".join(word.capitalize() for word in words if word)
 
@@ -56,9 +56,9 @@ def get_project_context(run_cmd):
                 project_number = proj["number"]
                 project_id = proj["id"]
                 print(
-                    f"Multiple active projects linked; auto-selected '{proj.get('title')}' "
-                    f"matching the repository name (number: {project_number}, "
-                    f"id: {project_id})"
+                    "Multiple active projects linked; auto-selected "
+                    f"'{proj.get('title')}' matching the repository name "
+                    f"(number: {project_number}, id: {project_id})"
                 )
                 return owner, project_number, project_id, None
 
