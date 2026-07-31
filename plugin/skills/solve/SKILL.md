@@ -18,15 +18,33 @@ argument-hint: "--issue <issue-id> [--draft] [--auto]"
 
 1. Extract `<issue-id>` from the `--issue` flag in `$ARGUMENTS`. Prompt the
    user if it was not provided.
-2. Execute `gh issue view <issue-id> --json title,labels` to fetch the issue
-   details.
+2. Execute `gh issue view <issue-id> --json title,body` to fetch the issue's
+   title and body, then fetch its Type field with:
+
+   ```bash
+   gh api graphql -f query='
+     query($owner: String!, $repo: String!, $number: Int!) {
+       repository(owner: $owner, name: $repo) {
+         issue(number: $number) {
+           projectItems(first: 5) {
+             nodes {
+               fieldValueByName(name: "Type") {
+                 ... on ProjectV2ItemFieldSingleSelectValue { name }
+               }
+             }
+           }
+         }
+       }
+     }' -f owner="$(gh repo view --json owner -q .owner.login)" \
+        -f repo="$(gh repo view --json name -q .name)" -F number=<issue-id>
+   ```
 3. Determine `<branch-name>` following the naming rules in
    `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md`, then execute
    `git worktree add -b <branch-name> <worktree-path>` to create the branch in
    an isolated worktree, where `<worktree-path>` is `../<branch-name>` (a
    sibling of the repository root).
-4. Delegate to the `planner` agent, passing the issue details and
-   `<worktree-path>`, to draft an implementation plan.
+4. Delegate to the `planner` agent, passing the issue's title, body, type,
+   and `<worktree-path>`, to draft an implementation plan.
 5. Present the drafted plan, and wait for explicit user approval. Skip this
    step if the `--auto` flag is set, and proceed directly with the drafted
    plan.
