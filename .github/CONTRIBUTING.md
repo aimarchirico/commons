@@ -113,7 +113,8 @@ implementation-level detail lives here.
 - **Environment Variables**: List of required keys and `.env.example` reference.
 - **Local Development**: Installation steps, runtime requirements and available
   commands.
-- **Code Quality**: Code quality configurations, style guides, and rules.
+- **Code Quality**: Language-specific tooling, configurations, and style
+  guides.
 - **Deployment**: CI/CD pipelines, deployment targets and hosting details.
 
 ---
