@@ -10,9 +10,9 @@ argument-hint: "[--draft] [--auto]"
 ## Arguments
 
 | Flag      | Required | Description                                                                                    |
-| :-------- | :------- | :----------------------------------------------------------------------------------------------- |
-| `--draft` | No       | Passed through to the `solve` skill (and its `pr` skill) to open the resulting PR as a draft.    |
-| `--auto`  | No       | Skip all approval checkpoints across both sub-skills, running the full lifecycle autonomously.   |
+| :-------- | :------- | :--------------------------------------------------------------------------------------------- |
+| `--draft` | No       | Passed through to the `solve` skill (and its `pr` skill) to open the resulting PR as a draft.  |
+| `--auto`  | No       | Skip all approval checkpoints across both sub-skills, running the full lifecycle autonomously. |
 
 ## Workflow
 
