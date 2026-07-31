@@ -2,15 +2,15 @@
 
 ## Principles
 
-We follow general software design principles, applied with judgement rather
-than dogma.
+We adapt the [DevIQ principles](https://deviq.com/principles/), applied with
+judgement rather than dogma.
 
-- **KISS**: Prefer the simplest solution that solves the problem at hand, and
-  build only what is required now.
+- **Keep It Simple, Stupid**: Prefer the simplest solution that solves the
+  problem at hand, and build only what is required now.
 - **Separation of Concerns**: Give each part one responsibility and a clear
   boundary, depending on what neighbours expose rather than how they work.
-- **DRY**: Give every piece of knowledge a single authoritative definition.
-  Extract once duplication is real, not anticipated.
+- **Don't Repeat Yourself**: Give every piece of knowledge a single
+  authoritative definition. Extract once duplication is real, not anticipated.
 - **Principle of Least Astonishment**: Make code behave the way a reader
   expects, starting with names that state intent. Reserve comments for
   non-obvious reasoning.
