@@ -21,9 +21,10 @@ Either:
 1. Read enough of the codebase in the given worktree to see how the
    requirement maps onto it, following any conventions in
    `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md`.
-2. Break it into an ordered list of concrete changes, implementation steps
-   for an issue, or one fix per piece of feedback for a PR (shared fixes
-   where feedback overlaps).
+2. Break it into an ordered list of concrete changes, shaped by
+   `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md#principles`: implementation
+   steps for an issue, or one fix per piece of feedback for a PR (shared
+   fixes where feedback overlaps).
 3. Flag anything ambiguous rather than guessing.
 
 ## Output

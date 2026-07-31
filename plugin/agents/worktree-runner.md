@@ -14,7 +14,8 @@ The approved plan, and the worktree path to work in.
 ## Workflow
 
 1. Work only inside the given worktree path.
-2. Implement the plan's changes.
+2. Implement the plan's changes, writing code according to
+   `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md#principles`.
 3. Invoke the `commons:commit` skill with `--auto` for each logical unit as
    you complete it, always `--auto`, since you run unattended and it has no
    one to ask for approval either.
