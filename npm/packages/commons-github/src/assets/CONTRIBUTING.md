@@ -3,20 +3,42 @@
 ## Principles
 
 We adapt the [DevIQ principles](https://deviq.com/principles/), applied with
-judgement rather than dogma.
+judgment rather than dogma.
 
-- **Keep It Simple, Stupid**: Prefer the simplest solution that solves the
-  problem at hand, and build only what is required now.
+### Design
+
+- **KISS**: Prefer the simplest solution that solves the problem at hand.
+- **YAGNI**: Build for today's requirements, not for ones you expect to
+  arrive.
+- **DRY**: Give every piece of knowledge a single authoritative definition.
+  Extract once duplication is real, not anticipated.
+
+### Structure
+
 - **Separation of Concerns**: Give each part one responsibility and a clear
-  boundary, depending on what neighbours expose rather than how they work.
-- **Don't Repeat Yourself**: Give every piece of knowledge a single
-  authoritative definition. Extract once duplication is real, not anticipated.
+  boundary.
+- **SOLID**: Give each type one reason to change, extend it without modifying
+  it, and depend on abstractions rather than implementations.
+- **Explicit Dependencies**: Require collaborators openly in signatures
+  rather than reaching for global or ambient state.
+
+### Behavior
+
 - **Principle of Least Astonishment**: Make code behave the way a reader
   expects, starting with names that state intent. Reserve comments for
   non-obvious reasoning.
 - **Fail Fast**: Surface errors immediately and loudly instead of degrading
   silently.
+- **Tell, Don't Ask**: Ask a collaborator to do the work rather than querying
+  its state and deciding on its behalf.
+
+### Maintenance
+
 - **Boy Scout Rule**: Leave code cleaner than you found it.
+- **Tolerance for Imperfection**: Accept good-enough code where the cost of
+  perfecting it outweighs the benefit.
+- **Architectural Agility**: Keep the architecture able to change as
+  understanding of the problem grows.
 
 ---
 
