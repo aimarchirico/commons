@@ -19,25 +19,8 @@ argument-hint: "--issue <issue-id> [--draft] [--auto]"
 1. Extract `<issue-id>` from the `--issue` flag in `$ARGUMENTS`. Prompt the
    user if it was not provided.
 2. Execute `gh issue view <issue-id> --json title,body` to fetch the issue's
-   title and body, then fetch its Type field with:
-
-   ```bash
-   gh api graphql -f query='
-     query($owner: String!, $repo: String!, $number: Int!) {
-       repository(owner: $owner, name: $repo) {
-         issue(number: $number) {
-           projectItems(first: 5) {
-             nodes {
-               fieldValueByName(name: "Type") {
-                 ... on ProjectV2ItemFieldSingleSelectValue { name }
-               }
-             }
-           }
-         }
-       }
-     }' -f owner="$(gh repo view --json owner -q .owner.login)" \
-        -f repo="$(gh repo view --json name -q .name)" -F number=<issue-id>
-   ```
+   title and body, then fetch its Type field by running
+   `python3 "${CLAUDE_PLUGIN_ROOT}/skills/solve/scripts/get_issue_type.py" <issue-id>`.
 3. Determine `<branch-name>` following the naming rules in
    `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md`, then execute
    `git worktree add -b <branch-name> <worktree-path>` to create the branch in
