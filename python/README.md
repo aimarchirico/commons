@@ -22,8 +22,8 @@ python/
     ├── src/commons_python/
     │   ├── __init__.py
     │   ├── cli.py              # `commons-python` entry point, dispatches on first arg
-    │   ├── comments.py         # comments check (`commons-python comments`)
-    │   ├── line_length.py      # line-length check (`commons-python line-length`)
+    │   ├── comments.py         # comments check (part of `commons-python commons check`)
+    │   ├── line_length.py      # line-length check (part of `commons-python commons check`)
     │   └── assets/
     │       ├── __init__.py
     │       ├── ruff.toml       # bundled ruff config
@@ -56,13 +56,13 @@ repository root:
   configured with `convention = "google"`. Non-public declarations (prefixed
   with `_`) do not carry docstrings.
 - **Comments** — only docstrings documenting a public declaration are allowed
-  (`commons-python comments`), mirroring the owner-aware doc-comment
+  (`commons-python commons check`), mirroring the owner-aware doc-comment
   enforcement across the repository: whatever is required to have a doc
   comment is also the only thing allowed to have one. Line comments (`# ...`),
   orphaned docstrings, and docstrings on non-public declarations are rejected,
   so explanation stays attached to what it describes.
 - **Line length** — native Python check enforcing a 300-line-per-file maximum
-  (`commons-python line-length`), skipping `.venv/`, `__pycache__/`, `.git/`,
+  (`commons-python commons check`), skipping `.venv/`, `__pycache__/`, `.git/`,
   `build/`, `dist/`, and `*.egg-info/`.
 
 ## Deployment
