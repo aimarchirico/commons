@@ -5,7 +5,6 @@ import json
 
 
 def _title_case_repo_name(repo_name):
-    """Convert a hyphen/underscore repo name to Title Case ('my-repo' -> 'My Repo')."""
     words = repo_name.replace("_", "-").split("-")
     return " ".join(word.capitalize() for word in words if word)
 

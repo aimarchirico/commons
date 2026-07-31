@@ -47,6 +47,8 @@ def check_comments(paths: list[str]) -> int:
                 tokens = tokenize.tokenize(io.BytesIO(content_bytes).readline)
                 for tok in tokens:
                     if tok.type == tokenize.COMMENT:
+                        if tok.start[0] == 1 and tok.string.startswith("#!"):
+                            continue
                         violations.append(
                             f"{file}:{tok.start[0]}: Comments are prohibited."
                         )
