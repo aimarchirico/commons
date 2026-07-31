@@ -5,10 +5,16 @@ requires-python = ">=3.13"
 [[package]]
 name = "commons-python"
 version = "1.0.0"
-source = { git = "https://github.com/aimarchirico/commons?subdirectory=python%2Fcommons-python&rev=main#e8449949c9c5ce3332e12e566171e69da0d921ef" }
+source = { directory = "../python/commons-python" }
 dependencies = [
     { name = "ruff" },
     { name = "ty" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "ruff", specifier = ">=0.14" },
+    { name = "ty", specifier = ">=0.0.60" },
 ]
 
 [[package]]
@@ -20,7 +26,7 @@ dependencies = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "commons-python", git = "https://github.com/aimarchirico/commons?subdirectory=python%2Fcommons-python&rev=main" }]
+requires-dist = [{ name = "commons-python", directory = "../python/commons-python" }]
 
 [[package]]
 name = "ruff"

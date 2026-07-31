@@ -4,6 +4,11 @@
 import json
 
 
+def _title_case_repo_name(repo_name):
+    words = repo_name.replace("_", "-").split("-")
+    return " ".join(word.capitalize() for word in words if word)
+
+
 def get_project_context(run_cmd):
     """Fetch repository context and query linked active GitHub Projects."""
     try:
@@ -40,6 +45,33 @@ def get_project_context(run_cmd):
         repository = api_data.get("data", {}).get("repository", {})
         linked_projects = repository.get("projectsV2", {}).get("nodes", [])
         open_projects = [p for p in linked_projects if not p.get("closed", False)]
+
+        if len(open_projects) > 1:
+            expected_title = _title_case_repo_name(repo_name)
+            matches = [p for p in open_projects if p.get("title") == expected_title]
+
+            if len(matches) == 1:
+                proj = matches[0]
+                project_number = proj["number"]
+                project_id = proj["id"]
+                print(
+                    "Multiple active projects linked; auto-selected "
+                    f"'{proj.get('title')}' matching the repository name "
+                    f"(number: {project_number}, id: {project_id})"
+                )
+                return owner, project_number, project_id, None
+
+            project_list = "\n".join(
+                f"  - {p.get('title')} (number: {p['number']})"
+                for p in open_projects
+            )
+            return owner, None, None, (
+                f"Multiple active projects linked to '{owner}/{repo_name}', and none "
+                f"(or more than one) is titled '{expected_title}' to disambiguate:\n"
+                f"{project_list}\n"
+                f"Rename the intended project to '{expected_title}', or close/unlink "
+                "the extras."
+            )
 
         if open_projects:
             proj = open_projects[0]
