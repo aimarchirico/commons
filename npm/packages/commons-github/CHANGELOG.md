@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1](https://github.com/aimarchirico/commons/compare/commons-github-v1.1.0...commons-github-v1.1.1) (2026-07-31)
+
+
+### Bug Fixes
+
+* **commons-github:** shorten Bug issue type description to "A problem." ([747ccbd](https://github.com/aimarchirico/commons/commit/747ccbd32dbec49cb4df5bbffe1d75cf2ef4388c))
+* **commons-github:** shorten Bug issue type description to "A problem." ([2a73689](https://github.com/aimarchirico/commons/commit/2a73689bf86a57294e3050b9b0f6ed6f8d87eabb)), closes [#261](https://github.com/aimarchirico/commons/issues/261)
+
 ## [1.1.0](https://github.com/aimarchirico/commons/compare/commons-github-v1.0.0...commons-github-v1.1.0) (2026-07-30)
 
 
