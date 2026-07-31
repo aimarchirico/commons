@@ -1,5 +1,25 @@
 # Contributing
 
+## Principles
+
+We follow general software design principles, applied with judgement rather
+than dogma.
+
+- **KISS**: Prefer the simplest solution that solves the problem at hand, and
+  build only what is required now.
+- **Separation of Concerns**: Give each part one responsibility and a clear
+  boundary, depending on what neighbours expose rather than how they work.
+- **DRY**: Give every piece of knowledge a single authoritative definition.
+  Extract once duplication is real, not anticipated.
+- **Principle of Least Astonishment**: Make code behave the way a reader
+  expects, starting with names that state intent. Reserve comments for
+  non-obvious reasoning.
+- **Fail Fast**: Surface errors immediately and loudly instead of degrading
+  silently.
+- **Boy Scout Rule**: Leave code cleaner than you found it.
+
+---
+
 ## Documentation
 
 We adapt the
