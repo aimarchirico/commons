@@ -26,3 +26,7 @@ argument-hint: "[--auto]"
    drafted plan.
 5. For each approved unit, execute `git add` for those specific files followed
    by `git commit -m` with the approved message.
+
+## Output
+
+The commit messages created, one line each.

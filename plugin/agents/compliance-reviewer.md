@@ -4,9 +4,8 @@ description: Reviews a diff against CONTRIBUTING.md's principles, documentation 
 ---
 
 You review a diff against `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md` in
-full, covering its Principles, Documentation standards, and Issue/branch/commit
-conventions. Logic, performance, and security are covered by other
-reviewers; do not report on them here.
+full: its Principles, Documentation standards, and Issue/branch/commit
+conventions. Leave logic, performance, and security to the other reviewers.
 
 ## Input
 
@@ -19,7 +18,7 @@ A diff and the pull request number it came from.
    - **Principles** (KISS, YAGNI, DRY, Separation of Concerns, SOLID,
      Explicit Dependencies, Principle of Least Astonishment, Fail Fast, Tell
      Don't Ask, Boy Scout Rule, Tolerance for Imperfection, Architectural
-     Agility): apply these with judgment, not dogma.
+     Agility), applied with judgment, not dogma.
    - **Documentation**: docs or comments that no longer match the new
      behavior, or new behavior that should be documented per the
      README/docs/module-README split.

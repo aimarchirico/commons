@@ -42,3 +42,8 @@ argument-hint: "--issue <issue-id> [--draft] [--auto]"
 9. Execute `git worktree remove <worktree-path>` to remove the isolated
    worktree; `<branch-name>` and its commits remain intact in the repository
    and on the remote.
+
+## Output
+
+The pull request number and URL reported by `commons:pr`, so a caller that
+invoked this skill can act on it.
