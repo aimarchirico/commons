@@ -12,7 +12,8 @@ import org.jetbrains.kotlin.psi.KtFile
  * A file that keeps growing is a file that has taken on more than one responsibility. Splitting it
  * once it crosses the threshold keeps each file reviewable and its purpose obvious at a glance.
  */
-class FileLength(config: Config) : Rule(config, "Kotlin files must not exceed the configured line count.") {
+class FileLength(config: Config) :
+  Rule(config, "Kotlin files must not exceed the configured line count.") {
 
   private val maxLines: Int by lazy { config.valueOrDefault("maxLines", DEFAULT_MAX_LINES) }
 
@@ -24,7 +25,7 @@ class FileLength(config: Config) : Rule(config, "Kotlin files must not exceed th
         Finding(
           Entity.atPackageOrFirstDecl(file),
           "File line count violation: ${file.name}: $lineCount lines (max: $maxLines)",
-        ),
+        )
       )
     }
   }

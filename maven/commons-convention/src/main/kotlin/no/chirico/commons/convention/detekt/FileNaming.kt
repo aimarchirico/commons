@@ -17,7 +17,9 @@ class FileNaming(config: Config) : Rule(config, "Kotlin file names must be Pasca
   override fun visitKtFile(file: KtFile) {
     super.visitKtFile(file)
     if (!PASCAL_CASE_REGEX.matches(file.name)) {
-      report(Finding(Entity.atPackageOrFirstDecl(file), "File '${file.name}' does not follow PascalCase"))
+      report(
+        Finding(Entity.atPackageOrFirstDecl(file), "File '${file.name}' does not follow PascalCase")
+      )
     }
   }
 

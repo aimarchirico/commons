@@ -13,14 +13,17 @@ import org.jetbrains.kotlin.psi.KtFile
 /**
  * Requires every `@Suppress` annotation to be preceded by a `// suppressed: <reason>` comment
  * explaining why the suppression is necessary, mirroring the reason
- * `@eslint-community/eslint-comments/require-description` demands of a suppressing
- * `eslint-disable` comment on the TypeScript side.
+ * `@eslint-community/eslint-comments/require-description` demands of a suppressing `eslint-disable`
+ * comment on the TypeScript side.
  *
  * The reason must be at least 10 characters, matching this repository's
  * `ban-ts-comment`/`minimumDescriptionLength` convention for `@ts-expect-error`.
  */
 class SuppressRequiresReason(config: Config) :
-  Rule(config, "A `@Suppress` annotation must be preceded by a `// suppressed: <reason>` comment.") {
+  Rule(
+    config,
+    "A `@Suppress` annotation must be preceded by a `// suppressed: <reason>` comment.",
+  ) {
 
   override fun visitAnnotationEntry(annotationEntry: KtAnnotationEntry) {
     super.visitAnnotationEntry(annotationEntry)
@@ -33,17 +36,18 @@ class SuppressRequiresReason(config: Config) :
   }
 
   private tailrec fun findPrecedingComment(element: PsiElement): PsiComment? {
-    var sibling = element.prevSibling
-    while (sibling is PsiWhiteSpace) {
-      sibling = sibling.prevSibling
-    }
-    if (sibling is PsiComment) return sibling
-    if (sibling != null) return null
-
+    val sibling = element.prevSibling.skipWhitespace()
     val parent = element.parent
-    if (parent == null || parent is KtFile) return null
-    return findPrecedingComment(parent)
+    return when {
+      sibling is PsiComment -> sibling
+      sibling != null -> null
+      parent == null || parent is KtFile -> null
+      else -> findPrecedingComment(parent)
+    }
   }
+
+  private tailrec fun PsiElement?.skipWhitespace(): PsiElement? =
+    if (this is PsiWhiteSpace) prevSibling.skipWhitespace() else this
 
   private companion object {
     const val SUPPRESS_ANNOTATION_NAME = "Suppress"

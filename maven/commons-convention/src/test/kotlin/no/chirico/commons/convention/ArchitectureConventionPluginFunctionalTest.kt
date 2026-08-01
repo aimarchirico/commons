@@ -9,10 +9,6 @@ import org.gradle.testkit.runner.TaskOutcome
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 
-/**
- * Exercises the `no.chirico.commons.convention.architecture` precompiled script plugin end to end,
- * since its dependency-direction check only runs once a multi-module build is actually evaluated.
- */
 class ArchitectureConventionPluginFunctionalTest {
 
   @TempDir lateinit var projectDir: Path
@@ -29,13 +25,15 @@ class ArchitectureConventionPluginFunctionalTest {
 
   @Test
   fun `an allowed dependency direction builds cleanly`() {
-    projectDir.resolve("settings.gradle.kts").writeText(
-      """
-      rootProject.name = "fixture"
-      include(":app", ":impl")
-      """
-        .trimIndent()
-    )
+    projectDir
+      .resolve("settings.gradle.kts")
+      .writeText(
+        """
+        rootProject.name = "fixture"
+        include(":app", ":impl")
+        """
+          .trimIndent()
+      )
     projectDir.resolve("app").createDirectories()
     projectDir.resolve("app/build.gradle.kts").writeText(moduleBuildFile(dependsOn = ":impl"))
     projectDir.resolve("impl").createDirectories()
@@ -55,13 +53,15 @@ class ArchitectureConventionPluginFunctionalTest {
 
   @Test
   fun `a disallowed dependency direction fails the build`() {
-    projectDir.resolve("settings.gradle.kts").writeText(
-      """
-      rootProject.name = "fixture"
-      include(":app", ":other")
-      """
-        .trimIndent()
-    )
+    projectDir
+      .resolve("settings.gradle.kts")
+      .writeText(
+        """
+        rootProject.name = "fixture"
+        include(":app", ":other")
+        """
+          .trimIndent()
+      )
     projectDir.resolve("app").createDirectories()
     projectDir.resolve("app/build.gradle.kts").writeText(moduleBuildFile(dependsOn = ":other"))
     projectDir.resolve("other").createDirectories()

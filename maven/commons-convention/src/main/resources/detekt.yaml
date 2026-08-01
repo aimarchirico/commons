@@ -2,7 +2,6 @@ commons:
   active: true
   PublicKDocOnly:
     active: true
-    excludes: ['**/test/**']
   SuppressRequiresReason:
     active: true
   FileLength:
@@ -14,24 +13,18 @@ commons:
 
 comments:
   active: true
-  # Kotlin nested/inner declarations are public by default, same as top-level
-  # ones, so they are part of the public API surface and need documentation
-  # too. Test sources are excluded: they are never a public API surface, and
-  # requiring a KDoc block on every test class/method would fight the
-  # convention of naming a test for what it verifies instead of documenting
-  # it.
   UndocumentedPublicClass:
     active: true
     searchInNestedClass: true
     searchInInnerClass: true
     searchInInnerObject: true
     searchInInnerInterface: true
-    excludes: ['**/test/**']
+    excludes: ['**/test/**', '**/build.gradle.kts']
   UndocumentedPublicFunction:
     active: true
-    excludes: ['**/test/**']
+    excludes: ['**/test/**', '**/build.gradle.kts']
   UndocumentedPublicProperty:
     active: true
-    excludes: ['**/test/**']
+    excludes: ['**/test/**', '**/build.gradle.kts']
   OutdatedDocumentation:
     active: true
