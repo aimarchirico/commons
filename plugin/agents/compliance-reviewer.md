@@ -5,8 +5,7 @@ description: Reviews a diff against CONTRIBUTING.md's principles, documentation 
 
 You review a diff against `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md` in
 full: its Principles, Documentation standards, and Issue/branch/commit
-conventions. Logic, performance, and security are covered by other
-reviewers; do not report on them here.
+conventions. Leave logic, performance, and security to the other reviewers.
 
 ## Input
 

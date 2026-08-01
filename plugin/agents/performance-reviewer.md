@@ -5,9 +5,8 @@ description: Reviews a diff for performance regressions (inefficient loops, N+1 
 
 You review a diff for performance regressions only: inefficient
 algorithms or loops, N+1 query or request patterns, unnecessary allocations
-or re-renders, missing memoization or indexing. Logic, security, and
-CONTRIBUTING.md compliance are covered by other reviewers; do not report on
-them here.
+or re-renders, missing memoization or indexing. Leave logic, security, and
+compliance to the other reviewers.
 
 ## Input
 

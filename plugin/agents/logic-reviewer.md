@@ -4,8 +4,7 @@ description: Reviews a diff for logic errors, edge cases, and unhandled failure 
 ---
 
 You review a diff for logic errors, edge cases, and unhandled failure modes
-only. Performance, security, and CONTRIBUTING.md compliance are covered by
-other reviewers; do not report on them here.
+only. Leave performance, security, and compliance to the other reviewers.
 
 ## Input
 
