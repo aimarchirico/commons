@@ -20,13 +20,9 @@ class KotlinConventionPluginFunctionalTest {
   @TempDir lateinit var projectDir: Path
 
   /**
-   * detekt itself is left out of the task list: TestKit's `withPluginClasspath()` exposes
-   * commons-convention's compiled classes and resources as separate directories rather than the
-   * merged jar a real consumer resolves from Maven, so the bundled ruleset's META-INF/services
-   * entry never reaches detekt's plugin classpath here. The ruleset wiring is still exercised for
-   * real by every consumer module's own build. `withDebug(true)` runs the fixture build in this JVM
-   * instead of a forked daemon, which is what lets JaCoCo's agent on the outer test see coverage
-   * from the plugin code it triggers.
+   * detekt is excluded: TestKit splits classes/resources so the ruleset's META-INF entry never
+   * reaches it here (real usage is still covered by every consumer build). `withDebug(true)` runs
+   * in-process so JaCoCo can see coverage from the triggered plugin code.
    */
   @Test
   fun `applying the plugin wires formatting, linting, and coverage into build`() {

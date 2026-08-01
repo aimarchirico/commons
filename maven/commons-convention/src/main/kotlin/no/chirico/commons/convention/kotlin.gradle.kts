@@ -72,10 +72,8 @@ tasks.withType<Test>().configureEach {
 tasks.named<JacocoReport>("jacocoTestReport") { dependsOn(tasks.named("test")) }
 
 /**
- * Requires 80% line coverage across each module's whole build, rather than per class, so a handful
- * of thin, hard-to-test classes (a `@ConfigurationProperties` holder, a Spring
- * `@AutoConfiguration`) don't force pointless tests as long as the module's tested code carries the
- * average.
+ * Requires 80% line coverage across each module's whole build, so a few thin classes don't force
+ * pointless tests.
  */
 tasks.named<JacocoCoverageVerification>("jacocoTestCoverageVerification") {
   dependsOn(tasks.named("jacocoTestReport"))
