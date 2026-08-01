@@ -10,6 +10,7 @@ config files.
   `[tool.uv.workspace]`, listing member packages)
 - **ruff** 0.14+ (lint + format)
 - **ty** 0.0.60+ (type checking)
+- **coverage** 7.6+ (test coverage enforcement)
 - **hatchling** (build backend)
 
 ## Folder Structure
@@ -18,7 +19,7 @@ config files.
 python/
 ├── pyproject.toml      # virtual workspace root (no [project] table)
 ├── Taskfile.yaml       # single Taskfile for the whole workspace
-└── commons-python/     # shared ruff/ty config + CLI
+└── commons-python/     # shared ruff/ty/coverage config + CLI
     ├── src/commons_python/
     │   ├── __init__.py
     │   ├── cli.py              # `commons-python` entry point, dispatches on first arg
@@ -27,7 +28,9 @@ python/
     │   └── assets/
     │       ├── __init__.py
     │       ├── ruff.toml       # bundled ruff config
-    │       └── ty.toml         # bundled ty config
+    │       ├── ty.toml         # bundled ty config
+    │       └── coverage.toml   # bundled coverage config
+    ├── tests/                  # commons-python's own test suite
     └── pyproject.toml
 ```
 
@@ -64,6 +67,9 @@ repository root:
 - **Line length** - native Python check enforcing a 300-line-per-file maximum
   (`commons-python commons check`), skipping `.venv/`, `__pycache__/`, `.git/`,
   `build/`, `dist/`, and `*.egg-info/`.
+- **Testing & Coverage** — pytest and pytest-cov with bundled `assets/coverage.toml`,
+  enforcing an 80% minimum (`fail_under = 80`) with branch coverage on
+  (`commons-python pytest <args>`).
 
 ## Deployment
 

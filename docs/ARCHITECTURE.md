@@ -44,7 +44,7 @@ graph LR
 | Backend libraries | Java 25 · Kotlin 2.4 · Gradle 9.6 · Spring Boot 4.1      | GitHub Packages (Maven registry)              |
 | Frontend configs  | Node 20+ · PNPM 11.9 · TypeScript 6 · ESLint 9 · Turbo 2 | GitHub Packages (npm registry)                |
 | Tooling configs   | PNPM 11.9 · markdownlint-cli2 · commitlint               | `tools/` (not published)                      |
-| Python tooling    | Python 3.13 · uv · ruff · hatchling                      | git dependency pinned to `main` (no registry) |
+| Python tooling    | Python 3.13 · uv · ruff · coverage · hatchling           | git dependency pinned to `main` (no registry) |
 | Agent skills      | Markdown `SKILL.md`                                      | GitHub repository (Claude Code plugin)        |
 | CI/CD             | GitHub Actions · Release Please                          | GitHub-hosted runners                         |
 
@@ -57,7 +57,7 @@ graph LR
 ├── docs/       # system-level documentation
 ├── maven/      # Kotlin backend modules and the Gradle convention plugin
 ├── npm/        # frontend configuration packages and the API CLI
-├── python/     # Python package(s): shared ruff config + CLI, git dependency @ main
+├── python/     # Python package(s): shared ruff/coverage config + CLI, git dependency @ main
 └── plugin/     # Claude Code plugin (skills/, agents/), the only tree consumers install
 ```
 

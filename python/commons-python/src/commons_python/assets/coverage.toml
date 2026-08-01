@@ -1,0 +1,6 @@
+[run]
+branch = true
+omit = ["*/tests/*", "**/.venv/*", "**/__pycache__/*"]
+
+[report]
+fail_under = 80
