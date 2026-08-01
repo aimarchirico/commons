@@ -9,8 +9,14 @@ import org.gradle.testkit.runner.TaskOutcome
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 
+/**
+ * Applies the `no.chirico.commons.convention.architecture` precompiled script plugin to a
+ * multi-module fixture, since its dependency-direction check only runs once a build is actually
+ * evaluated.
+ */
 class ArchitectureConventionPluginFunctionalTest {
 
+  /** The throwaway multi-module Gradle project the plugin is applied to. */
   @TempDir lateinit var projectDir: Path
 
   private fun moduleBuildFile(dependsOn: String? = null) =
@@ -23,6 +29,7 @@ class ArchitectureConventionPluginFunctionalTest {
     """
       .trimIndent()
 
+  /** A dependency that follows the allowed layering direction builds without error. */
   @Test
   fun `an allowed dependency direction builds cleanly`() {
     projectDir
@@ -51,6 +58,9 @@ class ArchitectureConventionPluginFunctionalTest {
     assertThat(result.task(":impl:jar")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
   }
 
+  /**
+   * A dependency that violates the allowed layering direction fails the build with a clear reason.
+   */
   @Test
   fun `a disallowed dependency direction fails the build`() {
     projectDir

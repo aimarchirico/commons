@@ -6,12 +6,17 @@ import dev.detekt.test.utils.compileContentForTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
+/**
+ * Verifies [SuppressRequiresReason] requires a `// suppressed: <reason>` comment before
+ * `@Suppress`.
+ */
 class SuppressRequiresReasonTest {
 
   private fun lint(code: String) =
     SuppressRequiresReason(TestConfig())
       .visitFile(compileContentForTest(code, "Sample.kt"), FakeLanguageVersionSettings())
 
+  /** A `@Suppress` annotation preceded by a reason comment produces no findings. */
   @Test
   fun `allows a suppress annotation preceded by a reason comment`() {
     val code =
@@ -29,6 +34,7 @@ class SuppressRequiresReasonTest {
     assertThat(lint(code)).isEmpty()
   }
 
+  /** A `@Suppress` annotation with no preceding comment is flagged. */
   @Test
   fun `flags a suppress annotation with no preceding reason comment`() {
     val code =
@@ -48,6 +54,7 @@ class SuppressRequiresReasonTest {
     assertThat(findings.single().message).contains("must be preceded by")
   }
 
+  /** A `@Suppress` annotation whose reason is under 10 characters is flagged. */
   @Test
   fun `flags a suppress annotation whose reason is too short`() {
     val code =

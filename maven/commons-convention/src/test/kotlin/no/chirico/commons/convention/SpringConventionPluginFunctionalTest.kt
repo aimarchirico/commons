@@ -6,10 +6,17 @@ import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 
+/**
+ * Applies the `no.chirico.commons.convention.spring` precompiled script plugin to a throwaway
+ * fixture project, since its Spring Boot, JPA, and all-open wiring only runs once a project
+ * actually applies it.
+ */
 class SpringConventionPluginFunctionalTest {
 
+  /** The throwaway Gradle project the plugin is applied to. */
   @TempDir lateinit var projectDir: Path
 
+  /** Applying the plugin resolves and applies Spring Boot, JPA, and all-open support cleanly. */
   @Test
   fun `applying the plugin wires spring boot, jpa, and all-open support`() {
     projectDir

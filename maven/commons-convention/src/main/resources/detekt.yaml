@@ -19,12 +19,9 @@ comments:
     searchInInnerClass: true
     searchInInnerObject: true
     searchInInnerInterface: true
-    excludes: ['**/test/**', '**/build.gradle.kts']
   UndocumentedPublicFunction:
     active: true
-    excludes: ['**/test/**', '**/build.gradle.kts']
   UndocumentedPublicProperty:
     active: true
-    excludes: ['**/test/**', '**/build.gradle.kts']
   OutdatedDocumentation:
     active: true

@@ -9,10 +9,25 @@ import org.gradle.testkit.runner.TaskOutcome
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 
+/**
+ * Applies the `no.chirico.commons.convention.kotlin` precompiled script plugin to a throwaway
+ * fixture project and runs its full `build`, since the plugin's own wiring can only be observed by
+ * actually applying it, not by unit-testing the script in isolation.
+ */
 class KotlinConventionPluginFunctionalTest {
 
+  /** The throwaway Gradle project the plugin is applied to. */
   @TempDir lateinit var projectDir: Path
 
+  /**
+   * detekt itself is left out of the task list: TestKit's `withPluginClasspath()` exposes
+   * commons-convention's compiled classes and resources as separate directories rather than the
+   * merged jar a real consumer resolves from Maven, so the bundled ruleset's META-INF/services
+   * entry never reaches detekt's plugin classpath here. The ruleset wiring is still exercised for
+   * real by every consumer module's own build. `withDebug(true)` runs the fixture build in this JVM
+   * instead of a forked daemon, which is what lets JaCoCo's agent on the outer test see coverage
+   * from the plugin code it triggers.
+   */
   @Test
   fun `applying the plugin wires formatting, linting, and coverage into build`() {
     writeSettingsFile()

@@ -17,10 +17,14 @@ import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpServletResponse
 import org.springframework.security.core.context.SecurityContextHolder
 
+/**
+ * Verifies [FirebaseAuthenticationFilter] authenticates requests bearing a valid Firebase token.
+ */
 class FirebaseAuthenticationFilterTest {
 
   private val auth = mockk<FirebaseAuth>()
 
+  /** Stubs [FirebaseAuth.getInstance] and clears the security context before each test. */
   @BeforeEach
   fun setUp() {
     mockkStatic(FirebaseAuth::class)
@@ -28,6 +32,7 @@ class FirebaseAuthenticationFilterTest {
     SecurityContextHolder.clearContext()
   }
 
+  /** Unmocks [FirebaseAuth] and clears the security context after each test. */
   @AfterEach
   fun tearDown() {
     unmockkStatic(FirebaseAuth::class)
@@ -40,6 +45,7 @@ class FirebaseAuthenticationFilterTest {
       every { this@mockk.uid } returns uid
     }
 
+  /** A request with no Authorization header passes through with no authentication set. */
   @Test
   fun `request without an authorization header continues unauthenticated`() {
     val filter = FirebaseAuthenticationFilter(FirebaseProperties())
@@ -53,6 +59,10 @@ class FirebaseAuthenticationFilterTest {
     assertThat(SecurityContextHolder.getContext().authentication).isNull()
   }
 
+  /**
+   * A non-Bearer Authorization header (e.g. Basic) is ignored and the request continues
+   * unauthenticated.
+   */
   @Test
   fun `request with a non-bearer authorization header continues unauthenticated`() {
     val filter = FirebaseAuthenticationFilter(FirebaseProperties())
@@ -66,6 +76,7 @@ class FirebaseAuthenticationFilterTest {
     assertThat(SecurityContextHolder.getContext().authentication).isNull()
   }
 
+  /** A verified token whose email is on the allow list authenticates the request as its uid. */
   @Test
   fun `verified token with an allowed email authenticates the request`() {
     every { auth.verifyIdToken("good-token") } returns tokenFor("a@example.com", "uid-1")
@@ -81,6 +92,7 @@ class FirebaseAuthenticationFilterTest {
     assertThat(SecurityContextHolder.getContext().authentication?.principal).isEqualTo("uid-1")
   }
 
+  /** With no allow list configured, any verified token authenticates the request. */
   @Test
   fun `verified token with an empty allow list authenticates the request`() {
     every { auth.verifyIdToken("good-token") } returns tokenFor("anyone@example.com")
@@ -94,6 +106,7 @@ class FirebaseAuthenticationFilterTest {
     assertThat(SecurityContextHolder.getContext().authentication).isNotNull
   }
 
+  /** A verified token whose email isn't on the allow list is rejected with 403. */
   @Test
   fun `verified token outside the allow list is rejected`() {
     every { auth.verifyIdToken("good-token") } returns tokenFor("outsider@example.com")
@@ -110,6 +123,10 @@ class FirebaseAuthenticationFilterTest {
     assertThat(SecurityContextHolder.getContext().authentication).isNull()
   }
 
+  /**
+   * A token that fails verification is treated like no token: the request continues
+   * unauthenticated.
+   */
   @Test
   fun `unverifiable token continues unauthenticated`() {
     every { auth.verifyIdToken("bad-token") } throws mockk<FirebaseAuthException>(relaxed = true)

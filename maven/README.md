@@ -86,12 +86,12 @@ The underlying commands are `./gradlew build`, `check`, and `ktfmtFormat`.
   (`gradlew -p commons-convention check`), since `includeBuild` never attaches
   it to the root build's `check` task graph.
 - **Documentation** — every public class, function, and property needs a KDoc
-  block. Overridden and protected members are exempt, so an implementation never
-  has to repeat its supertype. Nested and inner declarations count too, since
-  they are public by default in Kotlin. Test sources are exempt too, since
-  they're never a public API surface. Any KDoc present is also checked
-  against the actual signature (`OutdatedDocumentation`), so a stale `@param`
-  is caught even on members that were never required to be documented.
+  block, test sources included. Overridden and protected members are exempt,
+  so an implementation never has to repeat its supertype. Nested and inner
+  declarations count too, since they are public by default in Kotlin. Any
+  KDoc present is also checked against the actual signature
+  (`OutdatedDocumentation`), so a stale `@param` is caught even on members
+  that were never required to be documented.
 - **Comments** — only KDoc blocks documenting a public declaration are allowed
   (`commons/PublicKDocOnly`), mirroring the documentation rule above exactly:
   whatever is required to have a KDoc block is also the only thing allowed to

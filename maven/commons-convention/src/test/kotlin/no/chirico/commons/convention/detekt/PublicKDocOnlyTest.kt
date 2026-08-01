@@ -6,12 +6,14 @@ import dev.detekt.test.utils.compileContentForTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
+/** Verifies [PublicKDocOnly] bans every comment except KDoc on a public declaration. */
 class PublicKDocOnlyTest {
 
   private fun lint(code: String) =
     PublicKDocOnly(TestConfig())
       .visitFile(compileContentForTest(code, "Sample.kt"), FakeLanguageVersionSettings())
 
+  /** A KDoc block attached to a public class produces no findings. */
   @Test
   fun `allows a kdoc block documenting a public class`() {
     val code =
@@ -26,6 +28,7 @@ class PublicKDocOnlyTest {
     assertThat(lint(code)).isEmpty()
   }
 
+  /** A KDoc block attached to a private declaration is rejected. */
   @Test
   fun `flags a kdoc block on a private declaration`() {
     val code =
@@ -45,6 +48,7 @@ class PublicKDocOnlyTest {
     assertThat(findings.single().message).contains("reserved for public declarations")
   }
 
+  /** A plain `//` line comment is always rejected. */
   @Test
   fun `flags a plain line comment`() {
     val code =
@@ -62,6 +66,7 @@ class PublicKDocOnlyTest {
     assertThat(findings.single().message).contains("Only KDoc blocks are allowed")
   }
 
+  /** The `x-release-please-version` directive comment is recognised by content and allowed. */
   @Test
   fun `allows the release-please version directive comment`() {
     val code =
@@ -76,6 +81,7 @@ class PublicKDocOnlyTest {
     assertThat(lint(code)).isEmpty()
   }
 
+  /** A KDoc block with no following declaration to document is rejected. */
   @Test
   fun `flags an orphaned kdoc block with no declaration to document`() {
     val code =

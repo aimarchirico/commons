@@ -19,18 +19,28 @@ import org.springframework.boot.autoconfigure.AutoConfigurations
 import org.springframework.boot.test.context.runner.WebApplicationContextRunner
 import org.springframework.security.web.SecurityFilterChain
 
+/**
+ * Verifies [FirebaseAutoConfiguration] wires the Admin SDK, the auth filter, and the security
+ * chain.
+ */
 class FirebaseAutoConfigurationTest {
 
+  /** A throwaway directory to write fake credentials files into. */
   @TempDir lateinit var tempDir: Path
 
   private val configuration = FirebaseAutoConfiguration()
 
+  /** Unmocks the static Firebase classes stubbed by individual tests. */
   @AfterEach
   fun tearDown() {
     unmockkStatic(GoogleCredentials::class)
     unmockkStatic(FirebaseApp::class)
   }
 
+  /**
+   * [FirebaseAutoConfiguration.firebaseApp] throws when the configured credentials file doesn't
+   * exist.
+   */
   @Test
   fun `firebaseApp fails fast when the credentials file is missing`() {
     val properties =
@@ -39,6 +49,10 @@ class FirebaseAutoConfigurationTest {
     assertThrows<FileNotFoundException> { configuration.firebaseApp(properties) }
   }
 
+  /**
+   * With a valid credentials file, [FirebaseAutoConfiguration.firebaseApp] initialises the Admin
+   * SDK.
+   */
   @Test
   fun `firebaseApp initialises the admin sdk from the credentials file`() {
     val credentialsFile = Files.createFile(tempDir.resolve("service-account.json"))
@@ -57,6 +71,7 @@ class FirebaseAutoConfigurationTest {
     assertThat(result).isSameAs(app)
   }
 
+  /** The `firebaseAuthenticationFilter` bean wraps whatever [FirebaseProperties] it's given. */
   @Test
   fun `firebaseAuthenticationFilter bean wraps the given properties`() {
     val properties = FirebaseProperties(allowedEmails = listOf("a@example.com"))
@@ -66,6 +81,9 @@ class FirebaseAutoConfigurationTest {
     assertThat(filter).isNotNull
   }
 
+  /**
+   * The auto-configured security chain requires auth for every path except the public allow list.
+   */
   @Test
   fun `security filter chain locks down every request except the public paths`() {
     WebApplicationContextRunner()

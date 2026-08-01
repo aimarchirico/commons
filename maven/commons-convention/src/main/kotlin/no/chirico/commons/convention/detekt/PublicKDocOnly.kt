@@ -9,45 +9,28 @@ import dev.detekt.api.Rule
 import org.jetbrains.kotlin.kdoc.psi.api.KDoc
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.KtDeclaration
-import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.KtPsiUtil
 import org.jetbrains.kotlin.psi.psiUtil.visibilityModifierTypeOrDefault
 
 /**
  * Bans every comment except KDoc blocks that document a public declaration, plus a small set of
- * content-recognised tooling directives, mirroring exactly what
- * `UndocumentedPublicClass`/`UndocumentedPublicFunction`/`UndocumentedPublicProperty` require:
- * documentation is either required and therefore the only thing allowed, or not required and
- * therefore banned outright. There is no optional middle ground.
+ * content-recognised tooling directives.
  *
- * In a file where those rules require documentation, a line comment, a plain block comment, a KDoc
- * block with no attached declaration, or a KDoc block on a non-public declaration is always a
- * violation; a KDoc block on a public declaration is the only thing allowed. "Public" mirrors the
- * visibility check those rules already apply: not `private`/`internal`/`protected`, and not local
- * to a function body.
- *
- * In a file those rules exempt from requiring documentation (test sources, and a project's own
- * `build.gradle.kts`, not a precompiled script plugin like `kotlin.gradle.kts`, which is real
- * shipped source and stays subject to the normal rule), every comment is banned outright, KDoc
- * included, since nothing there is required to carry one.
+ * Explanation belongs in a KDoc block attached to the public declaration it describes. A line
+ * comment, a plain block comment, a KDoc block with no attached declaration, or a KDoc block on a
+ * non-public declaration is therefore always a violation. "Public" mirrors the visibility check
+ * `UndocumentedPublicClass`/`UndocumentedPublicFunction`/`UndocumentedPublicProperty` already
+ * apply: not `private`/`internal`/`protected`, and not local to a function body.
  *
  * A directive comment such as `// x-release-please-version` or `// suppressed: <reason>` is
- * recognised by content rather than by file path, so it stays legal everywhere, including test
- * sources and build scripts (for example in a `build.gradle.kts` version line, or immediately above
- * a `@Suppress` annotation in a test).
+ * recognised by content rather than by file path, so it stays legal wherever it appears (for
+ * example in a `build.gradle.kts` version line, or immediately above a `@Suppress` annotation).
  *
  * Comments are matched as lexer tokens rather than as text, so delimiters appearing inside string
  * literals, such as a URL or a glob path pattern, are never mistaken for comments.
  */
 class PublicKDocOnly(config: Config) :
   Rule(config, "Only KDoc blocks documenting public declarations are allowed as comments.") {
-
-  private var docsRequired = true
-
-  override fun visitKtFile(file: KtFile) {
-    docsRequired = file.virtualFile?.path?.let { !isDocsExemptPath(it) } ?: true
-    super.visitKtFile(file)
-  }
 
   /**
    * `KDocImpl.accept` dispatches straight to `visitElement` rather than `visitComment`, unlike
@@ -62,7 +45,6 @@ class PublicKDocOnly(config: Config) :
   private fun checkComment(comment: PsiComment) {
     if (DIRECTIVE_PATTERN.containsMatchIn(comment.text)) return
     when {
-      !docsRequired -> report(Finding(Entity.from(comment), NOT_REQUIRED_MESSAGE))
       comment is KDoc -> checkKDoc(comment)
       else -> report(Finding(Entity.from(comment), MESSAGE))
     }
@@ -80,12 +62,6 @@ class PublicKDocOnly(config: Config) :
     KtPsiUtil.isLocal(declaration) ||
       declaration.visibilityModifierTypeOrDefault() != KtTokens.PUBLIC_KEYWORD
 
-  private fun isDocsExemptPath(path: String): Boolean {
-    val normalized = path.replace('\\', '/')
-    return normalized.contains("/src/test/") ||
-      normalized.substringAfterLast('/') == "build.gradle.kts"
-  }
-
   private companion object {
     val DIRECTIVE_PATTERN = Regex("""^//\s*(x-release-please-version\b|suppressed:\s*\S.{9,})""")
 
@@ -97,8 +73,5 @@ class PublicKDocOnly(config: Config) :
     const val NON_PUBLIC_MESSAGE =
       "KDoc blocks are reserved for public declarations. Make the declaration public, or " +
         "delete this comment."
-    const val NOT_REQUIRED_MESSAGE =
-      "Documentation isn't required in test sources or build scripts, so it can't be optional " +
-        "either: comments, KDoc included, aren't allowed here. Delete this comment."
   }
 }

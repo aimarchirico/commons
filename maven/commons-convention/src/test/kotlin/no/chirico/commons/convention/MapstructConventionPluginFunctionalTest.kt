@@ -6,10 +6,17 @@ import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 
+/**
+ * Applies the `no.chirico.commons.convention.mapstruct` precompiled script plugin to a throwaway
+ * fixture project, since its kapt and dependency wiring only runs once a project applies it against
+ * a real `libs` version catalog.
+ */
 class MapstructConventionPluginFunctionalTest {
 
+  /** The throwaway Gradle project the plugin is applied to. */
   @TempDir lateinit var projectDir: Path
 
+  /** Applying the plugin resolves kapt and the mapstruct dependencies cleanly. */
   @Test
   fun `applying the plugin wires kapt and the mapstruct dependencies`() {
     projectDir
