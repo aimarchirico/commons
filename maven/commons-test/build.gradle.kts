@@ -14,6 +14,12 @@ dependencies {
   api("org.junit.jupiter:junit-jupiter-api")
   runtimeOnly("org.junit.platform:junit-platform-launcher")
   runtimeOnly("org.junit.jupiter:junit-jupiter-engine")
+
+  testImplementation(platform(libs.spring.boot.dependencies))
+  testImplementation(libs.archunit)
+  testImplementation("org.junit.jupiter:junit-jupiter-api")
+  testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+  testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
 
 publishing {
