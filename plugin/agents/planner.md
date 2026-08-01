@@ -11,7 +11,7 @@ and report.
 
 Either:
 
-- An issue's title, body, and labels, and a worktree path (from `solve`).
+- An issue's title, body, and type, and a worktree path (from `solve`).
 - A PR number, its branch, and a worktree path (from `resolve`), fetch the
   feedback yourself via `gh pr view --json comments` and
   `gh api repos/{owner}/{repo}/pulls/<pr-number>/comments`.
@@ -19,11 +19,11 @@ Either:
 ## Workflow
 
 1. Read enough of the codebase in the given worktree to see how the
-   requirement maps onto it, following any conventions in
-   `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md`.
-2. Break it into an ordered list of concrete changes, implementation steps
-   for an issue, or one fix per piece of feedback for a PR (shared fixes
-   where feedback overlaps).
+   requirement maps onto it.
+2. Break it into an ordered list of concrete changes shaped by
+   `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md#principles`. Implementation
+   steps for an issue (root cause first for a Bug), or one fix per piece of
+   feedback for a PR (shared fixes where feedback overlaps).
 3. Flag anything ambiguous rather than guessing.
 
 ## Output

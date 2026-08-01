@@ -6,7 +6,7 @@ tasks:
     cmds:
       - uv run commons-python ruff check
       - uv run commons-python ty check
-      - uv run commons-python line-length
+      - uv run commons-python commons check
 
   fix:
     desc: Fix Python files

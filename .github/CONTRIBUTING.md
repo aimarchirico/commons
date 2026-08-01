@@ -1,5 +1,47 @@
 # Contributing
 
+## Principles
+
+We adapt the [DevIQ principles](https://deviq.com/principles/), applied with
+judgment rather than dogma.
+
+### Design
+
+- **KISS**: Prefer the simplest solution that solves the problem at hand.
+- **YAGNI**: Build for today's requirements, not for ones you expect to
+  arrive.
+- **DRY**: Give every piece of knowledge a single authoritative definition.
+  Extract once duplication is real, not anticipated.
+
+### Structure
+
+- **Separation of Concerns**: Give each part one responsibility and a clear
+  boundary.
+- **SOLID**: Give each type one reason to change, extend it without modifying
+  it, and depend on abstractions rather than implementations.
+- **Explicit Dependencies**: Require collaborators openly in signatures
+  rather than reaching for global or ambient state.
+
+### Behavior
+
+- **Principle of Least Astonishment**: Make code behave the way a reader
+  expects, starting with names that state intent. Reserve comments for
+  non-obvious reasoning.
+- **Fail Fast**: Surface errors immediately and loudly instead of degrading
+  silently.
+- **Tell, Don't Ask**: Ask a collaborator to do the work rather than querying
+  its state and deciding on its behalf.
+
+### Maintenance
+
+- **Boy Scout Rule**: Leave code cleaner than you found it.
+- **Tolerance for Imperfection**: Accept good-enough code where the cost of
+  perfecting it outweighs the benefit.
+- **Architectural Agility**: Keep the architecture able to change as
+  understanding of the problem grows.
+
+---
+
 ## Documentation
 
 We adapt the
@@ -71,7 +113,8 @@ implementation-level detail lives here.
 - **Environment Variables**: List of required keys and `.env.example` reference.
 - **Local Development**: Installation steps, runtime requirements and available
   commands.
-- **Code Quality**: Code quality configurations, style guides, and rules.
+- **Code Quality**: Language-specific tooling, configurations, and style
+  guides.
 - **Deployment**: CI/CD pipelines, deployment targets and hosting details.
 
 ---
@@ -91,7 +134,7 @@ Each issue type has has a provided template.
 | [`Epic`](.github/ISSUE_TEMPLATE/epic.yaml)       | A high-level initiative.               |
 | [`Story`](.github/ISSUE_TEMPLATE/story.yaml)     | A user-facing feature.                 |
 | [`Task`](.github/ISSUE_TEMPLATE/task.yaml)       | A technical piece of work.             |
-| [`Bug`](.github/ISSUE_TEMPLATE/bug.yaml)         | A problem which impairs functionality. |
+| [`Bug`](.github/ISSUE_TEMPLATE/bug.yaml)         | A problem.                             |
 | [`Subtask`](.github/ISSUE_TEMPLATE/subtask.yaml) | A granular piece of work.              |
 
 ### Hierarchy

@@ -20,26 +20,28 @@ def main() -> None:
     """Dispatch to a wrapped tool based on the first argument.
 
     ``ruff`` and ``ty`` forward their remaining arguments untouched to the
-    respective tool, with the bundled config injected. ``line-length`` and
-    ``comments`` run native Python checks.
+    respective tool, with the bundled config injected. ``commons check`` runs
+    the native Python checks (line length and comments).
     """
     tool, *rest = sys.argv[1:] or [""]
 
-    if tool == "comments":
-        from commons_python.comments import check_comments
+    if tool == "commons":
+        subcommand = rest[0] if rest else ""
+        paths = rest[1:] or ["."]
+        if subcommand == "check":
+            from commons_python.comments import check_comments
+            from commons_python.line_length import check_line_length
 
-        sys.exit(check_comments(rest or ["."]))
-    if tool == "line-length":
-        from commons_python.line_length import check_line_length
-
-        sys.exit(check_line_length(rest or ["."]))
+            line_length_rc = check_line_length(paths)
+            comments_rc = check_comments(paths)
+            sys.exit(1 if (line_length_rc or comments_rc) else 0)
     if tool == "ruff":
         sys.exit(_run_wrapped("ruff", "--config", "ruff.toml", rest))
     if tool == "ty":
         sys.exit(_run_wrapped("ty", "--config-file", "ty.toml", rest))
 
     print(
-        "usage: commons-python <ruff|ty|line-length|comments> ...",
+        "usage: commons-python <ruff|ty|commons> ...",
         file=sys.stderr,
     )
     sys.exit(2)
