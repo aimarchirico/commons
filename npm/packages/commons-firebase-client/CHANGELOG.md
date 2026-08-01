@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.0](https://github.com/aimarchirico/commons/compare/commons-firebase-client-v3.1.0...commons-firebase-client-v3.2.0) (2026-08-01)
+
+
+### Features
+
+* **commons-ts:** add shared 80% vitest coverage config ([3598d0d](https://github.com/aimarchirico/commons/commit/3598d0d3795f3313e44c2b4a0de74c6d40a786d5))
+
 ## [3.1.0](https://github.com/aimarchirico/commons/compare/commons-firebase-client-v3.0.0...commons-firebase-client-v3.1.0) (2026-07-30)
 
 

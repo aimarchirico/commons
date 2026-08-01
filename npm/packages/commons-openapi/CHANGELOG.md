@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.4.0](https://github.com/aimarchirico/commons/compare/commons-openapi-v2.3.0...commons-openapi-v2.4.0) (2026-08-01)
+
+
+### Features
+
+* **commons-ts:** add default-export-shape lint rule and update ESLint base config ([4f631e4](https://github.com/aimarchirico/commons/commit/4f631e4750fd715aa172a75f834a0a3381eef265))
+* **commons-ts:** add shared 80% vitest coverage config ([3598d0d](https://github.com/aimarchirico/commons/commit/3598d0d3795f3313e44c2b4a0de74c6d40a786d5))
+
 ## [2.3.0](https://github.com/aimarchirico/commons/compare/commons-openapi-v2.2.1...commons-openapi-v2.3.0) (2026-07-29)
 
 

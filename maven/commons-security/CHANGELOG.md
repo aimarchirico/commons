@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.2.0](https://github.com/aimarchirico/commons/compare/commons-security-v3.1.0...commons-security-v3.2.0) (2026-08-01)
+
+
+### Features
+
+* **commons-convention:** enforce 80% jacoco line coverage in kotlin plugin ([0fb90f8](https://github.com/aimarchirico/commons/commit/0fb90f8438019105e742c02de8192f034c85eaa3))
+* **maven:** require KDoc on every public test declaration repo-wide ([6e1a576](https://github.com/aimarchirico/commons/commit/6e1a5766a04bdc0b17bdeb4e629a10e03bdd8ff3))
+
 ## [3.1.0](https://github.com/aimarchirico/commons/compare/commons-security-v3.0.0...commons-security-v3.1.0) (2026-07-30)
 
 
