@@ -32,7 +32,8 @@ class FirebaseAutoConfigurationTest {
 
   @Test
   fun `firebaseApp fails fast when the credentials file is missing`() {
-    val properties = FirebaseProperties(credentialsPath = tempDir.resolve("missing.json").toString())
+    val properties =
+      FirebaseProperties(credentialsPath = tempDir.resolve("missing.json").toString())
 
     assertThrows<FileNotFoundException> { configuration.firebaseApp(properties) }
   }

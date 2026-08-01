@@ -15,7 +15,8 @@ class FirebasePropertiesTest {
 
   @Test
   fun `binds the configured path and allow list`() {
-    val properties = FirebaseProperties(credentialsPath = "/tmp/creds.json", allowedEmails = listOf("a@b.com"))
+    val properties =
+      FirebaseProperties(credentialsPath = "/tmp/creds.json", allowedEmails = listOf("a@b.com"))
 
     assertThat(properties.credentialsPath).isEqualTo("/tmp/creds.json")
     assertThat(properties.allowedEmails).containsExactly("a@b.com")

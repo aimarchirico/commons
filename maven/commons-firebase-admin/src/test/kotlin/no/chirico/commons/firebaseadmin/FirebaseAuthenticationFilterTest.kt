@@ -69,7 +69,8 @@ class FirebaseAuthenticationFilterTest {
   @Test
   fun `verified token with an allowed email authenticates the request`() {
     every { auth.verifyIdToken("good-token") } returns tokenFor("a@example.com", "uid-1")
-    val filter = FirebaseAuthenticationFilter(FirebaseProperties(allowedEmails = listOf("a@example.com")))
+    val filter =
+      FirebaseAuthenticationFilter(FirebaseProperties(allowedEmails = listOf("a@example.com")))
     val request = MockHttpServletRequest().apply { addHeader("Authorization", "Bearer good-token") }
     val response = MockHttpServletResponse()
     val chain = MockFilterChain()
@@ -96,7 +97,8 @@ class FirebaseAuthenticationFilterTest {
   @Test
   fun `verified token outside the allow list is rejected`() {
     every { auth.verifyIdToken("good-token") } returns tokenFor("outsider@example.com")
-    val filter = FirebaseAuthenticationFilter(FirebaseProperties(allowedEmails = listOf("a@example.com")))
+    val filter =
+      FirebaseAuthenticationFilter(FirebaseProperties(allowedEmails = listOf("a@example.com")))
     val request = MockHttpServletRequest().apply { addHeader("Authorization", "Bearer good-token") }
     val response = MockHttpServletResponse()
     val chain = MockFilterChain()
