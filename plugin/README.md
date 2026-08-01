@@ -3,7 +3,7 @@
 The `commons` Claude Code plugin: reusable agent skills covering the
 development lifecycle, the subagents they delegate to, and the bundled
 Git/GitHub conventions they follow. This whole directory is the plugin
-source — `.claude-plugin/marketplace.json` at the repository root points its
+source - `.claude-plugin/marketplace.json` at the repository root points its
 `source` here, so installing the plugin only fetches `plugin/`, not the rest
 of the monorepo.
 
