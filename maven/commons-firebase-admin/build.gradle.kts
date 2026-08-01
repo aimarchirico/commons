@@ -13,6 +13,11 @@ dependencies {
   api("org.springframework.boot:spring-boot-starter-security")
   implementation("org.springframework.boot:spring-boot-starter-web")
   implementation(libs.firebase.admin)
+
+  testImplementation(platform(libs.spring.boot.dependencies))
+  testImplementation("org.springframework.boot:spring-boot-starter-test")
+  testImplementation("org.springframework.security:spring-security-test")
+  testImplementation(libs.mockk)
 }
 
 publishing {
