@@ -50,6 +50,7 @@ dependencies {
     if (conventionArtifact != null) {
         add("detektPlugins", files(File(conventionArtifact.toURI())))
     }
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 configure<org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension> {

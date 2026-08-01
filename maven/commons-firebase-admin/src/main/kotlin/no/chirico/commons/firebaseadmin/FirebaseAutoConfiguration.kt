@@ -46,10 +46,8 @@ class FirebaseAutoConfiguration {
         "Firebase credentials not found at: ${properties.credentialsPath}"
       )
     }
-    val options =
-      FirebaseOptions.builder()
-        .setCredentials(GoogleCredentials.fromStream(FileInputStream(file)))
-        .build()
+    val credentials = FileInputStream(file).use { GoogleCredentials.fromStream(it) }
+    val options = FirebaseOptions.builder().setCredentials(credentials).build()
     return FirebaseApp.initializeApp(options)
   }
 

@@ -2,6 +2,7 @@ package no.chirico.commons.firebaseadmin
 
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.firebase.FirebaseApp
+import com.google.firebase.FirebaseOptions
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -48,7 +49,8 @@ class FirebaseAutoConfigurationTest {
     val credentials = mockk<GoogleCredentials>()
     val app = mockk<FirebaseApp>()
     every { GoogleCredentials.fromStream(any()) } returns credentials
-    every { FirebaseApp.initializeApp(any()) } returns app
+    every { credentials.createScoped(any<List<String>>()) } returns credentials
+    every { FirebaseApp.initializeApp(any<FirebaseOptions>()) } returns app
 
     val result = configuration.firebaseApp(properties)
 
@@ -68,7 +70,7 @@ class FirebaseAutoConfigurationTest {
   fun `security filter chain locks down every request except the public paths`() {
     WebApplicationContextRunner()
       .withConfiguration(AutoConfigurations.of(FirebaseAutoConfiguration::class.java))
-      .withBean(FirebaseApp::class.java) { mockk<FirebaseApp>(relaxed = true) }
+      .withBean(FirebaseApp::class.java, { mockk<FirebaseApp>(relaxed = true) })
       .run { context ->
         assertThat(context).hasSingleBean(SecurityFilterChain::class.java)
         assertThat(context).hasSingleBean(FirebaseAuthenticationFilter::class.java)
