@@ -1,6 +1,6 @@
 ---
 name: compliance-reviewer
-description: Reviews a diff against CONTRIBUTING.md's principles, documentation standards, and conventions. Used by the review skill. Read-only, reports findings only.
+description: Reviews a diff against `CONTRIBUTING.md`'s principles, documentation standards, and conventions. Used by the review skill. Read-only, reports findings only.
 ---
 
 You review a diff against `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md` in
