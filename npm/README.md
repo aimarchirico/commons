@@ -33,7 +33,7 @@ npm/
 
 | Package                                 | Provides                                                                                                               |
 | :-------------------------------------- | :--------------------------------------------------------------------------------------------------------------------  |
-| `@aimarchirico/commons-ts`              | `./eslint`, `./tsconfig.json` — base TypeScript config.                                                                |
+| `@aimarchirico/commons-ts`              | `./eslint`, `./tsconfig.json`, `./vitest-coverage` — base TypeScript config, including a shared 80% Vitest coverage floor. |
 | `@aimarchirico/commons-expo`            | `./eslint`, `./tsconfig.json` config + `commons-expo build-android`, `create-project` and `import-keystore` bins.      |
 | `@aimarchirico/commons-project`         | root exports (`env`, `report`, `outputs`, `cli`, `git` helpers) + `commons-project rename-project` bin.                |
 | `@aimarchirico/commons-github`          | `commons-github create-project`, `create-environments`, `sync-variables`, `set-secrets`, `materialize-templates` bins. |
@@ -352,6 +352,11 @@ repository root:
   errors without requiring the compiler to confirm one exists; `@ts-check` is
   allowed.
 - **Types** — `tsc` against the shared `tsconfig.json`.
+- **Testing** — Vitest, with an 80% line/function/branch/statement coverage
+  floor enforced by `commons-ts`'s shared `./vitest-coverage` config
+  (`vitest run --coverage`, part of every package's `check` script). `bin/`
+  entrypoints and declarative config/asset re-exports are excluded from the
+  threshold; the coverage bar applies to `services/`/`lib/` logic.
 - **Caching** — Turborepo caches `check` runs (`turbo.json`).
 
 ## Deployment
