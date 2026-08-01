@@ -26,7 +26,7 @@ const productionBranch = (): string => {
     derived ?? 'main',
     derived
       ? "derived from the remote's default branch"
-      : 'no remote - assumed',
+      : 'no remote, assumed default',
   );
   return derived ?? 'main';
 };

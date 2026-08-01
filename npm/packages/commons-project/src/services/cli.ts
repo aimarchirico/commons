@@ -9,7 +9,7 @@ export type CliResult = {status: number; stdout: string; stderr: string};
 
 /**
  * Either a name to find on `PATH`, or a resolved executable carrying the name
- * to use when talking about it - `node /…/eas-cli/bin/run` should still be
+ * to use when talking about it: `node /…/eas-cli/bin/run` should still be
  * reported as "eas".
  */
 export type Command = string | {argv: string[]; name: string};
@@ -198,7 +198,8 @@ export const requireCli = (
  * Resolve a CLI a package depends on, preferring the copy the lockfile pinned.
  *
  * With `minVersion`, `PATH` is an accepted fallback and the version is
- * checked - the shape for a tool that may legitimately be installed globally.
+ * checked; that's the shape for a tool that may legitimately be installed
+ * globally.
  * Without it, resolution must succeed locally, since a declared dependency
  * that cannot be resolved means the install is incomplete rather than that the
  * tool lives elsewhere. Some generators also pay a real cost to answer

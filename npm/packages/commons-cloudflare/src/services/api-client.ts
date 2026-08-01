@@ -76,7 +76,7 @@ export const api = (token: string): ApiClient => {
 
 /**
  * The account to act in. A token scoped to exactly one account already names
- * it, so the override only has to settle the ambiguous case - and an ambiguous
+ * it, so the override only has to settle the ambiguous case; an ambiguous
  * case fails rather than picking, since the wrong account is not a mistake a
  * re-run corrects.
  * @param client
@@ -110,7 +110,7 @@ export const resolveAccount = async (
   context(
     'cloudflare account',
     `${accounts[0].name} (${accounts[0].id})`,
-    'derived - the token sees one account',
+    'derived: the token sees one account',
   );
   return accounts[0].id;
 };

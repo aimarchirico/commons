@@ -4,47 +4,47 @@
 
 Commons is the reusable foundation for Chirico services. It centralizes the shared
 backend modules, frontend configuration packages, and agent skills that
-downstream repositories - such as the service template - depend on, so every
+downstream repositories (such as the service template) depend on, so every
 project inherits the same conventions instead of re-implementing them. The
 audience is developers building or maintaining Chirico services.
 
 ## Demo
 
-_Not applicable - Commons is a collection of published libraries, configuration
+_Not applicable: Commons is a collection of published libraries, configuration
 packages, and agent skills with no runnable UI. Released artifacts are available
 on GitHub Packages._
 
 ## Features
 
-- **Backend libraries** - published Maven artifacts for security and test
+- **Backend libraries**: published Maven artifacts for security and test
   support, plus a shared Gradle/Kotlin convention plugin.
-- **Frontend configs** - shared ESLint and TypeScript configuration for
+- **Frontend configs**: shared ESLint and TypeScript configuration for
   TypeScript and Expo / React Native projects.
-- **Project conventions** - shared Markdown and commit lint rules, the
+- **Project conventions**: shared Markdown and commit lint rules, the
   contributing guide, and GitHub issue/PR templates.
-- **API tooling** - a CLI that generates the OpenAPI client and docs.
-- **Agent skills** - reusable skills covering the development lifecycle.
-- **CI/CD Actions** - reusable GitHub Actions for standardized building,
+- **API tooling**: a CLI that generates the OpenAPI client and docs.
+- **Agent skills**: reusable skills covering the development lifecycle.
+- **CI/CD Actions**: reusable GitHub Actions for standardized building,
   testing, and deployments.
 
 ## Getting Started
 
 Implementation-level setup and usage live in each subsystem's README:
 
-- [`tools/`](tools/README.md) - shared linting configs and release tooling.
-- [`.github/actions/`](.github/actions/README.md) - shared GitHub Actions for
+- [`tools/`](tools/README.md): shared linting configs and release tooling.
+- [`.github/actions/`](.github/actions/README.md): shared GitHub Actions for
   CI/CD workflows.
-- [`maven/`](maven/README.md) - Kotlin backend modules and the convention plugin.
-- [`npm/`](npm/README.md) - frontend configuration packages and the API CLI.
-- [`python/`](python/README.md) - shared Python tooling (ruff config + CLI).
-- [`plugin/`](plugin/README.md) - the `commons` Claude Code plugin (skills
+- [`maven/`](maven/README.md): Kotlin backend modules and the convention plugin.
+- [`npm/`](npm/README.md): frontend configuration packages and the API CLI.
+- [`python/`](python/README.md): shared Python tooling (ruff config + CLI).
+- [`plugin/`](plugin/README.md): the `commons` Claude Code plugin (skills
   and agents).
 
 ## Documentation
 
 Extended, system-level documentation lives in [`docs/`](docs):
 
-- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) - data flow, infrastructure
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md): data flow, infrastructure
   overview, and project structure.
 
 ## Workflow

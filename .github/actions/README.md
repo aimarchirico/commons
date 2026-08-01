@@ -12,13 +12,13 @@ across Chirico services for CI/CD.
 
 Each directory represents a standalone reusable action:
 
-- `android-release/` - Builds and releases an Android application.
-- `close-issues/` - Automatically closes stale issues.
-- `cloudflare-deploy/` - Deploys applications to Cloudflare.
-- `docker-release/` - Builds and pushes Docker images.
-- `java-task/` - Reusable Java CI tasks.
-- `node-task/` - Reusable Node.js CI tasks.
-- `vps-deploy/` - Deploys applications to a VPS.
+- `android-release/`: Builds and releases an Android application.
+- `close-issues/`: Automatically closes stale issues.
+- `cloudflare-deploy/`: Deploys applications to Cloudflare.
+- `docker-release/`: Builds and pushes Docker images.
+- `java-task/`: Reusable Java CI tasks.
+- `node-task/`: Reusable Node.js CI tasks.
+- `vps-deploy/`: Deploys applications to a VPS.
 
 ## Environment Variables
 

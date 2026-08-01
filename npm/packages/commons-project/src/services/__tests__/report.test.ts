@@ -56,7 +56,7 @@ describe('report service', () => {
     );
     printSummary('Summary');
     const output = logSpy.mock.calls.map(call => call.join(' ')).join('\n');
-    expect(output).toContain('Action required - keystore:');
+    expect(output).toContain('Action required for keystore:');
     expect(output).toContain('step one');
     expect(output).toContain('step two');
   });

@@ -46,7 +46,7 @@ export const report = (
 /**
  * Print how a value the command is about to act on was resolved. A derived
  * value that is wrong is otherwise indistinguishable from a supplied one, and
- * the consequences - writing to the wrong repository, say - are not reversible
+ * the consequences (writing to the wrong repository, say) are not reversible
  * by re-running.
  * @param label
  * @param value
@@ -115,12 +115,12 @@ export const printSummary = (title: string): void => {
   const settled = !changed && !instructions.length;
   console.log(
     `\n${title}: ${parts.length ? parts.join(', ') : 'nothing to do'}${
-      settled ? ' - no changes' : ''
+      settled ? ' (no changes)' : ''
     }`,
   );
 
   for (const instruction of instructions) {
-    console.log(`\nAction required - ${instruction.resource}:`);
+    console.log(`\nAction required for ${instruction.resource}:`);
     for (const line of instruction.steps) {
       console.log(`  ${line}`);
     }

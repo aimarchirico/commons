@@ -33,7 +33,7 @@ npm/
 
 | Package                                 | Provides                                                                                                                   |
 | :-------------------------------------- | :------------------------------------------------------------------------------------------------------------------------- |
-| `@aimarchirico/commons-ts`              | `./eslint`, `./tsconfig.json`, `./vitest-coverage` - base TypeScript config, including a shared 80% Vitest coverage floor. |
+| `@aimarchirico/commons-ts`              | `./eslint`, `./tsconfig.json`, `./vitest-coverage`: base TypeScript config, including a shared 80% Vitest coverage floor.  |
 | `@aimarchirico/commons-expo`            | `./eslint`, `./tsconfig.json` config + `commons-expo build-android`, `create-project` and `import-keystore` bins.          |
 | `@aimarchirico/commons-project`         | root exports (`env`, `report`, `outputs`, `cli`, `git` helpers) + `commons-project rename-project` bin.                    |
 | `@aimarchirico/commons-github`          | `commons-github create-project`, `create-environments`, `sync-variables`, `set-secrets`, `materialize-templates` bins.     |
@@ -56,7 +56,7 @@ needs. They are generic: no domain, account, tunnel, policy, naming
 convention, or consuming-repository path appears in any of them.
 
 **Every command takes no arguments.** Each reads its inputs from `process.env`,
-fails fast naming every missing variable at once, and is idempotent - a second
+fails fast naming every missing variable at once, and is idempotent: a second
 run makes no destructive change and reports each resource as already present.
 A downstream repository orchestrates them and supplies the values.
 
@@ -78,8 +78,8 @@ Commands that produce values other steps consume write them as `KEY=value`
 lines to the file named by `OUTPUT_FILE`, or print them with sensitive values
 masked when it is unset.
 
-Each command reports how it resolved the values it derives - the repository,
-the Cloudflare account, the production branch - before it reports any resource,
+Each command reports how it resolved the values it derives (the repository,
+the Cloudflare account, the production branch) before it reports any resource,
 so a derivation made in the wrong directory is visible before its consequences
 are. Every derived value has an override.
 
@@ -89,7 +89,7 @@ message naming what to fix.
 
 `commons-expo` declares `eas-cli` as an optional peer dependency, so the
 consuming repository pins it and the copy the lockfile resolved is the one that
-runs - nothing needs installing globally. It is optional because this package
+runs: nothing needs installing globally. It is optional because this package
 is also the shared ESLint and TypeScript config, and a project that only wants
 those should not carry a provisioning CLI. `commons-github` needs `gh` 2.40+ on
 `PATH`: the GitHub CLI is a Go binary, and the `gh` package on npm is an
@@ -253,7 +253,7 @@ write at all.
 
 Emits `CF_ACCESS_CLIENT_ID` and `CF_ACCESS_CLIENT_SECRET`. The secret is
 returned only at creation, so an existing token is left alone and reported as
-already present with its secret unreadable - reuse the stored value, or rotate
+already present with its secret unreadable: reuse the stored value, or rotate
 deliberately by deleting the token first. No Access application is created; the
 account reuses one application for its APIs.
 
@@ -287,7 +287,7 @@ survives losing either: GitHub secrets cannot be read back, and losing an
 Android signing key ends updates for every installed copy of the app.
 
 Creating and downloading the keystore is the one step eas-cli exposes only
-through its interactive menu - and the entry next to "Download existing
+through its interactive menu, where the entry next to "Download existing
 keystore" is "Delete your keystore", so this command does not drive that menu
 unattended. When there is nothing to import it prints the exact steps and
 reports `action required`, which is distinct from a failure. On the re-run it
@@ -313,16 +313,16 @@ No local `.env` is required. Publishing reads credentials from the environment
 Requires Node 20+, PNPM 11.9, and [Task](https://taskfile.dev). Run from the
 repository root:
 
-- `pnpm install` - install workspace dependencies.
-- `task npm:check` - lint and type-check all packages.
-- `task npm:fix` - auto-fix all packages.
-- `task npm:publish PACKAGE=<name>` - publish a single package.
+- `pnpm install`: install workspace dependencies.
+- `task npm:check`: lint and type-check all packages.
+- `task npm:fix`: auto-fix all packages.
+- `task npm:publish PACKAGE=<name>`: publish a single package.
 
 ## Code Quality
 
-- **Linting** - ESLint 9 flat config; every package extends the shared config
+- **Linting**: ESLint 9 flat config; every package extends the shared config
   from `commons-ts`.
-- **Documentation** - every exported top-level function, class, interface,
+- **Documentation**: every exported top-level function, class, interface,
   type alias, enum, and `const`/`let`/`var`, plus every public member of an
   exported class, needs a JSDoc block (`jsdoc/require-jsdoc`, configured with
   `contexts` to reach the TypeScript-only constructs beyond what its `require`
@@ -330,7 +330,7 @@ repository root:
   matching `@param`/`@returns` tags, valid type syntax, and known tag names
   (`jsdoc/check-param-names`, `jsdoc/check-tag-names`, `jsdoc/check-types`,
   `jsdoc/require-param`, `jsdoc/require-returns`, `jsdoc/valid-types`).
-- **Comments** - only JSDoc blocks documenting one of the declarations above
+- **Comments**: only JSDoc blocks documenting one of the declarations above
   are allowed (`commons/public-jsdoc-only`). Line and block comments are
   rejected wherever they appear, on their own line or trailing code, so
   explanation stays attached to what it describes; a JSDoc block that
@@ -340,7 +340,7 @@ repository root:
   one. Tooling directives such as `eslint-disable` and `@ts-expect-error`
   remain legal, because the tools that read them recognise only the plain
   forms.
-- **Suppression discipline** - `eslint-disable` comments must state why
+- **Suppression discipline**: `eslint-disable` comments must state why
   (`@eslint-community/eslint-comments/require-description`), may not disable
   more than the rules actually violated
   (`@eslint-community/eslint-comments/no-unlimited-disable`), and are flagged
@@ -351,13 +351,13 @@ repository root:
   `@ts-ignore` and `@ts-nocheck` are banned outright, since they silence
   errors without requiring the compiler to confirm one exists; `@ts-check` is
   allowed.
-- **Types** - `tsc` against the shared `tsconfig.json`.
-- **Testing** - Vitest, with an 80% line/function/branch/statement coverage
+- **Types**: `tsc` against the shared `tsconfig.json`.
+- **Testing**: Vitest, with an 80% line/function/branch/statement coverage
   floor enforced by `commons-ts`'s shared `./vitest-coverage` config
   (`vitest run`, part of every package's `check` script). `bin/`
   entrypoints and declarative config/asset re-exports are excluded from the
   threshold; the coverage bar applies to `services/`/`lib/` logic.
-- **Caching** - Turborepo caches `check` runs (`turbo.json`).
+- **Caching**: Turborepo caches `check` runs (`turbo.json`).
 
 ## Deployment
 
