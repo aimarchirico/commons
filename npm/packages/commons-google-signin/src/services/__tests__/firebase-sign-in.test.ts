@@ -37,7 +37,7 @@ describe('signInWithDevCredentials', () => {
     getIdToken.mockResolvedValue('fresh-token');
     signInWithEmailAndPassword.mockResolvedValue({user});
 
-    const {signInWithDevCredentials} = await import('./firebase-sign-in');
+    const {signInWithDevCredentials} = await import('../firebase-sign-in');
     const result = await signInWithDevCredentials({
       email: 'a@b.com',
       password: 'pw',
@@ -71,7 +71,7 @@ describe('signInWithGooglePopup', () => {
     getIdToken.mockResolvedValue('fresh-token');
     signInWithPopup.mockResolvedValue({user});
 
-    const {signInWithGooglePopup} = await import('./firebase-sign-in');
+    const {signInWithGooglePopup} = await import('../firebase-sign-in');
     const result = await signInWithGooglePopup();
 
     expect(signInWithPopup).toHaveBeenCalledWith(

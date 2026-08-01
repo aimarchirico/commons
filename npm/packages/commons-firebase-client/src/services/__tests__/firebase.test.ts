@@ -35,7 +35,7 @@ describe('firebase (native)', () => {
   });
 
   it('configures the native auth instance once', async () => {
-    const mod = await import('./firebase');
+    const mod = await import('../firebase');
     mod.configureFirebaseAuth({
       apiKey: 'key',
       authDomain: 'example.firebaseapp.com',
@@ -57,14 +57,14 @@ describe('firebase (native)', () => {
   });
 
   it('signInWithPopup is not supported on native', async () => {
-    const mod = await import('./firebase');
+    const mod = await import('../firebase');
     expect(() => mod.signInWithPopup({currentUser: null}, {})).toThrow(
       'signInWithPopup is not supported on native',
     );
   });
 
   it('delegates every other auth operation to the native SDK', async () => {
-    const mod = await import('./firebase');
+    const mod = await import('../firebase');
     mod.configureFirebaseAuth({
       apiKey: 'key',
       authDomain: 'example.firebaseapp.com',

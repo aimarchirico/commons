@@ -1,5 +1,5 @@
 import {describe, expect, it} from 'vitest';
-import {parseEnvironmentScopes, parseNames} from './scopes';
+import {parseEnvironmentScopes, parseNames} from '../scopes';
 
 describe('parseEnvironmentScopes', () => {
   it('parses a multi-environment scope list', () => {

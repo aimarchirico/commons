@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
-import {interpolate, loadManifest, manifestPath} from './manifest';
-import type {ManifestValue} from '../types/manifest';
+import {interpolate, loadManifest, manifestPath} from '../manifest';
+import type {ManifestValue} from '../../types/manifest';
 
 const values: Record<string, ManifestValue> = {
   name: {from: 'Template', to: 'My App'},
@@ -149,9 +149,7 @@ describe('loadManifest', () => {
 
   it('defaults optional sections to empty collections', () => {
     vi.spyOn(fs, 'existsSync').mockReturnValue(true);
-    vi.spyOn(fs, 'readFileSync').mockReturnValue(
-      JSON.stringify({values: {}}),
-    );
+    vi.spyOn(fs, 'readFileSync').mockReturnValue(JSON.stringify({values: {}}));
     expect(loadManifest()).toEqual({
       values: {},
       replacements: [],

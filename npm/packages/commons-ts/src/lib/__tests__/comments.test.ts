@@ -1,7 +1,7 @@
 import {Linter} from 'eslint';
 import {describe, expect, it} from 'vitest';
 import tseslint from 'typescript-eslint';
-import {publicJSDocOnly} from './comments';
+import {publicJSDocOnly} from '../comments';
 
 const linter = new Linter({configType: 'flat'});
 
@@ -12,6 +12,7 @@ const lint = (code: string) =>
       sourceType: 'module',
       ecmaVersion: 2022,
     },
+    linterOptions: {reportUnusedDisableDirectives: false},
     plugins: {commons: {rules: {'public-jsdoc-only': publicJSDocOnly}}},
     rules: {'commons/public-jsdoc-only': 'error'},
   });

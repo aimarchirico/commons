@@ -1,5 +1,5 @@
 import {afterEach, describe, expect, it, vi} from 'vitest';
-import {onRequest} from './proxy';
+import {onRequest} from '../proxy';
 
 describe('onRequest', () => {
   afterEach(() => {

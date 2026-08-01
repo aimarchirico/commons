@@ -1,19 +1,22 @@
-import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+  type MockInstance,
+} from 'vitest';
 
-/**
- * `report.ts` accumulates entries/instructions in module-level state, so each
- * test re-imports a fresh module instance to avoid bleeding state across
- * assertions.
- */
 const freshReportModule = async () => {
   vi.resetModules();
-  return import('./report');
+  return import('../report');
 };
 
 describe('report service', () => {
-  let logSpy: ReturnType<typeof vi.spyOn>;
-  let errorSpy: ReturnType<typeof vi.spyOn>;
-  let exitSpy: ReturnType<typeof vi.spyOn>;
+  let logSpy: MockInstance<typeof console.log>;
+  let errorSpy: MockInstance<typeof console.error>;
+  let exitSpy: MockInstance<typeof process.exit>;
 
   beforeEach(() => {
     logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});

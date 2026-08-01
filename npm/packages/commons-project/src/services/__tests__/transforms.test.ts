@@ -1,5 +1,5 @@
 import {describe, expect, it} from 'vitest';
-import {isTransform, transform, TRANSFORM_NAMES} from './transforms';
+import {isTransform, transform, TRANSFORM_NAMES} from '../transforms';
 
 describe('isTransform', () => {
   it('recognises every declared transform name', () => {

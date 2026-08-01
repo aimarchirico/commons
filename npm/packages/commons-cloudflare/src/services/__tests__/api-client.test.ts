@@ -1,5 +1,5 @@
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
-import {api, resolveAccount} from './api-client';
+import {api, resolveAccount} from '../api-client';
 
 vi.mock('@aimarchirico/commons-project', () => ({
   context: vi.fn(),
@@ -115,9 +115,7 @@ describe('resolveAccount', () => {
 
   it('fails when the token sees no accounts', async () => {
     const client = {get: vi.fn().mockResolvedValue([]), send: vi.fn()};
-    await expect(resolveAccount(client)).rejects.toThrow(
-      'can see no accounts',
-    );
+    await expect(resolveAccount(client)).rejects.toThrow('can see no accounts');
   });
 
   it('fails when the token sees more than one account', async () => {

@@ -57,7 +57,7 @@ describe('firebase.web', () => {
   });
 
   it('configures the app and Google provider once', async () => {
-    const mod = await import('./firebase.web');
+    const mod = await import('../firebase.web');
     mod.configureFirebaseAuth(webConfig);
     mod.configureFirebaseAuth(webConfig);
 
@@ -70,7 +70,7 @@ describe('firebase.web', () => {
   });
 
   it('delegates every auth operation to the web SDK', async () => {
-    const mod = await import('./firebase.web');
+    const mod = await import('../firebase.web');
     mod.configureFirebaseAuth(webConfig);
     const auth = mod.getAuth();
     const provider = {};

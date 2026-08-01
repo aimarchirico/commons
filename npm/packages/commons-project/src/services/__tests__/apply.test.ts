@@ -2,8 +2,8 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import {afterEach, beforeEach, describe, expect, it} from 'vitest';
-import {applyDelete, applyMove, applyReplacement} from './apply';
-import type {Manifest} from '../types/manifest';
+import {applyDelete, applyMove, applyReplacement} from '../apply';
+import type {Manifest} from '../../types/manifest';
 
 let dir: string;
 let originalCwd: string;
@@ -69,9 +69,12 @@ describe('applyMove', () => {
     fs.mkdirSync('src', {recursive: true});
     fs.writeFileSync('src/file.txt', 'content');
 
-    const result = applyMove({from: 'src/file.txt', to: 'dest/file.txt'}, {
-      values: {},
-    });
+    const result = applyMove(
+      {from: 'src/file.txt', to: 'dest/file.txt'},
+      {
+        values: {},
+      },
+    );
 
     expect(result.moved).toBe(true);
     expect(fs.existsSync('dest/file.txt')).toBe(true);
@@ -79,18 +82,24 @@ describe('applyMove', () => {
   });
 
   it('is a no-op when the source is missing', () => {
-    const result = applyMove({from: 'missing.txt', to: 'dest.txt'}, {
-      values: {},
-    });
+    const result = applyMove(
+      {from: 'missing.txt', to: 'dest.txt'},
+      {
+        values: {},
+      },
+    );
     expect(result.moved).toBe(false);
     expect(fs.existsSync('dest.txt')).toBe(false);
   });
 
   it('is a no-op when from and to resolve to the same path', () => {
     fs.writeFileSync('same.txt', 'content');
-    const result = applyMove({from: 'same.txt', to: 'same.txt'}, {
-      values: {},
-    });
+    const result = applyMove(
+      {from: 'same.txt', to: 'same.txt'},
+      {
+        values: {},
+      },
+    );
     expect(result.moved).toBe(false);
   });
 

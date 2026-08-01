@@ -1,4 +1,7 @@
-import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
+import path from 'path';
+import {beforeEach, describe, expect, it, vi} from 'vitest';
+
+const expectedBin = path.join('/deps', 'tool', 'bin', 'cli.js');
 
 const {spawnSync, readFileSync, requireResolve, fail} = vi.hoisted(() => ({
   spawnSync: vi.fn(),
@@ -14,11 +17,11 @@ vi.mock('module', () => ({
   createRequire: () => ({resolve: requireResolve}),
 }));
 vi.mock('fs', () => ({default: {readFileSync}, readFileSync}));
-vi.mock('./report.js', () => ({fail}));
+vi.mock('../report.js', () => ({fail}));
 
 const importCli = async () => {
   vi.resetModules();
-  return import('./cli');
+  return import('../cli');
 };
 
 describe('run', () => {
@@ -60,9 +63,9 @@ describe('run', () => {
   it('throws naming the resolved command on spawn failure', async () => {
     spawnSync.mockReturnValue({error: new Error('ENOENT')});
     const {run} = await importCli();
-    expect(() =>
-      run({argv: ['node', '/bin/tool'], name: 'tool'}, []),
-    ).toThrow('Could not run "tool": ENOENT.');
+    expect(() => run({argv: ['node', '/bin/tool'], name: 'tool'}, [])).toThrow(
+      'Could not run "tool": ENOENT.',
+    );
   });
 });
 
@@ -78,9 +81,7 @@ describe('runOrThrow', () => {
   it('throws with stderr on failure', async () => {
     spawnSync.mockReturnValue({status: 1, stdout: '', stderr: 'bad'});
     const {runOrThrow} = await importCli();
-    expect(() => runOrThrow('echo', ['hi'])).toThrow(
-      'echo hi failed:\nbad',
-    );
+    expect(() => runOrThrow('echo', ['hi'])).toThrow('echo hi failed:\nbad');
   });
 });
 
@@ -125,7 +126,7 @@ describe('packageBin', () => {
     const {packageBin} = await importCli();
     expect(packageBin('file:///caller.js', 'tool', 'tool')).toEqual([
       process.execPath,
-      '/deps/tool/bin/cli.js',
+      expectedBin,
     ]);
   });
 
@@ -137,7 +138,7 @@ describe('packageBin', () => {
     const {packageBin} = await importCli();
     expect(packageBin('file:///caller.js', 'tool', 'tool')).toEqual([
       process.execPath,
-      '/deps/tool/bin/cli.js',
+      expectedBin,
     ]);
   });
 
@@ -238,7 +239,10 @@ describe('resolveTool', () => {
         bin: 'tool',
         installHint: 'install it',
       }),
-    ).toEqual({argv: [process.execPath, '/deps/tool/bin/cli.js'], name: 'tool'});
+    ).toEqual({
+      argv: [process.execPath, expectedBin],
+      name: 'tool',
+    });
   });
 
   it('fails when no minVersion is given and local resolution fails', async () => {
@@ -286,6 +290,9 @@ describe('resolveTool', () => {
         minVersion: '2.0.0',
         installHint: 'install it',
       }),
-    ).toEqual({argv: [process.execPath, '/deps/tool/bin/cli.js'], name: 'tool'});
+    ).toEqual({
+      argv: [process.execPath, expectedBin],
+      name: 'tool',
+    });
   });
 });

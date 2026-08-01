@@ -1,5 +1,5 @@
 import {describe, expect, it} from 'vitest';
-import {buildRegex, CORE_FOLDERS, folderRule} from './folders';
+import {buildRegex, CORE_FOLDERS, folderRule} from '../folders';
 
 describe('buildRegex', () => {
   it('joins folder names into an alternation group', () => {

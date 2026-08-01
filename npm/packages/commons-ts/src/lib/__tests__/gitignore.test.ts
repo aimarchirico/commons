@@ -2,7 +2,7 @@ import {afterEach, describe, expect, it, vi} from 'vitest';
 
 const importFresh = async () => {
   vi.resetModules();
-  return import('./gitignore');
+  return import('../gitignore');
 };
 
 describe('gitignoreConfig', () => {

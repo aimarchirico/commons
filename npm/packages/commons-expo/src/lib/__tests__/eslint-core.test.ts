@@ -1,8 +1,8 @@
 import type {Linter} from 'eslint';
 import {describe, expect, it} from 'vitest';
 import {folderRule} from '@aimarchirico/commons-ts/folders';
-import config from './eslint-core';
-import {CORE_FOLDERS} from './folders';
+import config from '../eslint-core';
+import {CORE_FOLDERS} from '../folders';
 
 describe('eslint-core', () => {
   it('is a non-empty flat config array', () => {
@@ -25,8 +25,11 @@ describe('eslint-core', () => {
 
   it('dedups the @typescript-eslint plugin instance across merged configs', () => {
     const withTsPlugin = config.filter(
-      (block): block is Linter.Config & {plugins: NonNullable<Linter.Config['plugins']>} =>
-        Boolean(block.plugins?.['@typescript-eslint']),
+      (
+        block,
+      ): block is Linter.Config & {
+        plugins: NonNullable<Linter.Config['plugins']>;
+      } => Boolean(block.plugins?.['@typescript-eslint']),
     );
     const instances = new Set(
       withTsPlugin.map(block => block.plugins['@typescript-eslint']),
@@ -36,8 +39,11 @@ describe('eslint-core', () => {
 
   it('dedups the import plugin instance across merged configs', () => {
     const withImportPlugin = config.filter(
-      (block): block is Linter.Config & {plugins: NonNullable<Linter.Config['plugins']>} =>
-        Boolean(block.plugins?.['import']),
+      (
+        block,
+      ): block is Linter.Config & {
+        plugins: NonNullable<Linter.Config['plugins']>;
+      } => Boolean(block.plugins?.['import']),
     );
     const instances = new Set(
       withImportPlugin.map(block => block.plugins['import']),

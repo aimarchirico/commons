@@ -1,8 +1,8 @@
 import {describe, expect, it} from 'vitest';
 import {folderRule} from '@aimarchirico/commons-ts/folders';
-import config from './eslint-app';
-import baseConfig from './eslint-core';
-import {APP_FOLDERS} from './folders';
+import config from '../eslint-app';
+import baseConfig from '../eslint-core';
+import {APP_FOLDERS} from '../folders';
 
 describe('eslint-app', () => {
   it('extends eslint-core with the app folder rule and overrides', () => {
@@ -10,7 +10,7 @@ describe('eslint-app', () => {
   });
 
   it('restricts folders to APP_FOLDERS', () => {
-    const folderBlock = config.find(
+    const folderBlock = config.findLast(
       block => block.rules?.['check-file/folder-naming-convention'],
     );
     expect(folderBlock).toEqual(folderRule(APP_FOLDERS));
@@ -26,7 +26,9 @@ describe('eslint-app', () => {
   });
 
   it('allows default exports under app/', () => {
-    const appBlock = config.find(block => block.files?.includes('**/app/**/*.tsx'));
+    const appBlock = config.find(block =>
+      block.files?.includes('**/app/**/*.tsx'),
+    );
     expect(appBlock?.rules?.['import/no-default-export']).toBe('off');
   });
 });

@@ -1,5 +1,5 @@
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
-import {collectEnv, resolveEnv, resolveEnvList} from './env';
+import {collectEnv, resolveEnv, resolveEnvList} from '../env';
 
 const KEYS = ['TEST_REQUIRED_A', 'TEST_REQUIRED_B', 'TEST_OPTIONAL'];
 
