@@ -47,3 +47,8 @@ argument-hint: "[--auto]"
 5. Execute
    `python3 "${CLAUDE_PLUGIN_ROOT}/skills/issue/scripts/create_issues.py" issues.json`
    (the script automatically deletes the temporary file upon completion).
+
+## Output
+
+The id of the top-level (root) issue created, so a caller that invoked
+this skill can act on it.

@@ -39,3 +39,8 @@ argument-hint: "--pr <pr-number> [--auto]"
      `python3 "${CLAUDE_PLUGIN_ROOT}/skills/review/scripts/post_review_comments.py" <pr-number> review.json`
      (the script resolves `{owner}/{repo}` itself and deletes the temporary
      file upon completion).
+
+## Output
+
+The merged findings, and whether any were posted as PR review comments, so
+a caller that invoked this skill can act on it.
