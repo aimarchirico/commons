@@ -26,7 +26,7 @@ const combined = (
   return config;
 });
 
-export default [
+const config: Linter.Config[] = [
   ...combined,
   folderRule(CORE_FOLDERS),
   {
@@ -36,3 +36,5 @@ export default [
     },
   },
 ];
+
+export default config;

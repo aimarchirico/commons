@@ -1,3 +1,5 @@
+import type {Linter} from 'eslint';
+
 /** Folder names allowed directly under `src` by default. */
 export const CORE_FOLDERS = [
   'assets',
@@ -22,7 +24,9 @@ export const buildRegex = (folders: string[]) => `(${folders.join('|')})`;
  * @param folders The folder names to allow. Defaults to {@link CORE_FOLDERS}.
  * @returns A flat config block for the folder naming convention.
  */
-export const folderRule = (folders: string[] = CORE_FOLDERS) => ({
+export const folderRule = (
+  folders: string[] = CORE_FOLDERS,
+): Linter.Config => ({
   files: ['**/src/**/*'],
   rules: {
     'check-file/folder-naming-convention': [

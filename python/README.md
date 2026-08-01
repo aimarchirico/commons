@@ -46,25 +46,25 @@ whether the package is installed from a wheel, sdist, or editable install.
 Requires Python 3.13 and [Task](https://taskfile.dev). Run from the
 repository root:
 
-- `task python:check` — check all Python packages.
-- `task python:fix` — auto-fix all Python packages.
+- `task python:check`: check all Python packages.
+- `task python:fix`: auto-fix all Python packages.
 
 ## Code Quality
 
-- **Linting** — ruff with bundled `assets/ruff.toml`
+- **Linting**: ruff with bundled `assets/ruff.toml`
   (`commons-python ruff <args>`), selecting rule groups `E`, `F`, and `D`.
-- **Types** — ty with bundled `assets/ty.toml` (`commons-python ty <args>`).
-- **Documentation** — every public module, function, class, and method needs a
+- **Types**: ty with bundled `assets/ty.toml` (`commons-python ty <args>`).
+- **Documentation**: every public module, function, class, and method needs a
   Google-style docstring, enforced via ruff's `D` (`pydocstyle`) rule group
   configured with `convention = "google"`. Non-public declarations (prefixed
   with `_`) do not carry docstrings.
-- **Comments** — only docstrings documenting a public declaration are allowed
+- **Comments**: only docstrings documenting a public declaration are allowed
   (`commons-python commons check`), mirroring the owner-aware doc-comment
   enforcement across the repository: whatever is required to have a doc
   comment is also the only thing allowed to have one. Line comments (`# ...`),
   orphaned docstrings, and docstrings on non-public declarations are rejected,
   so explanation stays attached to what it describes.
-- **Line length** — native Python check enforcing a 300-line-per-file maximum
+- **Line length**: native Python check enforcing a 300-line-per-file maximum
   (`commons-python commons check`), skipping `.venv/`, `__pycache__/`, `.git/`,
   `build/`, `dist/`, and `*.egg-info/`.
 - **Testing & Coverage** — pytest and pytest-cov with bundled `assets/coverage.toml`,

@@ -40,7 +40,7 @@ const signOut = async (): Promise<void> => {
 };
 
 /** Web `GoogleSignInServiceContract` implementation, backed by Firebase's popup sign-in. */
-export const GoogleSignInService: GoogleSignInServiceContract = {
+export const GoogleSignInService = {
   async configure() {},
   async checkPlayServices() {
     return true;
@@ -49,4 +49,4 @@ export const GoogleSignInService: GoogleSignInServiceContract = {
   createAccount: () => signIn(),
   signOut,
   revokeAccess: () => signOut(),
-};
+} satisfies GoogleSignInServiceContract;

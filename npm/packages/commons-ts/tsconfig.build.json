@@ -1,0 +1,5 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "./src/assets/tsconfig-build.json",
+  "include": ["${configDir}/src/lib/vitest-coverage.ts"]
+}

@@ -1,8 +1,9 @@
+import type {Linter} from 'eslint';
 import {folderRule} from '@aimarchirico/commons-ts/folders';
 import {UI_FOLDERS} from './folders';
 import baseConfig from './eslint-core';
 
-export default [
+const config: Linter.Config[] = [
   ...baseConfig,
   folderRule(UI_FOLDERS),
   {
@@ -12,3 +13,5 @@ export default [
     },
   },
 ];
+
+export default config;

@@ -19,6 +19,12 @@ const IGNORE = [
 
 type Pair = {from: string; to: string};
 
+const escapeRegExp = (value: string): string =>
+  value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+const boundaryPattern = (from: string): RegExp =>
+  new RegExp(`(?<![A-Za-z0-9_-])${escapeRegExp(from)}(?![A-Za-z0-9_-])`, 'g');
+
 const pairs = (
   replacement: ManifestReplacement,
   manifest: Manifest,
@@ -61,7 +67,7 @@ export const applyReplacement = async (
     const original = fs.readFileSync(file, 'utf8');
     let content = original;
     for (const pair of replacements) {
-      content = content.split(pair.from).join(pair.to);
+      content = content.replace(boundaryPattern(pair.from), pair.to);
     }
     if (content !== original) {
       fs.writeFileSync(file, content);

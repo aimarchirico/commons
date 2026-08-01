@@ -1,5 +1,6 @@
 import baseConfig from './src/lib/eslint-core';
-export default [
+
+const config = [
   ...baseConfig,
   {
     files: ['**/eslint*.ts'],
@@ -8,3 +9,5 @@ export default [
     },
   },
 ];
+
+export default config;
