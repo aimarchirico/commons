@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.2.0](https://github.com/aimarchirico/commons/compare/commons-firebase-admin-v2.1.0...commons-firebase-admin-v2.2.0) (2026-08-01)
+
+
+### Features
+
+* **commons-convention:** enforce 80% jacoco line coverage in kotlin plugin ([0fb90f8](https://github.com/aimarchirico/commons/commit/0fb90f8438019105e742c02de8192f034c85eaa3))
+* **maven:** require KDoc on every public test declaration repo-wide ([6e1a576](https://github.com/aimarchirico/commons/commit/6e1a5766a04bdc0b17bdeb4e629a10e03bdd8ff3))
+
+
+### Bug Fixes
+
+* **maven:** fix Kotlin test compile errors and JUnit platform launcher resolution ([44ec338](https://github.com/aimarchirico/commons/commit/44ec3380b1ea84c3ed1e0ba65e92a2782c827139))
+
 ## [2.1.0](https://github.com/aimarchirico/commons/compare/commons-firebase-admin-v2.0.0...commons-firebase-admin-v2.1.0) (2026-07-30)
 
 

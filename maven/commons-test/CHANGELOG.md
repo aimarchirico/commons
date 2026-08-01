@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.2.0](https://github.com/aimarchirico/commons/compare/commons-test-v3.1.0...commons-test-v3.2.0) (2026-08-01)
+
+
+### Features
+
+* **commons-convention:** enforce 80% jacoco line coverage in kotlin plugin ([0fb90f8](https://github.com/aimarchirico/commons/commit/0fb90f8438019105e742c02de8192f034c85eaa3))
+* **commons-convention:** enforce comment discipline on its own module ([8d41607](https://github.com/aimarchirico/commons/commit/8d41607fc3d1644e523b01ac1e58bb4456970455))
+* **maven:** require KDoc on every public test declaration repo-wide ([6e1a576](https://github.com/aimarchirico/commons/commit/6e1a5766a04bdc0b17bdeb4e629a10e03bdd8ff3))
+
+
+### Bug Fixes
+
+* **maven:** fix Kotlin test compile errors and JUnit platform launcher resolution ([44ec338](https://github.com/aimarchirico/commons/commit/44ec3380b1ea84c3ed1e0ba65e92a2782c827139))
+
 ## [3.1.0](https://github.com/aimarchirico/commons/compare/commons-test-v3.0.0...commons-test-v3.1.0) (2026-07-30)
 
 

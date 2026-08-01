@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.0](https://github.com/aimarchirico/commons/compare/commons-cloudflare-v3.3.0...commons-cloudflare-v3.4.0) (2026-08-01)
+
+
+### Features
+
+* **commons-ts:** add shared 80% vitest coverage config ([3598d0d](https://github.com/aimarchirico/commons/commit/3598d0d3795f3313e44c2b4a0de74c6d40a786d5))
+
 ## [3.3.0](https://github.com/aimarchirico/commons/compare/commons-cloudflare-v3.2.0...commons-cloudflare-v3.3.0) (2026-07-30)
 
 

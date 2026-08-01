@@ -1,14 +1,14 @@
 {
-  "maven/commons-convention": "2.1.0",
-  "maven/commons-security": "3.1.0",
-  "maven/commons-test": "3.1.0",
-  "maven/commons-firebase-admin": "2.1.0",
-  "npm/packages/commons-cloudflare": "3.3.0",
-  "npm/packages/commons-expo": "4.2.0",
-  "npm/packages/commons-firebase-client": "3.1.0",
-  "npm/packages/commons-github": "1.1.2",
-  "npm/packages/commons-google-signin": "4.1.0",
-  "npm/packages/commons-openapi": "2.3.0",
-  "npm/packages/commons-project": "1.1.0",
-  "npm/packages/commons-ts": "3.2.0"
+  "maven/commons-convention": "2.2.0",
+  "maven/commons-security": "3.2.0",
+  "maven/commons-test": "3.2.0",
+  "maven/commons-firebase-admin": "2.2.0",
+  "npm/packages/commons-cloudflare": "3.4.0",
+  "npm/packages/commons-expo": "4.3.0",
+  "npm/packages/commons-firebase-client": "3.2.0",
+  "npm/packages/commons-github": "1.2.0",
+  "npm/packages/commons-google-signin": "4.2.0",
+  "npm/packages/commons-openapi": "2.4.0",
+  "npm/packages/commons-project": "1.2.0",
+  "npm/packages/commons-ts": "3.3.0"
 }
