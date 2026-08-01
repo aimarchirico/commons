@@ -23,8 +23,12 @@ argument-hint: "--pr <pr-number> [--auto]"
    check the pull request's existing branch out into an isolated worktree,
    where `<worktree-path>` is `../<branch-name>` (a sibling of the repository
    root).
-3. Execute
-   `python3 "${CLAUDE_PLUGIN_ROOT}/skills/resolve/scripts/fetch_pr_feedback.py" <pr-number>`
+3. Execute:
+
+   ```bash
+   python3 "${CLAUDE_PLUGIN_ROOT}/skills/resolve/scripts/fetch_pr_feedback.py" <pr-number>
+   ```
+
    to fetch the pull request's conversation comments and unresolved review
    threads as normalized JSON. Delegate to the `planner` agent, passing this
    feedback and `<worktree-path>`, to draft a fix plan mapping each piece of
@@ -56,8 +60,12 @@ argument-hint: "--pr <pr-number> [--auto]"
    }
    ```
 
-   Then execute
-   `python3 "${CLAUDE_PLUGIN_ROOT}/skills/resolve/scripts/post_pr_replies.py" <pr-number> replies.json`
+   Then execute:
+
+   ```bash
+   python3 "${CLAUDE_PLUGIN_ROOT}/skills/resolve/scripts/post_pr_replies.py" <pr-number> replies.json
+   ```
+
    (the script resolves `{owner}/{repo}` itself and deletes the temporary
    file upon completion).
 10. Execute `git worktree remove <worktree-path>` to remove the isolated

@@ -44,8 +44,12 @@ argument-hint: "--pr <pr-number> [--auto]"
      }
      ```
 
-   - Execute
-     `python3 "${CLAUDE_PLUGIN_ROOT}/skills/review/scripts/post_review_comments.py" <pr-number> review.json`
+   - Execute:
+
+     ```bash
+     python3 "${CLAUDE_PLUGIN_ROOT}/skills/review/scripts/post_review_comments.py" <pr-number> review.json
+     ```
+
      (the script resolves `{owner}/{repo}` itself and deletes the temporary
      file upon completion).
 

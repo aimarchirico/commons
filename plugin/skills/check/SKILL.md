@@ -9,7 +9,7 @@ argument-hint: "[--path <dir>]"
 ## Arguments
 
 | Flag     | Required | Description                                          |
-| :------- | :------- | :---------------------------------------------------- |
+| :------- | :------- | :--------------------------------------------------- |
 | `--path` | No       | Restrict to this directory instead of the repo root. |
 
 ## Workflow

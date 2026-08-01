@@ -9,11 +9,11 @@ argument-hint: "[--draft] [--auto] [--review]"
 
 ## Arguments
 
-| Flag       | Required | Description                                                                                       |
-| :--------- | :------- | :--------------------------------------------------------------------------------------------------- |
-| `--draft`  | No       | Passed through to the `solve` skill (and its `pr` skill) to open the resulting PR as a draft.       |
-| `--auto`   | No       | Run the full lifecycle autonomously without prompting for approvals across every sub-skill invoked (including during a `--review` pass if set). |
-| `--review` | No       | After the pull request is opened, run one review-and-fix pass over it via the `review` and `resolve` skills. |
+| Flag       | Required | Description                                                                                                                                        |
+| :--------- | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--draft`  | No       | Passed through to the `solve` skill (and its `pr` skill) to open the resulting PR as a draft.                                                      |
+| `--auto`   | No       | Run the full lifecycle autonomously without prompting for approvals across every sub-skill invoked (including during a `--review` pass if set).    |
+| `--review` | No       | After the pull request is opened, run one review-and-fix pass over it via the `review` and `resolve` skills.                                       |
 
 ## Workflow
 
