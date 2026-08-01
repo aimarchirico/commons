@@ -16,8 +16,7 @@ import org.jetbrains.kotlin.psi.KtFile
  * `@eslint-community/eslint-comments/require-description` demands of a suppressing `eslint-disable`
  * comment on the TypeScript side.
  *
- * The reason must be at least 10 characters, matching this repository's
- * `ban-ts-comment`/`minimumDescriptionLength` convention for `@ts-expect-error`.
+ * The reason must be at least 10 characters.
  */
 class SuppressRequiresReason(config: Config) :
   Rule(
