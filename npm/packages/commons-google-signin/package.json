@@ -17,7 +17,7 @@
     "src"
   ],
   "scripts": {
-    "check": "eslint && tsc && vitest run --coverage",
+    "check": "eslint && tsc && vitest run",
     "fix": "eslint --fix"
   },
   "dependencies": {

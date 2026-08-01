@@ -7,7 +7,7 @@ import base from '@aimarchirico/commons-ts/vitest-coverage';
  * this package's size, so they are treated like `bin/`: thin glue excluded
  * from the threshold, with `services/` carrying the coverage bar instead.
  */
-export default {
+export const config = {
   ...base,
   test: {
     ...base.test,
@@ -21,3 +21,5 @@ export default {
     },
   },
 };
+
+export default config;

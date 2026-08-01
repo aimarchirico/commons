@@ -3,12 +3,19 @@ import {coverageConfigDefaults, defineConfig} from 'vitest/config';
 /**
  * Shared coverage configuration enforcing an 80% floor on lines, functions,
  * branches, and statements. Consumers import and re-export this from their
- * own `vitest.config.ts` with zero additional config, the same pattern
- * `eslint-core.ts` uses for lint config.
+ * own `vitest.config.ts` with zero additional config.
+ *
+ * Published as compiled JS (`dist/lib/vitest-coverage.js`, built via
+ * `tsconfig.build.json`), not raw `.ts`: Vite's config loader bundles a
+ * `vitest.config.ts`'s own relative imports, but externalizes bare-specifier
+ * imports resolved into `node_modules` (including pnpm workspace symlinks)
+ * and hands them to Node's native loader, which cannot import raw
+ * TypeScript.
  */
-export default defineConfig({
+export const vitestCoverageConfig = defineConfig({
   test: {
     coverage: {
+      enabled: true,
       provider: 'v8',
       reporter: ['text', 'html'],
       thresholds: {
@@ -28,3 +35,5 @@ export default defineConfig({
     },
   },
 });
+
+export default vitestCoverageConfig;

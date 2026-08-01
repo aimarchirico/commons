@@ -354,7 +354,7 @@ repository root:
 - **Types** — `tsc` against the shared `tsconfig.json`.
 - **Testing** — Vitest, with an 80% line/function/branch/statement coverage
   floor enforced by `commons-ts`'s shared `./vitest-coverage` config
-  (`vitest run --coverage`, part of every package's `check` script). `bin/`
+  (`vitest run`, part of every package's `check` script). `bin/`
   entrypoints and declarative config/asset re-exports are excluded from the
   threshold; the coverage bar applies to `services/`/`lib/` logic.
 - **Caching** — Turborepo caches `check` runs (`turbo.json`).

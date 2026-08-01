@@ -2,6 +2,8 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
     "strict": true,
+    "allowJs": true,
+    "checkJs": true,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "noFallthroughCasesInSwitch": true,
@@ -14,6 +16,13 @@
   "include": [
     "${configDir}/**/*.ts",
     "${configDir}/**/*.tsx",
+    "${configDir}/**/*.mts",
+    "${configDir}/**/*.cts",
+    "${configDir}/**/*.js",
+    "${configDir}/**/*.jsx",
+    "${configDir}/**/*.mjs",
+    "${configDir}/**/*.cjs",
     "${configDir}/**/*.json"
-  ]
+  ],
+  "exclude": ["${configDir}/**/dist/**", "${configDir}/**/coverage/**"]
 }

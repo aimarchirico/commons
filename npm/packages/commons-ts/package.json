@@ -1,12 +1,19 @@
 {
   "name": "@aimarchirico/commons-ts",
   "version": "3.2.0",
+  "type": "module",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
+  "files": [
+    "src",
+    "dist"
+  ],
   "scripts": {
-    "check": "eslint && tsc && vitest run --coverage",
-    "fix": "eslint --fix"
+    "check": "eslint && tsc && vitest run",
+    "fix": "eslint --fix",
+    "build": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "pnpm build"
   },
   "exports": {
     "./eslint-base": "./src/lib/eslint-base.ts",
@@ -14,7 +21,7 @@
     "./folders": "./src/lib/folders.ts",
     "./tsconfig-base": "./src/assets/tsconfig-base.json",
     "./tsconfig-build": "./src/assets/tsconfig-build.json",
-    "./vitest-coverage": "./src/lib/vitest-coverage.ts"
+    "./vitest-coverage": "./dist/lib/vitest-coverage.js"
   },
   "dependencies": {
     "@es-joy/jsdoccomment": "^0.90.0",
