@@ -40,3 +40,8 @@ argument-hint: "[--draft] [--auto]"
    drafted title and body.
 7. Execute `gh pr create --title "<title>" --body "<body>"`, passing `--draft`
    if the `--draft` flag was provided.
+
+## Output
+
+The created pull request's number and URL, parsed from `gh pr create`'s
+output, so a caller that invoked this skill can act on it.
