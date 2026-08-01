@@ -18,7 +18,7 @@
     "dist"
   ],
   "scripts": {
-    "check": "eslint && tsc",
+    "check": "eslint && tsc && vitest run --coverage",
     "fix": "eslint --fix",
     "build": "tsc -p tsconfig.build.json",
     "prepublishOnly": "pnpm build"
@@ -29,7 +29,9 @@
   "devDependencies": {
     "@aimarchirico/commons-ts": "workspace:^",
     "@types/node": "^26.0.1",
+    "@vitest/coverage-v8": "^3.2.4",
     "eslint": "^9.39.2",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^3.2.4"
   }
 }
