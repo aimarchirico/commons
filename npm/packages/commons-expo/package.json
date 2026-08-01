@@ -20,7 +20,7 @@
     "commons-expo": "dist/bin/cli.js"
   },
   "scripts": {
-    "check": "eslint && tsc",
+    "check": "eslint && tsc && vitest run --coverage",
     "fix": "eslint --fix",
     "build": "tsc -p tsconfig.build.json",
     "prepublishOnly": "pnpm build"
@@ -36,11 +36,13 @@
   },
   "devDependencies": {
     "@types/node": "^26.0.1",
+    "@vitest/coverage-v8": "^3.2.4",
     "eas-cli": "^21.3.0",
     "eslint": "^9.39.2",
     "expo": "*",
     "react": "*",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^3.2.4"
   },
   "peerDependencies": {
     "eas-cli": "^21.3.0",
