@@ -2,6 +2,7 @@ commons:
   active: true
   PublicKDocOnly:
     active: true
+    excludes: ['**/test/**']
   SuppressRequiresReason:
     active: true
   FileLength:
