@@ -19,10 +19,10 @@ def _run_wrapped(
 def main() -> None:
     """Dispatch to a wrapped tool based on the first argument.
 
-    ``ruff``, ``ty``, and ``coverage`` forward their remaining arguments
-    untouched to the respective tool, with the bundled config injected.
-    ``commons check`` runs the native Python checks (line length and
-    comments).
+    ``ruff``, ``ty``, ``pytest``, and ``coverage`` forward their remaining
+    arguments untouched to the respective tool, with the bundled config
+    injected. ``commons check`` runs the native Python checks (line length
+    and comments).
     """
     tool, *rest = sys.argv[1:] or [""]
 
@@ -40,11 +40,18 @@ def main() -> None:
         sys.exit(_run_wrapped("ruff", "--config", "ruff.toml", rest))
     if tool == "ty":
         sys.exit(_run_wrapped("ty", "--config-file", "ty.toml", rest))
+    if tool == "pytest":
+        asset = importlib.resources.files("commons_python.assets") / "coverage.toml"
+        with importlib.resources.as_file(asset) as config_path:
+            cov_args = [] if any(a.startswith("--cov") for a in rest) else ["--cov"]
+            command = ["pytest", *cov_args, "--cov-config", str(config_path), *rest]
+            result = subprocess.run(command, check=False)
+        sys.exit(result.returncode)
     if tool == "coverage":
         sys.exit(_run_wrapped("coverage", "--rcfile", "coverage.toml", rest))
 
     print(
-        "usage: commons-python <ruff|ty|coverage|commons> ...",
+        "usage: commons-python <ruff|ty|pytest|coverage|commons> ...",
         file=sys.stderr,
     )
     sys.exit(2)

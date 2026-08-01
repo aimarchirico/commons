@@ -67,10 +67,9 @@ repository root:
 - **Line length** — native Python check enforcing a 300-line-per-file maximum
   (`commons-python commons check`), skipping `.venv/`, `__pycache__/`, `.git/`,
   `build/`, `dist/`, and `*.egg-info/`.
-- **Coverage** — coverage.py with bundled `assets/coverage.toml`, enforcing an
-  80% minimum (`fail_under = 80`) with branch coverage on
-  (`commons-python coverage run <args>` to collect, then
-  `commons-python coverage report` to check the threshold).
+- **Testing & Coverage** — pytest and pytest-cov with bundled `assets/coverage.toml`,
+  enforcing an 80% minimum (`fail_under = 80`) with branch coverage on
+  (`commons-python pytest <args>`).
 
 ## Deployment
 

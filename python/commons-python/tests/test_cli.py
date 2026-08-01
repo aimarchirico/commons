@@ -50,6 +50,29 @@ def test_dispatches_wrapped_tool(
     assert command[4:] == ["extra"]
 
 
+def test_dispatches_pytest(monkeypatch: pytest.MonkeyPatch) -> None:
+    """``pytest`` tool forwards args and injects coverage.toml config."""
+    captured: dict[str, list[str]] = {}
+
+    def fake_run(command: list[str], check: bool) -> _FakeCompletedProcess:
+        captured["command"] = command
+        return _FakeCompletedProcess(returncode=0)
+
+    monkeypatch.setattr(subprocess, "run", fake_run)
+    monkeypatch.setattr(sys, "argv", ["commons-python", "pytest", "-v"])
+
+    with pytest.raises(SystemExit) as exc_info:
+        cli.main()
+
+    assert exc_info.value.code == 0
+    command = captured["command"]
+    assert command[0] == "pytest"
+    assert command[1] == "--cov"
+    assert command[2] == "--cov-config"
+    assert command[3].endswith("coverage.toml")
+    assert command[4:] == ["-v"]
+
+
 def test_commons_check_dispatches_to_native_checks(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
