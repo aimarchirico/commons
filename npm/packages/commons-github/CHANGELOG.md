@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.1.2](https://github.com/aimarchirico/commons/compare/commons-github-v1.1.1...commons-github-v1.1.2) (2026-08-01)
+
+
+### Bug Fixes
+
+* add principles section to contributing guidelines ([88a6646](https://github.com/aimarchirico/commons/commit/88a66465875f80162f88721cf82dd2fa4a1cdda4))
+* cite source and spell out names in principles section ([70e766b](https://github.com/aimarchirico/commons/commit/70e766b9561527c3f3b58da9271d77001c9235a0))
+* expand and group principles section ([88a7834](https://github.com/aimarchirico/commons/commit/88a7834d4c3aa0071a9eaf95d48574c6ecc2a244))
+* scope code quality section to language-specific tooling ([ed3fee3](https://github.com/aimarchirico/commons/commit/ed3fee3dfd56ae27f699ae9870461aa211ac50bd))
+
 ## [1.1.1](https://github.com/aimarchirico/commons/compare/commons-github-v1.1.0...commons-github-v1.1.1) (2026-07-31)
 
 
