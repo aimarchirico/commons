@@ -11,10 +11,10 @@ argument-hint: "--pr <pr-number> [--auto]"
 
 ## Arguments
 
-| Flag     | Required | Description                                                              |
-| :------- | :------- | :------------------------------------------------------------------------ |
-| `--pr`   | Yes      | The pull request number to review.                                       |
-| `--auto` | No       | Skip the approval prompt before posting findings as PR review comments.  |
+| Flag     | Required | Description                                                             |
+| :------- | :------- | :---------------------------------------------------------------------- |
+| `--pr`   | Yes      | The pull request number to review.                                      |
+| `--auto` | No       | Skip the approval prompt before posting findings as PR review comments. |
 
 ## Workflow
 
