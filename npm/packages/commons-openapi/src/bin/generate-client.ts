@@ -6,6 +6,13 @@ import fs from 'fs';
 import os from 'os';
 import https from 'https';
 import http from 'http';
+import {
+  buildAccessHeaders,
+  buildSpecUrl,
+  resolveDocsDir,
+  resolveOutputDir,
+  toGeneratorSpecPath,
+} from '../services/openapi-client';
 
 const apiUrl = process.env.API_URL;
 if (!apiUrl) {
@@ -17,13 +24,10 @@ const cfClientId = process.env.CF_ACCESS_CLIENT_ID;
 const cfClientSecret = process.env.CF_ACCESS_CLIENT_SECRET;
 
 async function fetchSpec(): Promise<string> {
-  const specUrl = `${apiUrl}/v3/api-docs`;
-  const headers: Record<string, string> = {};
-
-  if (cfClientId && cfClientSecret) {
+  const specUrl = buildSpecUrl(apiUrl as string);
+  const headers = buildAccessHeaders(cfClientId, cfClientSecret);
+  if (Object.keys(headers).length) {
     console.log('Using Cloudflare Access service token');
-    headers['CF-Access-Client-Id'] = cfClientId;
-    headers['CF-Access-Client-Secret'] = cfClientSecret;
   }
 
   return new Promise((resolve, reject) => {
@@ -43,10 +47,8 @@ async function fetchSpec(): Promise<string> {
 
 function generateClient(specPath: string): void {
   console.log('Generating API client...');
-  const outputDir =
-    process.env.API_CLIENT_OUTPUT_DIR ||
-    path.resolve(process.cwd(), 'src/services/generated');
-  const safeSpecPath = specPath.replace(/\\/g, '/');
+  const outputDir = resolveOutputDir(process.env.API_CLIENT_OUTPUT_DIR);
+  const safeSpecPath = toGeneratorSpecPath(specPath);
 
   const generator = resolveTool({
     from: import.meta.url,
@@ -73,8 +75,7 @@ function generateClient(specPath: string): void {
 
 function generateDocs(specPath: string): void {
   console.log('Generating API documentation...');
-  const docsDir =
-    process.env.API_DOCS_OUTPUT_DIR || path.resolve(process.cwd(), 'docs');
+  const docsDir = resolveDocsDir(process.env.API_DOCS_OUTPUT_DIR);
   if (!fs.existsSync(docsDir)) {
     fs.mkdirSync(docsDir, {recursive: true});
   }
