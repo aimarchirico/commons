@@ -1,12 +1,15 @@
 package no.chirico.commons.convention
 
 import java.io.File
+import org.gradle.testing.jacoco.tasks.JacocoCoverageVerification
+import org.gradle.testing.jacoco.tasks.JacocoReport
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     kotlin("jvm")
     id("com.ncorti.ktfmt.gradle")
     id("dev.detekt")
+    jacoco
 }
 
 configure<com.ncorti.ktfmt.gradle.KtfmtExtension> {
@@ -64,8 +67,31 @@ configure<org.gradle.api.plugins.JavaPluginExtension> {
 
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
+    finalizedBy(tasks.named("jacocoTestReport"))
+}
+
+tasks.named<JacocoReport>("jacocoTestReport") {
+    dependsOn(tasks.named("test"))
+}
+
+/**
+ * Requires 80% line coverage across each module's whole build, rather than per class, so a handful
+ * of thin, hard-to-test classes (a `@ConfigurationProperties` holder, a Spring `@AutoConfiguration`)
+ * don't force pointless tests as long as the module's tested code carries the average.
+ */
+tasks.named<JacocoCoverageVerification>("jacocoTestCoverageVerification") {
+    dependsOn(tasks.named("jacocoTestReport"))
+    violationRules {
+        rule {
+            limit {
+                counter = "LINE"
+                value = "COVEREDRATIO"
+                minimum = "0.80".toBigDecimal()
+            }
+        }
+    }
 }
 
 tasks.named("check") {
-    dependsOn("ktfmtCheck", "detekt")
+    dependsOn("ktfmtCheck", "detekt", "jacocoTestCoverageVerification")
 }
