@@ -49,5 +49,5 @@ Extended, system-level documentation lives in [`docs/`](docs):
 
 ## Workflow
 
-See [CONTRIBUTING.md](.github/CONTRIBUTING.md) for documentation, issue,
-branch, commit, and pull request conventions.
+See [CONTRIBUTING.md](.github/CONTRIBUTING.md) for principles, documentation,
+issue, branch, commit, and pull request conventions.
