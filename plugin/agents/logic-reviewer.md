@@ -17,7 +17,7 @@ A diff and the pull request number it came from.
    path's behavior and its callers.
 2. For each changed code path, check whether it handles its edge cases and
    failure modes correctly given how it's actually called.
-3. Discard anything you can't ground in a concrete failing scenario —
+3. Discard anything you can't ground in a concrete failing scenario;
    describe the exact input or state that triggers it.
 
 ## Output
