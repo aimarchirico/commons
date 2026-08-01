@@ -14,7 +14,9 @@ class CorsAutoConfigurationTest {
     val filter = CorsAutoConfiguration().corsFilter(properties)
 
     val request =
-      MockHttpServletRequest("GET", "/anything").apply { addHeader("Origin", "https://example.com") }
+      MockHttpServletRequest("GET", "/anything").apply {
+        addHeader("Origin", "https://example.com")
+      }
     val response = MockHttpServletResponse()
 
     filter.doFilter(request, response, MockFilterChain())
@@ -29,7 +31,9 @@ class CorsAutoConfigurationTest {
     val filter = CorsAutoConfiguration().corsFilter(properties)
 
     val request =
-      MockHttpServletRequest("GET", "/anything").apply { addHeader("Origin", "https://evil.example") }
+      MockHttpServletRequest("GET", "/anything").apply {
+        addHeader("Origin", "https://evil.example")
+      }
     val response = MockHttpServletResponse()
 
     filter.doFilter(request, response, MockFilterChain())
