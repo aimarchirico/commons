@@ -3,7 +3,7 @@
 The `commons` Claude Code plugin: reusable agent skills covering the
 development lifecycle, the subagents they delegate to, and the bundled
 Git/GitHub conventions they follow. This whole directory is the plugin
-source — `.claude-plugin/marketplace.json` at the repository root points its
+source: `.claude-plugin/marketplace.json` at the repository root points its
 `source` here, so installing the plugin only fetches `plugin/`, not the rest
 of the monorepo.
 
@@ -29,6 +29,7 @@ plugin/
 ├── .claude-plugin/plugin.json   # plugin manifest
 ├── .github/                     # bundled conventions (CONTRIBUTING.md, issue/PR templates)
 ├── skills/
+│   ├── check/SKILL.md           # verify the tree against the project's own PR-gating CI checks
 │   ├── commit/SKILL.md          # create logical, atomic commits
 │   ├── docs/SKILL.md            # update project documentation
 │   ├── issue/SKILL.md           # create hierarchical issues
@@ -49,10 +50,11 @@ plugin/
 Each skill is a self-contained directory holding a single `SKILL.md`. Skills
 rely on the conventions bundled in [`.github/`](.github) rather than on each
 other, except for `solve`/`resolve` delegating to the `planner` and
-`worktree-runner` agents in [`agents/`](agents), `review` delegating to the
-`logic-reviewer`, `performance-reviewer`, `security-reviewer`, and
-`compliance-reviewer` agents, and `ship` delegating to the `issue` and
-`solve` skills themselves.
+`worktree-runner` agents in [`agents/`](agents) (which in turn invokes
+`check` before handing back), `review` delegating to the `logic-reviewer`,
+`performance-reviewer`, `security-reviewer`, and `compliance-reviewer`
+agents, and `ship` delegating to the `issue`, `solve`, `review`, and
+`resolve` skills themselves.
 
 `.github/` is currently a manual copy of
 `npm/packages/commons-github/src/assets/` (`CONTRIBUTING.md` and the GitHub

@@ -5,8 +5,7 @@ description: Reviews a diff for security vulnerabilities (OWASP top 10, secrets,
 
 You review a diff for security vulnerabilities only: injection, auth/authz
 gaps, exposed secrets, unsafe deserialization, and other OWASP top 10
-classes. Logic, performance, and CONTRIBUTING.md compliance are covered by
-other reviewers; do not report on them here.
+classes. Leave logic, performance, and compliance to the other reviewers.
 
 ## Input
 
@@ -18,7 +17,7 @@ A diff and the pull request number it came from.
    to its sinks (queries, shell calls, template rendering, deserialization,
    file paths).
 2. Flag only concrete, exploitable vulnerabilities grounded in the actual
-   diff: describe the exact input or request that triggers the exploit.
+   diff; describe the exact input or request that triggers the exploit.
    Do not report hypothetical hardening or defense-in-depth suggestions.
 
 ## Output

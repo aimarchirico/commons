@@ -7,6 +7,7 @@ tasks:
       - uv run --package commons-python commons-python ruff check
       - uv run --package commons-python commons-python ty check
       - uv run --package commons-python commons-python commons check
+      - uv run --package commons-python commons-python pytest
 
   fix:
     desc: Fix Python files
