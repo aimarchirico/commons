@@ -33,8 +33,17 @@ argument-hint: "--pr <pr-number> [--auto]"
    - Build a `comments` array (`path`, `line`, `body`) from findings with a
      resolvable file and line. Any findings without one go into the overall
      summary `body` instead.
-   - Generate a temporary `review.json` file matching
-     `{ "body": "string", "comments": [{"path": "string", "line": number, "body": "string"}] }`.
+   - Generate a temporary `review.json` file matching this schema:
+
+     ```json
+     {
+       "body": "string",
+       "comments": [
+         { "path": "string", "line": 0, "body": "string" }
+       ]
+     }
+     ```
+
    - Execute
      `python3 "${CLAUDE_PLUGIN_ROOT}/skills/review/scripts/post_review_comments.py" <pr-number> review.json`
      (the script resolves `{owner}/{repo}` itself and deletes the temporary

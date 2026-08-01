@@ -44,9 +44,19 @@ argument-hint: "--pr <pr-number> [--auto]"
 8. Present the drafted replies, and wait for explicit user approval. Skip
    this step if the `--auto` flag is set, and proceed directly with posting
    them.
-9. Generate a temporary `replies.json` file matching
-   `{ "thread_replies": [{"comment_id": number, "body": "string"}], "conversation_reply": "string" }`
-   from the approved replies, then execute
+9. Generate a temporary `replies.json` file matching this schema from the
+   approved replies:
+
+   ```json
+   {
+     "thread_replies": [
+       { "comment_id": 0, "body": "string" }
+     ],
+     "conversation_reply": "string"
+   }
+   ```
+
+   Then execute
    `python3 "${CLAUDE_PLUGIN_ROOT}/skills/resolve/scripts/post_pr_replies.py" <pr-number> replies.json`
    (the script resolves `{owner}/{repo}` itself and deletes the temporary
    file upon completion).
