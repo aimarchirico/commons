@@ -1,6 +1,7 @@
 package no.chirico.commons.convention.detekt
 
 import com.intellij.psi.PsiComment
+import com.intellij.psi.PsiElement
 import dev.detekt.api.Config
 import dev.detekt.api.Entity
 import dev.detekt.api.Finding
@@ -31,18 +32,30 @@ import org.jetbrains.kotlin.psi.psiUtil.visibilityModifierTypeOrDefault
 class PublicKDocOnly(config: Config) :
   Rule(config, "Only KDoc blocks documenting public declarations are allowed as comments.") {
 
-  override fun visitComment(comment: PsiComment) {
-    super.visitComment(comment)
-    if (comment is KDoc) {
-      val owner = comment.owner
-      when {
-        owner == null -> report(Finding(Entity.from(comment), ORPHANED_MESSAGE))
-        isNonPublic(owner) -> report(Finding(Entity.from(comment), NON_PUBLIC_MESSAGE))
-      }
-      return
-    }
+  /**
+   * `KDocImpl.accept` dispatches straight to `visitElement` rather than `visitComment`, unlike
+   * plain comments, so this rule has to hook the generic catch-all to see both.
+   */
+  override fun visitElement(element: PsiElement) {
+    super.visitElement(element)
+    if (element !is PsiComment) return
+    checkComment(element)
+  }
+
+  private fun checkComment(comment: PsiComment) {
     if (DIRECTIVE_PATTERN.containsMatchIn(comment.text)) return
-    report(Finding(Entity.from(comment), MESSAGE))
+    when {
+      comment is KDoc -> checkKDoc(comment)
+      else -> report(Finding(Entity.from(comment), MESSAGE))
+    }
+  }
+
+  private fun checkKDoc(kdoc: KDoc) {
+    val owner = kdoc.owner
+    when {
+      owner == null -> report(Finding(Entity.from(kdoc), ORPHANED_MESSAGE))
+      isNonPublic(owner) -> report(Finding(Entity.from(kdoc), NON_PUBLIC_MESSAGE))
+    }
   }
 
   private fun isNonPublic(declaration: KtDeclaration): Boolean =

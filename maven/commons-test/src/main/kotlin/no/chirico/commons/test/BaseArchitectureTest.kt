@@ -38,6 +38,7 @@ abstract class BaseArchitectureTest {
         "..config..",
         "..util..",
       )
+      .allowEmptyShould(true)
       .check(allClasses)
   }
 

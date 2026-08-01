@@ -5,6 +5,7 @@ tasks:
     desc: Check Kotlin files
     cmds:
       - bash gradlew check
+      - bash gradlew -p commons-convention check
 
   fix:
     desc: Fix Kotlin files
