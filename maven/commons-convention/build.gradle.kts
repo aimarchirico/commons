@@ -13,6 +13,21 @@ java {
 }
 
 dependencies {
+    /**
+     * detekt-api 2.0.0-alpha.5 never published a runtime jar for its
+     * detekt-api-test-fixtures capability (only a sources variant exists), which leaves
+     * detekt-test's runtime classpath unresolvable. The capability's classes already ship inside
+     * the regular detekt-api jar, so this rule just tells Gradle the existing runtime variant
+     * satisfies it too.
+     */
+    components {
+        withModule("dev.detekt:detekt-api") {
+            allVariants {
+                withCapabilities { addCapability("dev.detekt", "detekt-api-test-fixtures", id.version) }
+            }
+        }
+    }
+
     implementation(libs.kotlin.gradle.plugin)
     implementation(libs.kotlin.allopen)
     implementation(libs.kotlin.noarg)
@@ -28,6 +43,7 @@ dependencies {
     testImplementation(libs.detekt.test.utils)
     testImplementation(libs.junit.jupiter.api)
     testImplementation(libs.assertj.core)
+    testImplementation(gradleTestKit())
     testRuntimeOnly(libs.junit.platform.launcher)
     testRuntimeOnly(libs.junit.jupiter.engine)
 }
