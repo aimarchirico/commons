@@ -23,10 +23,12 @@ argument-hint: "--pr <pr-number> [--auto]"
    check the pull request's existing branch out into an isolated worktree,
    where `<worktree-path>` is `../<branch-name>` (a sibling of the repository
    root).
-3. Delegate to the `planner` agent, passing `<pr-number>` and
-   `<worktree-path>`, to fetch the pull request's feedback (conversation and
-   line/file comments) and draft a fix plan mapping each piece of feedback to
-   the fix addressing it.
+3. Execute
+   `python3 "${CLAUDE_PLUGIN_ROOT}/skills/resolve/scripts/fetch_pr_feedback.py" <pr-number>`
+   to fetch the pull request's conversation comments and unresolved review
+   threads as normalized JSON. Delegate to the `planner` agent, passing this
+   feedback and `<worktree-path>`, to draft a fix plan mapping each piece of
+   feedback to the fix addressing it.
 4. Present the drafted plan, and wait for explicit user approval. Skip this
    step if the `--auto` flag is set, and proceed directly with the drafted
    plan.
@@ -42,8 +44,12 @@ argument-hint: "--pr <pr-number> [--auto]"
 8. Present the drafted replies, and wait for explicit user approval. Skip
    this step if the `--auto` flag is set, and proceed directly with posting
    them.
-9. Post each approved line/file reply, then post the approved summarizing
-   reply on the conversation thread.
+9. Generate a temporary `replies.json` file matching
+   `{ "thread_replies": [{"comment_id": number, "body": "string"}], "conversation_reply": "string" }`
+   from the approved replies, then execute
+   `python3 "${CLAUDE_PLUGIN_ROOT}/skills/resolve/scripts/post_pr_replies.py" <pr-number> replies.json`
+   (the script resolves `{owner}/{repo}` itself and deletes the temporary
+   file upon completion).
 10. Execute `git worktree remove <worktree-path>` to remove the isolated
     worktree; `<branch-name>` and its commits remain intact in the repository
     and on the remote.
