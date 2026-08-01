@@ -187,7 +187,8 @@ const recordOwner = (
 ): void => {
   if (
     VARIABLE_INITIALIZER_TYPES.has(node.type) &&
-    node.parent?.type === 'VariableDeclarator'
+    (node.parent?.type === 'VariableDeclarator' ||
+      CLASS_MEMBER_TYPES.has(node.parent?.type ?? ''))
   ) {
     return;
   }

@@ -31,7 +31,9 @@ export const buildAccessHeaders = (
  * @returns The resolved output directory.
  */
 export const resolveOutputDir = (override: string | undefined): string =>
-  path.resolve(override || path.resolve(process.cwd(), 'src/services/generated'));
+  path.resolve(
+    override || path.resolve(process.cwd(), 'src/services/generated'),
+  );
 
 /**
  * Resolve the directory the generated documentation is written to.

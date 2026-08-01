@@ -26,6 +26,12 @@ export default [
           '**/*.{ts,tsx,mts,cts,js,jsx,mjs,cjs,json,jsonc,json5}': 'KEBAB_CASE',
         },
       ],
+      'check-file/folder-match-with-fex': [
+        'error',
+        {
+          '**/*.test.*': '**/__tests__/',
+        },
+      ],
       'max-lines': [
         'error',
         {
@@ -43,6 +49,7 @@ export default [
       commons: commonsPlugin,
       jsdoc: eslintPluginJsdoc,
       '@eslint-community/eslint-comments': eslintPluginEslintComments,
+      '@typescript-eslint': tseslint.plugin,
     },
     rules: {
       'import/no-default-export': ['error'],
@@ -65,14 +72,6 @@ export default [
       '@eslint-community/eslint-comments/no-unlimited-disable': 'error',
       '@eslint-community/eslint-comments/no-unused-disable': 'error',
       '@eslint-community/eslint-comments/require-description': 'error',
-    },
-  },
-  {
-    files: ['**/*.{ts,tsx,mts,cts}'],
-    plugins: {
-      '@typescript-eslint': tseslint.plugin,
-    },
-    rules: {
       '@typescript-eslint/ban-ts-comment': [
         'error',
         {
@@ -86,10 +85,21 @@ export default [
     },
   },
   {
-    files: ['**/*.config.ts', '**/*.d.ts', '**/tsconfig.build.json'],
+    files: [
+      '**/*.config.*',
+      '**/*.d.*',
+      '**/*.test.*',
+      '**/tsconfig.build.json',
+    ],
     rules: {
       'check-file/filename-naming-convention': 'off',
+    },
+  },
+  {
+    files: ['**/*.config.ts'],
+    rules: {
       'import/no-default-export': 'off',
+      'commons/default-export-shape': ['error'],
     },
   },
 ];
