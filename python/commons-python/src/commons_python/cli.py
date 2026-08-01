@@ -19,9 +19,10 @@ def _run_wrapped(
 def main() -> None:
     """Dispatch to a wrapped tool based on the first argument.
 
-    ``ruff`` and ``ty`` forward their remaining arguments untouched to the
-    respective tool, with the bundled config injected. ``commons check`` runs
-    the native Python checks (line length and comments).
+    ``ruff``, ``ty``, and ``coverage`` forward their remaining arguments
+    untouched to the respective tool, with the bundled config injected.
+    ``commons check`` runs the native Python checks (line length and
+    comments).
     """
     tool, *rest = sys.argv[1:] or [""]
 
@@ -39,9 +40,11 @@ def main() -> None:
         sys.exit(_run_wrapped("ruff", "--config", "ruff.toml", rest))
     if tool == "ty":
         sys.exit(_run_wrapped("ty", "--config-file", "ty.toml", rest))
+    if tool == "coverage":
+        sys.exit(_run_wrapped("coverage", "--rcfile", "coverage.toml", rest))
 
     print(
-        "usage: commons-python <ruff|ty|commons> ...",
+        "usage: commons-python <ruff|ty|coverage|commons> ...",
         file=sys.stderr,
     )
     sys.exit(2)
