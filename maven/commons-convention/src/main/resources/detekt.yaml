@@ -15,16 +15,22 @@ comments:
   active: true
   # Kotlin nested/inner declarations are public by default, same as top-level
   # ones, so they are part of the public API surface and need documentation
-  # too.
+  # too. Test sources are excluded: they are never a public API surface, and
+  # requiring a KDoc block on every test class/method would fight the
+  # convention of naming a test for what it verifies instead of documenting
+  # it.
   UndocumentedPublicClass:
     active: true
     searchInNestedClass: true
     searchInInnerClass: true
     searchInInnerObject: true
     searchInInnerInterface: true
+    excludes: ['**/test/**']
   UndocumentedPublicFunction:
     active: true
+    excludes: ['**/test/**']
   UndocumentedPublicProperty:
     active: true
+    excludes: ['**/test/**']
   OutdatedDocumentation:
     active: true

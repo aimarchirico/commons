@@ -5,6 +5,10 @@ tasks:
     desc: Check Kotlin files
     cmds:
       - bash gradlew check
+      # commons-convention is pulled in via `pluginManagement { includeBuild(...) }`, which wires
+      # it onto the root build's plugin classpath but not onto its `check` task graph, so its own
+      # check has to be invoked separately (mirroring the `publish` task's per-module dispatch).
+      - bash gradlew -p commons-convention check
 
   fix:
     desc: Fix Kotlin files
