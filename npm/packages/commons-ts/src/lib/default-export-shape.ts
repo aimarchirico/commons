@@ -1,14 +1,15 @@
 import type {Rule} from 'eslint';
 
-const ALLOWED_DECLARATION_TYPES = new Set([
+const ALLOWED_EXPORT_SHAPES = new Set([
   'CallExpression',
   'FunctionDeclaration',
   'ClassDeclaration',
+  'ObjectExpression',
 ]);
 
 /**
- * ESLint rule restricting `export default` to an identifier, named function,
- * or class declaration.
+ * ESLint rule restricting `export default` to a call expression, named
+ * function/class declaration, or an object literal.
  */
 export const defaultExportShape: Rule.RuleModule = {
   meta: {
@@ -26,7 +27,7 @@ export const defaultExportShape: Rule.RuleModule = {
   create: context => ({
     ExportDefaultDeclaration: node => {
       const {declaration} = node;
-      if (!ALLOWED_DECLARATION_TYPES.has(declaration.type)) {
+      if (!ALLOWED_EXPORT_SHAPES.has(declaration.type)) {
         context.report({
           node: declaration,
           messageId: 'inlineDefaultExport',

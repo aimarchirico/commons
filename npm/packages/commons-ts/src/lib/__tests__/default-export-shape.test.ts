@@ -22,10 +22,8 @@ function messageIds(code: string) {
 }
 
 describe('defaultExportShape', () => {
-  it('flags an inline object literal', () => {
-    expect(messageIds('export default {a: 1};\n')).toEqual([
-      'inlineDefaultExport',
-    ]);
+  it('allows an inline object literal', () => {
+    expect(messageIds('export default {a: 1};\n')).toEqual([]);
   });
 
   it('flags an inline array literal', () => {
