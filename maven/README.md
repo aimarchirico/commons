@@ -74,17 +74,18 @@ The underlying commands are `./gradlew build`, `check`, and `ktfmtFormat`.
   part of `task maven:check` (`detekt`). The plugin layers its own configuration
   onto detekt's defaults, so consuming builds need no detekt configuration of
   their own.
-- **Test coverage**: JaCoCo enforces 80% line coverage and 80% branch coverage per module, applied
-  through the convention plugin and run as part of `task maven:check`
-  (`jacocoTestCoverageVerification`). The threshold is a whole-build ratio, not
-  a per-class one, so a handful of thin, hard-to-test classes (a
-  `@ConfigurationProperties` holder, a Spring `@AutoConfiguration`) don't force
-  pointless tests as long as the module's tested code carries the average.
-  `commons-convention` cannot apply its own convention plugin (it's the
-  `kotlin-dsl` project that defines it), so it wires JaCoCo by hand in its own
-  `build.gradle.kts` and is checked separately via `task maven:check`
-  (`gradlew -p commons-convention check`), since `includeBuild` never attaches
-  it to the root build's `check` task graph.
+- **Test coverage**: JaCoCo enforces 80% line coverage and 80% branch
+  coverage per module, applied through the convention plugin and run as
+  part of `task maven:check` (`jacocoTestCoverageVerification`). The
+  threshold is a whole-build ratio, not a per-class one, so a handful of
+  thin, hard-to-test classes (a `@ConfigurationProperties` holder, a Spring
+  `@AutoConfiguration`) don't force pointless tests as long as the module's
+  tested code carries the average. `commons-convention` cannot apply its
+  own convention plugin (it's the `kotlin-dsl` project that defines it), so
+  it wires JaCoCo by hand in its own `build.gradle.kts` and is checked
+  separately via `task maven:check` (`gradlew -p commons-convention check`),
+  since `includeBuild` never attaches it to the root build's `check` task
+  graph.
 - **Documentation**: every public class, function, and property needs a KDoc
   block, test sources included. Overridden and protected members are exempt,
   so an implementation never has to repeat its supertype. Nested and inner

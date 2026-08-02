@@ -1,4 +1,5 @@
+import {defineConfig} from 'vitest/config';
 import base from './src/lib/vitest-base';
 
 /** Vitest configuration. */
-export default base;
+export default defineConfig(base);

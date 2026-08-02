@@ -33,7 +33,7 @@ npm/
 
 | Package                                 | Provides                                                                                                                   |
 | :-------------------------------------- | :------------------------------------------------------------------------------------------------------------------------- |
-| `@aimarchirico/commons-ts`              | `./eslint`, `./tsconfig.json`, `./vitest-base`: base TypeScript config, including a shared 80% Vitest coverage floor.  |
+| `@aimarchirico/commons-ts`              | `./eslint`, `./tsconfig.json`, `./vitest-base`: base TypeScript config, including a shared 80% Vitest coverage floor. |
 | `@aimarchirico/commons-expo`            | `./eslint`, `./tsconfig.json` config + `commons-expo build-android`, `create-project` and `import-keystore` bins.          |
 | `@aimarchirico/commons-project`         | root exports (`env`, `report`, `outputs`, `cli`, `git` helpers) + `commons-project rename-project` bin.                    |
 | `@aimarchirico/commons-github`          | `commons-github create-project`, `create-environments`, `sync-variables`, `set-secrets`, `materialize-templates` bins.     |
