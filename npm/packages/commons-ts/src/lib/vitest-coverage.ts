@@ -18,10 +18,7 @@ export const vitestCoverageConfig = defineConfig({
       },
       exclude: [
         ...coverageConfigDefaults.exclude,
-        '**/bin/**',
         '**/assets/**',
-        '**/eslint-base.ts',
-        '**/eslint-core.ts',
         '**/vitest-coverage.ts',
       ],
     },
