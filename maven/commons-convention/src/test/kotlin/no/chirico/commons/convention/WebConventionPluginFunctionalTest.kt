@@ -7,18 +7,17 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 
 /**
- * Applies the `no.chirico.commons.convention.spring` precompiled script plugin to a throwaway
- * fixture project, since its Spring Boot and bean all-open wiring only runs once a project actually
- * applies it.
+ * Applies the `no.chirico.commons.convention.web` precompiled script plugin to a throwaway fixture
+ * project, since its REST API dependency wiring only runs once a project actually applies it.
  */
-class SpringConventionPluginFunctionalTest {
+class WebConventionPluginFunctionalTest {
 
   /** The throwaway Gradle project the plugin is applied to. */
   @TempDir lateinit var projectDir: Path
 
-  /** Applying the plugin resolves and applies Spring Boot and bean all-open support cleanly. */
+  /** Applying the plugin resolves and applies the REST API dependency stack cleanly. */
   @Test
-  fun `applying the plugin wires spring boot and bean all-open support`() {
+  fun `applying the plugin wires the rest api dependency stack`() {
     projectDir
       .resolve("settings.gradle.kts")
       .writeText(
@@ -33,6 +32,11 @@ class SpringConventionPluginFunctionalTest {
           repositories {
             mavenCentral()
           }
+          versionCatalogs {
+            create("libs") {
+              library("springdoc-openapi", "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3")
+            }
+          }
         }
         rootProject.name = "fixture"
         """
@@ -44,6 +48,7 @@ class SpringConventionPluginFunctionalTest {
         """
         plugins {
           id("no.chirico.commons.convention.spring")
+          id("no.chirico.commons.convention.web")
         }
         """
           .trimIndent()
