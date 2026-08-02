@@ -99,4 +99,30 @@ class PublicKDocOnlyTest {
     assertThat(findings).hasSize(1)
     assertThat(findings.single().message).contains("does not document any declaration")
   }
+
+  /**
+   * A KDoc block attached to a local declaration (inside a function body) is rejected.
+   * This exercises the `KtPsiUtil.isLocal(declaration)` branch in [PublicKDocOnly.isNonPublic].
+   */
+  @Test
+  fun `flags a kdoc block on a local class declaration`() {
+    val code =
+      """
+      package foo
+
+      class Foo {
+        /** Does something. */
+        fun bar() {
+          /** local class doc */
+          class LocalHelper
+        }
+      }
+      """
+        .trimIndent()
+
+    val findings = lint(code)
+
+    assertThat(findings).isNotEmpty
+    assertThat(findings.any { it.message.contains("reserved for public declarations") }).isTrue
+  }
 }

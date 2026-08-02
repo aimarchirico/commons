@@ -3,6 +3,7 @@ package no.chirico.commons.convention
 import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
 plugins {
+  kotlin("jvm")
   id("org.springframework.boot")
   kotlin("plugin.spring")
   kotlin("plugin.jpa")
