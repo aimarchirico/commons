@@ -8,6 +8,7 @@ import {
   runJson,
   writeOutputs,
 } from '@aimarchirico/commons-project';
+import {pathToFileURL} from 'url';
 
 type Initialized = {
   status: string;
@@ -17,27 +18,36 @@ type Initialized = {
   dashboardUrl: string;
 };
 
-const eas = resolveTool({
-  from: import.meta.url,
-  package: 'eas-cli',
-  bin: 'eas',
-  minVersion: '21.0.0',
-  installHint:
-    'Add it to the project with "pnpm add -D eas-cli", then authenticate with "pnpm exec eas login" or set EXPO_TOKEN.',
-});
+/**
+ * Create or link an EAS project for the current Expo app.
+ */
+export function createProject(): void {
+  const eas = resolveTool({
+    from: import.meta.url,
+    package: 'eas-cli',
+    bin: 'eas',
+    minVersion: '21.0.0',
+    installHint:
+      'Add it to the project with "pnpm add -D eas-cli", then authenticate with "pnpm exec eas login" or set EXPO_TOKEN.',
+  });
 
-const args = ['init', '--non-interactive', '--json', '--force'];
+  const args = ['init', '--non-interactive', '--json', '--force'];
 
-try {
-  const result = runJson<Initialized>(eas, args);
-  report(
-    `eas project ${result.owner}/${result.slug}`,
-    result.status === 'created' ? 'created' : 'present',
-    result.projectId,
-  );
-  writeOutputs({EAS_PROJECT_ID: result.projectId});
-} catch (error) {
-  fail(error instanceof Error ? error.message : String(error));
+  try {
+    const result = runJson<Initialized>(eas, args);
+    report(
+      `eas project ${result.owner}/${result.slug}`,
+      result.status === 'created' ? 'created' : 'present',
+      result.projectId,
+    );
+    writeOutputs({EAS_PROJECT_ID: result.projectId});
+  } catch (error) {
+    fail(error instanceof Error ? error.message : String(error));
+  }
+
+  printSummary('create-project');
 }
 
-printSummary('create-project');
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  createProject();
+}
