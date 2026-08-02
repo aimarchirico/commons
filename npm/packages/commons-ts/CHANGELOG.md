@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.4.2](https://github.com/aimarchirico/commons/compare/commons-ts-v3.4.1...commons-ts-v3.4.2) (2026-08-02)
+
+
+### Bug Fixes
+
+* **commons-ts:** allow object literal default exports in config files ([fedf427](https://github.com/aimarchirico/commons/commit/fedf4270e6259451581706d9e6f00859908a53a4))
+* **commons-ts:** allow object literal default exports in config files ([f2b54e3](https://github.com/aimarchirico/commons/commit/f2b54e3356980eb73ceaf7c3dbeba0d3e5455f84))
+
 ## [3.4.1](https://github.com/aimarchirico/commons/compare/commons-ts-v3.4.0...commons-ts-v3.4.1) (2026-08-02)
 
 
