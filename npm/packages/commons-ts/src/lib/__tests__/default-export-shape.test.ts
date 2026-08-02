@@ -32,16 +32,14 @@ describe('defaultExportShape', () => {
     ]);
   });
 
-  it('flags an inline call expression', () => {
-    expect(messageIds('export default defineConfig({});\n')).toEqual([
-      'inlineDefaultExport',
-    ]);
+  it('allows a call expression', () => {
+    expect(messageIds('export default defineConfig({});\n')).toEqual([]);
   });
 
-  it('allows a plain identifier', () => {
+  it('flags a plain identifier', () => {
     expect(
       messageIds('const config = {a: 1};\nexport default config;\n'),
-    ).toEqual([]);
+    ).toEqual(['inlineDefaultExport']);
   });
 
   it('allows a named function declaration', () => {

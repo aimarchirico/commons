@@ -1,7 +1,7 @@
 import type {Rule} from 'eslint';
 
 const ALLOWED_DECLARATION_TYPES = new Set([
-  'Identifier',
+  'CallExpression',
   'FunctionDeclaration',
   'ClassDeclaration',
 ]);
@@ -20,7 +20,7 @@ export const defaultExportShape: Rule.RuleModule = {
     schema: [],
     messages: {
       inlineDefaultExport:
-        'Assign this to a documented `const` and export that identifier instead of exporting {{type}} directly.',
+        'Export a named function, class, or a call expression instead of {{type}}.',
     },
   },
   create: context => ({
