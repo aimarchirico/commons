@@ -4,7 +4,7 @@ import {fail, printSummary, report} from '@aimarchirico/commons-project';
 import {applyDelete, applyMove, applyReplacement} from '../services/apply.js';
 import {loadManifest, manifestPath} from '../services/manifest.js';
 
-const run = async (): Promise<void> => {
+async function run(): Promise<void> {
   const manifest = loadManifest();
   console.log(`Applying ${manifestPath()}\n`);
 
@@ -32,7 +32,7 @@ const run = async (): Promise<void> => {
   }
 
   printSummary('rename-project');
-};
+}
 
 run().catch((error: unknown) => {
   fail(error instanceof Error ? error.message : String(error));

@@ -1,8 +1,9 @@
-const names = (list: string): string[] =>
-  list
+function names(list: string): string[] {
+  return list
     .split(/[,\s]+/)
     .map(name => name.trim())
     .filter(Boolean);
+}
 
 /**
  * Parse an environment-scoped assignment list of the form
@@ -11,10 +12,10 @@ const names = (list: string): string[] =>
  * @param list The scope list string.
  * @returns The parsed environment scopes.
  */
-export const parseEnvironmentScopes = (
+export function parseEnvironmentScopes(
   list: string | undefined,
-): Array<{environment: string; names: string[]}> =>
-  (list ?? '')
+): Array<{environment: string; names: string[]}> {
+  return (list ?? '')
     .split(';')
     .map(group => group.trim())
     .filter(Boolean)
@@ -31,11 +32,13 @@ export const parseEnvironmentScopes = (
       };
     })
     .filter(scope => scope.names.length);
+}
 
 /**
  * Parse a comma or whitespace separated list of names.
  * @param list The list of names.
  * @returns The parsed list of names.
  */
-export const parseNames = (list: string | undefined): string[] =>
-  names(list ?? '');
+export function parseNames(list: string | undefined): string[] {
+  return names(list ?? '');
+}

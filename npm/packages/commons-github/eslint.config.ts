@@ -1,2 +1,5 @@
+import {defineConfig} from 'eslint/config';
 import baseConfig from '@aimarchirico/commons-ts/eslint-core';
-export default baseConfig;
+
+/** ESLint configuration. */
+export default defineConfig([...baseConfig]);

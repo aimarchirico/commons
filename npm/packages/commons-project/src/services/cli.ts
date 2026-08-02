@@ -14,11 +14,13 @@ export type CliResult = {status: number; stdout: string; stderr: string};
  */
 export type Command = string | {argv: string[]; name: string};
 
-const argv = (command: Command): string[] =>
-  typeof command === 'string' ? [command] : command.argv;
+function argv(command: Command): string[] {
+  return typeof command === 'string' ? [command] : command.argv;
+}
 
-const name = (command: Command): string =>
-  typeof command === 'string' ? command : command.name;
+function name(command: Command): string {
+  return typeof command === 'string' ? command : command.name;
+}
 
 /**
  * Run a command and return its exit code and stdout/stderr output.
@@ -27,11 +29,11 @@ const name = (command: Command): string =>
  * @param input Optional stdin input.
  * @returns The command execution results.
  */
-export const run = (
+export function run(
   command: Command,
   args: string[],
   input?: string,
-): CliResult => {
+): CliResult {
   const [executable, ...prefix] = argv(command);
   const result = spawnSync(executable, [...prefix, ...args], {
     encoding: 'utf8',
@@ -48,7 +50,7 @@ export const run = (
     stdout: (result.stdout ?? '').trim(),
     stderr: (result.stderr ?? '').trim(),
   };
-};
+}
 
 /**
  * Run a command and throw an error if the command fails (exit code not 0).
@@ -57,11 +59,11 @@ export const run = (
  * @param input Optional stdin input.
  * @returns The stdout of the command.
  */
-export const runOrThrow = (
+export function runOrThrow(
   command: Command,
   args: string[],
   input?: string,
-): string => {
+): string {
   const result = run(command, args, input);
   if (result.status !== 0) {
     throw new Error(
@@ -69,7 +71,7 @@ export const runOrThrow = (
     );
   }
   return result.stdout;
-};
+}
 
 /**
  * Run a command, throw if it fails, and parse the stdout as JSON.
@@ -77,8 +79,9 @@ export const runOrThrow = (
  * @param args The arguments to pass.
  * @returns The parsed JSON object of type T.
  */
-export const runJson = <T>(command: Command, args: string[]): T =>
-  JSON.parse(runOrThrow(command, args)) as T;
+export function runJson<T>(command: Command, args: string[]): T {
+  return JSON.parse(runOrThrow(command, args)) as T;
+}
 
 /**
  * Run a command with its streams attached to this process, for generators
@@ -88,7 +91,7 @@ export const runJson = <T>(command: Command, args: string[]): T =>
  * @param args
  * @returns The process exit status.
  */
-export const runStreamed = (command: Command, args: string[]): number => {
+export function runStreamed(command: Command, args: string[]): number {
   const [executable, ...prefix] = argv(command);
   const result = spawnSync(executable, [...prefix, ...args], {
     stdio: 'inherit',
@@ -100,7 +103,7 @@ export const runStreamed = (command: Command, args: string[]): number => {
     );
   }
   return result.status ?? 1;
-};
+}
 
 /**
  * Locate an executable belonging to a package this one depends on, so the
@@ -116,11 +119,11 @@ export const runStreamed = (command: Command, args: string[]): number => {
  * @param binName
  * @returns The command arguments if resolved, otherwise undefined.
  */
-export const packageBin = (
+export function packageBin(
   from: string,
   packageName: string,
   binName: string,
-): string[] | undefined => {
+): string[] | undefined {
   try {
     const manifestPath = createRequire(from).resolve(
       `${packageName}/package.json`,
@@ -135,25 +138,25 @@ export const packageBin = (
   } catch {
     return undefined;
   }
-};
+}
 
 const VERSION = /(\d+)\.(\d+)\.(\d+)/;
 
-const parseVersion = (text: string): number[] | undefined => {
+function parseVersion(text: string): number[] | undefined {
   const match = VERSION.exec(text);
   return match
     ? [Number(match[1]), Number(match[2]), Number(match[3])]
     : undefined;
-};
+}
 
-const isBelow = (found: number[], minimum: number[]): boolean => {
+function isBelow(found: number[], minimum: number[]): boolean {
   for (let index = 0; index < minimum.length; index += 1) {
     const left = found[index] ?? 0;
     const right = minimum[index] ?? 0;
     if (left !== right) return left < right;
   }
   return false;
-};
+}
 
 /**
  * Assert a CLI is usable and recent enough. The output these commands parse is
@@ -165,14 +168,14 @@ const isBelow = (found: number[], minimum: number[]): boolean => {
  * @param options.installHint
  * @param options.versionArgs
  */
-export const requireCli = (
+export function requireCli(
   command: Command,
   options: {
     minVersion: string;
     installHint: string;
     versionArgs?: string[];
   },
-): void => {
+): void {
   let result: CliResult;
   try {
     result = run(command, options.versionArgs ?? ['--version']);
@@ -192,7 +195,7 @@ export const requireCli = (
       `"${name(command)}" ${found.join('.')} is older than the required ${options.minVersion}. ${options.installHint}`,
     );
   }
-};
+}
 
 /**
  * Resolve a CLI a package depends on, preferring the copy the lockfile pinned.
@@ -212,13 +215,13 @@ export const requireCli = (
  * @param options.installHint
  * @returns The resolved command.
  */
-export const resolveTool = (options: {
+export function resolveTool(options: {
   from: string;
   package: string;
   bin: string;
   minVersion?: string;
   installHint: string;
-}): Command => {
+}): Command {
   const local = packageBin(options.from, options.package, options.bin);
 
   if (!options.minVersion) {
@@ -238,4 +241,4 @@ export const resolveTool = (options: {
     installHint: options.installHint,
   });
   return command;
-};
+}

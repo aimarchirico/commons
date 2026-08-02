@@ -26,6 +26,7 @@ export const DOC_ELIGIBLE_VISITORS = [
   'PropertyDefinition',
   'TSAbstractMethodDefinition',
   'TSAbstractPropertyDefinition',
+  'ExportDefaultDeclaration > CallExpression',
 ] as const;
 
 /**
@@ -102,29 +103,32 @@ const directivePattern = new RegExp(
   `^\\s*@?(${DIRECTIVE_PREFIXES.join('|')})\\b`,
 );
 
-const isJSDocShaped = (comment: Comment): boolean =>
-  comment.type === 'Block' && comment.value.startsWith('*');
+function isJSDocShaped(comment: Comment): boolean {
+  return comment.type === 'Block' && comment.value.startsWith('*');
+}
 
-const isDirective = (comment: Comment): boolean =>
-  directivePattern.test(comment.value);
+function isDirective(comment: Comment): boolean {
+  return directivePattern.test(comment.value);
+}
 
-const isPrivateAccessModifier = (node: DeclarationNode): boolean => {
+function isPrivateAccessModifier(node: DeclarationNode): boolean {
   const accessibility =
     'accessibility' in node
       ? (node as {accessibility?: string}).accessibility
       : undefined;
   return accessibility === 'private' || accessibility === 'protected';
-};
+}
 
-const isPrivateFieldName = (node: DeclarationNode): boolean => {
+function isPrivateFieldName(node: DeclarationNode): boolean {
   const key = 'key' in node ? (node as {key?: {type?: string}}).key : undefined;
   return key?.type === 'PrivateIdentifier';
-};
+}
 
-const isNonPublicMember = (node: DeclarationNode): boolean =>
-  isPrivateAccessModifier(node) || isPrivateFieldName(node);
+function isNonPublicMember(node: DeclarationNode): boolean {
+  return isPrivateAccessModifier(node) || isPrivateFieldName(node);
+}
 
-const isExported = (node: DeclarationNode): boolean => {
+function isExported(node: DeclarationNode): boolean {
   let current: DeclarationNode = node;
 
   if (CLASS_MEMBER_TYPES.has(current.type)) {
@@ -156,7 +160,7 @@ const isExported = (node: DeclarationNode): boolean => {
     return false;
   }
   return false;
-};
+}
 
 const VARIABLE_INITIALIZER_TYPES = new Set<string>([
   'ArrowFunctionExpression',
@@ -164,9 +168,9 @@ const VARIABLE_INITIALIZER_TYPES = new Set<string>([
   'ClassExpression',
 ]);
 
-const resolveVariableDeclarationOwner = (
+function resolveVariableDeclarationOwner(
   declarator: DeclarationNode,
-): DeclarationNode => {
+): DeclarationNode {
   const declaration = declarator.parent;
   if (!declaration) return declarator;
   const exportDeclaration = declaration.parent;
@@ -178,13 +182,13 @@ const resolveVariableDeclarationOwner = (
     return exportDeclaration;
   }
   return declaration ?? declarator;
-};
+}
 
-const recordOwner = (
+function recordOwner(
   sourceCode: SourceCode,
   owners: Map<Comment, DeclarationNode>,
   node: DeclarationNode,
-): void => {
+): void {
   if (
     VARIABLE_INITIALIZER_TYPES.has(node.type) &&
     (node.parent?.type === 'VariableDeclarator' ||
@@ -201,11 +205,17 @@ const recordOwner = (
     }
     return;
   }
-  const comment = getJSDocComment(sourceCode, node, JSDOC_COMMENT_SETTINGS);
+  const targetNode =
+    node.parent?.type === 'ExportDefaultDeclaration' ? node.parent : node;
+  const comment = getJSDocComment(
+    sourceCode,
+    targetNode,
+    JSDOC_COMMENT_SETTINGS,
+  );
   if (comment) {
     owners.set(comment as Comment, node);
   }
-};
+}
 
 /**
  * Bans every comment except JSDoc blocks that document a public (exported)
@@ -236,8 +246,9 @@ export const publicJSDocOnly: Rule.RuleModule = {
   create: context => {
     const {sourceCode} = context;
     const owners = new Map<Comment, DeclarationNode>();
-    const trackOwner = (node: DeclarationNode): void =>
-      recordOwner(sourceCode, owners, node);
+    function trackOwner(node: DeclarationNode): void {
+      return recordOwner(sourceCode, owners, node);
+    }
 
     const visitors: Rule.RuleListener = Object.fromEntries(
       DOC_ELIGIBLE_VISITORS.map(type => [type, trackOwner]),

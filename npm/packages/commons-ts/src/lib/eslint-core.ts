@@ -1,4 +1,6 @@
-import {folderRule} from './folders';
+import {defineConfig} from 'eslint/config';
 import baseConfig from './eslint-base';
+import {folderRule} from './folders';
 
-export default [...baseConfig, folderRule()];
+/** Shared ESLint core configuration. */
+export default defineConfig([...baseConfig, folderRule()]);

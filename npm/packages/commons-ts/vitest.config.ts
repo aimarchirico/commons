@@ -1,3 +1,5 @@
-import config from './src/lib/vitest-coverage';
+import {defineConfig} from 'vitest/config';
+import base from './src/lib/vitest-base';
 
-export default config;
+/** Vitest configuration. */
+export default defineConfig(base);

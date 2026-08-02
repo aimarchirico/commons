@@ -1,13 +1,13 @@
+import {defineConfig} from 'eslint/config';
 import baseConfig from '@aimarchirico/commons-ts/eslint-core';
 
-const config = [
+/** ESLint configuration. */
+export default defineConfig([
   ...baseConfig,
   {
-    files: ['**/eslint*.ts', '**/vitest-coverage.ts'],
+    files: ['**/eslint*.ts', '**/vitest-*.ts'],
     rules: {
       'import/no-default-export': 'off',
     },
   },
-];
-
-export default config;
+]);

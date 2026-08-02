@@ -1,9 +1,10 @@
-import type {Linter} from 'eslint';
+import {defineConfig} from 'eslint/config';
 import {folderRule} from '@aimarchirico/commons-ts/folders';
 import {APP_FOLDERS} from './folders';
 import baseConfig from './eslint-core';
 
-const config: Linter.Config[] = [
+/** Shared Expo app ESLint configuration. */
+export default defineConfig([
   ...baseConfig,
   folderRule(APP_FOLDERS),
   {
@@ -18,6 +19,4 @@ const config: Linter.Config[] = [
       'import/no-default-export': 'off',
     },
   },
-];
-
-export default config;
+]);

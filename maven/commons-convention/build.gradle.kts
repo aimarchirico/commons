@@ -65,8 +65,14 @@ tasks.named<JacocoCoverageVerification>("jacocoTestCoverageVerification") {
   dependsOn(tasks.named("jacocoTestReport"))
   violationRules {
     rule {
+      element = "BUNDLE"
       limit {
         counter = "LINE"
+        value = "COVEREDRATIO"
+        minimum = "0.80".toBigDecimal()
+      }
+      limit {
+        counter = "BRANCH"
         value = "COVEREDRATIO"
         minimum = "0.80".toBigDecimal()
       }

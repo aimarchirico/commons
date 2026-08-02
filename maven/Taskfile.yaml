@@ -11,6 +11,7 @@ tasks:
     desc: Fix Kotlin files
     cmds:
       - bash gradlew ktfmtFormat
+      - bash gradlew -p commons-convention ktfmtFormat
 
   build:
     desc: Assemble Gradle project

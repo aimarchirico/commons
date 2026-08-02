@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+import {pathToFileURL} from 'url';
+
 const commands: Record<string, string> = {
   'create-project': './create-project.js',
   'create-environments': './create-environments.js',
@@ -8,15 +10,25 @@ const commands: Record<string, string> = {
   'materialize-templates': './materialize-templates.js',
 };
 
-const verb = process.argv[2];
-const script = verb ? commands[verb] : undefined;
+/**
+ * Execute the CLI command passed in process.argv[2].
+ * @param argv Arguments vector.
+ */
+export function runCli(argv: string[] = process.argv): void {
+  const verb = argv[2];
+  const script = verb ? commands[verb] : undefined;
 
-if (!script) {
-  const usage = Object.keys(commands)
-    .map(name => `  commons-github ${name}`)
-    .join('\n');
-  console.error(`Usage:\n${usage}`);
-  process.exit(1);
+  if (!script) {
+    const usage = Object.keys(commands)
+      .map(name => `  commons-github ${name}`)
+      .join('\n');
+    console.error(`Usage:\n${usage}`);
+    process.exit(1);
+  }
+
+  void import(script);
 }
 
-void import(script);
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  runCli();
+}

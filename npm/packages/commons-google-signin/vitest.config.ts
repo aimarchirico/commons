@@ -1,4 +1,5 @@
-import base from '@aimarchirico/commons-ts/vitest-coverage';
+import {defineConfig} from 'vitest/config';
+import base from '@aimarchirico/commons-ts/vitest-base';
 
 /**
  * Extends the shared coverage config with `hooks/` and `contexts/`, which
@@ -7,7 +8,7 @@ import base from '@aimarchirico/commons-ts/vitest-coverage';
  * this package's size, so they are treated like `bin/`: thin glue excluded
  * from the threshold, with `services/` carrying the coverage bar instead.
  */
-export const config = {
+export default defineConfig({
   ...base,
   test: {
     ...base.test,
@@ -20,6 +21,4 @@ export const config = {
       ],
     },
   },
-};
-
-export default config;
+});

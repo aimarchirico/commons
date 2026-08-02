@@ -24,12 +24,12 @@ export type ApiClient = {
  * @param token
  * @returns A Cloudflare API client.
  */
-export const api = (token: string): ApiClient => {
-  const request = async (
+export function api(token: string): ApiClient {
+  async function request(
     method: string,
     path: string,
     body?: unknown,
-  ): Promise<{status: number; payload: Envelope<unknown>}> => {
+  ): Promise<{status: number; payload: Envelope<unknown>}> {
     const response = await fetch(`${BASE}${path}`, {
       method,
       headers: {
@@ -46,14 +46,15 @@ export const api = (token: string): ApiClient => {
       throw new Error(`${method} ${path} returned ${response.status}: ${text}`);
     }
     return {status: response.status, payload};
-  };
+  }
 
-  const describe = (path: string, payload: Envelope<unknown>): string =>
-    `${path} failed: ${
+  function describe(path: string, payload: Envelope<unknown>): string {
+    return `${path} failed: ${
       payload.errors
         ?.map(error => `${error.code} ${error.message}`)
         .join('; ') || 'unknown Cloudflare error'
     }`;
+  }
 
   return {
     get: async <T>(path: string): Promise<T | undefined> => {
@@ -72,7 +73,7 @@ export const api = (token: string): ApiClient => {
       return payload.result as T;
     },
   };
-};
+}
 
 /**
  * The account to act in. A token scoped to exactly one account already names
@@ -83,10 +84,10 @@ export const api = (token: string): ApiClient => {
  * @param override
  * @returns The resolved account ID.
  */
-export const resolveAccount = async (
+export async function resolveAccount(
   client: ApiClient,
   override?: string,
-): Promise<string> => {
+): Promise<string> {
   if (override) {
     context('cloudflare account', override, 'from CLOUDFLARE_ACCOUNT_ID');
     return override;
@@ -113,4 +114,4 @@ export const resolveAccount = async (
     'derived: the token sees one account',
   );
   return accounts[0].id;
-};
+}

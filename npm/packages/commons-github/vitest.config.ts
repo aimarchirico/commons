@@ -1,3 +1,5 @@
-import config from '@aimarchirico/commons-ts/vitest-coverage';
+import {defineConfig} from 'vitest/config';
+import config from '@aimarchirico/commons-ts/vitest-base';
 
-export default config;
+/** Vitest configuration. */
+export default defineConfig(config);

@@ -5,8 +5,8 @@ import {defaultExportShape} from '../default-export-shape';
 
 const linter = new Linter({configType: 'flat'});
 
-const lint = (code: string) =>
-  linter.verify(code, {
+function lint(code: string) {
+  return linter.verify(code, {
     languageOptions: {
       parser: tseslint.parser,
       sourceType: 'module',
@@ -15,9 +15,11 @@ const lint = (code: string) =>
     plugins: {commons: {rules: {'default-export-shape': defaultExportShape}}},
     rules: {'commons/default-export-shape': 'error'},
   });
+}
 
-const messageIds = (code: string) =>
-  lint(code).map(message => message.messageId);
+function messageIds(code: string) {
+  return lint(code).map(message => message.messageId);
+}
 
 describe('defaultExportShape', () => {
   it('flags an inline object literal', () => {
@@ -32,16 +34,14 @@ describe('defaultExportShape', () => {
     ]);
   });
 
-  it('flags an inline call expression', () => {
-    expect(messageIds('export default defineConfig({});\n')).toEqual([
-      'inlineDefaultExport',
-    ]);
+  it('allows a call expression', () => {
+    expect(messageIds('export default defineConfig({});\n')).toEqual([]);
   });
 
-  it('allows a plain identifier', () => {
+  it('flags a plain identifier', () => {
     expect(
       messageIds('const config = {a: 1};\nexport default config;\n'),
-    ).toEqual([]);
+    ).toEqual(['inlineDefaultExport']);
   });
 
   it('allows a named function declaration', () => {

@@ -16,7 +16,9 @@ export const CORE_FOLDERS = [
  * @param folders The folder names allowed directly under `src`.
  * @returns The alternation group, e.g. `(bin|lib)`.
  */
-export const buildRegex = (folders: string[]) => `(${folders.join('|')})`;
+export function buildRegex(folders: string[]): string {
+  return `(${folders.join('|')})`;
+}
 
 /**
  * Builds the config block restricting which folders may sit under `src`.
@@ -24,16 +26,16 @@ export const buildRegex = (folders: string[]) => `(${folders.join('|')})`;
  * @param folders The folder names to allow. Defaults to {@link CORE_FOLDERS}.
  * @returns A flat config block for the folder naming convention.
  */
-export const folderRule = (
-  folders: string[] = CORE_FOLDERS,
-): Linter.Config => ({
-  files: ['**/src/**/*'],
-  rules: {
-    'check-file/folder-naming-convention': [
-      'error',
-      {
-        '**/src/*/': buildRegex(folders),
-      },
-    ],
-  },
-});
+export function folderRule(folders: string[] = CORE_FOLDERS): Linter.Config {
+  return {
+    files: ['**/src/**/*'],
+    rules: {
+      'check-file/folder-naming-convention': [
+        'error',
+        {
+          '**/src/*/': buildRegex(folders),
+        },
+      ],
+    },
+  };
+}

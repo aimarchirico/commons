@@ -50,6 +50,7 @@ dependencies {
   if (conventionArtifact != null) {
     add("detektPlugins", files(File(conventionArtifact.toURI())))
   }
+  testImplementation(kotlin("test-junit5"))
   testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
@@ -72,15 +73,21 @@ tasks.withType<Test>().configureEach {
 tasks.named<JacocoReport>("jacocoTestReport") { dependsOn(tasks.named("test")) }
 
 /**
- * Requires 80% line coverage across each module's whole build, so a few thin classes don't force
- * pointless tests.
+ * Requires 80% line coverage and 80% branch coverage across each module's whole build, so a few
+ * thin classes don't force pointless tests.
  */
 tasks.named<JacocoCoverageVerification>("jacocoTestCoverageVerification") {
   dependsOn(tasks.named("jacocoTestReport"))
   violationRules {
     rule {
+      element = "BUNDLE"
       limit {
         counter = "LINE"
+        value = "COVEREDRATIO"
+        minimum = "0.80".toBigDecimal()
+      }
+      limit {
+        counter = "BRANCH"
         value = "COVEREDRATIO"
         minimum = "0.80".toBigDecimal()
       }

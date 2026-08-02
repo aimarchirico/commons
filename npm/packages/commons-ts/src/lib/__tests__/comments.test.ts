@@ -5,8 +5,8 @@ import {publicJSDocOnly} from '../comments';
 
 const linter = new Linter({configType: 'flat'});
 
-const lint = (code: string) =>
-  linter.verify(code, {
+function lint(code: string) {
+  return linter.verify(code, {
     languageOptions: {
       parser: tseslint.parser,
       sourceType: 'module',
@@ -16,9 +16,11 @@ const lint = (code: string) =>
     plugins: {commons: {rules: {'public-jsdoc-only': publicJSDocOnly}}},
     rules: {'commons/public-jsdoc-only': 'error'},
   });
+}
 
-const messageIds = (code: string) =>
-  lint(code).map(message => message.messageId);
+function messageIds(code: string) {
+  return lint(code).map(message => message.messageId);
+}
 
 describe('publicJSDocOnly', () => {
   it('flags a plain line comment', () => {
@@ -54,6 +56,12 @@ describe('publicJSDocOnly', () => {
   it('allows a JSDoc block on an exported const arrow function', () => {
     expect(
       messageIds('/**\n * Arrow.\n */\nexport const fn = () => {};\n'),
+    ).toEqual([]);
+  });
+
+  it('allows a JSDoc block on an exported default call expression', () => {
+    expect(
+      messageIds('/**\n * Config.\n */\nexport default defineConfig({});\n'),
     ).toEqual([]);
   });
 

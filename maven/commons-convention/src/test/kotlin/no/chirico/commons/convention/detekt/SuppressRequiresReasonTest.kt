@@ -71,4 +71,39 @@ class SuppressRequiresReasonTest {
 
     assertThat(lint(code)).hasSize(1)
   }
+
+  /** An annotation other than `@Suppress` produces no findings. */
+  @Test
+  fun `ignores annotations that are not Suppress`() {
+    val code =
+      """
+      package foo
+
+      class Foo {
+        @JvmStatic
+        fun bar() = Unit
+      }
+      """
+        .trimIndent()
+
+    assertThat(lint(code)).isEmpty()
+  }
+
+  /**
+   * A top-level `@Suppress` with no preceding sibling comment exercises the `parent is KtFile`
+   * branch inside `findPrecedingComment`.
+   */
+  @Test
+  fun `flags a top-level suppress annotation with no preceding reason comment`() {
+    val code =
+      """
+      package foo
+
+      @Suppress("unused")
+      class Foo
+      """
+        .trimIndent()
+
+    assertThat(lint(code)).hasSize(1)
+  }
 }

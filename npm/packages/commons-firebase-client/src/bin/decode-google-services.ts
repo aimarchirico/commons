@@ -2,18 +2,29 @@
 
 import fs from 'fs';
 import path from 'path';
+import {pathToFileURL} from 'url';
 
-const base64 = process.env.GOOGLE_SERVICES_JSON_BASE64;
-const outputPath =
-  process.env.GOOGLE_SERVICES_OUTPUT_PATH || 'src/assets/google-services.json';
+/**
+ * Decode GOOGLE_SERVICES_JSON_BASE64 into a google-services.json file.
+ */
+export function decodeGoogleServices(): void {
+  const base64 = process.env.GOOGLE_SERVICES_JSON_BASE64;
+  const outputPath =
+    process.env.GOOGLE_SERVICES_OUTPUT_PATH ||
+    'src/assets/google-services.json';
 
-if (!base64) {
-  console.log(
-    'GOOGLE_SERVICES_JSON_BASE64 not set, skipping google-services.json.',
-  );
-  process.exit(0);
+  if (!base64) {
+    console.log(
+      'GOOGLE_SERVICES_JSON_BASE64 not set, skipping google-services.json.',
+    );
+    process.exit(0);
+  }
+
+  fs.mkdirSync(path.dirname(outputPath), {recursive: true});
+  fs.writeFileSync(outputPath, Buffer.from(base64, 'base64').toString('utf-8'));
+  console.log(`Wrote ${outputPath}`);
 }
 
-fs.mkdirSync(path.dirname(outputPath), {recursive: true});
-fs.writeFileSync(outputPath, Buffer.from(base64, 'base64').toString('utf-8'));
-console.log(`Wrote ${outputPath}`);
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  decodeGoogleServices();
+}

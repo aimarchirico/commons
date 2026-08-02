@@ -6,7 +6,7 @@ import {run} from './cli.js';
  * there is no remote to read, so a caller can fall back and say that it did.
  * @returns The default branch name, or undefined if no remote is configured.
  */
-export const defaultBranch = (): string | undefined => {
+export function defaultBranch(): string | undefined {
   const result = run('git', [
     'symbolic-ref',
     '--short',
@@ -14,4 +14,4 @@ export const defaultBranch = (): string | undefined => {
   ]);
   if (result.status !== 0) return undefined;
   return result.stdout.replace(/^origin\//, '') || undefined;
-};
+}

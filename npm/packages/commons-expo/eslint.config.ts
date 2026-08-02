@@ -1,6 +1,8 @@
+import {defineConfig} from 'eslint/config';
 import baseConfig from './src/lib/eslint-core';
 
-const config = [
+/** ESLint configuration. */
+export default defineConfig([
   ...baseConfig,
   {
     files: ['**/eslint*.ts'],
@@ -8,6 +10,4 @@ const config = [
       'import/no-default-export': 'off',
     },
   },
-];
-
-export default config;
+]);

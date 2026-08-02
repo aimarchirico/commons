@@ -1,7 +1,10 @@
-const words = (value: string): string[] => value.match(/[A-Za-z0-9]+/g) ?? [];
+function words(value: string): string[] {
+  return value.match(/[A-Za-z0-9]+/g) ?? [];
+}
 
-const capitalize = (word: string): string =>
-  word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+function capitalize(word: string): string {
+  return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+}
 
 const TRANSFORMS: Record<string, (value: string) => string> = {
   identity: value => value,
@@ -34,7 +37,9 @@ export const TRANSFORM_NAMES = Object.keys(TRANSFORMS);
  * @param name The name to check.
  * @returns True if the name is a valid transform, false otherwise.
  */
-export const isTransform = (name: string): boolean => name in TRANSFORMS;
+export function isTransform(name: string): boolean {
+  return name in TRANSFORMS;
+}
 
 /**
  * Apply the specified transform to the value.
@@ -42,7 +47,7 @@ export const isTransform = (name: string): boolean => name in TRANSFORMS;
  * @param value The value to transform.
  * @returns The transformed value.
  */
-export const transform = (name: string, value: string): string => {
+export function transform(name: string, value: string): string {
   const fn = TRANSFORMS[name];
   if (!fn) {
     throw new Error(
@@ -50,4 +55,4 @@ export const transform = (name: string, value: string): string => {
     );
   }
   return fn(value);
-};
+}

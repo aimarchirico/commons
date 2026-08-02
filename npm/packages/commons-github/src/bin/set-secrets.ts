@@ -8,11 +8,14 @@ import {
 } from '@aimarchirico/commons-project';
 import {ghOrThrow, repoContext} from '../services/gh.js';
 import {parseEnvironmentScopes, parseNames} from '../services/scopes.js';
+import {pathToFileURL} from 'url';
 
-const env = resolveEnv([], ['GITHUB_SECRETS', 'GITHUB_ENVIRONMENT_SECRETS']);
-const {slug} = repoContext();
-
-const set = (name: string, label: string, environment?: string): void => {
+function set(
+  name: string,
+  label: string,
+  slug: string,
+  environment?: string,
+): void {
   const value = process.env[name];
   if (value === undefined || value === '') {
     report(`${label} ${name}`, 'skipped', 'not set in the environment');
@@ -22,20 +25,34 @@ const set = (name: string, label: string, environment?: string): void => {
   if (environment) args.push('--env', environment);
   ghOrThrow(args, value);
   report(`${label} ${name}`, 'written');
-};
-
-try {
-  for (const name of parseNames(env.GITHUB_SECRETS)) {
-    set(name, 'secret');
-  }
-
-  for (const scope of parseEnvironmentScopes(env.GITHUB_ENVIRONMENT_SECRETS)) {
-    for (const name of scope.names) {
-      set(name, `${scope.environment} secret`, scope.environment);
-    }
-  }
-} catch (error) {
-  fail(error instanceof Error ? error.message : String(error));
 }
 
-printSummary('set-secrets');
+/**
+ * Set repository and environment secrets in GitHub.
+ */
+export function setSecrets(): void {
+  const env = resolveEnv([], ['GITHUB_SECRETS', 'GITHUB_ENVIRONMENT_SECRETS']);
+  const {slug} = repoContext();
+
+  try {
+    for (const name of parseNames(env.GITHUB_SECRETS)) {
+      set(name, 'secret', slug);
+    }
+
+    for (const scope of parseEnvironmentScopes(
+      env.GITHUB_ENVIRONMENT_SECRETS,
+    )) {
+      for (const name of scope.names) {
+        set(name, `${scope.environment} secret`, slug, scope.environment);
+      }
+    }
+  } catch (error) {
+    fail(error instanceof Error ? error.message : String(error));
+  }
+
+  printSummary('set-secrets');
+}
+
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  setSecrets();
+}

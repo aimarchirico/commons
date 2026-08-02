@@ -87,4 +87,88 @@ class ArchitectureConventionPluginFunctionalTest {
 
     assertThat(result.output).contains("Architecture violation: :app may not depend on :other")
   }
+
+  /** An `:impl` module depending on `:api` follows the allowed direction. */
+  @Test
+  fun `impl depending on api builds cleanly`() {
+    projectDir
+      .resolve("settings.gradle.kts")
+      .writeText(
+        """
+        rootProject.name = "fixture"
+        include(":impl", ":api")
+        """
+          .trimIndent()
+      )
+    projectDir.resolve("impl").createDirectories()
+    projectDir.resolve("impl/build.gradle.kts").writeText(moduleBuildFile(dependsOn = ":api"))
+    projectDir.resolve("api").createDirectories()
+    projectDir.resolve("api/build.gradle.kts").writeText(moduleBuildFile())
+
+    val result =
+      GradleRunner.create()
+        .withProjectDir(projectDir.toFile())
+        .withPluginClasspath()
+        .withDebug(true)
+        .withArguments(":impl:jar", ":api:jar", "--stacktrace")
+        .build()
+
+    assertThat(result.task(":impl:jar")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
+  }
+
+  /** A `:core-x` module depending on another `:core-y` module follows the allowed direction. */
+  @Test
+  fun `core depending on core builds cleanly`() {
+    projectDir
+      .resolve("settings.gradle.kts")
+      .writeText(
+        """
+        rootProject.name = "fixture"
+        include(":core-a", ":core-b")
+        """
+          .trimIndent()
+      )
+    projectDir.resolve("core-a").createDirectories()
+    projectDir.resolve("core-a/build.gradle.kts").writeText(moduleBuildFile(dependsOn = ":core-b"))
+    projectDir.resolve("core-b").createDirectories()
+    projectDir.resolve("core-b/build.gradle.kts").writeText(moduleBuildFile())
+
+    val result =
+      GradleRunner.create()
+        .withProjectDir(projectDir.toFile())
+        .withPluginClasspath()
+        .withDebug(true)
+        .withArguments(":core-a:jar", ":core-b:jar", "--stacktrace")
+        .build()
+
+    assertThat(result.task(":core-a:jar")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
+  }
+
+  /** An `:impl` module depending on `:app` violates the allowed layering direction. */
+  @Test
+  fun `impl depending on app fails the build`() {
+    projectDir
+      .resolve("settings.gradle.kts")
+      .writeText(
+        """
+        rootProject.name = "fixture"
+        include(":impl", ":app")
+        """
+          .trimIndent()
+      )
+    projectDir.resolve("impl").createDirectories()
+    projectDir.resolve("impl/build.gradle.kts").writeText(moduleBuildFile(dependsOn = ":app"))
+    projectDir.resolve("app").createDirectories()
+    projectDir.resolve("app/build.gradle.kts").writeText(moduleBuildFile())
+
+    val result =
+      GradleRunner.create()
+        .withProjectDir(projectDir.toFile())
+        .withPluginClasspath()
+        .withDebug(true)
+        .withArguments("help", "--stacktrace")
+        .buildAndFail()
+
+    assertThat(result.output).contains("Architecture violation: :impl may not depend on :app")
+  }
 }
