@@ -24,10 +24,6 @@
     "./vitest-base": {
       "types": "./dist/lib/vitest-base.d.ts",
       "default": "./dist/lib/vitest-base.js"
-    },
-    "./vitest-coverage": {
-      "types": "./dist/lib/vitest-base.d.ts",
-      "default": "./dist/lib/vitest-base.js"
     }
   },
   "dependencies": {
