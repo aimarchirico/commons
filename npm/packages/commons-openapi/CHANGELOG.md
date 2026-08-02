@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.5.0](https://github.com/aimarchirico/commons/compare/commons-openapi-v2.4.1...commons-openapi-v2.5.0) (2026-08-02)
+
+
+### Features
+
+* **eslint:** require JSDoc on default export call expressions and wrap configs in defineConfig ([a94e91e](https://github.com/aimarchirico/commons/commit/a94e91ee5dd122477a99a9eb2034559194ac91ab))
+
+
+### Bug Fixes
+
+* **npm:** scope build includes to real entry points, stop excluding bin from coverage ([57de6b2](https://github.com/aimarchirico/commons/commit/57de6b26dd303e7bc196cef74a16b4eb4e4446eb))
+* **npm:** stop exporting bin-script internals solely for testing ([5fd9ef1](https://github.com/aimarchirico/commons/commit/5fd9ef153d60856b5836cb55950ec67c9460a571))
+
 ## [2.4.1](https://github.com/aimarchirico/commons/compare/commons-openapi-v2.4.0...commons-openapi-v2.4.1) (2026-08-02)
 
 

@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.3.0](https://github.com/aimarchirico/commons/compare/commons-google-signin-v4.2.0...commons-google-signin-v4.3.0) (2026-08-02)
+
+
+### Features
+
+* **eslint:** require JSDoc on default export call expressions and wrap configs in defineConfig ([a94e91e](https://github.com/aimarchirico/commons/commit/a94e91ee5dd122477a99a9eb2034559194ac91ab))
+
+
+### Bug Fixes
+
+* **npm:** scope build includes to real entry points, stop excluding bin from coverage ([57de6b2](https://github.com/aimarchirico/commons/commit/57de6b26dd303e7bc196cef74a16b4eb4e4446eb))
+
 ## [4.2.0](https://github.com/aimarchirico/commons/compare/commons-google-signin-v4.1.0...commons-google-signin-v4.2.0) (2026-08-01)
 
 
