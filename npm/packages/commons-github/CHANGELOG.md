@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.1](https://github.com/aimarchirico/commons/compare/commons-github-v1.2.0...commons-github-v1.2.1) (2026-08-02)
+
+
+### Bug Fixes
+
+* add explicit .js extensions to relative imports ([62321ab](https://github.com/aimarchirico/commons/commit/62321abe70fc0246cb000eb4cca2156ee18dadd2))
+* **commons-github:** add explicit .js extensions to relative imports ([3c6ea83](https://github.com/aimarchirico/commons/commit/3c6ea839003cf866c5aad6b327ed7370f2e8799f))
+
 ## [1.2.0](https://github.com/aimarchirico/commons/compare/commons-github-v1.1.2...commons-github-v1.2.0) (2026-08-01)
 
 

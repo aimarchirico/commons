@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.4.1](https://github.com/aimarchirico/commons/compare/commons-openapi-v2.4.0...commons-openapi-v2.4.1) (2026-08-02)
+
+
+### Bug Fixes
+
+* add explicit .js extensions to relative imports ([62321ab](https://github.com/aimarchirico/commons/commit/62321abe70fc0246cb000eb4cca2156ee18dadd2))
+* **commons-openapi:** add explicit .js extensions to relative imports ([c01a724](https://github.com/aimarchirico/commons/commit/c01a724a7dfaa228710160d7edebdefb1f4b1223))
+
 ## [2.4.0](https://github.com/aimarchirico/commons/compare/commons-openapi-v2.3.0...commons-openapi-v2.4.0) (2026-08-01)
 
 

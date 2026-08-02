@@ -1,6 +1,6 @@
 {
   "name": "@aimarchirico/commons-github",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "private": false,
   "type": "module",
   "publishConfig": {
