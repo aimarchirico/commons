@@ -8,6 +8,7 @@ import {
 } from '@aimarchirico/commons-project';
 import {apiGet, apiWrite, repoContext} from '../services/gh.js';
 import {parseNames} from '../services/scopes.js';
+import {pathToFileURL} from 'url';
 
 /**
  * Create GitHub repository environments configured in GITHUB_ENVIRONMENTS.
@@ -38,6 +39,6 @@ export function createEnvironments(): void {
   printSummary('create-environments');
 }
 
-if (!process.env.VITEST) {
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   createEnvironments();
 }

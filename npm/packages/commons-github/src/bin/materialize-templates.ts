@@ -2,7 +2,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import {fileURLToPath} from 'url';
+import {fileURLToPath, pathToFileURL} from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,6 +26,6 @@ export function materializeTemplates(): void {
   console.log('Materialized CONTRIBUTING.md and .github templates.');
 }
 
-if (!process.env.VITEST) {
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   materializeTemplates();
 }

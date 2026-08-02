@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
-/** CLI subcommands supported by commons-github. */
-export const commands: Record<string, string> = {
+import {pathToFileURL} from 'url';
+
+const commands: Record<string, string> = {
   'create-project': './create-project.js',
   'create-environments': './create-environments.js',
   'sync-variables': './sync-variables.js',
@@ -28,6 +29,6 @@ export function runCli(argv: string[] = process.argv): void {
   void import(script);
 }
 
-if (!process.env.VITEST) {
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   runCli();
 }

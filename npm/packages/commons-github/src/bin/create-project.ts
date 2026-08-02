@@ -2,6 +2,7 @@
 
 import {fail, printSummary, report} from '@aimarchirico/commons-project';
 import {gh, ghJson, ghOrThrow, repoContext} from '../services/gh.js';
+import {pathToFileURL} from 'url';
 
 type Project = {number: number; title: string};
 
@@ -99,6 +100,6 @@ export function createProject(): void {
   printSummary('create-project');
 }
 
-if (!process.env.VITEST) {
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   createProject();
 }

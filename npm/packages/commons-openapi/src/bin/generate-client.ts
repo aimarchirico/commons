@@ -6,6 +6,7 @@ import fs from 'fs';
 import os from 'os';
 import https from 'https';
 import http from 'http';
+import {pathToFileURL} from 'url';
 import {
   buildAccessHeaders,
   buildSpecUrl,
@@ -14,17 +15,12 @@ import {
   toGeneratorSpecPath,
 } from '../services/openapi-client.js';
 
-const apiUrl = process.env.API_URL;
-if (!apiUrl) {
-  console.log('API_URL not set, skipping API generation.');
-  process.exit(0);
-}
-
-const cfClientId = process.env.CF_ACCESS_CLIENT_ID;
-const cfClientSecret = process.env.CF_ACCESS_CLIENT_SECRET;
-
-async function fetchSpec(): Promise<string> {
-  const specUrl = buildSpecUrl(apiUrl as string);
+async function fetchSpec(
+  apiUrl: string,
+  cfClientId?: string,
+  cfClientSecret?: string,
+): Promise<string> {
+  const specUrl = buildSpecUrl(apiUrl);
   const headers = buildAccessHeaders(cfClientId, cfClientSecret);
   if (Object.keys(headers).length) {
     console.log('Using Cloudflare Access service token');
@@ -38,7 +34,7 @@ async function fetchSpec(): Promise<string> {
         return;
       }
       let data = '';
-      res.on('data', chunk => (data += chunk));
+      res.on('data', (chunk: string) => (data += chunk));
       res.on('end', () => resolve(data));
     });
     req.on('error', reject);
@@ -96,10 +92,22 @@ function generateDocs(specPath: string): void {
   console.log(`OpenAPI documentation generated at ${outputPath}`);
 }
 
-async function main(): Promise<void> {
+/**
+ * Main entry point for fetching spec and generating client and docs.
+ */
+export async function runGenerateClient(): Promise<void> {
+  const apiUrl = process.env.API_URL;
+  if (!apiUrl) {
+    console.log('API_URL not set, skipping API generation.');
+    return;
+  }
+
+  const cfClientId = process.env.CF_ACCESS_CLIENT_ID;
+  const cfClientSecret = process.env.CF_ACCESS_CLIENT_SECRET;
+
   try {
     console.log('Fetching OpenAPI spec from', apiUrl);
-    const spec = await fetchSpec();
+    const spec = await fetchSpec(apiUrl, cfClientId, cfClientSecret);
     const specPath = path.resolve(os.tmpdir(), 'openapi-spec.json');
     fs.writeFileSync(specPath, spec);
 
@@ -115,4 +123,6 @@ async function main(): Promise<void> {
   }
 }
 
-void main();
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  void runGenerateClient();
+}
