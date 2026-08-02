@@ -1,5 +1,6 @@
 import {getJSDocComment} from '@es-joy/jsdoccomment';
 import type {Rule, SourceCode} from 'eslint';
+import {isCommonJSExportTarget} from './cjs-exports';
 
 type Comment = ReturnType<SourceCode['getAllComments']>[number];
 type DeclarationNode = Rule.Node;
@@ -146,7 +147,10 @@ function isExported(node: DeclarationNode): boolean {
     const {parent} = current;
     if (
       parent.type === 'ExportNamedDeclaration' ||
-      parent.type === 'ExportDefaultDeclaration'
+      parent.type === 'ExportDefaultDeclaration' ||
+      (parent.type === 'AssignmentExpression' &&
+        parent.right === current &&
+        isCommonJSExportTarget(parent.left as DeclarationNode))
     ) {
       return true;
     }

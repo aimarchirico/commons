@@ -116,6 +116,42 @@ describe('publicJSDocOnly', () => {
     expect(messageIds(code)).toEqual(['nonPublicJSDoc', 'nonPublicJSDoc']);
   });
 
+  it('allows a JSDoc block on a module.exports function assignment', () => {
+    expect(
+      messageIds(
+        '/**\n * Does a thing.\n */\nmodule.exports = function doThing() {};\n',
+      ),
+    ).toEqual([]);
+  });
+
+  it('allows a JSDoc block on a module.exports.foo function assignment', () => {
+    expect(
+      messageIds(
+        '/**\n * Does a thing.\n */\nmodule.exports.doThing = function doThing() {};\n',
+      ),
+    ).toEqual([]);
+  });
+
+  it('allows a JSDoc block on an exports.foo function assignment', () => {
+    expect(
+      messageIds(
+        '/**\n * Does a thing.\n */\nexports.doThing = function doThing() {};\n',
+      ),
+    ).toEqual([]);
+  });
+
+  it('allows a JSDoc block on a module.exports class assignment', () => {
+    expect(
+      messageIds('/**\n * A widget.\n */\nmodule.exports = class Widget {};\n'),
+    ).toEqual([]);
+  });
+
+  it('does not treat an arbitrary object assignment as exported', () => {
+    expect(
+      messageIds('/**\n * Internal.\n */\nhelper.foo = function foo() {};\n'),
+    ).toEqual(['nonPublicJSDoc']);
+  });
+
   it('ignores tooling directive comments', () => {
     const code = [
       '// eslint-disable-next-line no-console -- reason',
