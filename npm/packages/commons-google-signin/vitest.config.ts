@@ -1,5 +1,5 @@
 import {defineConfig} from 'vitest/config';
-import base from '@aimarchirico/commons-ts/vitest-coverage';
+import base from '@aimarchirico/commons-ts/vitest-base';
 
 /**
  * Extends the shared coverage config with `hooks/` and `contexts/`, which

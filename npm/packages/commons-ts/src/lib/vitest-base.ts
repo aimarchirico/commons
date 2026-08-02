@@ -1,7 +1,7 @@
 import {coverageConfigDefaults, defineConfig} from 'vitest/config';
 
 /**
- * Shared coverage configuration enforcing an 80% floor on lines, functions,
+ * Shared base Vitest configuration enforcing an 80% floor on lines, functions,
  * branches, and statements.
  */
 export default defineConfig({
@@ -16,12 +16,7 @@ export default defineConfig({
         branches: 80,
         statements: 80,
       },
-      exclude: [
-        ...coverageConfigDefaults.exclude,
-        '**/assets/**',
-        '**/bin/**',
-        '**/vitest-coverage.ts',
-      ],
+      exclude: [...coverageConfigDefaults.exclude],
     },
   },
 });
