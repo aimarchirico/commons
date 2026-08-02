@@ -74,7 +74,7 @@ The underlying commands are `./gradlew build`, `check`, and `ktfmtFormat`.
   part of `task maven:check` (`detekt`). The plugin layers its own configuration
   onto detekt's defaults, so consuming builds need no detekt configuration of
   their own.
-- **Test coverage**: JaCoCo enforces 80% line coverage per module, applied
+- **Test coverage**: JaCoCo enforces 80% line coverage and 80% branch coverage per module, applied
   through the convention plugin and run as part of `task maven:check`
   (`jacocoTestCoverageVerification`). The threshold is a whole-build ratio, not
   a per-class one, so a handful of thin, hard-to-test classes (a
