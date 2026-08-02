@@ -15,7 +15,7 @@ const env = resolveEnv(
 );
 const {slug} = repoContext();
 
-const sync = (collection: string, label: string, name: string): void => {
+function sync(collection: string, label: string, name: string): void {
   const value = process.env[name];
   if (value === undefined || value === '') {
     report(`${label} ${name}`, 'skipped', 'not set in the environment');
@@ -34,7 +34,7 @@ const sync = (collection: string, label: string, name: string): void => {
   }
   apiWrite('PATCH', `${collection}/${name}`, {name, value});
   report(`${label} ${name}`, 'updated');
-};
+}
 
 try {
   for (const name of parseNames(env.GITHUB_VARIABLES)) {

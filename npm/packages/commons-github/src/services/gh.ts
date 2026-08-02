@@ -19,9 +19,9 @@ const INSTALL_HINT =
  * releases, so an old CLI fails here rather than as a confusing parse error
  * further in.
  */
-export const requireGh = (): void => {
+export function requireGh(): void {
   requireCli('gh', {minVersion: '2.40.0', installHint: INSTALL_HINT});
-};
+}
 
 /**
  * Run a GitHub CLI command.
@@ -29,14 +29,14 @@ export const requireGh = (): void => {
  * @param input Optional stdin input.
  * @returns The command execution results.
  */
-export const gh = (args: string[], input?: string): GhResult => {
+export function gh(args: string[], input?: string): GhResult {
   try {
     return run('gh', args, input);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     throw new Error(`${message} ${INSTALL_HINT}`);
   }
-};
+}
 
 /**
  * Run a GitHub CLI command and throw if it fails.
@@ -44,15 +44,18 @@ export const gh = (args: string[], input?: string): GhResult => {
  * @param input Optional stdin input.
  * @returns The stdout of the command.
  */
-export const ghOrThrow = (args: string[], input?: string): string =>
-  runCliOrThrow('gh', args, input);
+export function ghOrThrow(args: string[], input?: string): string {
+  return runCliOrThrow('gh', args, input);
+}
 
 /**
  * Run a GitHub CLI command and parse the stdout as JSON.
  * @param args The arguments to pass.
  * @returns The parsed JSON object of type T.
  */
-export const ghJson = <T>(args: string[]): T => runCliJson<T>('gh', args);
+export function ghJson<T>(args: string[]): T {
+  return runCliJson<T>('gh', args);
+}
 
 /**
  * Read a REST resource, returning undefined when it does not exist so a
@@ -60,14 +63,14 @@ export const ghJson = <T>(args: string[]): T => runCliJson<T>('gh', args);
  * @param endpoint
  * @returns The requested resource of type T, or undefined if it does not exist.
  */
-export const apiGet = <T>(endpoint: string): T | undefined => {
+export function apiGet<T>(endpoint: string): T | undefined {
   const result = gh(['api', endpoint]);
   if (result.status !== 0) {
     if (/HTTP 404/.test(result.stderr)) return undefined;
     throw new Error(`gh api ${endpoint} failed:\n${result.stderr}`);
   }
   return JSON.parse(result.stdout) as T;
-};
+}
 
 /**
  * Write to a GitHub API endpoint.
@@ -75,17 +78,17 @@ export const apiGet = <T>(endpoint: string): T | undefined => {
  * @param endpoint The API endpoint.
  * @param fields The fields to write.
  */
-export const apiWrite = (
+export function apiWrite(
   method: 'POST' | 'PATCH' | 'PUT',
   endpoint: string,
   fields: Record<string, string> = {},
-): void => {
+): void {
   const args = ['api', '--method', method, endpoint, '--silent'];
   for (const [name, value] of Object.entries(fields)) {
     args.push('-f', `${name}=${value}`);
   }
   ghOrThrow(args);
-};
+}
 
 /**
  * Resolve the target repository from the working directory. The resolved
@@ -93,7 +96,7 @@ export const apiWrite = (
  * writes to the wrong repository and nothing else in the output would say so.
  * @returns The owner, repo name, and slug of the repository.
  */
-export const repoContext = (): {owner: string; repo: string; slug: string} => {
+export function repoContext(): {owner: string; repo: string; slug: string} {
   requireGh();
 
   const data = ghJson<{owner: {login: string}; name: string}>([
@@ -105,4 +108,4 @@ export const repoContext = (): {owner: string; repo: string; slug: string} => {
   const slug = `${data.owner.login}/${data.name}`;
   context('repository', slug, 'derived from the working directory');
   return {owner: data.owner.login, repo: data.name, slug};
-};
+}

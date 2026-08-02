@@ -12,7 +12,7 @@ import {parseEnvironmentScopes, parseNames} from '../services/scopes.js';
 const env = resolveEnv([], ['GITHUB_SECRETS', 'GITHUB_ENVIRONMENT_SECRETS']);
 const {slug} = repoContext();
 
-const set = (name: string, label: string, environment?: string): void => {
+function set(name: string, label: string, environment?: string): void {
   const value = process.env[name];
   if (value === undefined || value === '') {
     report(`${label} ${name}`, 'skipped', 'not set in the environment');
@@ -22,7 +22,7 @@ const set = (name: string, label: string, environment?: string): void => {
   if (environment) args.push('--env', environment);
   ghOrThrow(args, value);
   report(`${label} ${name}`, 'written');
-};
+}
 
 try {
   for (const name of parseNames(env.GITHUB_SECRETS)) {

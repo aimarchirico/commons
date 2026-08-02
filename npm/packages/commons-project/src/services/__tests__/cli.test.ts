@@ -19,10 +19,10 @@ vi.mock('module', () => ({
 vi.mock('fs', () => ({default: {readFileSync}, readFileSync}));
 vi.mock('../report.js', () => ({fail}));
 
-const importCli = async () => {
+async function importCli() {
   vi.resetModules();
   return import('../cli');
-};
+}
 
 describe('run', () => {
   beforeEach(() => {

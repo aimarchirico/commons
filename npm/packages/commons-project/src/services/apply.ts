@@ -19,16 +19,18 @@ const IGNORE = [
 
 type Pair = {from: string; to: string};
 
-const escapeRegExp = (value: string): string =>
-  value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
 
-const boundaryPattern = (from: string): RegExp =>
-  new RegExp(`(?<![A-Za-z0-9_-])${escapeRegExp(from)}(?![A-Za-z0-9_-])`, 'g');
+function boundaryPattern(from: string): RegExp {
+  return new RegExp(
+    `(?<![A-Za-z0-9_-])${escapeRegExp(from)}(?![A-Za-z0-9_-])`,
+    'g',
+  );
+}
 
-const pairs = (
-  replacement: ManifestReplacement,
-  manifest: Manifest,
-): Pair[] => {
+function pairs(replacement: ManifestReplacement, manifest: Manifest): Pair[] {
   const value = manifest.values[replacement.value];
   const names = replacement.transforms?.length
     ? replacement.transforms
@@ -45,7 +47,7 @@ const pairs = (
       return true;
     })
     .sort((a, b) => b.from.length - a.from.length);
-};
+}
 
 /**
  * Apply a replacement rule to the matched files.
@@ -53,10 +55,10 @@ const pairs = (
  * @param manifest The project manifest.
  * @returns The number of files changed.
  */
-export const applyReplacement = async (
+export async function applyReplacement(
   replacement: ManifestReplacement,
   manifest: Manifest,
-): Promise<number> => {
+): Promise<number> {
   const replacements = pairs(replacement, manifest);
   if (!replacements.length) return 0;
 
@@ -76,9 +78,9 @@ export const applyReplacement = async (
   }
 
   return changed;
-};
+}
 
-const pruneEmptyParents = (from: string, stopAt: string): void => {
+function pruneEmptyParents(from: string, stopAt: string): void {
   let parent = path.dirname(path.resolve(from));
   const root = path.resolve(stopAt);
   while (parent.startsWith(root) && parent !== root) {
@@ -86,7 +88,7 @@ const pruneEmptyParents = (from: string, stopAt: string): void => {
     fs.rmdirSync(parent);
     parent = path.dirname(parent);
   }
-};
+}
 
 /**
  * Move a file or directory.
@@ -94,10 +96,10 @@ const pruneEmptyParents = (from: string, stopAt: string): void => {
  * @param manifest The project manifest.
  * @returns The status and final paths.
  */
-export const applyMove = (
+export function applyMove(
   move: ManifestMove,
   manifest: Manifest,
-): {moved: boolean; from: string; to: string} => {
+): {moved: boolean; from: string; to: string} {
   const from = interpolate(move.from, 'from', manifest.values);
   const to = interpolate(move.to, 'to', manifest.values);
   const unchanged = {moved: false, from, to};
@@ -111,15 +113,15 @@ export const applyMove = (
   fs.renameSync(from, to);
   pruneEmptyParents(from, process.cwd());
   return {moved: true, from, to};
-};
+}
 
 /**
  * Delete a file or directory.
  * @param target The target path to delete.
  * @returns The outcome status.
  */
-export const applyDelete = (target: string): 'deleted' | 'skipped' => {
+export function applyDelete(target: string): 'deleted' | 'skipped' {
   if (!fs.existsSync(target)) return 'skipped';
   fs.rmSync(target, {recursive: true, force: true});
   return 'deleted';
-};
+}

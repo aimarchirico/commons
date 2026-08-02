@@ -8,10 +8,10 @@ import {
   type MockInstance,
 } from 'vitest';
 
-const freshReportModule = async () => {
+async function freshReportModule() {
   vi.resetModules();
   return import('../report');
-};
+}
 
 describe('report service', () => {
   let logSpy: MockInstance<typeof console.log>;

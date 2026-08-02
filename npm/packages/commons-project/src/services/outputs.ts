@@ -2,8 +2,9 @@ import fs from 'fs';
 
 const SECRET_HINT = /(SECRET|PASSWORD|TOKEN|KEY|BASE64)/;
 
-const mask = (name: string, value: string): string =>
-  SECRET_HINT.test(name) ? `<${value.length} characters>` : value;
+function mask(name: string, value: string): string {
+  return SECRET_HINT.test(name) ? `<${value.length} characters>` : value;
+}
 
 /**
  * Emit values a caller needs to chain onward. When `OUTPUT_FILE` is set the
@@ -11,7 +12,7 @@ const mask = (name: string, value: string): string =>
  * otherwise they are printed with sensitive values masked.
  * @param values
  */
-export const writeOutputs = (values: Record<string, string>): void => {
+export function writeOutputs(values: Record<string, string>): void {
   const target = process.env.OUTPUT_FILE;
   const names = Object.keys(values);
   if (!names.length) return;
@@ -26,4 +27,4 @@ export const writeOutputs = (values: Record<string, string>): void => {
   for (const name of names) {
     console.log(`  ${name}=${mask(name, values[name])}`);
   }
-};
+}

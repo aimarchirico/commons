@@ -1,6 +1,6 @@
 import {execFileSync} from 'node:child_process';
 
-const listGitignoredAsEslintPatterns = (cwd: string): string[] => {
+function listGitignoredAsEslintPatterns(cwd: string): string[] {
   try {
     return execFileSync(
       'git',
@@ -20,7 +20,7 @@ const listGitignoredAsEslintPatterns = (cwd: string): string[] => {
   } catch {
     return [];
   }
-};
+}
 
 const ignores = listGitignoredAsEslintPatterns(process.cwd());
 

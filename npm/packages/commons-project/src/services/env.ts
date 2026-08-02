@@ -4,10 +4,10 @@ type Resolved<R extends readonly string[], O extends readonly string[]> = {
   [K in O[number]]?: string;
 };
 
-const read = (name: string): string | undefined => {
+function read(name: string): string | undefined {
   const value = process.env[name];
   return value === undefined || value.trim() === '' ? undefined : value;
-};
+}
 
 /**
  * Resolve environment variables, reporting every missing required variable at
@@ -17,13 +17,10 @@ const read = (name: string): string | undefined => {
  * @param optional
  * @returns The resolved environment variables object.
  */
-export const resolveEnv = <
+export function resolveEnv<
   const R extends readonly string[],
   const O extends readonly string[] = [],
->(
-  required: R,
-  optional?: O,
-): Resolved<R, O> => {
+>(required: R, optional?: O): Resolved<R, O> {
   const resolved: Record<string, string | undefined> = {};
   const missing: string[] = [];
 
@@ -51,7 +48,7 @@ export const resolveEnv = <
   }
 
   return resolved as Resolved<R, O>;
-};
+}
 
 /**
  * Collect the variables of `names` that are set, so a caller can push a subset
@@ -59,16 +56,14 @@ export const resolveEnv = <
  * @param names
  * @returns The collected environment variables.
  */
-export const collectEnv = (
-  names: readonly string[],
-): Record<string, string> => {
+export function collectEnv(names: readonly string[]): Record<string, string> {
   const present: Record<string, string> = {};
   for (const name of names) {
     const value = read(name);
     if (value !== undefined) present[name] = value;
   }
   return present;
-};
+}
 
 /**
  * Read the variables named by a `KEY=KEY2` style list, so a caller can pass an
@@ -76,10 +71,11 @@ export const collectEnv = (
  * @param list
  * @returns The resolved key-value environment variables.
  */
-export const resolveEnvList = (list: string): Record<string, string> =>
-  collectEnv(
+export function resolveEnvList(list: string): Record<string, string> {
+  return collectEnv(
     list
       .split(/[,\s]+/)
       .map(name => name.trim())
       .filter(Boolean),
   );
+}

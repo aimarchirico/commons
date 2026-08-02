@@ -33,15 +33,15 @@ const instructions: Instruction[] = [];
  * @param outcome The outcome of the action.
  * @param detail Optional detail string.
  */
-export const report = (
+export function report(
   resource: string,
   outcome: Outcome,
   detail?: string,
-): void => {
+): void {
   entries.push({resource, outcome, detail});
   const suffix = detail ? ` (${detail})` : '';
   console.log(`${MARKS[outcome]} ${resource}: ${LABELS[outcome]}${suffix}`);
-};
+}
 
 /**
  * Print how a value the command is about to act on was resolved. A derived
@@ -52,9 +52,9 @@ export const report = (
  * @param value
  * @param source
  */
-export const context = (label: string, value: string, source: string): void => {
+export function context(label: string, value: string, source: string): void {
   console.log(`· ${label} ${value} (${source})`);
-};
+}
 
 /**
  * Record a step only a human can take. It reports like any other outcome so a
@@ -65,14 +65,14 @@ export const context = (label: string, value: string, source: string): void => {
  * @param detail
  * @param steps
  */
-export const instruct = (
+export function instruct(
   resource: string,
   detail: string,
   steps: string[],
-): void => {
+): void {
   instructions.push({resource, steps});
   report(resource, 'pending', detail);
-};
+}
 
 /**
  * Wrap a provisioning step so its outcome is reported consistently and an
@@ -81,10 +81,10 @@ export const instruct = (
  * @param action
  * @returns The resolved value of type T, or undefined.
  */
-export const step = async <T>(
+export async function step<T>(
   resource: string,
   action: () => Promise<{outcome: Outcome; detail?: string; value?: T}>,
-): Promise<T | undefined> => {
+): Promise<T | undefined> {
   try {
     const result = await action();
     report(resource, result.outcome, result.detail);
@@ -94,14 +94,14 @@ export const step = async <T>(
     console.error(`! ${resource}: failed\n  ${message}`);
     process.exit(1);
   }
-};
+}
 
 /**
  * Print a one-line tally so a re-run reads at a glance as a run in which
  * nothing changed.
  * @param title
  */
-export const printSummary = (title: string): void => {
+export function printSummary(title: string): void {
   const counts = entries.reduce<Record<string, number>>((acc, entry) => {
     acc[entry.outcome] = (acc[entry.outcome] ?? 0) + 1;
     return acc;
@@ -125,7 +125,7 @@ export const printSummary = (title: string): void => {
       console.log(`  ${line}`);
     }
   }
-};
+}
 
 /**
  * Annotated rather than inferred so callers get control-flow narrowing after a
@@ -133,7 +133,7 @@ export const printSummary = (title: string): void => {
  * @param message The error message.
  * @returns Never returns as it exits the process.
  */
-export const fail: (message: string) => never = message => {
+export function fail(message: string): never {
   console.error(message);
   process.exit(1);
-};
+}

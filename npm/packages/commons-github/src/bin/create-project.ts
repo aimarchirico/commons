@@ -5,10 +5,11 @@ import {gh, ghJson, ghOrThrow, repoContext} from '../services/gh.js';
 
 type Project = {number: number; title: string};
 
-const nodes = (value: {nodes?: Project[]; Nodes?: Project[]}): Project[] =>
-  value.nodes ?? value.Nodes ?? [];
+function nodes(value: {nodes?: Project[]; Nodes?: Project[]}): Project[] {
+  return value.nodes ?? value.Nodes ?? [];
+}
 
-const linkedProjects = (slug: string): Project[] => {
+function linkedProjects(slug: string): Project[] {
   const data = ghJson<{projectsV2: {nodes?: Project[]; Nodes?: Project[]}}>([
     'repo',
     'view',
@@ -17,26 +18,27 @@ const linkedProjects = (slug: string): Project[] => {
     'projectsV2',
   ]);
   return nodes(data.projectsV2);
-};
+}
 
-const ownedProject = (owner: string, title: string): Project | undefined => {
+function ownedProject(owner: string, title: string): Project | undefined {
   const result = gh(['project', 'list', '--owner', owner, '--format', 'json']);
   if (result.status !== 0) return undefined;
   const data = JSON.parse(result.stdout) as {projects?: Project[]};
   return (data.projects ?? []).find(project => project.title === title);
-};
+}
 
-const link = (owner: string, slug: string, number: number): void => {
+function link(owner: string, slug: string, number: number): void {
   ghOrThrow(['project', 'link', String(number), '--owner', owner, '-R', slug]);
-};
+}
 
 const COMMONS_OWNER = 'aimarchirico';
 const COMMONS_PROJECT_TITLE = 'Commons Template';
 
-const titleCase = (value: string): string =>
-  (value.match(/[A-Za-z0-9]+/g) ?? [])
+function titleCase(value: string): string {
+  return (value.match(/[A-Za-z0-9]+/g) ?? [])
     .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(' ');
+}
 
 const {owner, repo, slug} = repoContext();
 const title = titleCase(repo);

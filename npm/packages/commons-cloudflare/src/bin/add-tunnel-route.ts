@@ -21,7 +21,7 @@ const resource = env.TUNNEL_PATH
   ? `tunnel route ${env.TUNNEL_HOSTNAME}/${env.TUNNEL_PATH}`
   : `tunnel route ${env.TUNNEL_HOSTNAME}`;
 
-const run = async (): Promise<void> => {
+async function run(): Promise<void> {
   const account = await resolveAccount(cf, env.CLOUDFLARE_ACCOUNT_ID);
   const path = `/accounts/${account}/cfd_tunnel/${env.TUNNEL_ID}/configurations`;
 
@@ -32,8 +32,11 @@ const run = async (): Promise<void> => {
 
   const config = current.config ?? {};
   const ingress = config.ingress ?? [];
-  const matches = (entry: Ingress): boolean =>
-    entry.hostname === env.TUNNEL_HOSTNAME && entry.path === env.TUNNEL_PATH;
+  function matches(entry: Ingress): boolean {
+    return (
+      entry.hostname === env.TUNNEL_HOSTNAME && entry.path === env.TUNNEL_PATH
+    );
+  }
   const existing = ingress.find(matches);
 
   if (existing?.service === env.TUNNEL_SERVICE) {
@@ -60,7 +63,7 @@ const run = async (): Promise<void> => {
 
   await cf.send('PUT', path, {config: {...config, ingress: updated}});
   report(resource, existing ? 'updated' : 'created', `→ ${env.TUNNEL_SERVICE}`);
-};
+}
 
 run()
   .then(() => printSummary('add-tunnel-route'))

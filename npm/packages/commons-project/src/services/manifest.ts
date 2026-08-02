@@ -9,11 +9,15 @@ const PLACEHOLDER =
 /** Which half of a manifest value a placeholder or field reads from. */
 export type Side = 'from' | 'to';
 
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === 'object' && value !== null && !Array.isArray(value);
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
 
-const isStringArray = (value: unknown): value is string[] =>
-  Array.isArray(value) && value.every(entry => typeof entry === 'string');
+function isStringArray(value: unknown): value is string[] {
+  return (
+    Array.isArray(value) && value.every(entry => typeof entry === 'string')
+  );
+}
 
 /**
  * Resolve `{{value}}`, `{{value|transform}}`, and `{{value.from|transform}}`
@@ -25,24 +29,28 @@ const isStringArray = (value: unknown): value is string[] =>
  * @param values
  * @returns The interpolated string.
  */
-export const interpolate = (
+export function interpolate(
   template: string,
   side: Side,
   values: Record<string, ManifestValue>,
-): string =>
-  template.replace(PLACEHOLDER, (_match, name, explicit, transformName) => {
-    const value = values[name];
-    if (!value) throw new Error(`Unknown manifest value "${name}".`);
-    const raw = value[(explicit as Side) ?? side];
-    return transformName ? transform(transformName, raw) : raw;
-  });
+): string {
+  return template.replace(
+    PLACEHOLDER,
+    (_match, name, explicit, transformName) => {
+      const value = values[name];
+      if (!value) throw new Error(`Unknown manifest value "${name}".`);
+      const raw = value[(explicit as Side) ?? side];
+      return transformName ? transform(transformName, raw) : raw;
+    },
+  );
+}
 
-const validatePlaceholders = (
+function validatePlaceholders(
   template: string,
   values: Record<string, ManifestValue>,
   where: string,
   errors: string[],
-): void => {
+): void {
   for (const match of template.matchAll(PLACEHOLDER)) {
     const [, name, , transformName] = match;
     if (!(name in values)) {
@@ -52,9 +60,9 @@ const validatePlaceholders = (
       errors.push(`${where}: unknown transform "${transformName}".`);
     }
   }
-};
+}
 
-const validate = (data: unknown): Manifest => {
+function validate(data: unknown): Manifest {
   const errors: string[] = [];
 
   if (!isRecord(data)) {
@@ -149,21 +157,22 @@ const validate = (data: unknown): Manifest => {
     moves: moves as Manifest['moves'],
     deletes: deletes as string[],
   };
-};
+}
 
 /**
  * Resolve the manifest path from `MANIFEST_PATH`, defaulting to
  * `manifest.json` in the working directory.
  * @returns The resolved manifest file path.
  */
-export const manifestPath = (): string =>
-  path.resolve(process.env.MANIFEST_PATH ?? 'manifest.json');
+export function manifestPath(): string {
+  return path.resolve(process.env.MANIFEST_PATH ?? 'manifest.json');
+}
 
 /**
  * Load and validate the manifest.
  * @returns The loaded and validated Manifest object.
  */
-export const loadManifest = (): Manifest => {
+export function loadManifest(): Manifest {
   const file = manifestPath();
   if (!fs.existsSync(file)) {
     throw new Error(
@@ -178,4 +187,4 @@ export const loadManifest = (): Manifest => {
     throw new Error(`Manifest at ${file} is not valid JSON: ${message}`);
   }
   return validate(data);
-};
+}
