@@ -90,8 +90,8 @@ class SuppressRequiresReasonTest {
   }
 
   /**
-   * A top-level `@Suppress` with no preceding sibling comment exercises the
-   * `parent is KtFile` branch inside `findPrecedingComment`.
+   * A top-level `@Suppress` with no preceding sibling comment exercises the `parent is KtFile`
+   * branch inside `findPrecedingComment`.
    */
   @Test
   fun `flags a top-level suppress annotation with no preceding reason comment`() {

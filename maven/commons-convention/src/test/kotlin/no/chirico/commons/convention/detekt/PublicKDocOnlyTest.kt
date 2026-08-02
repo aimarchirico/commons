@@ -101,8 +101,8 @@ class PublicKDocOnlyTest {
   }
 
   /**
-   * A KDoc block attached to a local declaration (inside a function body) is rejected.
-   * This exercises the `KtPsiUtil.isLocal(declaration)` branch in [PublicKDocOnly.isNonPublic].
+   * A KDoc block attached to a local declaration (inside a function body) is rejected. This
+   * exercises the `KtPsiUtil.isLocal(declaration)` branch in [PublicKDocOnly.isNonPublic].
    */
   @Test
   fun `flags a kdoc block on a local class declaration`() {
