@@ -1,3 +1,4 @@
+import {defineConfig} from 'eslint/config';
 import type {Linter} from 'eslint';
 import baseConfig from '@aimarchirico/commons-ts/eslint-base';
 import {folderRule} from '@aimarchirico/commons-ts/folders';
@@ -26,7 +27,8 @@ const combined = (
   return config;
 });
 
-const config: Linter.Config[] = [
+/** Shared Expo ESLint core configuration. */
+export default defineConfig([
   ...combined,
   folderRule(CORE_FOLDERS),
   {
@@ -35,6 +37,4 @@ const config: Linter.Config[] = [
       'check-file/filename-naming-convention': 'off',
     },
   },
-];
-
-export default config;
+]);

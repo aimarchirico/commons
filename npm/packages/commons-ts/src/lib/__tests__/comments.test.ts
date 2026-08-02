@@ -57,6 +57,12 @@ describe('publicJSDocOnly', () => {
     ).toEqual([]);
   });
 
+  it('allows a JSDoc block on an exported default call expression', () => {
+    expect(
+      messageIds('/**\n * Config.\n */\nexport default defineConfig({});\n'),
+    ).toEqual([]);
+  });
+
   it('allows a JSDoc block on exported type-only declarations', () => {
     const code = [
       '/**',

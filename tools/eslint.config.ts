@@ -1,8 +1,10 @@
+import {defineConfig} from 'eslint/config';
 import eslintPluginToml from 'eslint-plugin-toml';
 import eslintPluginYml from 'eslint-plugin-yml';
 import tsConfig from '@aimarchirico/commons-ts/eslint-base';
 
-export default [
+/** ESLint configuration. */
+export default defineConfig([
   ...tsConfig,
   ...eslintPluginToml.configs['flat/recommended'],
   ...eslintPluginYml.configs['flat/recommended'],
@@ -24,4 +26,4 @@ export default [
       'prettier/prettier': 'off',
     },
   },
-];
+]);

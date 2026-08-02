@@ -1,3 +1,4 @@
+import {defineConfig} from 'eslint/config';
 import eslintPluginEslintComments from '@eslint-community/eslint-plugin-eslint-comments';
 import checkFile from 'eslint-plugin-check-file';
 import eslintPluginImport from 'eslint-plugin-import';
@@ -10,7 +11,8 @@ import {gitignoreConfig} from './gitignore';
 import gtsPrettier from 'gts/.prettierrc.json';
 import tseslint from 'typescript-eslint';
 
-export default [
+/** Shared ESLint base configuration. */
+export default defineConfig([
   ...gitignoreConfig,
   ...gts,
   ...eslintPluginJsonc.configs['flat/recommended-with-jsonc'],
@@ -102,4 +104,4 @@ export default [
       'commons/default-export-shape': ['error'],
     },
   },
-];
+]);

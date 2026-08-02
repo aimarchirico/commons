@@ -26,6 +26,7 @@ export const DOC_ELIGIBLE_VISITORS = [
   'PropertyDefinition',
   'TSAbstractMethodDefinition',
   'TSAbstractPropertyDefinition',
+  'ExportDefaultDeclaration > CallExpression',
 ] as const;
 
 /**
@@ -52,10 +53,9 @@ export const jsdocRequire = Object.fromEntries(
 );
 
 /** `jsdoc/require-jsdoc`'s `contexts` option, derived from `DOC_ELIGIBLE_VISITORS`. */
-export const jsdocContexts = [
-  ...DOC_ELIGIBLE_VISITORS.filter(type => !JSDOC_REQUIRE_KEYS.has(type)),
-  'ExportDefaultDeclaration > CallExpression',
-];
+export const jsdocContexts = DOC_ELIGIBLE_VISITORS.filter(
+  type => !JSDOC_REQUIRE_KEYS.has(type),
+);
 
 const CLASS_MEMBER_TYPES = new Set<string>([
   'MethodDefinition',
@@ -202,7 +202,13 @@ const recordOwner = (
     }
     return;
   }
-  const comment = getJSDocComment(sourceCode, node, JSDOC_COMMENT_SETTINGS);
+  const targetNode =
+    node.parent?.type === 'ExportDefaultDeclaration' ? node.parent : node;
+  const comment = getJSDocComment(
+    sourceCode,
+    targetNode,
+    JSDOC_COMMENT_SETTINGS,
+  );
   if (comment) {
     owners.set(comment as Comment, node);
   }
