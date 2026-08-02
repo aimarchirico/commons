@@ -1,6 +1,6 @@
 {
   "name": "@aimarchirico/commons-openapi",
-  "version": "2.4.1",
+  "version": "2.5.0",
   "private": false,
   "type": "module",
   "publishConfig": {

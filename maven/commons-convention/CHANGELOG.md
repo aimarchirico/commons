@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.3.0](https://github.com/aimarchirico/commons/compare/commons-convention-v2.2.0...commons-convention-v2.3.0) (2026-08-02)
+
+
+### Features
+
+* **convention:** centralize test dependencies into kotlin and spring plugins ([70cc7b5](https://github.com/aimarchirico/commons/commit/70cc7b5b66462260a7e714b6868351af406e68ff))
+
+
+### Bug Fixes
+
+* **convention:** raise commons-convention branch coverage to 80% ([ec912b1](https://github.com/aimarchirico/commons/commit/ec912b134e1cdd4b659ff9edd15544e6213c9c56))
+* **coverage:** enforce 80% line and branch coverage in Jacoco verification ([71a790a](https://github.com/aimarchirico/commons/commit/71a790a9d6ec81ba648e321f5c7f7491c8729451))
+* **npm:** scope build includes to real entry points, stop excluding bin from coverage ([57de6b2](https://github.com/aimarchirico/commons/commit/57de6b26dd303e7bc196cef74a16b4eb4e4446eb))
+* **tests:** fix KDoc comment formatting ([f60b66d](https://github.com/aimarchirico/commons/commit/f60b66d681e9142be210c89262d3835008710ec8))
+
 ## [2.2.0](https://github.com/aimarchirico/commons/compare/commons-convention-v2.1.0...commons-convention-v2.2.0) (2026-08-01)
 
 

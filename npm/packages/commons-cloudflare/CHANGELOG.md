@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.5.0](https://github.com/aimarchirico/commons/compare/commons-cloudflare-v3.4.0...commons-cloudflare-v3.5.0) (2026-08-02)
+
+
+### Features
+
+* **eslint:** require JSDoc on default export call expressions and wrap configs in defineConfig ([a94e91e](https://github.com/aimarchirico/commons/commit/a94e91ee5dd122477a99a9eb2034559194ac91ab))
+
+
+### Bug Fixes
+
+* **commons-cloudflare:** remove dead build include for nonexistent api.ts ([527a52d](https://github.com/aimarchirico/commons/commit/527a52d2a2631761523bb0b7ede0a68f1475016a))
+* **npm:** fix npm:check failures across ts, cloudflare, expo, firebase-client packages ([4aa99f5](https://github.com/aimarchirico/commons/commit/4aa99f58d134088db92bf53f90a656733ccf0c71))
+* **npm:** scope build includes to real entry points, stop excluding bin from coverage ([57de6b2](https://github.com/aimarchirico/commons/commit/57de6b26dd303e7bc196cef74a16b4eb4e4446eb))
+
 ## [3.4.0](https://github.com/aimarchirico/commons/compare/commons-cloudflare-v3.3.0...commons-cloudflare-v3.4.0) (2026-08-01)
 
 

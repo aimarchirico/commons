@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.3.0](https://github.com/aimarchirico/commons/compare/commons-github-v1.2.1...commons-github-v1.3.0) (2026-08-02)
+
+
+### Features
+
+* **eslint:** require JSDoc on default export call expressions and wrap configs in defineConfig ([a94e91e](https://github.com/aimarchirico/commons/commit/a94e91ee5dd122477a99a9eb2034559194ac91ab))
+
+
+### Bug Fixes
+
+* **commons-github:** add unit tests for CLI bin scripts and resolve coverage check threshold failure ([6a13f16](https://github.com/aimarchirico/commons/commit/6a13f164bd23157096948e38354686aca935ab13))
+* **commons-github:** stop emitting test files into dist ([92b5d1b](https://github.com/aimarchirico/commons/commit/92b5d1b2b216a6a28cc1fb2b51b19e5e30de17ac))
+* **npm:** scope build includes to real entry points, stop excluding bin from coverage ([57de6b2](https://github.com/aimarchirico/commons/commit/57de6b26dd303e7bc196cef74a16b4eb4e4446eb))
+* **npm:** stop exporting bin-script internals solely for testing ([5fd9ef1](https://github.com/aimarchirico/commons/commit/5fd9ef153d60856b5836cb55950ec67c9460a571))
+
 ## [1.2.1](https://github.com/aimarchirico/commons/compare/commons-github-v1.2.0...commons-github-v1.2.1) (2026-08-02)
 
 

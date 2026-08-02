@@ -1,5 +1,22 @@
 # Changelog
 
+## [3.4.0](https://github.com/aimarchirico/commons/compare/commons-ts-v3.3.0...commons-ts-v3.4.0) (2026-08-02)
+
+
+### Features
+
+* **eslint:** require JSDoc on default export call expressions and wrap configs in defineConfig ([a94e91e](https://github.com/aimarchirico/commons/commit/a94e91ee5dd122477a99a9eb2034559194ac91ab))
+
+
+### Bug Fixes
+
+* **commons-ts:** add types field to vitest-coverage subpath export ([a4ef899](https://github.com/aimarchirico/commons/commit/a4ef89976c666701b3953c8cf942e36c9ef95282)), closes [#308](https://github.com/aimarchirico/commons/issues/308)
+* **commons-ts:** exclude test files from build and stop excluding bin from coverage ([49e5c32](https://github.com/aimarchirico/commons/commit/49e5c324acec03b96000f86e5398527b8fd50b00))
+* **commons-ts:** require call expression or named declaration in default exports ([6b59a58](https://github.com/aimarchirico/commons/commit/6b59a58ca6db8c37ac10d59f1bb98315a2549776))
+* **npm:** fix npm:check failures across ts, cloudflare, expo, firebase-client packages ([4aa99f5](https://github.com/aimarchirico/commons/commit/4aa99f58d134088db92bf53f90a656733ccf0c71))
+* **npm:** scope build includes to real entry points, stop excluding bin from coverage ([57de6b2](https://github.com/aimarchirico/commons/commit/57de6b26dd303e7bc196cef74a16b4eb4e4446eb))
+* **npm:** update README for lint and fix vitest configuration export ([2a414f7](https://github.com/aimarchirico/commons/commit/2a414f74ffd20b7d3dffa07c9b459156d0caeced))
+
 ## [3.3.0](https://github.com/aimarchirico/commons/compare/commons-ts-v3.2.0...commons-ts-v3.3.0) (2026-08-01)
 
 
