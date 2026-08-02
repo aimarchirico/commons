@@ -6,7 +6,7 @@ import {
   resolveDocsDir,
   resolveOutputDir,
   toGeneratorSpecPath,
-} from '../openapi-client';
+} from '../openapi-client.js';
 
 describe('buildSpecUrl', () => {
   it('appends the v3 api-docs path', () => {

@@ -12,7 +12,7 @@ import {
   resolveDocsDir,
   resolveOutputDir,
   toGeneratorSpecPath,
-} from '../services/openapi-client';
+} from '../services/openapi-client.js';
 
 const apiUrl = process.env.API_URL;
 if (!apiUrl) {
