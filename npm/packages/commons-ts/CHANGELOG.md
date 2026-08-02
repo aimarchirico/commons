@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.4.3](https://github.com/aimarchirico/commons/compare/commons-ts-v3.4.2...commons-ts-v3.4.3) (2026-08-02)
+
+
+### Bug Fixes
+
+* **commons-ts:** recognize CJS module.exports as exported in public-jsdoc-only ([c986280](https://github.com/aimarchirico/commons/commit/c986280ac5fc0d656e434db5e896384a991b71ed))
+* **commons-ts:** recognize CJS module.exports as exported in public-jsdoc-only ([818a92d](https://github.com/aimarchirico/commons/commit/818a92d914095eaa8e0ab1c45e8556f8053e44bf))
+
 ## [3.4.2](https://github.com/aimarchirico/commons/compare/commons-ts-v3.4.1...commons-ts-v3.4.2) (2026-08-02)
 
 

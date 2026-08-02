@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.3.1](https://github.com/aimarchirico/commons/compare/commons-google-signin-v4.3.0...commons-google-signin-v4.3.1) (2026-08-02)
+
+
+### Bug Fixes
+
+* **commons-google-signin:** stop excluding hooks/contexts from coverage ([6d65bc5](https://github.com/aimarchirico/commons/commit/6d65bc5398ab2eece96feb6b8ac1a1907d660b50))
+* **commons-google-signin:** stop excluding hooks/contexts from coverage ([9d3d5a9](https://github.com/aimarchirico/commons/commit/9d3d5a9159b68f7dff8a78829556c84b4c838873))
+
 ## [4.3.0](https://github.com/aimarchirico/commons/compare/commons-google-signin-v4.2.0...commons-google-signin-v4.3.0) (2026-08-02)
 
 
