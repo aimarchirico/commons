@@ -5,8 +5,8 @@ import {gh, ghJson, ghOrThrow, repoContext} from '../services/gh.js';
 
 type Project = {number: number; title: string};
 
-function nodes(value: {nodes?: Project[]; Nodes?: Project[]}): Project[] {
-  return value.nodes ?? value.Nodes ?? [];
+function nodes(value?: {nodes?: Project[]; Nodes?: Project[]}): Project[] {
+  return value?.nodes ?? value?.Nodes ?? [];
 }
 
 function linkedProjects(slug: string): Project[] {
@@ -40,54 +40,65 @@ function titleCase(value: string): string {
     .join(' ');
 }
 
-const {owner, repo, slug} = repoContext();
-const title = titleCase(repo);
+/**
+ * Create or link GitHub Projects V2 for the repository.
+ */
+export function createProject(): void {
+  const {owner, repo, slug} = repoContext();
+  const title = titleCase(repo);
 
-try {
-  const linked = linkedProjects(slug).find(project => project.title === title);
-  if (linked) {
-    report(
-      `project "${title}"`,
-      'present',
-      `#${linked.number} linked to ${slug}`,
+  try {
+    const linked = linkedProjects(slug).find(
+      project => project.title === title,
     );
-  } else {
-    const existing = ownedProject(owner, title);
-    if (existing) {
-      link(owner, slug, existing.number);
-      report(`project "${title}"`, 'updated', `#${existing.number} linked`);
-    } else {
-      const source = ownedProject(COMMONS_OWNER, COMMONS_PROJECT_TITLE);
-      if (!source) {
-        fail(
-          `Could not find a project titled "${COMMONS_PROJECT_TITLE}" owned by ${COMMONS_OWNER} to copy.`,
-        );
-      }
-      const copied = JSON.parse(
-        ghOrThrow([
-          'project',
-          'copy',
-          String(source.number),
-          '--source-owner',
-          COMMONS_OWNER,
-          '--target-owner',
-          owner,
-          '--title',
-          title,
-          '--format',
-          'json',
-        ]),
-      ) as {number: number};
-      link(owner, slug, copied.number);
+    if (linked) {
       report(
         `project "${title}"`,
-        'created',
-        `#${copied.number} copied from ${COMMONS_OWNER}/#${source.number}`,
+        'present',
+        `#${linked.number} linked to ${slug}`,
       );
+    } else {
+      const existing = ownedProject(owner, title);
+      if (existing) {
+        link(owner, slug, existing.number);
+        report(`project "${title}"`, 'updated', `#${existing.number} linked`);
+      } else {
+        const source = ownedProject(COMMONS_OWNER, COMMONS_PROJECT_TITLE);
+        if (!source) {
+          fail(
+            `Could not find a project titled "${COMMONS_PROJECT_TITLE}" owned by ${COMMONS_OWNER} to copy.`,
+          );
+        }
+        const copied = JSON.parse(
+          ghOrThrow([
+            'project',
+            'copy',
+            String(source.number),
+            '--source-owner',
+            COMMONS_OWNER,
+            '--target-owner',
+            owner,
+            '--title',
+            title,
+            '--format',
+            'json',
+          ]),
+        ) as {number: number};
+        link(owner, slug, copied.number);
+        report(
+          `project "${title}"`,
+          'created',
+          `#${copied.number} copied from ${COMMONS_OWNER}/#${source.number}`,
+        );
+      }
     }
+  } catch (error) {
+    fail(error instanceof Error ? error.message : String(error));
   }
-} catch (error) {
-  fail(error instanceof Error ? error.message : String(error));
+
+  printSummary('create-project');
 }
 
-printSummary('create-project');
+if (!process.env.VITEST) {
+  createProject();
+}
