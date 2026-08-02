@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.4.1](https://github.com/aimarchirico/commons/compare/commons-ts-v3.4.0...commons-ts-v3.4.1) (2026-08-02)
+
+
+### Bug Fixes
+
+* **package:** remove unused vitest-coverage exports from package.json ([2d9db11](https://github.com/aimarchirico/commons/commit/2d9db11da903e6e37c60eefdec86576eaedd684f))
+* **package:** remove unused vitest-coverage exports from package.json ([fb98b8f](https://github.com/aimarchirico/commons/commit/fb98b8f10251832da4b3a7e273b276a9991e9bbf))
+
 ## [3.4.0](https://github.com/aimarchirico/commons/compare/commons-ts-v3.3.0...commons-ts-v3.4.0) (2026-08-02)
 
 
