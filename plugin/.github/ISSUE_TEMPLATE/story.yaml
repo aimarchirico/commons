@@ -1,5 +1,5 @@
 name: Story
-description: A user-facing feature.
+description: A user-facing feature
 body:
   - type: textarea
     id: user-story
