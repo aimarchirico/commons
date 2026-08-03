@@ -9,7 +9,6 @@ import {
   resolveEnv,
 } from '@aimarchirico/commons-project';
 import {api, resolveAccount} from '../services/api-client.js';
-import {pathToFileURL} from 'url';
 
 const productionBranch = (): string => {
   const derived = defaultBranch();
@@ -66,8 +65,4 @@ export async function createPagesProject(): Promise<void> {
   }
 
   printSummary('create-pages-project');
-}
-
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-  void createPagesProject();
 }

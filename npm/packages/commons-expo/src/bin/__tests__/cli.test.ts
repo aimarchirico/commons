@@ -1,11 +1,20 @@
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 
-const {exit, error} = vi.hoisted(() => ({
-  exit: vi.fn((code?: number) => {
-    throw new Error(`process.exit(${code})`);
+const {exit, error, buildAndroid, createProject, importKeystore} = vi.hoisted(
+  () => ({
+    exit: vi.fn((code?: number) => {
+      throw new Error(`process.exit(${code})`);
+    }),
+    error: vi.fn(),
+    buildAndroid: vi.fn(),
+    createProject: vi.fn(),
+    importKeystore: vi.fn(),
   }),
-  error: vi.fn(),
-}));
+);
+
+vi.mock('../build-android.js', () => ({buildAndroid}));
+vi.mock('../create-project.js', () => ({createProject}));
+vi.mock('../import-keystore.js', () => ({importKeystore}));
 
 describe('cli.ts', () => {
   beforeEach(() => {
@@ -37,9 +46,13 @@ describe('cli.ts', () => {
     expect(exit).toHaveBeenCalledWith(1);
   });
 
-  it('dispatches to valid command when provided', async () => {
-    vi.mock('../create-project.js', () => ({}));
+  it.each([
+    ['build-android', buildAndroid],
+    ['create-project', createProject],
+    ['import-keystore', importKeystore],
+  ])('dispatches %s to its handler', async (verb, handler) => {
     const {runCli} = await import('../cli.js');
-    expect(() => runCli(['node', 'cli.js', 'create-project'])).not.toThrow();
+    expect(() => runCli(['node', 'cli.js', verb])).not.toThrow();
+    await vi.waitFor(() => expect(handler).toHaveBeenCalled());
   });
 });

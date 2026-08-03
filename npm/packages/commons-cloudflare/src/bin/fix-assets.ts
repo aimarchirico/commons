@@ -2,7 +2,6 @@
 
 import shell from 'shelljs';
 import {replaceInFileSync} from 'replace-in-file';
-import {pathToFileURL} from 'url';
 
 /**
  * Rename dist/assets/node_modules, whose name Cloudflare Pages rejects, and
@@ -17,8 +16,4 @@ export function fixAssets(): void {
       to: 'assets/nodemodules',
     });
   }
-}
-
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-  fixAssets();
 }

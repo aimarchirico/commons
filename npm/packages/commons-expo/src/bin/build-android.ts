@@ -3,7 +3,6 @@
 import fs from 'fs';
 import path from 'path';
 import {spawnSync} from 'child_process';
-import {pathToFileURL} from 'url';
 
 /**
  * Build the Android release APK, signing it if keystore variables are set.
@@ -66,8 +65,4 @@ export function buildAndroid(): void {
     process.exit(1);
   }
   process.exit(result.status ?? 1);
-}
-
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-  buildAndroid();
 }

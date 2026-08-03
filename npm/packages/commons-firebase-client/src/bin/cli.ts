@@ -2,8 +2,11 @@
 
 import {pathToFileURL} from 'url';
 
-const commands: Record<string, string> = {
-  'decode-google-services': './decode-google-services.js',
+const commands: Record<string, () => Promise<void>> = {
+  'decode-google-services': async () => {
+    const {decodeGoogleServices} = await import('./decode-google-services.js');
+    decodeGoogleServices();
+  },
 };
 
 /**
@@ -12,9 +15,9 @@ const commands: Record<string, string> = {
  */
 export function runCli(argv: string[] = process.argv): void {
   const verb = argv[2];
-  const script = verb ? commands[verb] : undefined;
+  const command = verb ? commands[verb] : undefined;
 
-  if (!script) {
+  if (!command) {
     const usage = Object.keys(commands)
       .map(name => `  commons-firebase-client ${name}`)
       .join('\n');
@@ -22,7 +25,7 @@ export function runCli(argv: string[] = process.argv): void {
     process.exit(1);
   }
 
-  void import(script);
+  void command();
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {

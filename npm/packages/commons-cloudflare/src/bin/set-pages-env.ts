@@ -7,7 +7,6 @@ import {
   resolveEnv,
 } from '@aimarchirico/commons-project';
 import {api, resolveAccount} from '../services/api-client.js';
-import {pathToFileURL} from 'url';
 
 type EnvVar = {type: string; value?: string};
 type Project = {
@@ -75,8 +74,4 @@ export async function setPagesEnv(): Promise<void> {
   }
 
   printSummary('set-pages-env');
-}
-
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-  void setPagesEnv();
 }

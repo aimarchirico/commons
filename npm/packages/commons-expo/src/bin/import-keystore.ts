@@ -10,7 +10,6 @@ import {
   resolveEnv,
   writeOutputs,
 } from '@aimarchirico/commons-project';
-import {pathToFileURL} from 'url';
 
 type CredentialsJson = {
   android?: {
@@ -90,8 +89,4 @@ export function importKeystore(): void {
   }
 
   printSummary('import-keystore');
-}
-
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-  importKeystore();
 }
