@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.3](https://github.com/aimarchirico/commons/compare/commons-github-v1.4.2...commons-github-v1.4.3) (2026-08-03)
+
+
+### Bug Fixes
+
+* **docs:** align markdown tables and trim trailing blank line ([7e4b237](https://github.com/aimarchirico/commons/commit/7e4b2374212b97ba62630be49b17f5fff89435ae))
+
 ## [1.4.2](https://github.com/aimarchirico/commons/compare/commons-github-v1.4.1...commons-github-v1.4.2) (2026-08-03)
 
 

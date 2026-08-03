@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.5.2](https://github.com/aimarchirico/commons/compare/commons-expo-v4.5.1...commons-expo-v4.5.2) (2026-08-03)
+
+
+### Bug Fixes
+
+* **docs:** align markdown tables and trim trailing blank line ([7e4b237](https://github.com/aimarchirico/commons/commit/7e4b2374212b97ba62630be49b17f5fff89435ae))
+
 ## [4.5.1](https://github.com/aimarchirico/commons/compare/commons-expo-v4.5.0...commons-expo-v4.5.1) (2026-08-03)
 
 
