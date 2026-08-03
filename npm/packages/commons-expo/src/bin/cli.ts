@@ -1,7 +1,3 @@
-#!/usr/bin/env node
-
-import {pathToFileURL} from 'url';
-
 const commands: Record<string, () => Promise<void>> = {
   'build-android': async () => {
     const {buildAndroid} = await import('./build-android.js');
@@ -34,8 +30,4 @@ export function runCli(argv: string[] = process.argv): void {
   }
 
   void command();
-}
-
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-  runCli();
 }

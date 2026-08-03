@@ -11,7 +11,7 @@
     "url": "https://github.com/aimarchirico/commons.git"
   },
   "bin": {
-    "commons-github": "dist/bin/cli.js"
+    "commons-github": "dist/bin/index.js"
   },
   "files": [
     "src/assets",
