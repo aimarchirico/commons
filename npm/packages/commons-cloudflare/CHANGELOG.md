@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.6.0](https://github.com/aimarchirico/commons/compare/commons-cloudflare-v3.5.0...commons-cloudflare-v3.6.0) (2026-08-03)
+
+
+### Features
+
+* **settings:** add attribution configuration to settings.json ([e271e28](https://github.com/aimarchirico/commons/commit/e271e28cada7dfab52452edcb266c8bf9ec66569))
+
+
+### Bug Fixes
+
+* **commons-cloudflare:** actually invoke CLI subcommand handlers ([d3b3f60](https://github.com/aimarchirico/commons/commit/d3b3f607c0d85f7b89faec7abeb1a2dd99a0a922))
+
 ## [3.5.0](https://github.com/aimarchirico/commons/compare/commons-cloudflare-v3.4.0...commons-cloudflare-v3.5.0) (2026-08-02)
 
 

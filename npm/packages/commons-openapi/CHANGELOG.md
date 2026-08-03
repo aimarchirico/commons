@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.6.0](https://github.com/aimarchirico/commons/compare/commons-openapi-v2.5.0...commons-openapi-v2.6.0) (2026-08-03)
+
+
+### Features
+
+* **settings:** add attribution configuration to settings.json ([e271e28](https://github.com/aimarchirico/commons/commit/e271e28cada7dfab52452edcb266c8bf9ec66569))
+
+
+### Bug Fixes
+
+* **commons-openapi:** actually invoke CLI subcommand handler ([27efacf](https://github.com/aimarchirico/commons/commit/27efacffc03b2327d3b7eb2824772d3f8070e111))
+
 ## [2.5.0](https://github.com/aimarchirico/commons/compare/commons-openapi-v2.4.1...commons-openapi-v2.5.0) (2026-08-02)
 
 
