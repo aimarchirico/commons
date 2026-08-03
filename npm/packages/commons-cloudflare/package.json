@@ -14,7 +14,7 @@
     ".": "./src/index.ts"
   },
   "bin": {
-    "commons-cloudflare": "dist/bin/cli.js"
+    "commons-cloudflare": "dist/bin/index.js"
   },
   "files": [
     "dist",

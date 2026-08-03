@@ -1,7 +1,3 @@
-#!/usr/bin/env node
-
-import {pathToFileURL} from 'url';
-
 const commands: Record<string, () => Promise<void>> = {
   'fix-assets': async () => {
     const {fixAssets} = await import('./fix-assets.js');
@@ -42,8 +38,4 @@ export function runCli(argv: string[] = process.argv): void {
   }
 
   void command();
-}
-
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-  runCli();
 }
