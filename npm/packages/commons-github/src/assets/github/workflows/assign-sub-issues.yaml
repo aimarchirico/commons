@@ -8,9 +8,6 @@ permissions:
   issues: write
 
 jobs:
-  # ==========================================
-  # CASCADE ASSIGN
-  # ==========================================
   cascade:
     name: Assign Sub-Issues
     runs-on: ubuntu-latest
