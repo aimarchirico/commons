@@ -6,7 +6,6 @@ import fs from 'fs';
 import os from 'os';
 import https from 'https';
 import http from 'http';
-import {pathToFileURL} from 'url';
 import {
   buildAccessHeaders,
   buildSpecUrl,
@@ -121,8 +120,4 @@ export async function runGenerateClient(): Promise<void> {
     console.error('API generation failed:', errorMsg);
     process.exit(2);
   }
-}
-
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-  void runGenerateClient();
 }

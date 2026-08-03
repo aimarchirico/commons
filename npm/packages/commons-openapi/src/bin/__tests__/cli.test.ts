@@ -1,11 +1,14 @@
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 
-const {exit, error} = vi.hoisted(() => ({
+const {exit, error, runGenerateClient} = vi.hoisted(() => ({
   exit: vi.fn((code?: number) => {
     throw new Error(`process.exit(${code})`);
   }),
   error: vi.fn(),
+  runGenerateClient: vi.fn(),
 }));
+
+vi.mock('../generate-client.js', () => ({runGenerateClient}));
 
 describe('cli.ts', () => {
   beforeEach(() => {
@@ -38,8 +41,8 @@ describe('cli.ts', () => {
   });
 
   it('dispatches to valid command when provided', async () => {
-    vi.mock('../generate-client.js', () => ({}));
     const {runCli} = await import('../cli.js');
     expect(() => runCli(['node', 'cli.js', 'generate-client'])).not.toThrow();
+    await vi.waitFor(() => expect(runGenerateClient).toHaveBeenCalled());
   });
 });

@@ -2,8 +2,11 @@
 
 import {pathToFileURL} from 'url';
 
-const commands: Record<string, string> = {
-  'generate-client': './generate-client.js',
+const commands: Record<string, () => Promise<void>> = {
+  'generate-client': async () => {
+    const {runGenerateClient} = await import('./generate-client.js');
+    await runGenerateClient();
+  },
 };
 
 /**
@@ -12,9 +15,9 @@ const commands: Record<string, string> = {
  */
 export function runCli(argv: string[] = process.argv): void {
   const verb = argv[2];
-  const script = verb ? commands[verb] : undefined;
+  const command = verb ? commands[verb] : undefined;
 
-  if (!script) {
+  if (!command) {
     const usage = Object.keys(commands)
       .map(name => `  commons-openapi ${name}`)
       .join('\n');
@@ -22,7 +25,7 @@ export function runCli(argv: string[] = process.argv): void {
     process.exit(1);
   }
 
-  void import(script);
+  void command();
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
