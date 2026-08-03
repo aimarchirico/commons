@@ -8,7 +8,6 @@ import {
   runJson,
   writeOutputs,
 } from '@aimarchirico/commons-project';
-import {pathToFileURL} from 'url';
 
 type Initialized = {
   status: string;
@@ -46,8 +45,4 @@ export function createProject(): void {
   }
 
   printSummary('create-project');
-}
-
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-  createProject();
 }
