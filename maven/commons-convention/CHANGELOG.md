@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/aimarchirico/commons/compare/commons-convention-v2.3.0...commons-convention-v3.0.0) (2026-08-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* **convention:** modules relying on `no.chirico.commons.convention.spring` for JPA entity all-open support or Spring Boot Postgres/web dependencies must additionally apply `no.chirico.commons.convention.postgresql` and/or `no.chirico.commons.convention.web`.
+
+### Features
+
+* **convention:** split postgresql and web deps out of spring plugin ([ea5a37a](https://github.com/aimarchirico/commons/commit/ea5a37a767a620c0383baf8eb94617fcbe77664c))
+
 ## [2.3.0](https://github.com/aimarchirico/commons/compare/commons-convention-v2.2.0...commons-convention-v2.3.0) (2026-08-02)
 
 
