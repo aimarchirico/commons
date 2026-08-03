@@ -17,7 +17,7 @@ provisioning CLI dependency.
 ## `create-project`
 
 | Key          | Required | Purpose                                                          |
-| :----------- | :------- | :----------------------------------------------------------------- |
+| :----------- | :------- | :--------------------------------------------------------------- |
 | `EXPO_TOKEN` | No       | Expo credentials. Falls back to a `pnpm exec eas login` session. |
 
 Emits `EAS_PROJECT_ID`. Runs `eas init`, which links the project when
@@ -29,7 +29,7 @@ choices when the token can see more than one.
 ## `import-keystore`
 
 | Key                       | Required | Purpose                                                       |
-| :------------------------ | :------- | :----------------------------------------------------------- |
+| :------------------------ | :------- | :------------------------------------------------------------ |
 | `ANDROID_KEYSTORE_BASE64` | No       | An already-provisioned keystore. Present means nothing to do. |
 
 Reads credentials from `credentials.json` in the working directory and emits

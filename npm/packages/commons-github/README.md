@@ -27,7 +27,7 @@ duplicating it.
 ## `create-environments`
 
 | Key                   | Required | Purpose                                      |
-| :-------------------- | :------- | :--------------------------------------------- |
+| :-------------------- | :------- | :------------------------------------------- |
 | `GITHUB_ENVIRONMENTS` | Yes      | Environment names, comma or space separated. |
 
 Creates each environment, skipping any that already exist.
@@ -35,7 +35,7 @@ Creates each environment, skipping any that already exist.
 ## `sync-variables`
 
 | Key                            | Required | Purpose                                              |
-| :----------------------------- | :------- | :------------------------------------------------------ |
+| :----------------------------- | :------- | :--------------------------------------------------- |
 | `GITHUB_VARIABLES`             | No       | Names of repository-level variables to push.         |
 | `GITHUB_ENVIRONMENT_VARIABLES` | No       | Environment-scoped names, `env=NAME,NAME;env2=NAME`. |
 
@@ -46,7 +46,7 @@ the caller didn't mention.
 ## `set-secrets`
 
 | Key                          | Required | Purpose                                              |
-| :----------------------------- | :------- | :--------------------------------------------------- |
+| :--------------------------- | :------- | :--------------------------------------------------- |
 | `GITHUB_SECRETS`             | No       | Names of repository-level secrets to push.           |
 | `GITHUB_ENVIRONMENT_SECRETS` | No       | Environment-scoped names, `env=NAME,NAME;env2=NAME`. |
 

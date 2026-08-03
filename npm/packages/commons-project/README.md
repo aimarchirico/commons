@@ -13,7 +13,7 @@ Rewrites a generated repository from its template placeholder values to the
 project's real values.
 
 | Key             | Required | Purpose                                             |
-| :-------------- | :------- | :--------------------------------------------------- |
+| :-------------- | :------- | :-------------------------------------------------- |
 | `MANIFEST_PATH` | No       | Manifest to execute. Defaults to `./manifest.json`. |
 
 The manifest holds all layout knowledge and is validated in full before

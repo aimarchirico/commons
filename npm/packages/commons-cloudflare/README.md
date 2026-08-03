@@ -16,7 +16,7 @@ than one.
 ## `create-pages-project`
 
 | Key                     | Required | Purpose                                           |
-| :---------------------- | :------- | :--------------------------------------------------- |
+| :---------------------- | :------- | :------------------------------------------------ |
 | `CLOUDFLARE_API_TOKEN`  | Yes      | Token with Pages write and DNS scopes.            |
 | `PAGES_PROJECT_NAME`    | Yes      | Pages project to create.                          |
 | `PAGES_CUSTOM_DOMAIN`   | Yes      | Custom domain to attach.                          |
@@ -29,7 +29,7 @@ attaches the domain, requesting automatic DNS.
 ## `set-pages-env`
 
 | Key                     | Required | Purpose                                           |
-| :---------------------- | :------- | :--------------------------------------------------- |
+| :---------------------- | :------- | :------------------------------------------------ |
 | `CLOUDFLARE_API_TOKEN`  | Yes      | Token with Pages write scope.                     |
 | `PAGES_PROJECT_NAME`    | Yes      | Pages project to configure.                       |
 | `PAGES_VARIABLES`       | Yes      | Names of the environment variables to push.       |
@@ -41,7 +41,7 @@ and reports each variable as created, updated, or already correct.
 ## `add-tunnel-route`
 
 | Key                     | Required | Purpose                                              |
-| :---------------------- | :------- | :------------------------------------------------------ |
+| :---------------------- | :------- | :--------------------------------------------------- |
 | `CLOUDFLARE_API_TOKEN`  | Yes      | Token with tunnel configuration write scope.         |
 | `TUNNEL_ID`             | Yes      | Existing tunnel to add the rule to.                  |
 | `TUNNEL_HOSTNAME`       | Yes      | Hostname to route.                                   |
@@ -59,7 +59,7 @@ the same service it makes no write at all.
 
 ## `create-service-token`
 
-| Key                     | Required | Purpose                                        |
+| Key                     | Required | Purpose                                           |
 | :---------------------- | :------- | :------------------------------------------------ |
 | `CLOUDFLARE_API_TOKEN`  | Yes      | Token with Access scope.                          |
 | `SERVICE_TOKEN_NAME`    | Yes      | Service token to create.                          |

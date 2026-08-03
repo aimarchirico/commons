@@ -99,4 +99,3 @@ Command and variable reference: [npm/README.md](../npm/README.md).
 ├── python/     # Python package(s): shared ruff/coverage config + CLI, git dependency @ main
 └── plugin/     # Claude Code plugin (skills/, agents/), the only tree consumers install
 ```
-
