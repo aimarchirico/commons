@@ -22,7 +22,7 @@ argument-hint: "--issue <issue-id> [--draft] [--auto]"
    title and body, then fetch its Type field by running
    `python3 "${CLAUDE_PLUGIN_ROOT}/skills/solve/scripts/get_issue_type.py" <issue-id>`.
 3. Execute `gh issue edit <issue-id> --add-assignee @me` to assign the issue
-   to the current user, since it is now definitively being worked on.
+   to the current user.
 4. Determine `<branch-name>` following the naming rules in
    `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md`, then execute
    `git worktree add -b <branch-name> <worktree-path>` to create the branch in
