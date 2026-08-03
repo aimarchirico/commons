@@ -7,18 +7,18 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 
 /**
- * Applies the `no.chirico.commons.convention.spring` precompiled script plugin to a throwaway
- * fixture project, since its Spring Boot and bean all-open wiring only runs once a project actually
- * applies it.
+ * Applies the `no.chirico.commons.convention.postgresql` precompiled script plugin to a throwaway
+ * fixture project, since its JPA all-open, Flyway, and PostgreSQL wiring only runs once a project
+ * actually applies it.
  */
-class SpringConventionPluginFunctionalTest {
+class PostgresqlConventionPluginFunctionalTest {
 
   /** The throwaway Gradle project the plugin is applied to. */
   @TempDir lateinit var projectDir: Path
 
-  /** Applying the plugin resolves and applies Spring Boot and bean all-open support cleanly. */
+  /** Applying the plugin resolves and applies JPA, Flyway, and PostgreSQL support cleanly. */
   @Test
-  fun `applying the plugin wires spring boot and bean all-open support`() {
+  fun `applying the plugin wires jpa, flyway, and postgresql support`() {
     projectDir
       .resolve("settings.gradle.kts")
       .writeText(
@@ -33,6 +33,11 @@ class SpringConventionPluginFunctionalTest {
           repositories {
             mavenCentral()
           }
+          versionCatalogs {
+            create("libs") {
+              library("hypersistence-utils", "io.hypersistence:hypersistence-utils-hibernate-73:3.15.3")
+            }
+          }
         }
         rootProject.name = "fixture"
         """
@@ -44,6 +49,7 @@ class SpringConventionPluginFunctionalTest {
         """
         plugins {
           id("no.chirico.commons.convention.spring")
+          id("no.chirico.commons.convention.postgresql")
         }
         """
           .trimIndent()
