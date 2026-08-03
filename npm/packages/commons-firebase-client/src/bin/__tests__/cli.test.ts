@@ -1,11 +1,14 @@
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 
-const {exit, error} = vi.hoisted(() => ({
+const {exit, error, decodeGoogleServices} = vi.hoisted(() => ({
   exit: vi.fn((code?: number) => {
     throw new Error(`process.exit(${code})`);
   }),
   error: vi.fn(),
+  decodeGoogleServices: vi.fn(),
 }));
+
+vi.mock('../decode-google-services.js', () => ({decodeGoogleServices}));
 
 describe('cli.ts', () => {
   beforeEach(() => {
@@ -38,10 +41,10 @@ describe('cli.ts', () => {
   });
 
   it('dispatches to valid command when provided', async () => {
-    vi.mock('../decode-google-services.js', () => ({}));
     const {runCli} = await import('../cli.js');
     expect(() =>
       runCli(['node', 'cli.js', 'decode-google-services']),
     ).not.toThrow();
+    await vi.waitFor(() => expect(decodeGoogleServices).toHaveBeenCalled());
   });
 });
