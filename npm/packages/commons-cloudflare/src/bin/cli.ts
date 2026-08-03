@@ -2,12 +2,27 @@
 
 import {pathToFileURL} from 'url';
 
-const commands: Record<string, string> = {
-  'fix-assets': './fix-assets.js',
-  'create-pages-project': './create-pages-project.js',
-  'set-pages-env': './set-pages-env.js',
-  'add-tunnel-route': './add-tunnel-route.js',
-  'create-service-token': './create-service-token.js',
+const commands: Record<string, () => Promise<void>> = {
+  'fix-assets': async () => {
+    const {fixAssets} = await import('./fix-assets.js');
+    fixAssets();
+  },
+  'create-pages-project': async () => {
+    const {createPagesProject} = await import('./create-pages-project.js');
+    await createPagesProject();
+  },
+  'set-pages-env': async () => {
+    const {setPagesEnv} = await import('./set-pages-env.js');
+    await setPagesEnv();
+  },
+  'add-tunnel-route': async () => {
+    const {addTunnelRoute} = await import('./add-tunnel-route.js');
+    await addTunnelRoute();
+  },
+  'create-service-token': async () => {
+    const {createServiceToken} = await import('./create-service-token.js');
+    await createServiceToken();
+  },
 };
 
 /**
@@ -16,9 +31,9 @@ const commands: Record<string, string> = {
  */
 export function runCli(argv: string[] = process.argv): void {
   const verb = argv[2];
-  const script = verb ? commands[verb] : undefined;
+  const command = verb ? commands[verb] : undefined;
 
-  if (!script) {
+  if (!command) {
     const usage = Object.keys(commands)
       .map(name => `  commons-cloudflare ${name}`)
       .join('\n');
@@ -26,7 +41,7 @@ export function runCli(argv: string[] = process.argv): void {
     process.exit(1);
   }
 
-  void import(script);
+  void command();
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {

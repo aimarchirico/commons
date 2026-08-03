@@ -7,7 +7,6 @@ import {
   resolveEnv,
 } from '@aimarchirico/commons-project';
 import {api, resolveAccount} from '../services/api-client.js';
-import {pathToFileURL} from 'url';
 
 type Ingress = {hostname?: string; service: string; path?: string};
 type Configuration = {config?: {ingress?: Ingress[]}};
@@ -76,8 +75,4 @@ export async function addTunnelRoute(): Promise<void> {
   }
 
   printSummary('add-tunnel-route');
-}
-
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-  void addTunnelRoute();
 }

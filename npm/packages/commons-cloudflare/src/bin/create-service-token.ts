@@ -8,7 +8,6 @@ import {
   writeOutputs,
 } from '@aimarchirico/commons-project';
 import {api, resolveAccount} from '../services/api-client.js';
-import {pathToFileURL} from 'url';
 
 type ServiceToken = {
   id: string;
@@ -89,8 +88,4 @@ export async function createServiceToken(): Promise<void> {
   }
 
   printSummary('create-service-token');
-}
-
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-  void createServiceToken();
 }
