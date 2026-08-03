@@ -10,7 +10,7 @@ argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
 ## Arguments
 
 | Flag           | Required | Description                                                                                             |
-| :------------- | :------- | :-------------------------------------------------------------------------------------------------------- |
+| :------------- | :------- | :------------------------------------------------------------------------------------------------------ |
 | `--pr`         | Yes      | The number of the existing pull request to improve.                                                     |
 | `--auto`       | No       | Skip the plan-approval and reply-approval steps in this skill, running the full lifecycle autonomously. |
 | `--skip-check` | No       | Skip the `commons:check` verification step that `worktree-runner` would otherwise run.                  |
