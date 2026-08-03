@@ -1,5 +1,5 @@
 name: Task
-description: A technical piece of work.
+description: A technical piece of work
 body:
   - type: textarea
     id: description

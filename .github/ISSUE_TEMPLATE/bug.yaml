@@ -1,5 +1,5 @@
 name: Bug
-description: A problem.
+description: A problem
 body:
   - type: textarea
     id: environment

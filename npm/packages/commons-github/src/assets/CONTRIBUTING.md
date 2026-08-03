@@ -129,13 +129,13 @@ for issues.
 
 Each issue type has has a provided template.
 
-| Type                                             | Purpose                                |
-| :----------------------------------------------- | :------------------------------------- |
-| [`Epic`](.github/ISSUE_TEMPLATE/epic.yaml)       | A high-level initiative.               |
-| [`Story`](.github/ISSUE_TEMPLATE/story.yaml)     | A user-facing feature.                 |
-| [`Task`](.github/ISSUE_TEMPLATE/task.yaml)       | A technical piece of work.             |
-| [`Bug`](.github/ISSUE_TEMPLATE/bug.yaml)         | A problem.                             |
-| [`Subtask`](.github/ISSUE_TEMPLATE/subtask.yaml) | A granular piece of work.              |
+| Type                                             | Purpose                   |
+| :----------------------------------------------- | :------------------------ |
+| [`Epic`](.github/ISSUE_TEMPLATE/epic.yaml)       | A high-level initiative   |
+| [`Story`](.github/ISSUE_TEMPLATE/story.yaml)     | A user-facing feature     |
+| [`Task`](.github/ISSUE_TEMPLATE/task.yaml)       | A technical piece of work |
+| [`Bug`](.github/ISSUE_TEMPLATE/bug.yaml)         | A problem                 |
+| [`Subtask`](.github/ISSUE_TEMPLATE/subtask.yaml) | A granular piece of work  |
 
 ### Hierarchy
 
@@ -158,22 +158,23 @@ graph TD
 
 ### Project Management
 
-| View         | Purpose                                            |
-| :----------- | :------------------------------------------------- |
-| **Backlog**  | A table for prioritizing stories, tasks, and bugs. |
-| **Board**    | A board for tracking stories, tasks, and bugs.     |
+| View        | Purpose                                           |
+| :---------- | :------------------------------------------------ |
+| **Backlog** | A table for prioritizing stories, tasks, and bugs |
+| **Board**   | A board for tracking stories, tasks, and bugs     |
+| **Roadmap** | An overview of ongoing and upcoming epics         |
 
-| Status        | Description                          |
-| :------------ | :----------------------------------- |
-| `Todo`        | Issues that are ready to be started. |
-| `In Progress` | Issues currently being addressed.    |
-| `Done`        | Issues that are completed.           |
+| Status        | Description                      |
+| :------------ | :------------------------------- |
+| `Todo`        | This item hasn't been started    |
+| `In Progress` | This is actively being worked on |
+| `Done`        | This has been completed          |
 
-| Priority | Description                |
-| :------- | :------------------------- |
-| `High`   | Critical or urgent issues. |
-| `Medium` | Standard priority issues.  |
-| `Low`    | Non-urgent issues.         |
+| Priority | Description               |
+| :------- | :------------------------ |
+| `Low`    | Non-urgent issues         |
+| `Medium` | Standard priority issues  |
+| `High`   | Critical or urgent issues |
 
 ### Issue Title
 

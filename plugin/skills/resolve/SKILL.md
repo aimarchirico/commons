@@ -4,15 +4,16 @@ description:
   Orchestrate the development lifecycle starting from an existing pull
   request's review feedback. Use when the user asks to resolve or address
   feedback on an existing pull request.
-argument-hint: "--pr <pr-number> [--auto]"
+argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
 ---
 
 ## Arguments
 
-| Flag     | Required | Description                                                                                             |
-| :------- | :------- | :------------------------------------------------------------------------------------------------------ |
-| `--pr`   | Yes      | The number of the existing pull request to improve.                                                     |
-| `--auto` | No       | Skip the plan-approval and reply-approval steps in this skill, running the full lifecycle autonomously. |
+| Flag           | Required | Description                                                                                             |
+| :------------- | :------- | :------------------------------------------------------------------------------------------------------ |
+| `--pr`         | Yes      | The number of the existing pull request to improve.                                                     |
+| `--auto`       | No       | Skip the plan-approval and reply-approval steps in this skill, running the full lifecycle autonomously. |
+| `--skip-check` | No       | Skip the `commons:check` verification step that `worktree-runner` would otherwise run.                  |
 
 ## Workflow
 
@@ -36,9 +37,9 @@ argument-hint: "--pr <pr-number> [--auto]"
 4. Present the drafted plan, and wait for explicit user approval. Skip this
    step if the `--auto` flag is set, and proceed directly with the drafted
    plan.
-5. Delegate to the `worktree-runner` agent, passing the approved plan and
-   `<worktree-path>`, to implement it (it invokes `commons:commit` and
-   `commons:docs` itself as it goes).
+5. Delegate to the `worktree-runner` agent, passing the approved plan,
+   `<worktree-path>`, and whether `--skip-check` was set, to implement it
+   (it invokes `commons:commit` and `commons:docs` itself as it goes).
 6. Execute `git push` to push the commits to the pull request's existing
    remote branch.
 7. Draft a concise, resolving reply for each resolved line/file review
