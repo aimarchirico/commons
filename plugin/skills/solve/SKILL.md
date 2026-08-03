@@ -22,27 +22,29 @@ argument-hint: "--issue <issue-id> [--draft] [--auto] [--skip-check]"
 2. Execute `gh issue view <issue-id> --json title,body` to fetch the issue's
    title and body, then fetch its Type field by running
    `python3 "${CLAUDE_PLUGIN_ROOT}/skills/solve/scripts/get_issue_type.py" <issue-id>`.
-3. Determine `<branch-name>` following the naming rules in
+3. Execute `gh issue edit <issue-id> --add-assignee @me` to assign the issue
+   to the current user.
+4. Determine `<branch-name>` following the naming rules in
    `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md`, then execute
    `git worktree add -b <branch-name> <worktree-path>` to create the branch in
    an isolated worktree, where `<worktree-path>` is `../<branch-name>` (a
    sibling of the repository root).
-4. Delegate to the `planner` agent, passing the issue's title, body, type,
+5. Delegate to the `planner` agent, passing the issue's title, body, type,
    and `<worktree-path>`, to draft an implementation plan.
-5. Present the drafted plan, and wait for explicit user approval. Skip this
+6. Present the drafted plan, and wait for explicit user approval. Skip this
    step if the `--auto` flag is set, and proceed directly with the drafted
    plan.
-6. Delegate to the `worktree-runner` agent, passing the approved plan,
+7. Delegate to the `worktree-runner` agent, passing the approved plan,
    `<worktree-path>`, and whether `--skip-check` was set, to implement it
    (it invokes `commons:commit` and `commons:docs` itself as it goes).
-7. Execute `git push -u origin <branch-name>` to push the commits to the remote
+8. Execute `git push -u origin <branch-name>` to push the commits to the remote
    repository.
-8. Invoke the `commons:pr` skill to open a pull request (its own title/body
+9. Invoke the `commons:pr` skill to open a pull request (its own title/body
    approval is the final review). Pass the `--draft` and `--auto` flags
    through if they were provided by the user.
-9. Execute `git worktree remove <worktree-path>` to remove the isolated
-   worktree; `<branch-name>` and its commits remain intact in the repository
-   and on the remote.
+10. Execute `git worktree remove <worktree-path>` to remove the isolated
+    worktree; `<branch-name>` and its commits remain intact in the repository
+    and on the remote.
 
 ## Output
 
