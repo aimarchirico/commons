@@ -3,16 +3,17 @@ name: solve
 description:
   Orchestrate the development lifecycle starting from an existing issue. Use
   when the user asks to solve or implement an issue.
-argument-hint: "--issue <issue-id> [--draft] [--auto]"
+argument-hint: "--issue <issue-id> [--draft] [--auto] [--skip-check]"
 ---
 
 ## Arguments
 
-| Flag      | Required | Description                                                                                                                  |
-| :-------- | :------- | :--------------------------------------------------------------------------------------------------------------------------- |
-| `--issue` | Yes      | The ID of the existing GitHub issue.                                                                                         |
-| `--draft` | No       | Create the resulting pull request as a draft.                                                                                |
-| `--auto`  | No       | Skip the plan-approval step in this skill and the `pr` skill's own approval prompt, running the full lifecycle autonomously. |
+| Flag           | Required | Description                                                                                                                  |
+| :------------- | :------- | :---------------------------------------------------------------------------------------------------------------------------- |
+| `--issue`      | Yes      | The ID of the existing GitHub issue.                                                                                         |
+| `--draft`      | No       | Create the resulting pull request as a draft.                                                                                |
+| `--auto`       | No       | Skip the plan-approval step in this skill and the `pr` skill's own approval prompt, running the full lifecycle autonomously. |
+| `--skip-check` | No       | Skip the `commons:check` verification step that `worktree-runner` would otherwise run.                                      |
 
 ## Workflow
 
@@ -31,9 +32,9 @@ argument-hint: "--issue <issue-id> [--draft] [--auto]"
 5. Present the drafted plan, and wait for explicit user approval. Skip this
    step if the `--auto` flag is set, and proceed directly with the drafted
    plan.
-6. Delegate to the `worktree-runner` agent, passing the approved plan and
-   `<worktree-path>`, to implement it (it invokes `commons:commit` and
-   `commons:docs` itself as it goes).
+6. Delegate to the `worktree-runner` agent, passing the approved plan,
+   `<worktree-path>`, and whether `--skip-check` was set, to implement it
+   (it invokes `commons:commit` and `commons:docs` itself as it goes).
 7. Execute `git push -u origin <branch-name>` to push the commits to the remote
    repository.
 8. Invoke the `commons:pr` skill to open a pull request (its own title/body

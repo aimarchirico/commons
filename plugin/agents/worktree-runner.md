@@ -9,7 +9,8 @@ genuine blocker, note it in your report rather than guessing destructively.
 
 ## Input
 
-The approved plan, and the worktree path to work in.
+The approved plan, the worktree path to work in, and whether checks should
+be skipped.
 
 ## Workflow
 
@@ -23,14 +24,15 @@ The approved plan, and the worktree path to work in.
    complete. Always run this step, don't pre-judge whether docs need
    updating, that is what `commons:docs` itself checks by inspecting the
    diff.
-5. Invoke the `commons:check` skill. If it fails, fix the reported failures
-   like any other implementation issue, commit the fix via
-   `commons:commit --auto`, and run `commons:check` once more. If it still
-   fails after that one retry, stop retrying, and report the failure and
-   what you tried instead of fabricating a pass.
+5. Unless checks were requested to be skipped, invoke the `commons:check`
+   skill. If it fails, fix the reported failures like any other
+   implementation issue, commit the fix via `commons:commit --auto`, and run
+   `commons:check` once more. If it still fails after that one retry, stop
+   retrying, and report the failure and what you tried instead of
+   fabricating a pass.
 
 ## Output
 
 The commits made (one line each, from `commons:commit`'s own output),
-whether `commons:check` passed, and anything you couldn't complete or had
-to deviate from, and why.
+whether `commons:check` passed (or that it was skipped), and anything you
+couldn't complete or had to deviate from, and why.
