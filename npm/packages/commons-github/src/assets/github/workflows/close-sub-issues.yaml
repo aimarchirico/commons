@@ -8,9 +8,6 @@ permissions:
   issues: write
 
 jobs:
-  # ==========================================
-  # CASCADE CLOSE
-  # ==========================================
   cascade:
     name: Close Sub-Issues
     runs-on: ubuntu-latest
