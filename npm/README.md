@@ -49,18 +49,15 @@ other package builds on. `commons-ts` exports raw TypeScript consumed by ESLint
 and `tsc`; the runtime helpers the provisioning commands share live in
 `commons-project`, which compiles to `dist`.
 
-## Provisioning Commands
-
-Commands that provision the external resources a newly scaffolded project
-needs, published by `commons-project`, `commons-github`, `commons-cloudflare`,
-and `commons-expo` (see the package table above for what each provides). Every
-command takes no arguments, reads its inputs from `process.env`, fails fast
-naming every missing variable at once, and is idempotent: a second run makes
-no destructive change and reports each resource as already present. A
-downstream repository orchestrates them and supplies the values.
-
-The consuming repository declares these packages as devDependencies, so run
-them from its lockfile rather than resolving a floating version per run:
+`commons-project`, `commons-github`, `commons-cloudflare`, and `commons-expo`
+also publish commands that provision the external resources a newly
+scaffolded project needs (see the package table above for what each
+provides). Every command takes no arguments, reads its inputs from
+`process.env`, fails fast naming every missing variable at once, and is
+idempotent: a second run makes no destructive change and reports each
+resource as already present. A downstream repository orchestrates them and
+supplies the values, running them from its own lockfile rather than a
+floating version:
 
 ```bash
 pnpm exec commons-github sync-variables
@@ -73,16 +70,13 @@ lockfile pins the version of the tool that rewrites it.
 
 Commands that produce values other steps consume write them as `KEY=value`
 lines to the file named by `OUTPUT_FILE`, or print them with sensitive values
-masked when it is unset.
-
-Each command reports how it resolved the values it derives (the repository,
-the Cloudflare account, the production branch) before it reports any resource,
-so a derivation made in the wrong directory is visible before its consequences
-are. Every derived value has an override.
-
-Commands that drive a vendor CLI check its version first, since the output they
-parse is version-specific and a floor turns a confusing parse failure into a
-message naming what to fix.
+masked when it is unset. Each command reports how it resolved the values it
+derives (the repository, the Cloudflare account, the production branch)
+before it reports any resource, so a derivation made in the wrong directory
+is visible before its consequences are; every derived value has an override.
+Commands that drive a vendor CLI check its version first, since the output
+they parse is version-specific and a floor turns a confusing parse failure
+into a message naming what to fix.
 
 Full command and environment-variable reference lives in each package's own
 README: [`commons-project`](packages/commons-project/README.md),
