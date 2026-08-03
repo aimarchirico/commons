@@ -13,7 +13,8 @@ across Chirico services for CI/CD.
 Each directory represents a standalone reusable action:
 
 - `android-release/`: Builds and releases an Android application.
-- `close-issues/`: Automatically closes stale issues.
+- `assign-sub-issues/`: Cascades newly-added assignees to nested sub-issues.
+- `close-sub-issues/`: Cascade closes nested sub-issues.
 - `cloudflare-deploy/`: Deploys applications to Cloudflare.
 - `docker-release/`: Builds and pushes Docker images.
 - `java-task/`: Reusable Java CI tasks.
