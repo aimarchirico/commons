@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.0](https://github.com/aimarchirico/commons/compare/commons-github-v1.4.3...commons-github-v1.5.0) (2026-08-03)
+
+
+### Features
+
+* **commons-github:** materialize sub-issue cascade workflows ([ce5bb3f](https://github.com/aimarchirico/commons/commit/ce5bb3f4028168138a6092a9cb21342c1aefa03a))
+* **commons-github:** materialize sub-issue cascade workflows ([480add9](https://github.com/aimarchirico/commons/commit/480add9bceddf35d3301fb7488eac2b0badf16a6))
+
 ## [1.4.3](https://github.com/aimarchirico/commons/compare/commons-github-v1.4.2...commons-github-v1.4.3) (2026-08-03)
 
 
