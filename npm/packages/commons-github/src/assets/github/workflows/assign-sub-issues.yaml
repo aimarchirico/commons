@@ -1,0 +1,15 @@
+name: Assign Sub-Issues
+
+on:
+  issues:
+    types: [assigned]
+
+permissions:
+  issues: write
+
+jobs:
+  cascade:
+    name: Assign Sub-Issues
+    runs-on: ubuntu-latest
+    steps:
+      - uses: aimarchirico/commons/.github/actions/assign-sub-issues@main
