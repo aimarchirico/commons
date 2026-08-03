@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.4.0](https://github.com/aimarchirico/commons/compare/commons-github-v1.3.0...commons-github-v1.4.0) (2026-08-03)
+
+
+### Features
+
+* **settings:** add attribution configuration to settings.json ([e271e28](https://github.com/aimarchirico/commons/commit/e271e28cada7dfab52452edcb266c8bf9ec66569))
+
+
+### Bug Fixes
+
+* **commons-github:** actually invoke CLI subcommand handlers ([f97ddbf](https://github.com/aimarchirico/commons/commit/f97ddbfad41bd6da6d24f1f7466f56eec659b11b))
+
 ## [1.3.0](https://github.com/aimarchirico/commons/compare/commons-github-v1.2.1...commons-github-v1.3.0) (2026-08-02)
 
 

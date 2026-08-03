@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.4.0](https://github.com/aimarchirico/commons/compare/commons-firebase-client-v3.3.0...commons-firebase-client-v3.4.0) (2026-08-03)
+
+
+### Features
+
+* **settings:** add attribution configuration to settings.json ([e271e28](https://github.com/aimarchirico/commons/commit/e271e28cada7dfab52452edcb266c8bf9ec66569))
+
+
+### Bug Fixes
+
+* **commons-firebase-client:** actually invoke CLI subcommand handlers ([451b7b2](https://github.com/aimarchirico/commons/commit/451b7b2dc17cffcd6f4a744bc2ab0b707de97850))
+
 ## [3.3.0](https://github.com/aimarchirico/commons/compare/commons-firebase-client-v3.2.0...commons-firebase-client-v3.3.0) (2026-08-02)
 
 

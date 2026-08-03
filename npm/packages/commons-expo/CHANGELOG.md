@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.5.0](https://github.com/aimarchirico/commons/compare/commons-expo-v4.4.0...commons-expo-v4.5.0) (2026-08-03)
+
+
+### Features
+
+* **settings:** add attribution configuration to settings.json ([e271e28](https://github.com/aimarchirico/commons/commit/e271e28cada7dfab52452edcb266c8bf9ec66569))
+
+
+### Bug Fixes
+
+* **commons-expo:** actually invoke CLI subcommand handlers ([8a6247d](https://github.com/aimarchirico/commons/commit/8a6247d9e8d41194a30bb254f430d572a1a9fb93))
+
 ## [4.4.0](https://github.com/aimarchirico/commons/compare/commons-expo-v4.3.0...commons-expo-v4.4.0) (2026-08-02)
 
 
