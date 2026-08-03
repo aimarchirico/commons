@@ -2,12 +2,27 @@
 
 import {pathToFileURL} from 'url';
 
-const commands: Record<string, string> = {
-  'create-project': './create-project.js',
-  'create-environments': './create-environments.js',
-  'sync-variables': './sync-variables.js',
-  'set-secrets': './set-secrets.js',
-  'materialize-templates': './materialize-templates.js',
+const commands: Record<string, () => Promise<void>> = {
+  'create-project': async () => {
+    const {createProject} = await import('./create-project.js');
+    createProject();
+  },
+  'create-environments': async () => {
+    const {createEnvironments} = await import('./create-environments.js');
+    createEnvironments();
+  },
+  'sync-variables': async () => {
+    const {syncVariables} = await import('./sync-variables.js');
+    syncVariables();
+  },
+  'set-secrets': async () => {
+    const {setSecrets} = await import('./set-secrets.js');
+    setSecrets();
+  },
+  'materialize-templates': async () => {
+    const {materializeTemplates} = await import('./materialize-templates.js');
+    materializeTemplates();
+  },
 };
 
 /**
@@ -16,9 +31,9 @@ const commands: Record<string, string> = {
  */
 export function runCli(argv: string[] = process.argv): void {
   const verb = argv[2];
-  const script = verb ? commands[verb] : undefined;
+  const command = verb ? commands[verb] : undefined;
 
-  if (!script) {
+  if (!command) {
     const usage = Object.keys(commands)
       .map(name => `  commons-github ${name}`)
       .join('\n');
@@ -26,7 +41,7 @@ export function runCli(argv: string[] = process.argv): void {
     process.exit(1);
   }
 
-  void import(script);
+  void command();
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {

@@ -8,7 +8,6 @@ import {
 } from '@aimarchirico/commons-project';
 import {apiGet, apiWrite, repoContext} from '../services/gh.js';
 import {parseEnvironmentScopes, parseNames} from '../services/scopes.js';
-import {pathToFileURL} from 'url';
 
 function sync(collection: string, label: string, name: string): void {
   const value = process.env[name];
@@ -62,8 +61,4 @@ export function syncVariables(): void {
   }
 
   printSummary('sync-variables');
-}
-
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-  syncVariables();
 }

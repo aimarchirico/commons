@@ -8,7 +8,6 @@ import {
 } from '@aimarchirico/commons-project';
 import {ghOrThrow, repoContext} from '../services/gh.js';
 import {parseEnvironmentScopes, parseNames} from '../services/scopes.js';
-import {pathToFileURL} from 'url';
 
 function set(
   name: string,
@@ -51,8 +50,4 @@ export function setSecrets(): void {
   }
 
   printSummary('set-secrets');
-}
-
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-  setSecrets();
 }
