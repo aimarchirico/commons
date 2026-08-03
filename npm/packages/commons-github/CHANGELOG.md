@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.2](https://github.com/aimarchirico/commons/compare/commons-github-v1.4.1...commons-github-v1.4.2) (2026-08-03)
+
+
+### Bug Fixes
+
+* **commons-github:** align issue/priority descriptions with GitHub's own convention ([4d16e6c](https://github.com/aimarchirico/commons/commit/4d16e6c924b655edf9a5cefd6bbc2621201dc9ef))
+* **commons-github:** align issue/priority descriptions with GitHub's own convention ([1f4a4e7](https://github.com/aimarchirico/commons/commit/1f4a4e76f75c5c4bb925c02fceae9b249128cb7c))
+
 ## [1.4.1](https://github.com/aimarchirico/commons/compare/commons-github-v1.4.0...commons-github-v1.4.1) (2026-08-03)
 
 
