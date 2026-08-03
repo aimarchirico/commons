@@ -15,7 +15,7 @@
     ".": "./src/index.ts"
   },
   "bin": {
-    "commons-firebase-client": "dist/bin/cli.js"
+    "commons-firebase-client": "dist/bin/index.js"
   },
   "files": [
     "src",

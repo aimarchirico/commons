@@ -1,7 +1,3 @@
-#!/usr/bin/env node
-
-import {pathToFileURL} from 'url';
-
 const commands: Record<string, () => Promise<void>> = {
   'decode-google-services': async () => {
     const {decodeGoogleServices} = await import('./decode-google-services.js');
@@ -26,8 +22,4 @@ export function runCli(argv: string[] = process.argv): void {
   }
 
   void command();
-}
-
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-  runCli();
 }
