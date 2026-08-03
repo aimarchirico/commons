@@ -1,0 +1,19 @@
+name: Assign Sub-Issues
+
+on:
+  issues:
+    types: [assigned]
+
+permissions:
+  issues: write
+
+jobs:
+  # ==========================================
+  # CASCADE ASSIGN
+  # ==========================================
+  cascade:
+    name: Assign Sub-Issues
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/assign-sub-issues
