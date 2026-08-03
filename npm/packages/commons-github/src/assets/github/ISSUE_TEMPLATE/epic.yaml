@@ -1,5 +1,5 @@
 name: Epic
-description: A high-level initiative.
+description: A high-level initiative
 body:
   - type: textarea
     id: goal

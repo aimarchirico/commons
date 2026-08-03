@@ -1,5 +1,5 @@
 name: Subtask
-description: A granular piece of work.
+description: A granular piece of work
 body:
   - type: textarea
     id: description
