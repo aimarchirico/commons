@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.5.1](https://github.com/aimarchirico/commons/compare/commons-expo-v4.5.0...commons-expo-v4.5.1) (2026-08-03)
+
+
+### Bug Fixes
+
+* **commons-expo:** drop unreliable self-run guard on bin entry point ([4a470f2](https://github.com/aimarchirico/commons/commit/4a470f284e14f55d6df759313632a320ff9c8040))
+* drop unreliable self-run guard on CLI bin entry points ([e438c69](https://github.com/aimarchirico/commons/commit/e438c69944693553766a7dd632db7b4b3b41e01b))
+
 ## [4.5.0](https://github.com/aimarchirico/commons/compare/commons-expo-v4.4.0...commons-expo-v4.5.0) (2026-08-03)
 
 

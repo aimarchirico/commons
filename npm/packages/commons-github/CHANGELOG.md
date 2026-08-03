@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.1](https://github.com/aimarchirico/commons/compare/commons-github-v1.4.0...commons-github-v1.4.1) (2026-08-03)
+
+
+### Bug Fixes
+
+* **commons-github:** drop unreliable self-run guard on bin entry point ([21ad7ed](https://github.com/aimarchirico/commons/commit/21ad7edcf682aebce443f0724d1bca5605aefb00))
+* drop unreliable self-run guard on CLI bin entry points ([e438c69](https://github.com/aimarchirico/commons/commit/e438c69944693553766a7dd632db7b4b3b41e01b))
+
 ## [1.4.0](https://github.com/aimarchirico/commons/compare/commons-github-v1.3.0...commons-github-v1.4.0) (2026-08-03)
 
 
