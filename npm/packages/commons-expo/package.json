@@ -17,7 +17,7 @@
     "./tsconfig-base": "./src/assets/tsconfig-base.json"
   },
   "bin": {
-    "commons-expo": "dist/bin/cli.js"
+    "commons-expo": "dist/bin/index.js"
   },
   "scripts": {
     "check": "eslint && tsc && vitest run",
