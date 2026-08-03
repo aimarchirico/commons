@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.6.2](https://github.com/aimarchirico/commons/compare/commons-cloudflare-v3.6.1...commons-cloudflare-v3.6.2) (2026-08-03)
+
+
+### Bug Fixes
+
+* **docs:** align markdown tables and trim trailing blank line ([7e4b237](https://github.com/aimarchirico/commons/commit/7e4b2374212b97ba62630be49b17f5fff89435ae))
+
 ## [3.6.1](https://github.com/aimarchirico/commons/compare/commons-cloudflare-v3.6.0...commons-cloudflare-v3.6.1) (2026-08-03)
 
 
