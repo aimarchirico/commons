@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.4.1](https://github.com/aimarchirico/commons/compare/commons-firebase-client-v3.4.0...commons-firebase-client-v3.4.1) (2026-08-03)
+
+
+### Bug Fixes
+
+* **commons-firebase-client:** drop unreliable self-run guard on bin entry point ([d8d9a14](https://github.com/aimarchirico/commons/commit/d8d9a1494f4f0b286e2a48ecdb2e10d8c9a53b75))
+* drop unreliable self-run guard on CLI bin entry points ([e438c69](https://github.com/aimarchirico/commons/commit/e438c69944693553766a7dd632db7b4b3b41e01b))
+
 ## [3.4.0](https://github.com/aimarchirico/commons/compare/commons-firebase-client-v3.3.0...commons-firebase-client-v3.4.0) (2026-08-03)
 
 

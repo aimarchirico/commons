@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.6.1](https://github.com/aimarchirico/commons/compare/commons-cloudflare-v3.6.0...commons-cloudflare-v3.6.1) (2026-08-03)
+
+
+### Bug Fixes
+
+* **commons-cloudflare:** drop unreliable self-run guard on bin entry point ([e858446](https://github.com/aimarchirico/commons/commit/e858446ede30d13b7c4ae1af88daf5a6926e8d9a))
+* drop unreliable self-run guard on CLI bin entry points ([e438c69](https://github.com/aimarchirico/commons/commit/e438c69944693553766a7dd632db7b4b3b41e01b))
+
 ## [3.6.0](https://github.com/aimarchirico/commons/compare/commons-cloudflare-v3.5.0...commons-cloudflare-v3.6.0) (2026-08-03)
 
 
