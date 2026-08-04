@@ -5,7 +5,7 @@ This is the file set drafted under `docs/specs/`. Section content follows
 `docs/` file, drafted rather than final. None of these files are ever
 promoted verbatim into the project's real `docs/` folder or root
 `README.md`; they are superseded by the real documentation once an
-implementation exists, per the `docs` skill.
+implementation exists, per the `commons:docs` skill.
 
 ```text
 docs/specs/
@@ -33,10 +33,10 @@ the project root `README.md`, scoped to this folder.
 
 Spec-only; never promoted. One numbered file per top-level initiative,
 named `NNNN-<slug>.md` (zero-padded, same numbering convention as
-`decisions/`), detailed enough for the `issue` skill to derive the initial
-Epic → Story → Task → Subtask backlog. Each file uses its own vocabulary
-(Objective, Scope, Success Criteria), deliberately not mirroring the field
-names in `.github/ISSUE_TEMPLATE/epic.yaml` or `story.yaml`.
+`decisions/`), detailed enough for the `commons:issue` skill to derive the
+initial Epic → Story → Task → Subtask backlog. Each file uses its own
+vocabulary (Objective, Scope, Success Criteria), deliberately not mirroring
+the field names in `.github/ISSUE_TEMPLATE/epic.yaml` or `story.yaml`.
 
 `requirements/README.md` is an index table of title, one-line objective,
 and link.

@@ -37,4 +37,5 @@ argument-hint: "[--auto]"
 ## Out of Scope
 
 The root `README.md` and module READMEs are out of scope for this skill;
-those belong to the `docs` skill once an implementation exists to document.
+those belong to the `commons:docs` skill once an implementation exists to
+document.
