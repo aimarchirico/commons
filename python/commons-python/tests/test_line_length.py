@@ -2,6 +2,7 @@
 
 from pathlib import Path
 
+import pytest
 from commons_python.line_length import MAX_LINES, check_line_length
 
 
@@ -17,7 +18,9 @@ def test_file_under_limit_passes(tmp_path: Path) -> None:
     assert check_line_length([str(tmp_path)]) == 0
 
 
-def test_file_over_limit_fails(tmp_path: Path, capsys) -> None:
+def test_file_over_limit_fails(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str],
+) -> None:
     """A file with more than MAX_LINES lines is reported as a violation."""
     file = tmp_path / "long.py"
     _write_lines(file, MAX_LINES + 1)

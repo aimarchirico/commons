@@ -4,9 +4,11 @@ import importlib.resources
 import subprocess
 import sys
 
+from commons_python import comments, line_length
+
 
 def _run_wrapped(
-    binary: str, config_flag: str, asset_name: str, args: list[str]
+    binary: str, config_flag: str, asset_name: str, args: list[str],
 ) -> int:
     asset = importlib.resources.files("commons_python.assets") / asset_name
     with importlib.resources.as_file(asset) as config_path:
@@ -30,11 +32,8 @@ def main() -> None:
         subcommand = rest[0] if rest else ""
         paths = rest[1:] or ["."]
         if subcommand == "check":
-            from commons_python.comments import check_comments
-            from commons_python.line_length import check_line_length
-
-            line_length_rc = check_line_length(paths)
-            comments_rc = check_comments(paths)
+            line_length_rc = line_length.check_line_length(paths)
+            comments_rc = comments.check_comments(paths)
             sys.exit(1 if (line_length_rc or comments_rc) else 0)
     if tool == "ruff":
         sys.exit(_run_wrapped("ruff", "--config", "ruff.toml", rest))
@@ -50,9 +49,8 @@ def main() -> None:
     if tool == "coverage":
         sys.exit(_run_wrapped("coverage", "--rcfile", "coverage.toml", rest))
 
-    print(
-        "usage: commons-python <ruff|ty|pytest|coverage|commons> ...",
-        file=sys.stderr,
+    sys.stderr.write(
+        "usage: commons-python <ruff|ty|pytest|coverage|commons> ...\n",
     )
     sys.exit(2)
 

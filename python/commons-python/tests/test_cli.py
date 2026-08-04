@@ -4,8 +4,10 @@ import subprocess
 import sys
 
 import pytest
-
 from commons_python import cli
+
+EXPECTED_EXIT_CODE_EXTRA = 3
+EXPECTED_EXIT_CODE_USAGE = 2
 
 
 class _FakeCompletedProcess:
@@ -31,9 +33,10 @@ def test_dispatches_wrapped_tool(
     """Each wrapped tool builds the expected command and forwards args/rc."""
     captured: dict[str, list[str]] = {}
 
-    def fake_run(command: list[str], check: bool) -> _FakeCompletedProcess:
+    def fake_run(command: list[str], *, check: bool = False) -> _FakeCompletedProcess:
+        _ = check
         captured["command"] = command
-        return _FakeCompletedProcess(returncode=3)
+        return _FakeCompletedProcess(returncode=EXPECTED_EXIT_CODE_EXTRA)
 
     monkeypatch.setattr(subprocess, "run", fake_run)
     monkeypatch.setattr(sys, "argv", ["commons-python", tool, "check", "extra"])
@@ -41,7 +44,7 @@ def test_dispatches_wrapped_tool(
     with pytest.raises(SystemExit) as exc_info:
         cli.main()
 
-    assert exc_info.value.code == 3
+    assert exc_info.value.code == EXPECTED_EXIT_CODE_EXTRA
     command = captured["command"]
     assert command[0] == binary
     assert command[1] == "check"
@@ -54,7 +57,8 @@ def test_dispatches_pytest(monkeypatch: pytest.MonkeyPatch) -> None:
     """``pytest`` tool forwards args and injects coverage.toml config."""
     captured: dict[str, list[str]] = {}
 
-    def fake_run(command: list[str], check: bool) -> _FakeCompletedProcess:
+    def fake_run(command: list[str], *, check: bool = False) -> _FakeCompletedProcess:
+        _ = check
         captured["command"] = command
         return _FakeCompletedProcess(returncode=0)
 
@@ -88,7 +92,7 @@ def test_commons_check_dispatches_to_native_checks(
         return 1
 
     monkeypatch.setattr(
-        "commons_python.line_length.check_line_length", fake_line_length
+        "commons_python.line_length.check_line_length", fake_line_length,
     )
     monkeypatch.setattr("commons_python.comments.check_comments", fake_comments)
     monkeypatch.setattr(sys, "argv", ["commons-python", "commons", "check", "src"])
@@ -106,9 +110,9 @@ def test_commons_check_passes_when_both_succeed(
 ) -> None:
     """``commons check`` exits 0 when both native checks succeed."""
     monkeypatch.setattr(
-        "commons_python.line_length.check_line_length", lambda paths: 0
+        "commons_python.line_length.check_line_length", lambda _paths: 0,
     )
-    monkeypatch.setattr("commons_python.comments.check_comments", lambda paths: 0)
+    monkeypatch.setattr("commons_python.comments.check_comments", lambda _paths: 0)
     monkeypatch.setattr(sys, "argv", ["commons-python", "commons", "check"])
 
     with pytest.raises(SystemExit) as exc_info:
@@ -118,7 +122,7 @@ def test_commons_check_passes_when_both_succeed(
 
 
 def test_unknown_tool_prints_usage_and_exits_2(
-    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str],
 ) -> None:
     """An unrecognized first argument prints usage to stderr and exits 2."""
     monkeypatch.setattr(sys, "argv", ["commons-python", "bogus"])
@@ -126,5 +130,5 @@ def test_unknown_tool_prints_usage_and_exits_2(
     with pytest.raises(SystemExit) as exc_info:
         cli.main()
 
-    assert exc_info.value.code == 2
+    assert exc_info.value.code == EXPECTED_EXIT_CODE_USAGE
     assert "usage" in capsys.readouterr().err
