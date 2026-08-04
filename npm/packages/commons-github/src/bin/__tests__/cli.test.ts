@@ -7,7 +7,7 @@ const {
   createEnvironments,
   syncVariables,
   setSecrets,
-  materializeTemplates,
+  materializeAssets,
 } = vi.hoisted(() => ({
   exit: vi.fn((code?: number) => {
     throw new Error(`process.exit(${code})`);
@@ -17,14 +17,14 @@ const {
   createEnvironments: vi.fn(),
   syncVariables: vi.fn(),
   setSecrets: vi.fn(),
-  materializeTemplates: vi.fn(),
+  materializeAssets: vi.fn(),
 }));
 
 vi.mock('../create-project.js', () => ({createProject}));
 vi.mock('../create-environments.js', () => ({createEnvironments}));
 vi.mock('../sync-variables.js', () => ({syncVariables}));
 vi.mock('../set-secrets.js', () => ({setSecrets}));
-vi.mock('../materialize-templates.js', () => ({materializeTemplates}));
+vi.mock('../materialize-assets.js', () => ({materializeAssets}));
 
 describe('cli.ts', () => {
   beforeEach(() => {
@@ -61,7 +61,7 @@ describe('cli.ts', () => {
     ['create-environments', createEnvironments],
     ['sync-variables', syncVariables],
     ['set-secrets', setSecrets],
-    ['materialize-templates', materializeTemplates],
+    ['materialize-assets', materializeAssets],
   ])('dispatches %s to its handler', async (verb, handler) => {
     const {runCli} = await import('../cli.js');
     expect(() => runCli(['node', 'cli.js', verb])).not.toThrow();

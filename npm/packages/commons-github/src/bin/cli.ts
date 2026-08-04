@@ -15,9 +15,9 @@ const commands: Record<string, () => Promise<void>> = {
     const {setSecrets} = await import('./set-secrets.js');
     setSecrets();
   },
-  'materialize-templates': async () => {
-    const {materializeTemplates} = await import('./materialize-templates.js');
-    materializeTemplates();
+  'materialize-assets': async () => {
+    const {materializeAssets} = await import('./materialize-assets.js');
+    materializeAssets();
   },
 };
 
