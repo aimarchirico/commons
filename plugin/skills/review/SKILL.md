@@ -2,7 +2,7 @@
 name: review
 description:
   Reviews a given pull request by delegating to four parallel read-only
-  reviewer agents (logic, performance, security, compliance), merging their
+  reviewer agents (logic, compliance, performance, security), merging their
   findings, and optionally posting them as PR review comments.
   Findings-only, no fixes are applied. Use when the user asks to review a
   pull request.
@@ -49,7 +49,7 @@ argument-hint: "--pr <pr-number> [--auto]"
      ```
      ## Review summary
 
-     <n> findings across logic, performance, security, compliance — <k>
+     <n> findings across logic, compliance, performance, and security — <k>
      posted as inline comments on the diff. The remainder, listed below,
      have no resolvable file/line:
 
