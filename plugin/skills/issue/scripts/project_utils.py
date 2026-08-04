@@ -25,7 +25,12 @@ def get_project_context(
         repo_data = json.loads(repo_output)
         owner = str(repo_data["owner"]["login"])
         repo_name = str(repo_data["name"])
-    except (subprocess.CalledProcessError, json.JSONDecodeError, KeyError) as e:
+    except (
+        subprocess.CalledProcessError,
+        json.JSONDecodeError,
+        KeyError,
+        TypeError,
+    ) as e:
         return None, None, None, f"Could not retrieve GitHub repository context: {e}"
 
     sys.stdout.write(
