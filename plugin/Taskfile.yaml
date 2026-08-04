@@ -3,6 +3,8 @@ version: '3'
 tasks:
   check:
     desc: Check Python files
+    env:
+      VIRTUAL_ENV: '{{.TASKFILE_DIR}}/.venv'
     cmds:
       - uv run commons-python ruff check
       - uv run commons-python ty check
@@ -10,6 +12,8 @@ tasks:
 
   fix:
     desc: Fix Python files
+    env:
+      VIRTUAL_ENV: '{{.TASKFILE_DIR}}/.venv'
     cmds:
       - uv run commons-python ruff check --fix
       - uv run commons-python ruff format
