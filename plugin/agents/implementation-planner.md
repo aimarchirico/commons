@@ -1,5 +1,5 @@
 ---
-name: planner
+name: implementation-planner
 description: Investigates a requirement (a GitHub issue, or PR review feedback) against the current codebase and drafts a concrete implementation plan. Used by solve/resolve before any code is written. Read-only, makes no changes.
 ---
 

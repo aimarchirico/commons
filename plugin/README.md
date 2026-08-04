@@ -40,17 +40,17 @@ plugin/
 │   └── solve/SKILL.md           # orchestrate the lifecycle from an existing issue
 └── agents/
     ├── compliance-reviewer.md    # reviews a diff against CONTRIBUTING.md (read-only)
+    ├── implementation-planner.md # drafts an implementation plan (read-only)
     ├── logic-reviewer.md         # reviews a diff for logic errors (read-only)
     ├── performance-reviewer.md   # reviews a diff for performance regressions (read-only)
-    ├── planner.md                # drafts an implementation plan (read-only)
     ├── security-reviewer.md      # reviews a diff for security vulnerabilities (read-only)
     └── worktree-runner.md        # implements an approved plan unattended
 ```
 
 Each skill is a self-contained directory holding a single `SKILL.md`. Skills
 rely on the conventions bundled in [`.github/`](.github) rather than on each
-other, except for `solve`/`resolve` delegating to the `planner` and
-`worktree-runner` agents in [`agents/`](agents) (which in turn invokes
+other, except for `solve`/`resolve` delegating to the `implementation-planner`
+and `worktree-runner` agents in [`agents/`](agents) (which in turn invokes
 `check` before handing back), `review` delegating to the `logic-reviewer`,
 `performance-reviewer`, `security-reviewer`, and `compliance-reviewer`
 agents, and `ship` delegating to the `issue`, `solve`, `review`, and

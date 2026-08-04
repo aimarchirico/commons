@@ -32,9 +32,9 @@ argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
    ```
 
    to fetch the pull request's conversation comments and unresolved review
-   threads as normalized JSON. Delegate to the `planner` agent, passing this
-   feedback and `<worktree-path>`, to draft a fix plan mapping each piece of
-   feedback to the fix addressing it.
+   threads as normalized JSON. Delegate to the `implementation-planner`
+   agent, passing this feedback and `<worktree-path>`, to draft a fix plan
+   mapping each piece of feedback to the fix addressing it.
 4. Present the drafted plan, and wait for explicit user approval. Skip this
    step if the `--auto` flag is set, and proceed directly with the drafted
    plan.
@@ -49,7 +49,7 @@ argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
 7. Draft a concise, resolving reply for each resolved line/file review
    comment, and a single summarizing reply for the pull request's
    conversation thread incorporating any conversation-level (non-line)
-   comments, using the planner's feedback-to-fix mapping.
+   comments, using the implementation-planner's feedback-to-fix mapping.
 8. Present the drafted replies, and wait for explicit user approval. Skip
    this step if the `--auto` flag is set, and proceed directly with posting
    them.

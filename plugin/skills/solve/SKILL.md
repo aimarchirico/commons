@@ -30,8 +30,8 @@ argument-hint: "--issue <issue-id> [--draft] [--auto] [--skip-check]"
    origin/main` to create the branch off the up-to-date remote `main`, in
    an isolated worktree, where `<worktree-path>` is `../<branch-name>` (a
    sibling of the repository root).
-5. Delegate to the `planner` agent, passing the issue's title, body, type,
-   and `<worktree-path>`, to draft an implementation plan.
+5. Delegate to the `implementation-planner` agent, passing the issue's title,
+   body, type, and `<worktree-path>`, to draft an implementation plan.
 6. Present the drafted plan, and wait for explicit user approval. Skip this
    step if the `--auto` flag is set, and proceed directly with the drafted
    plan.
