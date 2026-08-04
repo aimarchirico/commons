@@ -40,6 +40,9 @@ def fetch_pr_feedback(
           comments(first: 100) {
             nodes { databaseId body author { login } }
           }
+          reviews(first: 100) {
+            nodes { databaseId body author { login } }
+          }
           reviewThreads(first: 100) {
             nodes {
               id
@@ -73,6 +76,15 @@ def fetch_pr_feedback(
         }
         for node in pr.get("comments", {}).get("nodes", [])
     ]
+    conversation_comments.extend(
+        {
+            "id": node["databaseId"],
+            "body": node["body"],
+            "author": (node.get("author") or {}).get("login"),
+        }
+        for node in pr.get("reviews", {}).get("nodes", [])
+        if node.get("body")
+    )
 
     review_threads = []
     for thread in pr.get("reviewThreads", {}).get("nodes", []):
