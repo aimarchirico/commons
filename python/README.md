@@ -51,8 +51,10 @@ repository root:
 
 ## Code Quality
 
-- **Linting**: ruff with bundled `assets/ruff.toml`
-  (`commons-python ruff <args>`), selecting rule groups `E`, `F`, and `D`.
+- **Linting**: ruff with bundled `assets/ruff.toml` (`commons-python ruff
+  <args>`), selecting `ALL` rules with `CPY001` ignored repository-wide, plus
+  scoped per-file ignores: `S101` for tests, and `S603`/`EXE001` for CLI entry
+  points and skill scripts.
 - **Types**: ty with bundled `assets/ty.toml` (`commons-python ty <args>`).
 - **Documentation**: every public module, function, class, and method needs a
   Google-style docstring, enforced via ruff's `D` (`pydocstyle`) rule group
@@ -66,7 +68,8 @@ repository root:
   so explanation stays attached to what it describes.
 - **Line length**: native Python check enforcing a 300-line-per-file maximum
   (`commons-python commons check`), skipping `.venv/`, `__pycache__/`, `.git/`,
-  `build/`, `dist/`, and `*.egg-info/`.
+  `build/`, `dist/`, `node_modules/`, `.pnpm/`, `.task/`, `.ruff_cache/`, and
+  `*.egg-info/`.
 - **Testing & Coverage** — pytest and pytest-cov with bundled `assets/coverage.toml`,
   enforcing an 80% minimum (`fail_under = 80`) with branch coverage on
   (`commons-python pytest <args>`).
