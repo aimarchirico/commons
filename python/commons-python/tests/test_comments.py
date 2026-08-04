@@ -2,6 +2,7 @@
 
 from pathlib import Path
 
+import pytest
 from commons_python.comments import check_comments
 
 
@@ -9,17 +10,19 @@ def test_public_docstring_passes(tmp_path: Path) -> None:
     """A docstring on a public function is allowed."""
     file = tmp_path / "mod.py"
     file.write_text(
-        '"""Module docstring."""\n\n\ndef foo():\n    """Foo docstring."""\n'
+        '"""Module docstring."""\n\n\ndef foo():\n    """Foo docstring."""\n',
     )
 
     assert check_comments([str(tmp_path)]) == 0
 
 
-def test_non_public_docstring_fails(tmp_path: Path, capsys) -> None:
+def test_non_public_docstring_fails(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str],
+) -> None:
     """A docstring on a non-public function is rejected."""
     file = tmp_path / "mod.py"
     file.write_text(
-        '"""Module docstring."""\n\n\ndef _foo():\n    """Not allowed."""\n'
+        '"""Module docstring."""\n\n\ndef _foo():\n    """Not allowed."""\n',
     )
 
     assert check_comments([str(tmp_path)]) == 1
@@ -27,12 +30,14 @@ def test_non_public_docstring_fails(tmp_path: Path, capsys) -> None:
     assert "non-public" in out
 
 
-def test_orphaned_string_literal_fails(tmp_path: Path, capsys) -> None:
+def test_orphaned_string_literal_fails(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str],
+) -> None:
     """A bare string expression with no owning declaration is rejected."""
     file = tmp_path / "mod.py"
     file.write_text(
         '"""Module docstring."""\n\n\n'
-        'def foo():\n    """Foo docstring."""\n    "orphaned"\n'
+        'def foo():\n    """Foo docstring."""\n    "orphaned"\n',
     )
 
     assert check_comments([str(tmp_path)]) == 1
@@ -40,7 +45,9 @@ def test_orphaned_string_literal_fails(tmp_path: Path, capsys) -> None:
     assert "Orphaned string literal" in out
 
 
-def test_hash_comment_fails(tmp_path: Path, capsys) -> None:
+def test_hash_comment_fails(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str],
+) -> None:
     """A plain ``#`` comment is rejected."""
     file = tmp_path / "mod.py"
     file.write_text('"""Module docstring."""\n\n# not allowed\nx = 1\n')
@@ -66,7 +73,9 @@ def test_syntax_error_file_is_skipped(tmp_path: Path) -> None:
     assert check_comments([str(tmp_path)]) == 0
 
 
-def test_unreadable_file_is_skipped(tmp_path: Path, monkeypatch) -> None:
+def test_unreadable_file_is_skipped(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """A file that cannot be read (OSError) is skipped rather than raising."""
     file = tmp_path / "mod.py"
     file.write_text('"""Module docstring."""\n')
@@ -75,7 +84,8 @@ def test_unreadable_file_is_skipped(tmp_path: Path, monkeypatch) -> None:
 
     def _boom(self: Path) -> bytes:
         if self == file:
-            raise OSError("boom")
+            msg = "boom"
+            raise OSError(msg)
         return original_read_bytes(self)
 
     monkeypatch.setattr(Path, "read_bytes", _boom)

@@ -4,11 +4,23 @@ Ruff has no rule expressing a maximum file length, so this script covers
 that convention on top of the bundled ruff config.
 """
 
+import sys
+from collections.abc import Iterator
 from pathlib import Path
 
 MAX_LINES = 300
 
-EXCLUDED_DIRS = {".venv", "__pycache__", ".git", "build", "dist"}
+EXCLUDED_DIRS = {
+    ".venv",
+    "__pycache__",
+    ".git",
+    "build",
+    "dist",
+    "node_modules",
+    ".pnpm",
+    ".task",
+    ".ruff_cache",
+}
 
 
 def _is_excluded(path: Path) -> bool:
@@ -17,7 +29,7 @@ def _is_excluded(path: Path) -> bool:
     )
 
 
-def _iter_python_files(root: Path):
+def _iter_python_files(root: Path) -> Iterator[Path]:
     if root.is_file():
         if root.suffix == ".py" and not _is_excluded(root):
             yield root
@@ -42,7 +54,7 @@ def check_line_length(paths: list[str]) -> int:
 
     if violations:
         for violation in violations:
-            print(violation)
+            sys.stdout.write(f"{violation}\n")
         return 1
 
     return 0
