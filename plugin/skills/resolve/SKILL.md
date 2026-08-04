@@ -20,10 +20,11 @@ argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
 1. Extract `<pr-number>` from the `--pr` flag in `$ARGUMENTS`. Prompt the user
    if it was not provided.
 2. Execute `gh pr view <pr-number> --json headRefName` to resolve
-   `<branch-name>`, then `git worktree add <worktree-path> <branch-name>` to
-   check the pull request's existing branch out into an isolated worktree,
-   where `<worktree-path>` is `../<branch-name>` (a sibling of the repository
-   root).
+   `<branch-name>`, then `git fetch origin` and
+   `git worktree add <worktree-path> <branch-name>` to check the pull
+   request's existing branch out into an isolated worktree at its
+   up-to-date remote state, where `<worktree-path>` is `../<branch-name>` (a
+   sibling of the repository root).
 3. Execute:
 
    ```bash
@@ -40,8 +41,11 @@ argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
 5. Delegate to the `worktree-runner` agent, passing the approved plan,
    `<worktree-path>`, and whether `--skip-check` was set, to implement it
    (it invokes `commons:commit` and `commons:docs` itself as it goes).
-6. Execute `git push` to push the commits to the pull request's existing
-   remote branch.
+6. Execute `git pull --rebase` to incorporate any commits pushed to the
+   branch since the worktree was checked out, then `git push` to push the
+   commits to the pull request's existing remote branch. If the rebase hits
+   conflicts, stop and report them to the user rather than resolving them
+   unilaterally.
 7. Draft a concise, resolving reply for each resolved line/file review
    comment, and a single summarizing reply for the pull request's
    conversation thread incorporating any conversation-level (non-line)

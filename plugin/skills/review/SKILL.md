@@ -2,7 +2,7 @@
 name: review
 description:
   Reviews a given pull request by delegating to four parallel read-only
-  reviewer agents (logic, performance, security, compliance), merging their
+  reviewer agents (logic, compliance, performance, security), merging their
   findings, and optionally posting them as PR review comments.
   Findings-only, no fixes are applied. Use when the user asks to review a
   pull request.
@@ -30,9 +30,32 @@ argument-hint: "--pr <pr-number> [--auto]"
 5. Present the merged findings to the user.
 6. Offer to post the findings as PR review comments. Wait for explicit user
    approval before posting, unless the `--auto` flag is set. On approval:
+   - Render each finding into a comment body using this template:
+
+     ```markdown
+     **<summary>**
+
+     <failure_scenario>
+
+     _category: <category>_
+     ```
+
    - Build a `comments` array (`path`, `line`, `body`) from findings with a
-     resolvable file and line. Any findings without one go into the overall
-     summary `body` instead.
+     resolvable file and line, using the rendered template as `body`. Any
+     findings without one are rendered with the same template and appended
+     to the overall summary `body` instead, below a one-line header stating
+     the total finding count and how many were posted inline, e.g.:
+
+     ```markdown
+     ## Review summary
+
+     <n> findings across logic, compliance, performance, and security — <k>
+     posted as inline comments on the diff. The remainder, listed below,
+     have no resolvable file/line:
+
+     <rendered unresolvable findings, if any>
+     ```
+
    - Generate a temporary `review.json` file matching this schema:
 
      ```json
