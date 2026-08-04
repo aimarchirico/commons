@@ -32,7 +32,7 @@ argument-hint: "--pr <pr-number> [--auto]"
    approval before posting, unless the `--auto` flag is set. On approval:
    - Render each finding into a comment body using this template:
 
-     ```
+     ```markdown
      **<summary>**
 
      <failure_scenario>
@@ -46,7 +46,7 @@ argument-hint: "--pr <pr-number> [--auto]"
      to the overall summary `body` instead, below a one-line header stating
      the total finding count and how many were posted inline, e.g.:
 
-     ```
+     ```markdown
      ## Review summary
 
      <n> findings across logic, compliance, performance, and security — <k>
