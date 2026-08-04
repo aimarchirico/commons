@@ -49,7 +49,7 @@ def _check_dependencies() -> None:
                 [gh_bin, "extension", "install", "yahsan2/gh-sub-issue"],
                 check=True,
             )
-    except (subprocess.CalledProcessError, KeyError) as e:
+    except (subprocess.CalledProcessError, OSError) as e:
         sys.stderr.write(
             f"Warning: Error verifying or installing gh-sub-issue: {e}\n",
         )
