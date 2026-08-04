@@ -15,17 +15,16 @@ argument-hint: "[--auto]"
 
 ## Workflow
 
-1. Identify the problem, goals, non-goals, target users, and scope of the new
-   project. If these details are not already clear from the user's prompt or
-   context, ask the user for clarification.
+1. Identify what's needed to draft the file set defined in
+   `${CLAUDE_PLUGIN_ROOT}/skills/spec/REFERENCE.md`. Ask the user for
+   anything not already clear from their prompt or context.
 2. For research on external systems, third-party integrations, or technical
    unknowns feeding into `ARCHITECTURE.md`, `API.md`, or decisions, delegate
    per-system lookups to parallel `general-purpose` agents when substantial,
    so raw fetched documentation stays out of the main conversation and only
    distilled findings return. Keep requirement-gathering and drafting itself
    inline and conversational; do not delegate that part.
-3. Draft the file set defined in
-   `${CLAUDE_PLUGIN_ROOT}/skills/spec/REFERENCE.md`, applying
+3. Draft the file set per `REFERENCE.md`, applying
    `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md#documentation`'s
    applicability rules to decide whether `API.md` and `DESIGN.md` are
    included.
