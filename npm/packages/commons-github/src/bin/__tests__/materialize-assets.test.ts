@@ -39,8 +39,6 @@ describe('materialize-assets.ts', () => {
       expect.stringMatching(/\.github$/),
       {recursive: true},
     );
-    expect(log).toHaveBeenCalledWith(
-      'Materialized .github assets.',
-    );
+    expect(log).toHaveBeenCalledWith('Materialized .github assets.');
   });
 });
