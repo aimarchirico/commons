@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.6.0](https://github.com/aimarchirico/commons/compare/commons-github-v1.5.0...commons-github-v1.6.0) (2026-08-04)
+
+
+### Features
+
+* **commons-github:** document vertical slice boundaries in contributing ([b3ff104](https://github.com/aimarchirico/commons/commit/b3ff104048432cc1b583da9cf5d69513fd805111))
+* **commons-github:** document vertical slice boundaries in contributing ([3452574](https://github.com/aimarchirico/commons/commit/3452574b70376547786cdc79cd296e53b3147d7d))
+* **commons-github:** move CONTRIBUTING.md into .github assets directory ([9d8778b](https://github.com/aimarchirico/commons/commit/9d8778b86833fc304c4696fb60001fc0720f4558))
+
 ## [1.5.0](https://github.com/aimarchirico/commons/compare/commons-github-v1.4.3...commons-github-v1.5.0) (2026-08-03)
 
 
