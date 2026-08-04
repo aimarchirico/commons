@@ -106,7 +106,12 @@ Technical reference for internal and external interfaces.
 ### 5. [module]/README.md
 
 Technical documentation specific to a project subsystem. All
-implementation-level detail lives here.
+implementation-level detail lives here. Prefer
+[Vertical Slice Architecture](https://deviq.com/architecture/vertical-slice-architecture/):
+draw boundaries by feature rather than technical layer, let each slice organize
+its own internals, and expose it only through a narrow public contract. Anything
+crossing a slice boundary goes through that contract, never around it; shared
+code never depends on a slice.
 
 - **Tech Stack**: Versioned list of major languages, frameworks, and libraries.
 - **Folder Structure**: Directory layout and module boundary rules.
