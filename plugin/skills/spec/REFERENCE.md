@@ -39,11 +39,9 @@ project root `README.md`, scoped here instead.
 Spec-only; never promoted. One numbered file per top-level initiative,
 detailed enough for the `commons:issue` skill to derive the initial issue backlog. 
 
-- **README.md**: Index table of title, one-line objective, and link.
-- **NNNN-\<slug\>.md**: One per initiative, zero-padded and sequenced the
-  same way as `decisions/`. Uses its own vocabulary, deliberately not
-  mirroring the field names in `.github/ISSUE_TEMPLATE/epic.yaml` or
-  `story.yaml`:
+- **README.md**: Index table of number, title, one-line objective, and link.
+- **NNNN-kebab-case-title.md**: One per initiative, zero-padded and sequenced. Uses its own vocabulary, deliberately not
+  mirroring the field names in `.github/ISSUE_TEMPLATE/`:
   - **Objective**: What this initiative achieves and why it matters.
   - **Scope**: The constituent capabilities or workstreams it covers.
   - **Success Criteria**: The measurable signal it's done.
@@ -68,15 +66,11 @@ Always included. Same sections as `CONTRIBUTING.md#documentation`'s
 
 ### 5. docs/specs/API.md (if applicable)
 
-Included only when `CONTRIBUTING.md#documentation`'s applicability rules say
-the project exposes an API surface. Same sections as
+Included strictly per the applicability rules in `CONTRIBUTING.md#documentation`. Same sections as
 `CONTRIBUTING.md#documentation`'s `docs/API.md` definition, drafted rather
-than final. Domain entity and schema content goes in the Data Models section
-here, not in `DESIGN.md`.
+than final.
 
 ### 6. docs/specs/DESIGN.md (if applicable)
 
-Included only when `CONTRIBUTING.md#documentation`'s applicability rules say
-the project has a UI. Same sections as `CONTRIBUTING.md#documentation`'s
-`docs/DESIGN.md` definition, drafted rather than final. Drafted after
-`API.md`, matching that file's ordering in `CONTRIBUTING.md#documentation`.
+Included strictly per the applicability rules in `CONTRIBUTING.md#documentation`. Same sections as `CONTRIBUTING.md#documentation`'s
+`docs/DESIGN.md` definition, drafted rather than final.
