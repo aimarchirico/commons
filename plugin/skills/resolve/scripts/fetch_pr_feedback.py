@@ -5,23 +5,28 @@ import json
 import shutil
 import subprocess
 import sys
+from collections.abc import Callable
+from typing import Any
+
+MIN_ARG_COUNT = 2
 
 
-def _run_cmd(args):
+def _run_cmd(args: list[str]) -> str:
     result = subprocess.run(args, capture_output=True, text=True, check=True)
     return result.stdout.strip()
 
 
-def _check_dependencies():
+def _check_dependencies() -> None:
     if not shutil.which("gh"):
-        print(
-            "Error: GitHub CLI (gh) is not installed or not in PATH.",
-            file=sys.stderr,
+        sys.stderr.write(
+            "Error: GitHub CLI (gh) is not installed or not in PATH.\n",
         )
         sys.exit(1)
 
 
-def fetch_pr_feedback(run_cmd, pr_number):
+def fetch_pr_feedback(
+    run_cmd: Callable[[list[str]], str], pr_number: str,
+) -> dict[str, Any]:
     """Fetch a PR's conversation comments and its unresolved review threads."""
     repo_output = run_cmd(["gh", "repo", "view", "--json", "owner,name"])
     repo_data = json.loads(repo_output)
@@ -93,11 +98,11 @@ def fetch_pr_feedback(run_cmd, pr_number):
     }
 
 
-def main():
+def main() -> None:
     """Main entry point for printing a PR's feedback as JSON."""
-    if len(sys.argv) < 2:
-        print("Error: PR number not specified.", file=sys.stderr)
-        print(f"Usage: {sys.argv[0]} <pr-number>", file=sys.stderr)
+    if len(sys.argv) < MIN_ARG_COUNT:
+        sys.stderr.write("Error: PR number not specified.\n")
+        sys.stderr.write(f"Usage: {sys.argv[0]} <pr-number>\n")
         sys.exit(1)
 
     pr_number = sys.argv[1]
@@ -106,11 +111,11 @@ def main():
 
     try:
         feedback = fetch_pr_feedback(_run_cmd, pr_number)
-    except Exception as e:
-        print(f"Error: Failed to fetch PR feedback. {e}", file=sys.stderr)
+    except (subprocess.CalledProcessError, json.JSONDecodeError, KeyError) as e:
+        sys.stderr.write(f"Error: Failed to fetch PR feedback. {e}\n")
         sys.exit(1)
 
-    print(json.dumps(feedback, indent=2))
+    sys.stdout.write(f"{json.dumps(feedback, indent=2)}\n")
 
 
 if __name__ == "__main__":

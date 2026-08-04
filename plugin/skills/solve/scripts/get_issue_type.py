@@ -5,23 +5,27 @@ import json
 import shutil
 import subprocess
 import sys
+from collections.abc import Callable
+
+MIN_ARG_COUNT = 2
 
 
-def _run_cmd(args):
+def _run_cmd(args: list[str]) -> str:
     result = subprocess.run(args, capture_output=True, text=True, check=True)
     return result.stdout.strip()
 
 
-def _check_dependencies():
+def _check_dependencies() -> None:
     if not shutil.which("gh"):
-        print(
-            "Error: GitHub CLI (gh) is not installed or not in PATH.",
-            file=sys.stderr,
+        sys.stderr.write(
+            "Error: GitHub CLI (gh) is not installed or not in PATH.\n",
         )
         sys.exit(1)
 
 
-def get_issue_type(run_cmd, issue_id):
+def get_issue_type(
+    run_cmd: Callable[[list[str]], str], issue_id: str,
+) -> str | None:
     """Fetch the Type field value of an issue's linked project item, if any."""
     repo_output = run_cmd(["gh", "repo", "view", "--json", "owner,name"])
     repo_data = json.loads(repo_output)
@@ -62,11 +66,11 @@ def get_issue_type(run_cmd, issue_id):
     return None
 
 
-def main():
+def main() -> None:
     """Main entry point for resolving an issue's Type field from the CLI."""
-    if len(sys.argv) < 2:
-        print("Error: Issue ID not specified.", file=sys.stderr)
-        print(f"Usage: {sys.argv[0]} <issue-id>", file=sys.stderr)
+    if len(sys.argv) < MIN_ARG_COUNT:
+        sys.stderr.write("Error: Issue ID not specified.\n")
+        sys.stderr.write(f"Usage: {sys.argv[0]} <issue-id>\n")
         sys.exit(1)
 
     issue_id = sys.argv[1]
@@ -75,17 +79,16 @@ def main():
 
     try:
         issue_type = get_issue_type(_run_cmd, issue_id)
-    except Exception as e:
-        print(f"Error: Failed to fetch issue type. {e}", file=sys.stderr)
+    except (subprocess.CalledProcessError, json.JSONDecodeError, KeyError) as e:
+        sys.stderr.write(f"Error: Failed to fetch issue type. {e}\n")
         sys.exit(1)
 
     if issue_type:
-        print(issue_type)
+        sys.stdout.write(f"{issue_type}\n")
     else:
-        print(
+        sys.stderr.write(
             f"Warning: Issue #{issue_id} has no linked project item with a "
-            "Type field.",
-            file=sys.stderr,
+            "Type field.\n",
         )
 
 

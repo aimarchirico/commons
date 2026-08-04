@@ -1,30 +1,39 @@
 #!/usr/bin/env python3
 """Script for posting a merged review as PR review comments via the GitHub API."""
 
+import contextlib
 import json
-import os
 import shutil
 import subprocess
 import sys
+from collections.abc import Callable
+from pathlib import Path
+from typing import Any
+
+MIN_ARG_COUNT = 3
 
 
-def _run_cmd(args, input_text=None):
+def _run_cmd(args: list[str], input_text: str | None = None) -> str:
     result = subprocess.run(
-        args, input=input_text, capture_output=True, text=True, check=True
+        args, input=input_text, capture_output=True, text=True, check=True,
     )
     return result.stdout.strip()
 
 
-def _check_dependencies():
+def _check_dependencies() -> None:
     if not shutil.which("gh"):
-        print(
-            "Error: GitHub CLI (gh) is not installed or not in PATH.",
-            file=sys.stderr,
+        sys.stderr.write(
+            "Error: GitHub CLI (gh) is not installed or not in PATH.\n",
         )
         sys.exit(1)
 
 
-def post_review(run_cmd, pr_number, body, comments):
+def post_review(
+    run_cmd: Callable[..., str],
+    pr_number: str,
+    body: str,
+    comments: list[dict[str, Any]],
+) -> None:
     """Post a single PR review with a summary body and per-line comments."""
     repo_output = run_cmd(["gh", "repo", "view", "--json", "owner,name"])
     repo_data = json.loads(repo_output)
@@ -42,41 +51,42 @@ def post_review(run_cmd, pr_number, body, comments):
     )
 
 
-def main():
+def main() -> None:
     """Main entry point for posting review findings from a JSON file."""
-    if len(sys.argv) < 3:
-        print("Error: PR number or JSON file path not specified.", file=sys.stderr)
-        print(
-            f"Usage: {sys.argv[0]} <pr-number> <path-to-review.json>",
-            file=sys.stderr,
+    if len(sys.argv) < MIN_ARG_COUNT:
+        sys.stderr.write(
+            "Error: PR number or JSON file path not specified.\n",
+        )
+        sys.stderr.write(
+            f"Usage: {sys.argv[0]} <pr-number> <path-to-review.json>\n",
         )
         sys.exit(1)
 
     pr_number = sys.argv[1]
-    json_file = sys.argv[2]
+    json_file_path = Path(sys.argv[2])
 
     _check_dependencies()
 
     try:
-        with open(json_file, "r", encoding="utf-8") as f:
+        with json_file_path.open(encoding="utf-8") as f:
             data = json.load(f)
-    except Exception as e:
-        print(f"Error: Failed to parse '{json_file}' as JSON. {e}", file=sys.stderr)
+    except (OSError, json.JSONDecodeError) as e:
+        sys.stderr.write(
+            f"Error: Failed to parse '{json_file_path}' as JSON. {e}\n",
+        )
         sys.exit(1)
 
     try:
         post_review(
-            _run_cmd, pr_number, data.get("body", ""), data.get("comments", [])
+            _run_cmd, pr_number, data.get("body", ""), data.get("comments", []),
         )
-        print(f"Posted review to PR #{pr_number}.")
-    except Exception as e:
-        print(f"Error: Failed to post review. {e}", file=sys.stderr)
+        sys.stdout.write(f"Posted review to PR #{pr_number}.\n")
+    except (subprocess.CalledProcessError, KeyError) as e:
+        sys.stderr.write(f"Error: Failed to post review. {e}\n")
         sys.exit(1)
     finally:
-        try:
-            os.remove(json_file)
-        except Exception:
-            pass
+        with contextlib.suppress(OSError):
+            json_file_path.unlink()
 
 
 if __name__ == "__main__":
