@@ -1,8 +1,8 @@
 # Spec File Reference
 
-This is the file set drafted under `docs/specs/`. Section content follows
-`CONTRIBUTING.md#documentation`'s definitions for the corresponding real
-`docs/` file, drafted rather than final. None of these files are ever
+This is the file set drafted under `docs/specs/`. Precursor file content
+follows `CONTRIBUTING.md#documentation`'s definitions for the corresponding
+real `docs/` file, drafted rather than final. None of these files are ever
 promoted verbatim into the project's real `docs/` folder or root
 `README.md`; they are superseded by the real documentation once an
 implementation exists, per the `commons:docs` skill.
@@ -21,52 +21,63 @@ docs/specs/
   DESIGN.md     (if applicable)
 ```
 
-## README.md
+### 1. docs/specs/README.md
 
-Spec-only; never promoted to the real `docs/` folder. A narrative covering
-Problem, Goals, Non-Goals, and Target Users, plus a directory map into
-`requirements/`, `decisions/`, and the precursor docs below, mirroring the
-dual narrative/directory-map role `CONTRIBUTING.md#documentation` assigns
-the project root `README.md`, scoped to this folder.
+Spec-only; never promoted. Entry point for the folder, mirroring the dual
+narrative/directory-map role `CONTRIBUTING.md#documentation` assigns the
+project root `README.md`, scoped here instead.
 
-## requirements/
+- **Problem**: What this project solves and why it matters.
+- **Goals**: What the project must achieve.
+- **Non-Goals**: What is deliberately out of scope.
+- **Target Users**: Who the project is for.
+- **Directory Map**: Links into `requirements/`, `decisions/`, and the
+  precursor docs below.
+
+### 2. docs/specs/requirements/
 
 Spec-only; never promoted. One numbered file per top-level initiative,
-named `NNNN-<slug>.md` (zero-padded, same numbering convention as
-`decisions/`), detailed enough for the `commons:issue` skill to derive the
-initial Epic → Story → Task → Subtask backlog. Each file uses its own
-vocabulary (Objective, Scope, Success Criteria), deliberately not mirroring
-the field names in `.github/ISSUE_TEMPLATE/epic.yaml` or `story.yaml`.
+detailed enough for the `commons:issue` skill to derive the initial
+Epic → Story → Task → Subtask backlog.
 
-`requirements/README.md` is an index table of title, one-line objective,
-and link.
+- **README.md**: Index table of title, one-line objective, and link.
+- **NNNN-\<slug\>.md**: One per initiative, zero-padded and sequenced the
+  same way as `decisions/`. Uses its own vocabulary, deliberately not
+  mirroring the field names in `.github/ISSUE_TEMPLATE/epic.yaml` or
+  `story.yaml`:
+  - **Objective**: What this initiative achieves and why it matters.
+  - **Scope**: The constituent capabilities or workstreams it covers.
+  - **Success Criteria**: The measurable signal it's done.
 
-## decisions/
+### 3. docs/specs/decisions/
 
-Spec-only; never promoted. An ADR log, one file per decision, in standard
-Nygard ADR format, named `NNNN-kebab-case-title.md`. Each entry has Status
-(Proposed/Accepted/Rejected/Superseded), Context, Decision, and
-Consequences.
+Spec-only; never promoted. An ADR (Architecture Decision Record) log, one
+file per decision, in standard Nygard ADR format.
 
-`decisions/README.md` is an index table of number, title, status, and link.
+- **README.md**: Index table of number, title, status, and link.
+- **NNNN-kebab-case-title.md**: One per decision, zero-padded and sequenced:
+  - **Status**: `Proposed` / `Accepted` / `Rejected` / `Superseded`.
+  - **Context**: The question and research findings, with enough detail
+    that no one has to redo the investigation.
+  - **Decision**: What was chosen.
+  - **Consequences**: Rationale, implications, and anything still open.
 
-## ARCHITECTURE.md
+### 4. docs/specs/ARCHITECTURE.md
 
 Always included. Same sections as `CONTRIBUTING.md#documentation`'s
 `docs/ARCHITECTURE.md` definition, drafted rather than final.
 
-## API.md (if applicable)
+### 5. docs/specs/API.md (if applicable)
 
-Included only when `CONTRIBUTING.md#documentation`'s applicability rules
-say the project exposes an API surface. Same sections as
+Included only when `CONTRIBUTING.md#documentation`'s applicability rules say
+the project exposes an API surface. Same sections as
 `CONTRIBUTING.md#documentation`'s `docs/API.md` definition, drafted rather
-than final. Domain entity and schema content goes in the Data Models
-section here, not in `DESIGN.md`.
+than final. Domain entity and schema content goes in the Data Models section
+here, not in `DESIGN.md`.
 
-## DESIGN.md (if applicable)
+### 6. docs/specs/DESIGN.md (if applicable)
 
-Included only when `CONTRIBUTING.md#documentation`'s applicability rules
-say the project has a UI. Same sections as
-`CONTRIBUTING.md#documentation`'s `docs/DESIGN.md` definition, drafted
-rather than final. Drafted after `API.md`, matching that file's ordering
-in `CONTRIBUTING.md#documentation`.
+Included only when `CONTRIBUTING.md#documentation`'s applicability rules say
+the project has a UI. Same sections as `CONTRIBUTING.md#documentation`'s
+`docs/DESIGN.md` definition, drafted rather than final. Drafted after
+`API.md`, matching that file's ordering in `CONTRIBUTING.md#documentation`.
