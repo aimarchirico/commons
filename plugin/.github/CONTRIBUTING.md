@@ -81,20 +81,10 @@ implementation-specific.
 - **Project Structure**: Top-level directory tree explaining the purpose of each
   folder.
 
-### 3. docs/DESIGN.md
+### 3. docs/API.md (if applicable)
 
-Standards for UI, UX, and visual identity.
-
-- **Design System**: Definitions for the color palette, typography, spacing
-  scales, and component library usage.
-- **User Flows**: Logical maps or descriptions of the most critical user
-  journeys through the application.
-- **Assets**: Markdown illustrations, screenshots, or other visual assets used
-  in the design system.
-
-### 4. docs/API.md
-
-Technical reference for internal and external interfaces.
+Technical reference for internal and external interfaces. Applies only if the
+project exposes an API surface.
 
 - **Authentication**: Detailed security protocol. Instructions for obtaining and
   rotating credentials.
@@ -102,6 +92,18 @@ Technical reference for internal and external interfaces.
   applicable.
 - **Data Models**: Schema definitions or descriptions of core domain entities
   and their relationships.
+
+### 4. docs/DESIGN.md (if applicable)
+
+Standards for UI, UX, and visual identity. Applies only if the project has a
+UI.
+
+- **Design System**: Definitions for the color palette, typography, spacing
+  scales, and component library usage.
+- **User Flows**: Logical maps or descriptions of the most critical user
+  journeys through the application.
+- **Assets**: Markdown illustrations, screenshots, or other visual assets used
+  in the design system.
 
 ### 5. [module]/README.md
 
