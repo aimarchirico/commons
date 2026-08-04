@@ -73,7 +73,12 @@ The primary entry point and high-level overview of the project.
 ### 2. docs/ARCHITECTURE.md
 
 System-level source of truth. Contains only what spans the whole system; nothing
-implementation-specific.
+implementation-specific. Prefer
+[Vertical Slice Architecture](https://deviq.com/architecture/vertical-slice-architecture/):
+draw boundaries by feature rather than technical layer, let each slice organize
+its own internals, and expose it only through a narrow public contract. Anything
+crossing a slice boundary goes through that contract, never around it; shared
+code never depends on a slice.
 
 - **Data Flow**: Mermaid diagram showing communication between services.
 - **Infrastructure Overview**: Table of layers, technologies, and hosting
