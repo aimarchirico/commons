@@ -37,8 +37,7 @@ project root `README.md`, scoped here instead.
 ### 2. docs/specs/requirements/
 
 Spec-only; never promoted. One numbered file per top-level initiative,
-detailed enough for the `commons:issue` skill to derive the initial
-Epic → Story → Task → Subtask backlog.
+detailed enough for the `commons:issue` skill to derive the initial issue backlog. 
 
 - **README.md**: Index table of title, one-line objective, and link.
 - **NNNN-\<slug\>.md**: One per initiative, zero-padded and sequenced the
