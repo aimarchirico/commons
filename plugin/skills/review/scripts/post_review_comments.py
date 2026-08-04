@@ -81,7 +81,7 @@ def main() -> None:
             _run_cmd, pr_number, data.get("body", ""), data.get("comments", []),
         )
         sys.stdout.write(f"Posted review to PR #{pr_number}.\n")
-    except (subprocess.CalledProcessError, KeyError) as e:
+    except (subprocess.CalledProcessError, json.JSONDecodeError, KeyError) as e:
         sys.stderr.write(f"Error: Failed to post review. {e}\n")
         sys.exit(1)
     finally:
