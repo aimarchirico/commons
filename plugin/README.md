@@ -37,7 +37,8 @@ plugin/
 │   ├── resolve/SKILL.md         # orchestrate the lifecycle from PR review feedback
 │   ├── review/SKILL.md          # review a pull request via parallel reviewer agents
 │   ├── ship/SKILL.md            # chain issue creation and solving into a single flow
-│   └── solve/SKILL.md           # orchestrate the lifecycle from an existing issue
+│   ├── solve/SKILL.md           # orchestrate the lifecycle from an existing issue
+│   └── spec/SKILL.md            # draft requirements/architecture/decisions for a new project
 └── agents/
     ├── compliance-reviewer.md    # reviews a diff against CONTRIBUTING.md (read-only)
     ├── implementation-planner.md # drafts an implementation plan (read-only)
@@ -53,8 +54,9 @@ other, except for `solve`/`resolve` delegating to the `implementation-planner`
 and `worktree-runner` agents in [`agents/`](agents) (which in turn invokes
 `check` before handing back), `review` delegating to the `logic-reviewer`,
 `performance-reviewer`, `security-reviewer`, and `compliance-reviewer`
-agents, and `ship` delegating to the `issue`, `solve`, `review`, and
-`resolve` skills themselves.
+agents, `ship` delegating to the `issue`, `solve`, `review`, and `resolve`
+skills themselves, and `spec` delegating to parallel `general-purpose`
+agents for substantial external research.
 
 `.github/` is currently a manual copy of
 `npm/packages/commons-github/src/assets/` (`CONTRIBUTING.md` and the GitHub
