@@ -94,7 +94,7 @@ def main() -> None:
             data.get("conversation_reply", ""),
         )
         sys.stdout.write("Successfully posted all replies.\n")
-    except (subprocess.CalledProcessError, KeyError) as e:
+    except (subprocess.CalledProcessError, json.JSONDecodeError, KeyError) as e:
         sys.stderr.write(f"Error: Failed to post replies. {e}\n")
         sys.exit(1)
     finally:
