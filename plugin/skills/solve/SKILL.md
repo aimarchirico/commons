@@ -26,7 +26,8 @@ argument-hint: "--issue <issue-id> [--draft] [--auto] [--skip-check]"
    to the current user.
 4. Determine `<branch-name>` following the naming rules in
    `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md`, then execute
-   `git worktree add -b <branch-name> <worktree-path>` to create the branch in
+   `git fetch origin` and `git worktree add -b <branch-name> <worktree-path>
+   origin/main` to create the branch off the up-to-date remote `main`, in
    an isolated worktree, where `<worktree-path>` is `../<branch-name>` (a
    sibling of the repository root).
 5. Delegate to the `planner` agent, passing the issue's title, body, type,
