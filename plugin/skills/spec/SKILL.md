@@ -24,7 +24,8 @@ argument-hint: "[--auto]"
    fetched documentation stays out of the main conversation and only
    distilled findings return. Keep requirement-gathering and drafting itself
    inline and conversational; do not delegate that part.
-3. Draft the file set per `REFERENCE.md`.
+3. Draft the file set per
+   `${CLAUDE_PLUGIN_ROOT}/skills/spec/REFERENCE.md`.
 4. Present the drafted files for approval, and wait for explicit user
    approval. Skip this step if the `--auto` flag is set, and proceed
    directly with writing the drafted files.
