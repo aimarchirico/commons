@@ -18,16 +18,13 @@ argument-hint: "[--auto]"
 1. Identify what's needed to draft the file set defined in
    `${CLAUDE_PLUGIN_ROOT}/skills/spec/REFERENCE.md`. Ask the user for
    anything not already clear from their prompt or context.
-2. For research on external systems, third-party integrations, or technical
-   unknowns feeding into `ARCHITECTURE.md`, `API.md`, or decisions, delegate
-   per-system lookups to parallel `general-purpose` agents when substantial,
-   so raw fetched documentation stays out of the main conversation and only
+2. For research on external systems, third-party integrations, or other
+   technical unknowns feeding into the drafted files, delegate per-system
+   lookups to parallel `general-purpose` agents when substantial, so raw
+   fetched documentation stays out of the main conversation and only
    distilled findings return. Keep requirement-gathering and drafting itself
    inline and conversational; do not delegate that part.
-3. Draft the file set per `REFERENCE.md`, applying
-   `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md#documentation`'s
-   applicability rules to decide whether `API.md` and `DESIGN.md` are
-   included.
+3. Draft the file set per `REFERENCE.md`.
 4. Present the drafted files for approval, and wait for explicit user
    approval. Skip this step if the `--auto` flag is set, and proceed
    directly with writing the drafted files.
