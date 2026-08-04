@@ -1,7 +1,7 @@
 ---
 name: spec
 description:
-  Draft initial project specs (requirements, architecture, decisions) for a
+  Draft initial project specs (requirements, decisions, architecture) for a
   brand-new project before any issues exist. Use when the user asks to spec
   out, scope, or draft the initial design for a new project.
 argument-hint: "[--auto]"
@@ -33,9 +33,3 @@ argument-hint: "[--auto]"
    approval. Skip this step if the `--auto` flag is set, and proceed
    directly with writing the drafted files.
 5. Write the approved files under `docs/specs/`.
-
-## Out of Scope
-
-The root `README.md` and module READMEs are out of scope for this skill;
-those belong to the `commons:docs` skill once an implementation exists to
-document.
