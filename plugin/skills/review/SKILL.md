@@ -49,14 +49,9 @@ argument-hint: "--pr <pr-number> [--auto]"
      python3 "${CLAUDE_PLUGIN_ROOT}/skills/review/scripts/post_review_comments.py" <pr-number> findings.json
      ```
 
-     The script (`build_review` in `post_review_comments.py`) renders each
-     finding into a comment, decides the verdict (`Approved.` if there are
-     no findings, otherwise `Requesting changes.`; the self-review-signal
-     GitHub Action matches on this exact text to submit a real review on
-     the user's behalf, since the user can't approve or request changes on
-     their own PR), builds a `## Review summary` listing any findings with
-     no resolvable file/line, posts everything as a single PR review, then
-     deletes the temporary file.
+     (`build_review()` in that script owns the rendering, verdict, and
+     summary rules; see its docstring. Posts everything as a single PR
+     review, then deletes the temporary file.)
 
 ## Output
 
