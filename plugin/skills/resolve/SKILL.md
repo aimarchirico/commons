@@ -47,7 +47,7 @@ argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
    conflicts, stop and report them to the user rather than resolving them
    unilaterally.
 7. Draft replies from the implementation-planner's feedback-to-fix mapping,
-   covering every item `fetch_pr_feedback.py` returned exactly once: a
+   covering every item step 3's script returned exactly once: a
    concise, resolving reply for each line/file review comment, plus a
    single conversation-level reply also covering any conversation-level
    comments, formatted like:
