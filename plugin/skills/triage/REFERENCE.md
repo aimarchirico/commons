@@ -17,9 +17,9 @@ order, never re-sort.
 | Bucket                | Status                       | Suggestion                                                             |
 | :---------------------- | :----------------------------- | :--------------------------------------------------------------------- |
 | `approved`             | Approved                     | Merge the PR                                                           |
-| `unresolved_approved`  | Approved, unresolved feedback | Resolve the unresolved review with `/commons:resolve`, then merge the PR |
-| `unresolved`           | Unresolved feedback          | Resolve the unresolved review with `/commons:resolve`                  |
-| `no_unresolved`        | No unresolved feedback       | Self-review the PR with `/commons:review`                              |
+| `unresolved_approved`  | Approved, unresolved review | Resolve the unresolved review with `/commons:resolve`, then merge the PR |
+| `unresolved`           | Unresolved review           | Resolve the unresolved review with `/commons:resolve`                  |
+| `no_unresolved`        | No unresolved review       | Self-review the PR with `/commons:review`                              |
 | `draft`                | Draft                        | The judgment from step 2                                               |
 
 ## Backlog issues (from `backlog_issues`)
@@ -32,7 +32,7 @@ order, never re-sort.
 ## Example output
 
 Given a survey with two PRs to review, three of the user's own PRs (one
-approved, one with unresolved feedback, one draft), and two backlog issues:
+approved, one with unresolved review, one draft), and two backlog issues:
 
 **PRs to review**
 
@@ -46,7 +46,7 @@ approved, one with unresolved feedback, one draft), and two backlog issues:
 | PR                              | Status                       | Suggestion                                                             |
 | :--------------------------------- | :----------------------------- | :--------------------------------------------------------------------- |
 | #150 Add rate limiter           | Approved                     | Merge the PR                                                           |
-| #144 Migrate config loader      | Unresolved feedback          | Resolve the unresolved review with `/commons:resolve`                  |
+| #144 Migrate config loader      | Unresolved review            | Resolve the unresolved review with `/commons:resolve`                  |
 | #151 Wire up telemetry (draft)  | Draft                        | Continuing the implementation looks right, since the diff doesn't yet cover the retry-metric requirement from #130 |
 
 **Backlog issues**
