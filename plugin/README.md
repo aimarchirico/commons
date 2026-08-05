@@ -28,42 +28,52 @@ of the monorepo.
 plugin/
 ├── .claude-plugin/plugin.json   # plugin manifest
 ├── .github/                     # bundled conventions (CONTRIBUTING.md, issue/PR templates)
-├── skills/
-│   ├── check/SKILL.md           # verify the tree against the project's own PR-gating CI checks
-│   ├── commit/SKILL.md          # create logical, atomic commits
-│   ├── docs/SKILL.md            # update project documentation
-│   ├── issue/SKILL.md           # create hierarchical issues
-│   ├── pr/SKILL.md              # create a standardized pull request
-│   ├── resolve/SKILL.md         # orchestrate the lifecycle from PR review feedback
-│   ├── review/SKILL.md          # review a pull request via parallel reviewer agents
-│   ├── ship/SKILL.md            # chain issue creation and solving into a single flow
-│   ├── solve/SKILL.md           # orchestrate the lifecycle from an existing issue
-│   ├── spec/SKILL.md            # draft requirements/architecture/decisions for a new project
-│   └── triage/SKILL.md          # survey open PRs and Backlog issues, read-only
-└── agents/
-    ├── compliance-reviewer.md    # reviews a diff against CONTRIBUTING.md (read-only)
-    ├── implementation-planner.md # drafts an implementation plan (read-only)
-    ├── logic-reviewer.md         # reviews a diff for logic errors (read-only)
-    ├── performance-reviewer.md   # reviews a diff for performance regressions (read-only)
-    ├── security-reviewer.md      # reviews a diff for security vulnerabilities (read-only)
-    └── worktree-runner.md        # implements an approved plan unattended
+├── agents/                      # specialized subagent prompts
+├── shared/                      # shared script utilities (pr_feedback.py)
+└── skills/                      # agent skill definitions and supporting Python scripts
 ```
 
-Each skill is a self-contained directory holding a single `SKILL.md`. Skills
-rely on the conventions bundled in [`.github/`](.github) rather than on each
-other, except for `solve`/`resolve` delegating to the `implementation-planner`
-and `worktree-runner` agents in [`agents/`](agents) (which in turn invokes
-`check` before handing back), `review` delegating to the `logic-reviewer`,
-`performance-reviewer`, `security-reviewer`, and `compliance-reviewer`
-agents, `ship` delegating to the `issue`, `solve`, `review`, and `resolve`
-skills themselves, and `spec` delegating to parallel `general-purpose`
-agents for substantial external research.
+Each skill directory contains a `SKILL.md` file defining its prompt interface
+and workflow. Skills rely on the conventions bundled in [`.github/`](.github)
+rather than on each other, except for:
 
-`.github/` is currently a manual copy of
-`npm/packages/commons-github/src/assets/` (`CONTRIBUTING.md` and the GitHub
-templates) kept in sync by hand; it's copied rather than generated because
-`commons-github` isn't published yet, so its `materialize-templates` command
-isn't available to script the copy.
+- `solve` / `resolve` delegating to `implementation-planner` and `worktree-runner`
+  in [`agents/`](agents) (which in turn invokes `check` before handing back).
+- `review` delegating to `logic-reviewer`, `performance-reviewer`,
+  `security-reviewer`, and `compliance-reviewer`.
+- `ship` delegating to the `issue`, `solve`, `review`, and `resolve` skills.
+- `spec` delegating to parallel `general-purpose` agents for external research.
+
+Complex skills pair their `SKILL.md` prompt with deterministic Python scripts
+(`skills/*/scripts/`) for GitHub API operations, state tracking, and git
+worktree management.
+
+### Shared Feedback State (`shared/pr_feedback.py`)
+
+Shared utility dynamically loaded by script path to provide a single
+authoritative definition (DRY) for open PR review feedback across `triage` and
+`resolve`:
+
+- `unresolved_threads`: Identifies review threads where `isResolved` is false.
+- `comments_since_checkpoint`: Tracks comments created after the most recent
+  `Resolved.` checkpoint comment.
+
+### Skill Script Mechanics
+
+- **`review`** (`skills/review/scripts/post_review_comments.py`): Separates
+  inline diff findings (with `file` and `line`) from unresolvable summary items,
+  posting a single atomic GitHub PR review with a verdict (`Approved.` vs
+  `Changes requested.`).
+- **`resolve`** (`skills/resolve/scripts/`): `fetch_review_feedback.py` uses
+  GraphQL and `pr_feedback.py` to extract open items; `post_pr_replies.py`
+  replies to inline comments, resolves threads via GraphQL mutations
+  (`resolveReviewThread`), posts a top-level `Resolved.` checkpoint, and
+  re-requests review.
+- **`triage`** (`skills/triage/scripts/`): `collect_triage.py` surveys
+  assigned PRs, user PRs, and project backlog items. Uses `review_state.py` to
+  compute PR action buckets (`merge`, `resolve`, `self_review`, `draft`) and
+  `backlog_utils.py` to filter out blocked items and rank tasks by priority and
+  impact.
 
 ## Environment Variables
 
