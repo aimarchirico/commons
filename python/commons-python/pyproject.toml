@@ -9,6 +9,7 @@ dependencies = [
   "coverage>=7.6",
   "pytest>=8.3",
   "pytest-cov>=6.0",
+  "tomli-w>=1.2.0",
 ]
 
 [project.scripts]
