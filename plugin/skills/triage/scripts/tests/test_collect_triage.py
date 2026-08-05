@@ -55,7 +55,7 @@ def _base_responses(
         ("gh", "api", "user", "--jq", ".login"): _LOGIN,
         (
             "gh", "pr", "list", "--search", "is:open -author:@me draft:false",
-            "--json", "number,title,url,author,reviewRequests",
+            "--json", "number,title,url,author,reviewRequests,reviewDecision",
         ): prs_to_review,
         (
             "gh", "pr", "list", "--search", "is:open author:@me",
@@ -68,15 +68,18 @@ def _base_responses(
     }
 
 
-def _threads_response(*, unresolved: bool, number: int) -> tuple[tuple[str, ...], str]:
+def _review_state_response(
+    *, unresolved: bool, has_reviews: bool, number: int,
+) -> tuple[tuple[str, ...], str]:
     key = _normalize([
         "gh", "api", "graphql", "-f", "owner=acme", "-f", "repo=widgets",
         "-F", f"number={number}", "-f", "query=placeholder",
     ])
     body = json.dumps({
-        "data": {"repository": {"pullRequest": {"reviewThreads": {"nodes": [
-            {"isResolved": not unresolved},
-        ]}}}},
+        "data": {"repository": {"pullRequest": {
+            "reviewThreads": {"nodes": [{"isResolved": not unresolved}]},
+            "reviews": {"totalCount": 1 if has_reviews else 0},
+        }}},
     })
     return key, body
 
@@ -93,25 +96,30 @@ def test_main_prints_empty_survey_when_nothing_is_open(
     assert result == {"prs_to_review": [], "your_prs": [], "backlog_issues": []}
 
 
-def test_main_drops_bot_prs_and_orders_review_requested_first(
+def test_main_drops_bot_and_approved_prs_from_review_list(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str],
 ) -> None:
-    """Bot PRs are dropped; review-requested PRs sort before not-requested ones."""
+    """Bot and already-approved PRs are dropped; awaiting-review sorts first."""
     prs_to_review = json.dumps([
         {
             "number": 1, "title": "Bot PR", "url": "u1",
             "author": {"login": "dependabot", "is_bot": True},
-            "reviewRequests": [],
+            "reviewRequests": [], "reviewDecision": "",
         },
         {
-            "number": 2, "title": "Not requested", "url": "u2",
+            "number": 2, "title": "Already approved", "url": "u2",
             "author": {"login": "bob", "is_bot": False},
-            "reviewRequests": [],
+            "reviewRequests": [{"login": "octocat"}], "reviewDecision": "APPROVED",
         },
         {
-            "number": 3, "title": "Requested", "url": "u3",
+            "number": 3, "title": "Not requested", "url": "u3",
+            "author": {"login": "bob", "is_bot": False},
+            "reviewRequests": [], "reviewDecision": "",
+        },
+        {
+            "number": 4, "title": "Requested", "url": "u4",
             "author": {"login": "carol", "is_bot": False},
-            "reviewRequests": [{"login": "octocat"}],
+            "reviewRequests": [{"login": "octocat"}], "reviewDecision": "",
         },
     ])
     _install_gh(monkeypatch, _base_responses(prs_to_review=prs_to_review))
@@ -119,15 +127,15 @@ def test_main_drops_bot_prs_and_orders_review_requested_first(
     ct.main()
 
     result = json.loads(capsys.readouterr().out)
-    assert [pr["number"] for pr in result["prs_to_review"]] == [3, 2]
-    assert result["prs_to_review"][0]["bucket"] == "review_requested"
-    assert result["prs_to_review"][1]["bucket"] == "not_requested"
+    assert [pr["number"] for pr in result["prs_to_review"]] == [4, 3]
+    assert result["prs_to_review"][0]["reviews"] == "awaiting_your_review"
+    assert result["prs_to_review"][1]["reviews"] == "not_awaiting_your_review"
 
 
 def test_main_classifies_your_prs_and_includes_linked_issue_for_drafts(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str],
 ) -> None:
-    """Your PRs sort approved, unresolved, then draft; drafts carry linked_issue."""
+    """Your PRs sort approved, unresolved, not-reviewed, then draft."""
     your_prs = json.dumps([
         {
             "number": 1, "title": "Draft", "url": "u1", "isDraft": True,
@@ -143,11 +151,17 @@ def test_main_classifies_your_prs_and_includes_linked_issue_for_drafts(
             "number": 3, "title": "Needs review", "url": "u3", "isDraft": False,
             "reviewDecision": "", "closingIssuesReferences": [],
         },
+        {
+            "number": 4, "title": "Untouched", "url": "u4", "isDraft": False,
+            "reviewDecision": "", "closingIssuesReferences": [],
+        },
     ])
     responses = _base_responses(your_prs=your_prs)
-    key, body = _threads_response(unresolved=False, number=2)
+    key, body = _review_state_response(unresolved=False, has_reviews=True, number=2)
     responses[key] = body
-    key, body = _threads_response(unresolved=True, number=3)
+    key, body = _review_state_response(unresolved=True, has_reviews=True, number=3)
+    responses[key] = body
+    key, body = _review_state_response(unresolved=False, has_reviews=False, number=4)
     responses[key] = body
     _install_gh(monkeypatch, responses)
 
@@ -155,99 +169,15 @@ def test_main_classifies_your_prs_and_includes_linked_issue_for_drafts(
 
     result = json.loads(capsys.readouterr().out)
     yours = result["your_prs"]
-    assert [pr["number"] for pr in yours] == [2, 3, 1]
-    assert yours[0]["bucket"] == "approved"
-    assert yours[1]["bucket"] == "unresolved"
-    assert yours[2]["bucket"] == "draft"
-    assert yours[2]["linked_issue"] == {"number": 42, "url": "issue-url"}
-
-
-def _no_blockers_response(number: int) -> tuple[tuple[str, ...], str]:
-    key = ("gh", "issue", "view", str(number), "--json", "blockedBy")
-    return key, json.dumps({"blockedBy": {"nodes": [], "totalCount": 0}})
-
-
-def test_main_filters_backlog_issues_by_type_and_assignee(
-    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str],
-) -> None:
-    """Only Story/Task/Bug issues survive, assigned first, then unassigned.
-
-    A Story/Task/Bug decomposed from an Epic still has a parent, but that's
-    expected: those are the actionable leaf items and belong in the backlog.
-    """
-    project_items = json.dumps({"items": [
-        {
-            "status": "Todo", "type": "Task", "assignees": ["octocat"],
-            "content": {"type": "Issue", "number": 1, "title": "Mine", "url": "u1"},
-        },
-        {
-            "status": "Todo", "type": "Task", "assignees": [],
-            "content": {"type": "Issue", "number": 2, "title": "Free", "url": "u2"},
-        },
-        {
-            "status": "Todo", "type": "Task", "assignees": ["bob"],
-            "content": {"type": "Issue", "number": 3, "title": "Bob's", "url": "u3"},
-        },
-        {
-            "status": "Todo", "type": "Epic", "assignees": [],
-            "content": {"type": "Issue", "number": 4, "title": "Epic", "url": "u4"},
-        },
-        {
-            "status": "Done", "type": "Task", "assignees": [],
-            "content": {"type": "Issue", "number": 5, "title": "Done", "url": "u5"},
-        },
-    ]})
-    responses = _base_responses(project_items=project_items)
-    for number in (1, 2):
-        key, body = _no_blockers_response(number)
-        responses[key] = body
-    _install_gh(monkeypatch, responses)
-
-    ct.main()
-
-    result = json.loads(capsys.readouterr().out)
-    backlog = result["backlog_issues"]
-    assert [issue["number"] for issue in backlog] == [1, 2]
-    assert backlog[0]["bucket"] == "assigned"
-    assert backlog[1]["bucket"] == "unassigned"
-
-
-def test_main_moves_blocked_backlog_issues_to_their_own_bucket(
-    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str],
-) -> None:
-    """An issue with an open blocker is reported as blocked, not actionable."""
-    project_items = json.dumps({"items": [
-        {
-            "status": "Todo", "type": "Task", "assignees": ["octocat"],
-            "content": {"type": "Issue", "number": 1, "title": "Mine", "url": "u1"},
-        },
-        {
-            "status": "Todo", "type": "Task", "assignees": [],
-            "content": {"type": "Issue", "number": 2, "title": "Free", "url": "u2"},
-        },
-    ]})
-    responses = _base_responses(project_items=project_items)
-    responses[("gh", "issue", "view", "1", "--json", "blockedBy")] = json.dumps({
-        "blockedBy": {
-            "nodes": [
-                {"number": 10, "state": "OPEN"},
-                {"number": 11, "state": "CLOSED"},
-            ],
-            "totalCount": 2,
-        },
-    })
-    key, body = _no_blockers_response(2)
-    responses[key] = body
-    _install_gh(monkeypatch, responses)
-
-    ct.main()
-
-    result = json.loads(capsys.readouterr().out)
-    backlog = result["backlog_issues"]
-    assert [issue["number"] for issue in backlog] == [2, 1]
-    assert backlog[0]["bucket"] == "unassigned"
-    assert backlog[1]["bucket"] == "blocked"
-    assert backlog[1]["blocked_by"] == [10]
+    assert [pr["number"] for pr in yours] == [2, 3, 4, 1]
+    statuses = [(pr["status"], pr["reviews"]) for pr in yours]
+    assert statuses == [
+        ("approved", "no_unresolved_review"),
+        ("not_approved", "unresolved_review"),
+        ("not_approved", "not_reviewed"),
+        ("draft", "not_reviewed"),
+    ]
+    assert yours[3]["linked_issue"] == {"number": 42, "url": "issue-url"}
 
 
 def test_main_disambiguates_multiple_projects_by_repo_name(

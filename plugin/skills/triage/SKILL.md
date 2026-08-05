@@ -20,7 +20,7 @@ None. This skill takes no arguments.
    ```
 
    and parse its JSON output.
-1. For each PR in `your_prs` with `bucket == "draft"`: if it has a non-null
+1. For each PR in `your_prs` with `status == "draft"`: if it has a non-null
    `linked_issue`, fetch that issue's title and body, plus the PR's own
    description and diff:
 
@@ -36,7 +36,4 @@ None. This skill takes no arguments.
    say plainly that there's no linked issue to check completeness against,
    rather than guessing.
 1. Render the three tables per
-   `${CLAUDE_PLUGIN_ROOT}/skills/triage/REFERENCE.md`. For each backlog issue
-   with `bucket == "blocked"`, use its `blocked_by` array to write the
-   Suggestion as "Blocked by #`<number>`" (joining multiple numbers with
-   commas) instead of the generic text in `REFERENCE.md`.
+   `${CLAUDE_PLUGIN_ROOT}/skills/triage/REFERENCE.md`.
