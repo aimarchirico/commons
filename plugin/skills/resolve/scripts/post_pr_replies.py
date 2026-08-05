@@ -15,7 +15,12 @@ MIN_ARG_COUNT = 3
 
 def _run_cmd(args: list[str], input_text: str | None = None) -> str:
     result = subprocess.run(
-        args, input=input_text, capture_output=True, text=True, check=True,
+        args,
+        input=input_text,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        check=True,
     )
     return result.stdout.strip()
 
@@ -28,18 +33,48 @@ def _check_dependencies() -> None:
         sys.exit(1)
 
 
+_RESOLVE_THREAD_MUTATION = """
+mutation($threadId: ID!) {
+  resolveReviewThread(input: {threadId: $threadId}) { thread { id } }
+}
+"""
+
+
+def _resolve_review_threads(run_cmd: Callable[..., str], thread_ids: set[str]) -> None:
+    for thread_id in sorted(thread_ids):
+        sys.stdout.write(f"Resolving review thread {thread_id}...\n")
+        run_cmd([
+            "gh", "api", "graphql",
+            "-f", f"threadId={thread_id}",
+            "-f", f"query={_RESOLVE_THREAD_MUTATION}",
+        ])
+
+
+def render_conversation_reply(summary: str) -> str:
+    """Format a conversation-level reply with resolution summary header and verdict."""
+    return f"## Resolution summary\n\nResolved. {summary}"
+
+
 def post_replies(
     run_cmd: Callable[..., str],
     pr_number: str,
     thread_replies: list[dict[str, Any]],
-    conversation_reply: str,
+    conversation_summary: str,
 ) -> None:
-    """Post a reply to each review-thread comment, then one conversation reply."""
+    """Reply to each review-thread comment, resolve its thread, post the rest.
+
+    Posts one conversation-level reply last, built from ``conversation_summary``
+    via ``render_conversation_reply`` (a ``## Resolution summary`` header
+    followed by the verdict ``Resolved.``; `/commons:triage` detects this by
+    skipping leading blank/header lines and checking that the first
+    substantive line starts with ``Resolved.``).
+    """
     repo_output = run_cmd(["gh", "repo", "view", "--json", "owner,name"])
     repo_data = json.loads(repo_output)
     owner = repo_data["owner"]["login"]
     repo_name = repo_data["name"]
 
+    thread_ids: set[str] = set()
     for reply in thread_replies:
         comment_id = reply["comment_id"]
         sys.stdout.write(f"Replying to review comment {comment_id}...\n")
@@ -51,14 +86,34 @@ def post_replies(
             ["gh", "api", endpoint, "--input", "-"],
             input_text=json.dumps({"body": reply["body"]}),
         )
+        thread_ids.add(reply["thread_id"])
 
-    if conversation_reply:
+    _resolve_review_threads(run_cmd, thread_ids)
+
+    if conversation_summary:
         sys.stdout.write(f"Posting conversation reply on PR #{pr_number}...\n")
         endpoint = f"repos/{owner}/{repo_name}/issues/{pr_number}/comments"
         run_cmd(
             ["gh", "api", endpoint, "--input", "-"],
-            input_text=json.dumps({"body": conversation_reply}),
+            input_text=json.dumps(
+                {"body": render_conversation_reply(conversation_summary)},
+            ),
         )
+
+
+def request_re_reviews(run_cmd: Callable[..., str], pr_number: str) -> None:
+    """Request re-review from the PR's prior reviewers, excluding the user."""
+    reviews_output = run_cmd(["gh", "pr", "view", pr_number, "--json", "reviews"])
+    reviewers = {
+        r["author"]["login"]
+        for r in json.loads(reviews_output).get("reviews", [])
+        if r.get("author", {}).get("login")
+    }
+    login = run_cmd(["gh", "api", "user", "--jq", ".login"])
+
+    for reviewer in sorted(reviewers - {login}):
+        sys.stdout.write(f"Requesting re-review from {reviewer}...\n")
+        run_cmd(["gh", "pr", "edit", pr_number, "--add-reviewer", reviewer])
 
 
 def main() -> None:
@@ -91,8 +146,9 @@ def main() -> None:
             _run_cmd,
             pr_number,
             data.get("thread_replies", []),
-            data.get("conversation_reply", ""),
+            data.get("conversation_summary", ""),
         )
+        request_re_reviews(_run_cmd, pr_number)
         sys.stdout.write("Successfully posted all replies.\n")
     except (subprocess.CalledProcessError, json.JSONDecodeError, KeyError) as e:
         sys.stderr.write(f"Error: Failed to post replies. {e}\n")

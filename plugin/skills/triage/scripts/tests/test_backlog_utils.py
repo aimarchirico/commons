@@ -68,8 +68,8 @@ def test_fetch_backlog_issues_filters_by_type_status_and_assignee() -> None:
     result = bu.fetch_backlog_issues(_run_cmd_from(responses), "acme", 9, _LOGIN)
 
     assert [issue["number"] for issue in result] == [1, 2]
-    assert result[0]["assignee"] == "you"
-    assert result[1]["assignee"] == "unassigned"
+    assert result[0]["assignee"] == "You"
+    assert result[1]["assignee"] == "Unassigned"
 
 
 def test_fetch_backlog_issues_excludes_issues_blocked_by_an_open_issue() -> None:
@@ -108,6 +108,27 @@ def test_fetch_backlog_issues_excludes_issues_blocked_by_an_open_issue() -> None
     assert [issue["number"] for issue in result] == [2]
 
 
+def test_fetch_backlog_issues_renders_null_priority_as_unset() -> None:
+    """A missing priority is rendered as Unset and sorts last."""
+    project_items = json.dumps({"items": [
+        {
+            "status": "Todo", "type": "Task", "assignees": ["octocat"],
+            "priority": None,
+            "content": {"type": "Issue", "number": 1, "title": "A", "url": "u1"},
+        },
+    ]})
+    responses = {
+        ("gh", "project", "item-list", "9", "--owner", "acme",
+         "--format", "json", "--limit", "200"): project_items,
+    }
+    key, body = _no_deps_response(1)
+    responses[key] = body
+
+    result = bu.fetch_backlog_issues(_run_cmd_from(responses), "acme", 9, _LOGIN)
+
+    assert result[0]["priority"] == "Unset"
+
+
 def test_fetch_backlog_issues_sorts_by_assignee_priority_then_blocking_count() -> None:
     """Sort order: assigned before unassigned, then priority, then blocking count."""
     project_items = json.dumps({"items": [
@@ -142,5 +163,6 @@ def test_fetch_backlog_issues_sorts_by_assignee_priority_then_blocking_count() -
     result = bu.fetch_backlog_issues(_run_cmd_from(responses), "acme", 9, _LOGIN)
 
     assert [issue["number"] for issue in result] == [3, 2, 1]
-    assert result[0]["blocking"] == [99]
+    assert result[0]["blocking"] == "#99"
+    assert result[1]["blocking"] == "Not blocking"
     assert result[2]["priority"] == "High"

@@ -1,4 +1,4 @@
-name: Self-Approve PR
+name: Self-Review Signal
 
 on:
   pull_request_review:
@@ -8,9 +8,9 @@ permissions:
   pull-requests: write
 
 jobs:
-  approve:
-    name: Self-Approve PR
+  signal:
+    name: Self-Review Signal
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: ./.github/actions/self-approve-pr
+      - uses: ./.github/actions/self-review-signal

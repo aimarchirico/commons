@@ -17,11 +17,11 @@ def test_create_issue_recursive_records_id_and_pending_deps(
     def fake_run_cmd(_args: list[str]) -> str:
         return "https://github.com/acme/widgets/issues/101"
 
-    monkeypatch.setattr(ci, "_run_cmd", fake_run_cmd)
+    monkeypatch.setattr(ci, "run_cmd", fake_run_cmd)
     id_map: dict[str, str] = {}
     pending_deps: list[tuple[str, list[str]]] = []
 
-    ci._create_issue_recursive(
+    ci.create_issue_recursive(
         {"title": "Fix bug", "id": "fix", "blocked_by": ["migration"]},
         None, "acme", _NO_PROJECT_INFO, (id_map, pending_deps),
     )
@@ -41,7 +41,7 @@ def test_wire_blocked_by_resolves_ids_and_edits_the_issue() -> None:
     id_map = {"migration": "100", "schema": "99"}
     pending_deps = [("101", ["migration", "schema"])]
 
-    ci._wire_blocked_by(fake_run_cmd, id_map, pending_deps)
+    ci.wire_blocked_by(fake_run_cmd, id_map, pending_deps)
 
     assert calls == [[
         "gh", "issue", "edit", "101", "--add-blocked-by", "100,99",
@@ -58,7 +58,7 @@ def test_wire_blocked_by_warns_and_skips_unresolved_ids(
         calls.append(args)
         return ""
 
-    ci._wire_blocked_by(fake_run_cmd, {}, [("101", ["missing"])])
+    ci.wire_blocked_by(fake_run_cmd, {}, [("101", ["missing"])])
 
     assert calls == []
     assert "does not match any created issue" in capsys.readouterr().err
@@ -71,7 +71,7 @@ def test_wire_blocked_by_warns_when_gh_edit_fails(
     def fake_run_cmd(_args: list[str]) -> str:
         raise subprocess.CalledProcessError(1, ["gh"])
 
-    ci._wire_blocked_by(fake_run_cmd, {"a": "100"}, [("101", ["a"])])
+    ci.wire_blocked_by(fake_run_cmd, {"a": "100"}, [("101", ["a"])])
 
     assert "Warning: Failed to set blocked-by" in capsys.readouterr().err
 
@@ -98,7 +98,7 @@ def test_main_wires_blocked_by_across_sibling_issues(
         "https://github.com/acme/widgets/issues/102",
     ])
     calls: list[list[str]] = []
-    base_run_cmd = ci._run_cmd
+    base_run_cmd = ci.run_cmd
 
     def fake_run_cmd(args: list[str]) -> str:
         calls.append(args)
@@ -106,7 +106,7 @@ def test_main_wires_blocked_by_across_sibling_issues(
             return next(urls)
         return base_run_cmd(args)
 
-    monkeypatch.setattr(ci, "_run_cmd", fake_run_cmd)
+    monkeypatch.setattr(ci, "run_cmd", fake_run_cmd)
 
     ci.main()
 

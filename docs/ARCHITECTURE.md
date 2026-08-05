@@ -5,6 +5,8 @@ repository; implementation detail lives in each subsystem's README.
 
 ## Data Flow
 
+### Package Publishing & Monorepo Distribution
+
 Commons is built and published from a single monorepo. Release Please cuts
 versioned releases, the matching artifacts are published to GitHub Packages, and
 downstream repositories consume them.
@@ -36,6 +38,8 @@ graph LR
     python_src -->|git dependency @ main| consumers
     plugin -->|plugin install| consumers
 ```
+
+### Provisioning Commands & External Services
 
 Alongside the libraries and configs it publishes, Commons publishes CLI
 commands that provision the external resources a newly scaffolded project
@@ -76,6 +80,53 @@ graph LR
 
 Command and variable reference: [npm/README.md](../npm/README.md).
 
+### Agent Skill & Subagent Execution
+
+The agent plugin packages reusable workflows (`skills/`) and subagent prompts
+(`agents/`). Agent skills delegate task execution to specialized subagents
+or deterministic Python scripts, which execute GitHub GraphQL/REST operations
+and manage git worktrees.
+
+```mermaid
+graph TD
+    user["User / Developer"]
+    skill["Agent Skill<br/>(plugin/skills/*)"]
+    agents["Subagents<br/>(plugin/agents/*)"]
+    scripts["Python Scripts<br/>(skills/*/scripts/*)"]
+    github_git["GitHub API & Git Repositories"]
+
+    user -->|invokes| skill
+    skill -->|delegates task| agents
+    skill -->|runs script| scripts
+    agents -->|executes via| scripts
+    scripts -->|API calls & worktrees| github_git
+```
+
+#### Skill Selection & Development Lifecycle Flow
+
+```mermaid
+graph TD
+    start_proj["Brand-New Project"] --> spec["/commons:spec<br/>Draft Initial Project Specs"]
+    spec --> issue["/commons:issue<br/>Create Issue Hierarchy"]
+
+    survey["Survey Work"] --> triage["/commons:triage<br/>Survey PRs & Backlog"]
+    triage -->|New Task/Story| issue
+    triage -->|Existing Issue| solve["/commons:solve<br/>Implement Issue Fix"]
+    issue --> solve
+
+    solve --> pr["/commons:pr<br/>Create Pull Request"]
+    pr --> review["/commons:review<br/>Parallel Code Review"]
+
+    review -->|Changes Requested| resolve["/commons:resolve<br/>Address Feedback & Re-review"]
+    resolve --> review
+
+    review -->|Approved| merge["Merge PR"]
+
+    subgraph FastTrack["Fast-Track Flow"]
+        ship["/commons:ship<br/>Chains issue → solve → review → resolve"]
+    end
+```
+
 ## Infrastructure Overview
 
 | Layer             | Technology                                               | Hosting                                       |
@@ -97,5 +148,5 @@ Command and variable reference: [npm/README.md](../npm/README.md).
 ├── maven/      # Kotlin backend modules and the Gradle convention plugin
 ├── npm/        # frontend configuration packages and the API CLI
 ├── python/     # Python package(s): shared ruff/coverage config + CLI, git dependency @ main
-└── plugin/     # Claude Code plugin (skills/, agents/), the only tree consumers install
+└── plugin/     # Claude Code plugin (skills/, agents/, shared/), the only tree consumers install
 ```

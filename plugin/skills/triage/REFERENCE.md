@@ -1,56 +1,51 @@
 # Triage Reference
 
-Render up to three tables, but only if their source lists are not empty. Display
-them in this order, each pre-sorted by `collect_triage.py`'s priority order
-(never re-sort): PRs to review (from `prs_to_review`), Your PRs (from
-`your_prs`), and Backlog issues (from `backlog_issues`). Every table's Item
-column is
-`` [#`<number>`](<url>) `<title>` ``, linking only the number.
+Start the output with a summary header:
+
+```markdown
+### Triage Survey: `<owner>/<repo>`
+* **User**: `@<login>`
+* **Status**: <count> active item(s) needing attention (items are priority-ranked by actionability below)
+```
+
+Followed by a divider (`---`), then render up to three tables, but only if
+their source list is not empty, in this order, each pre-sorted by
+`collect_triage.py`'s priority order (never re-sort): PRs to review (from
+`prs_to_review`), Your PRs (from `your_prs`), and Backlog issues (from
+`backlog_issues`).
+Every table's Item column is `` [#`<number>`](<url>) `<title>` ``,
+linking only the number. Every other column is rendered verbatim from the
+field of the same name; none of them need further mapping.
 
 ## PRs to review (from `prs_to_review`)
 
-| Item                         | Reviews     | Suggestion                           |
-| :--------------------------- | :---------- | :----------------------------------- |
-| `[#<number>](<url>) <title>` | `<reviews>` | Review the PR with `/commons:review` |
-
-`reviews` comes from the `reviews` field:
-
-| `reviews` value            | Rendered as              |
-| :------------------------- | :----------------------- |
-| `awaiting_your_review`     | Awaiting your review     |
-| `not_awaiting_your_review` | Not awaiting your review |
+| Item                         | State     | Suggestion                                         |
+| :--------------------------- | :-------- | :------------------------------------------------- |
+| `[#<number>](<url>) <title>` | `<state>` | Review the PR with `/commons:review --pr <number>` |
 
 ## Your PRs (from `your_prs`)
 
-| Item                         | Status     | Reviews     | Suggestion     |
-| :--------------------------- | :--------- | :---------- | :------------- |
-| `[#<number>](<url>) <title>` | `<status>` | `<reviews>` | `<suggestion>` |
+| Item                         | State     | Threads     | Comments     | Suggestion     |
+| :--------------------------- | :-------- | :---------- | :----------- | :------------- |
+| `[#<number>](<url>) <title>` | `<state>` | `<threads>` | `<comments>` | `<suggestion>` |
 
-`status` comes from the `status` field, `reviews` from the `reviews` field.
-The Suggestion for each row comes from the `(status, reviews)` pair below:
+If `suggestion` is `null`: the entry is a draft. If it has a non-null
+`linked_issue`, fetch that issue's title and body, plus the PR's own
+description and diff:
 
-| `status` value | `reviews` value        | Rendered status | Rendered reviews     | Suggestion                                                                                       |
-| :------------- | :--------------------- | :-------------- | :------------------- | :----------------------------------------------------------------------------------------------- |
-| `approved`     | `no_unresolved_review` | Approved        | No unresolved review | Merge the PR                                                                                     |
-| `approved`     | `unresolved_review`    | Approved        | Unresolved review    | Resolve the unresolved review with `/commons:resolve`, then merge the PR                         |
-| `not_approved` | `unresolved_review`    | Not approved    | Unresolved review    | Resolve the unresolved review with `/commons:resolve`                                            |
-| `not_approved` | `no_unresolved_review` | Not approved    | No unresolved review | Request a re-review with `/commons:review`                                                       |
-| `not_approved` | `not_reviewed`         | Not approved    | Not reviewed         | Self-review the PR with `/commons:review`                                                        |
-| `draft`        | `not_reviewed`         | Draft           | Not reviewed         | The completeness judgment described in `${CLAUDE_PLUGIN_ROOT}/skills/triage/SKILL.md`'s workflow |
+```bash
+gh issue view <issue-number> --json title,body
+gh pr view <pr-number> --json body
+gh pr diff <pr-number>
+```
+
+and judge whether the implementation looks complete against what the issue
+asks for, rendering the Suggestion cell as "Continue implementing" or "Mark
+ready for review". If `linked_issue` is null, say plainly that there's no
+linked issue to check completeness against, rather than guessing.
 
 ## Backlog issues (from `backlog_issues`)
 
-| Item                         | Assignee     | Priority     | Blocking     | Suggestion                            |
-| :--------------------------- | :----------- | :----------- | :----------- | :------------------------------------ |
-| `[#<number>](<url>) <title>` | `<assignee>` | `<priority>` | `<blocking>` | Solve the issue with `/commons:solve` |
-
-`assignee`, `priority`, and `blocking` come from the fields of the same name:
-
-| Field      | Source value              | Rendered as       |
-| :--------- | :------------------------ | :---------------- |
-| `assignee` | `you`                     | You               |
-| `assignee` | `unassigned`              | Unassigned        |
-| `priority` | `Low` / `Medium` / `High` | as-is             |
-| `priority` | `null`                    | Unset             |
-| `blocking` | non-empty array           | `#<n>, #<m>, ...` |
-| `blocking` | empty array               | Not blocking      |
+| Item                         | Assignee     | Priority     | Blocking     | Suggestion                                             |
+| :--------------------------- | :----------- | :----------- | :----------- | :----------------------------------------------------- |
+| `[#<number>](<url>) <title>` | `<assignee>` | `<priority>` | `<blocking>` | Solve the issue with `/commons:solve --issue <number>` |

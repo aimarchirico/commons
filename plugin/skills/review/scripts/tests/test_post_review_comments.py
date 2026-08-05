@@ -1,4 +1,4 @@
-"""Tests for post_review_comments.py, covering both the library call and CLI."""
+"""Tests for post_review_comments.py, covering both the library calls and CLI."""
 
 import json
 import subprocess
@@ -9,6 +9,69 @@ import post_review_comments as prc
 import pytest
 
 _REPO_OUTPUT = json.dumps({"owner": {"login": "acme"}, "name": "widgets"})
+
+
+def test_build_review_approves_when_there_are_no_findings() -> None:
+    """An empty findings list renders the bare Approved. verdict."""
+    review = prc.build_review([])
+
+    assert review == {"body": "Approved.", "comments": []}
+
+
+def test_build_review_renders_resolvable_findings_as_inline_comments() -> None:
+    """Findings with a file/line become comments; the body counts them."""
+    findings = [
+        {
+            "file": "a.py", "line": 3, "summary": "Off-by-one",
+            "failure_scenario": "Loop runs one too many times.", "category": "logic",
+        },
+        {
+            "file": "b.py", "line": 7, "summary": "Missing check",
+            "failure_scenario": "Null dereference on empty input.",
+            "category": "correctness",
+        },
+    ]
+
+    review = prc.build_review(findings)
+
+    assert review["comments"] == [
+        {
+            "path": "a.py", "line": 3,
+            "body": "**Off-by-one**\n\nLoop runs one too many times.\n\n"
+                    "_category: logic_",
+        },
+        {
+            "path": "b.py", "line": 7,
+            "body": "**Missing check**\n\nNull dereference on empty input.\n\n"
+                    "_category: correctness_",
+        },
+    ]
+    assert review["body"].startswith("## Review summary\n\nChanges requested.\n\n")
+    assert "2 findings" in review["body"]
+    assert "2 posted as inline comments" in review["body"]
+
+
+def test_build_review_lists_unresolvable_findings_in_the_summary() -> None:
+    """Findings without a resolvable file/line are listed, not posted inline."""
+    findings = [
+        {
+            "file": "a.py", "line": 3, "summary": "Off-by-one",
+            "failure_scenario": "Loop runs one too many times.", "category": "logic",
+        },
+        {
+            "file": None, "line": None, "summary": "Design concern",
+            "failure_scenario": "No single file to point at.",
+            "category": "compliance",
+        },
+    ]
+
+    review = prc.build_review(findings)
+
+    assert len(review["comments"]) == 1
+    assert "1 posted as inline comments" in review["body"]
+    assert "no resolvable file/line" in review["body"]
+    assert "**Design concern**: No single file to point at. " in review["body"]
+    assert "(_category: compliance_)" in review["body"]
 
 
 def test_post_review_sends_body_and_comments_to_the_reviews_endpoint() -> None:
@@ -43,9 +106,11 @@ def test_main_exits_when_gh_is_not_installed(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """main() fails fast when the gh CLI isn't on PATH."""
-    review_file = tmp_path / "review.json"
-    review_file.write_text("{}")
-    monkeypatch.setattr(sys, "argv", ["post_review_comments", "42", str(review_file)])
+    findings_file = tmp_path / "findings.json"
+    findings_file.write_text("[]")
+    monkeypatch.setattr(
+        sys, "argv", ["post_review_comments", "42", str(findings_file)],
+    )
     monkeypatch.setattr(prc.shutil, "which", lambda _name: None)
 
     with pytest.raises(SystemExit):
@@ -55,10 +120,12 @@ def test_main_exits_when_gh_is_not_installed(
 def test_main_exits_when_json_file_is_invalid(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """main() exits cleanly when the review file isn't valid JSON."""
-    review_file = tmp_path / "review.json"
-    review_file.write_text("not json")
-    monkeypatch.setattr(sys, "argv", ["post_review_comments", "42", str(review_file)])
+    """main() exits cleanly when the findings file isn't valid JSON."""
+    findings_file = tmp_path / "findings.json"
+    findings_file.write_text("not json")
+    monkeypatch.setattr(
+        sys, "argv", ["post_review_comments", "42", str(findings_file)],
+    )
     monkeypatch.setattr(prc.shutil, "which", lambda _name: "/usr/bin/gh")
 
     with pytest.raises(SystemExit):
@@ -71,9 +138,11 @@ def test_main_posts_review_and_deletes_the_file_on_success(
     capsys: pytest.CaptureFixture[str],
 ) -> None:
     """main() posts the review, prints a confirmation, and cleans up the file."""
-    review_file = tmp_path / "review.json"
-    review_file.write_text(json.dumps({"body": "LGTM", "comments": []}))
-    monkeypatch.setattr(sys, "argv", ["post_review_comments", "42", str(review_file)])
+    findings_file = tmp_path / "findings.json"
+    findings_file.write_text("[]")
+    monkeypatch.setattr(
+        sys, "argv", ["post_review_comments", "42", str(findings_file)],
+    )
     monkeypatch.setattr(prc.shutil, "which", lambda _name: "/usr/bin/gh")
 
     def fake_run_cmd(args: list[str], input_text: str | None = None) -> str:
@@ -85,16 +154,18 @@ def test_main_posts_review_and_deletes_the_file_on_success(
     prc.main()
 
     assert "Posted review to PR #42." in capsys.readouterr().out
-    assert not review_file.exists()
+    assert not findings_file.exists()
 
 
 def test_main_exits_and_cleans_up_when_gh_command_fails(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
     """main() exits and still deletes the file when the gh call fails."""
-    review_file = tmp_path / "review.json"
-    review_file.write_text(json.dumps({"body": "LGTM", "comments": []}))
-    monkeypatch.setattr(sys, "argv", ["post_review_comments", "42", str(review_file)])
+    findings_file = tmp_path / "findings.json"
+    findings_file.write_text("[]")
+    monkeypatch.setattr(
+        sys, "argv", ["post_review_comments", "42", str(findings_file)],
+    )
     monkeypatch.setattr(prc.shutil, "which", lambda _name: "/usr/bin/gh")
 
     def fake_run_cmd(args: list[str], input_text: str | None = None) -> str:
@@ -106,4 +177,4 @@ def test_main_exits_and_cleans_up_when_gh_command_fails(
     with pytest.raises(SystemExit):
         prc.main()
 
-    assert not review_file.exists()
+    assert not findings_file.exists()

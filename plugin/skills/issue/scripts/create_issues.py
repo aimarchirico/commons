@@ -20,12 +20,16 @@ from project_utils import (
 MIN_ARG_COUNT = 2
 
 
-def _run_cmd(args: list[str]) -> str:
-    result = subprocess.run(args, capture_output=True, text=True, check=True)
+def run_cmd(args: list[str]) -> str:
+    """Execute a shell command via subprocess and return stripped output."""
+    result = subprocess.run(
+        args, capture_output=True, text=True, encoding="utf-8", check=True,
+    )
     return result.stdout.strip()
 
 
-def _check_dependencies() -> None:
+def check_dependencies() -> None:
+    """Ensure required CLI tools and extensions are installed and authenticated."""
     gh_bin = shutil.which("gh")
     if not gh_bin:
         sys.stderr.write(
@@ -43,7 +47,7 @@ def _check_dependencies() -> None:
         sys.exit(1)
 
     try:
-        output = _run_cmd(["gh", "extension", "list"])
+        output = run_cmd(["gh", "extension", "list"])
         if "gh-sub-issue" not in output:
             sys.stdout.write("Installing gh-sub-issue extension...\n")
             subprocess.run(
@@ -56,7 +60,8 @@ def _check_dependencies() -> None:
         )
 
 
-def _fail_if_errors(errors: list[str]) -> None:
+def fail_if_errors(errors: list[str]) -> None:
+    """Print setup error messages to stderr and exit if any exist."""
     if errors:
         sys.stderr.write(
             "Error: GitHub project setup is incomplete. "
@@ -70,9 +75,10 @@ def _fail_if_errors(errors: list[str]) -> None:
 DepState = tuple[dict[str, str], list[tuple[str, list[str]]]]
 
 
-def _record_dependency_state(
+def record_dependency_state(
     item: dict[str, Any], issue_id: str, dep_state: DepState,
 ) -> None:
+    """Record issue ID mappings and pending blocked-by dependencies."""
     id_map, pending_deps = dep_state
     if local_id := item.get("id"):
         id_map[local_id] = issue_id
@@ -80,13 +86,14 @@ def _record_dependency_state(
         pending_deps.append((issue_id, blocked_by))
 
 
-def _create_issue_recursive(
+def create_issue_recursive(
     item: dict[str, Any],
     parent_id: str | None,
     owner: str,
     project_info: tuple[int | None, str | None, str | None, str | None, dict[str, Any]],
     dep_state: DepState | None = None,
 ) -> None:
+    """Recursively create a GitHub issue and its children, linking to projects."""
     if dep_state is None:
         dep_state = ({}, [])
     project_number, project_id, type_field_id, priority_field_id, fields_data = (
@@ -115,7 +122,7 @@ def _create_issue_recursive(
             "--parent", str(parent_id),
         ]
 
-    issue_url_raw = _run_cmd(args)
+    issue_url_raw = run_cmd(args)
     issue_url = next(
         (
             w for w in issue_url_raw.split()
@@ -127,25 +134,25 @@ def _create_issue_recursive(
     level_str = "child" if parent_id else "top-level"
     sys.stdout.write(f"Created {level_str} issue: {issue_id}\n")
 
-    _record_dependency_state(item, issue_id, dep_state)
+    record_dependency_state(item, issue_id, dep_state)
 
     if project_id and issue_url:
         try:
             sys.stdout.write(
                 f"Adding issue {issue_id} to project #{project_number}...\n",
             )
-            item_output = _run_cmd([
+            item_output = run_cmd([
                 "gh", "project", "item-add", str(project_number),
                 "--owner", owner, "--url", issue_url, "--format", "json",
             ])
             item_data = json.loads(item_output)
             if item_id := item_data.get("id"):
                 set_project_field(
-                    _run_cmd, item_id, project_id,
+                    run_cmd, item_id, project_id,
                     ("Type", type_field_id, type_val), fields_data,
                 )
                 set_project_field(
-                    _run_cmd, item_id, project_id,
+                    run_cmd, item_id, project_id,
                     ("Priority", priority_field_id, priority_val), fields_data,
                 )
         except (subprocess.CalledProcessError, json.JSONDecodeError, KeyError) as e:
@@ -155,7 +162,7 @@ def _create_issue_recursive(
             )
 
     for child in item.get("children", []):
-        _create_issue_recursive(
+        create_issue_recursive(
             child,
             issue_id,
             owner,
@@ -164,11 +171,12 @@ def _create_issue_recursive(
         )
 
 
-def _wire_blocked_by(
+def wire_blocked_by(
     run_cmd: Callable[[list[str]], str],
     id_map: dict[str, str],
     pending_deps: list[tuple[str, list[str]]],
 ) -> None:
+    """Edit created GitHub issues to add blocked-by relationships."""
     for issue_id, blocked_by in pending_deps:
         numbers = []
         for local_id in blocked_by:
@@ -220,17 +228,17 @@ def main() -> None:
         sys.exit(1)
 
     try:
-        _check_dependencies()
-        owner, project_number, project_id, context_error = get_project_context(_run_cmd)
+        check_dependencies()
+        owner, project_number, project_id, context_error = get_project_context(run_cmd)
         type_field_id, priority_field_id, fields_data, fields_errors = (
-            get_project_fields(_run_cmd, owner or "", project_number)
+            get_project_fields(run_cmd, owner or "", project_number)
         )
         field_ids = (project_number, project_id, type_field_id, priority_field_id)
         error_info = (context_error, fields_errors)
         errors = validate_project_setup(
             data.get("items", []), field_ids, fields_data, error_info,
         )
-        _fail_if_errors(errors)
+        fail_if_errors(errors)
 
         sys.stdout.write("Processing and creating issues...\n")
         project_info = (
@@ -240,13 +248,13 @@ def main() -> None:
         pending_deps: list[tuple[str, list[str]]] = []
         dep_state: DepState = (id_map, pending_deps)
         for item in data.get("items", []):
-            _create_issue_recursive(
+            create_issue_recursive(
                 item, None, owner or "", project_info, dep_state,
             )
 
         if pending_deps:
             sys.stdout.write("Wiring blocked-by relationships...\n")
-            _wire_blocked_by(_run_cmd, id_map, pending_deps)
+            wire_blocked_by(run_cmd, id_map, pending_deps)
 
         sys.stdout.write("Successfully created all issues.\n")
     finally:
@@ -256,3 +264,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

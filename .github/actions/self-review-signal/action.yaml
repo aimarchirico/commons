@@ -1,0 +1,35 @@
+name: Self-Review Signal
+description: Submit a real review verdict when a submitted review's body signals one, since PR authors can't review their own PR.
+inputs:
+  token:
+    description: Token used to submit the review
+    required: false
+    default: ${{ github.token }}
+runs:
+  using: composite
+  steps:
+    - name: Self-Review Signal
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ inputs.token }}
+        script: |
+          const body = context.payload.review.body || "";
+          const line = body
+            .split("\n")
+            .map((l) => l.trim())
+            .find((l) => l !== "" && !l.startsWith("#")) || "";
+          let event;
+          if (line.startsWith("Approved.")) {
+            event = "APPROVE";
+          } else if (line.startsWith("Changes requested.")) {
+            event = "REQUEST_CHANGES";
+          } else {
+            core.info("Review body carries no recognized verdict, skipping.");
+            return;
+          }
+          await github.rest.pulls.createReview({
+            ...context.repo,
+            pull_number: context.payload.pull_request.number,
+            event,
+          });
+          core.info(`Submitted ${event} on PR #${context.payload.pull_request.number}`);

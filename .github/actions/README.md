@@ -19,7 +19,7 @@ Each directory represents a standalone reusable action:
 - `docker-release/`: Builds and pushes Docker images.
 - `java-task/`: Reusable Java CI tasks.
 - `node-task/`: Reusable Node.js CI tasks.
-- `self-approve-pr/`: Approves a pull request when a posted review verdict is "Approved.".
+- `self-review-signal/`: Submits a real review matching a posted verdict comment.
 - `vps-deploy/`: Deploys applications to a VPS.
 
 ## Environment Variables

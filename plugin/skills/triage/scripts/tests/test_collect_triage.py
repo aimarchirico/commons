@@ -59,7 +59,7 @@ def _base_responses(
         ): prs_to_review,
         (
             "gh", "pr", "list", "--search", "is:open author:@me",
-            "--json", "number,title,url,isDraft,reviewDecision,closingIssuesReferences",
+            "--json", "number,title,url,isDraft,closingIssuesReferences",
         ): your_prs,
         (
             "gh", "project", "item-list", "9", "--owner", "acme",
@@ -69,7 +69,11 @@ def _base_responses(
 
 
 def _review_state_response(
-    *, unresolved: bool, has_reviews: bool, number: int,
+    *,
+    number: int,
+    review_state: str | None = None,
+    thread_resolutions: list[bool] | None = None,
+    comment_bodies: list[str] | None = None,
 ) -> tuple[tuple[str, ...], str]:
     key = _normalize([
         "gh", "api", "graphql", "-f", "owner=acme", "-f", "repo=widgets",
@@ -77,8 +81,19 @@ def _review_state_response(
     ])
     body = json.dumps({
         "data": {"repository": {"pullRequest": {
-            "reviewThreads": {"nodes": [{"isResolved": not unresolved}]},
-            "reviews": {"totalCount": 1 if has_reviews else 0},
+            "latestReview": {
+                "nodes": [] if review_state is None else [{"state": review_state}],
+            },
+            "allReviews": {"nodes": []},
+            "reviewThreads": {
+                "nodes": [{"isResolved": r} for r in (thread_resolutions or [])],
+            },
+            "comments": {
+                "nodes": [
+                    {"body": body_text, "createdAt": f"2024-01-01T00:00:{i:02d}Z"}
+                    for i, body_text in enumerate(comment_bodies or [])
+                ],
+            },
         }}},
     })
     return key, body
@@ -128,40 +143,50 @@ def test_main_drops_bot_and_approved_prs_from_review_list(
 
     result = json.loads(capsys.readouterr().out)
     assert [pr["number"] for pr in result["prs_to_review"]] == [4, 3]
-    assert result["prs_to_review"][0]["reviews"] == "awaiting_your_review"
-    assert result["prs_to_review"][1]["reviews"] == "not_awaiting_your_review"
+    assert result["prs_to_review"][0]["state"] == "Awaiting your review"
+    assert result["prs_to_review"][1]["state"] == "Not awaiting your review"
 
 
 def test_main_classifies_your_prs_and_includes_linked_issue_for_drafts(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str],
 ) -> None:
-    """Your PRs sort approved, unresolved, not-reviewed, then draft."""
+    """Your PRs sort merge, resolve-then-merge, resolve, self-review, then draft."""
     your_prs = json.dumps([
         {
             "number": 1, "title": "Draft", "url": "u1", "isDraft": True,
-            "reviewDecision": "", "closingIssuesReferences": [
-                {"number": 42, "url": "issue-url"},
-            ],
+            "closingIssuesReferences": [{"number": 42, "url": "issue-url"}],
         },
         {
             "number": 2, "title": "Approved clean", "url": "u2", "isDraft": False,
-            "reviewDecision": "APPROVED", "closingIssuesReferences": [],
+            "closingIssuesReferences": [],
         },
         {
-            "number": 3, "title": "Needs review", "url": "u3", "isDraft": False,
-            "reviewDecision": "", "closingIssuesReferences": [],
+            "number": 3, "title": "Approved unresolved", "url": "u3", "isDraft": False,
+            "closingIssuesReferences": [],
         },
         {
-            "number": 4, "title": "Untouched", "url": "u4", "isDraft": False,
-            "reviewDecision": "", "closingIssuesReferences": [],
+            "number": 4, "title": "Changes requested", "url": "u4", "isDraft": False,
+            "closingIssuesReferences": [],
+        },
+        {
+            "number": 5, "title": "Untouched", "url": "u5", "isDraft": False,
+            "closingIssuesReferences": [],
         },
     ])
     responses = _base_responses(your_prs=your_prs)
-    key, body = _review_state_response(unresolved=False, has_reviews=True, number=2)
+    key, body = _review_state_response(
+        number=2, review_state="APPROVED", thread_resolutions=[True],
+    )
     responses[key] = body
-    key, body = _review_state_response(unresolved=True, has_reviews=True, number=3)
+    key, body = _review_state_response(
+        number=3, review_state="APPROVED", thread_resolutions=[False],
+    )
     responses[key] = body
-    key, body = _review_state_response(unresolved=False, has_reviews=False, number=4)
+    key, body = _review_state_response(
+        number=4, review_state="CHANGES_REQUESTED", thread_resolutions=[False],
+    )
+    responses[key] = body
+    key, body = _review_state_response(number=5, review_state=None)
     responses[key] = body
     _install_gh(monkeypatch, responses)
 
@@ -169,15 +194,42 @@ def test_main_classifies_your_prs_and_includes_linked_issue_for_drafts(
 
     result = json.loads(capsys.readouterr().out)
     yours = result["your_prs"]
-    assert [pr["number"] for pr in yours] == [2, 3, 4, 1]
-    statuses = [(pr["status"], pr["reviews"]) for pr in yours]
-    assert statuses == [
-        ("approved", "no_unresolved_review"),
-        ("not_approved", "unresolved_review"),
-        ("not_approved", "not_reviewed"),
-        ("draft", "not_reviewed"),
+    assert [pr["number"] for pr in yours] == [2, 3, 4, 5, 1]
+    assert [pr["suggestion"] for pr in yours] == [
+        "Merge the PR",
+        (
+            "Resolve the unresolved review with `/commons:resolve --pr 3`, "
+            "then merge the PR"
+        ),
+        "Resolve the unresolved review with `/commons:resolve --pr 4`",
+        "Self-review the PR with `/commons:review --pr 5`",
+        None,
     ]
-    assert yours[3]["linked_issue"] == {"number": 42, "url": "issue-url"}
+    assert [pr["state"] for pr in yours] == [
+        "Approved", "Approved", "Changes requested", "None", "Not ready for review",
+    ]
+    assert yours[4]["linked_issue"] == {"number": 42, "url": "issue-url"}
+
+
+def test_main_computes_real_review_state_for_approved_draft_prs(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str],
+) -> None:
+    """A draft PR is always not_ready regardless of any underlying review activity."""
+    your_prs = json.dumps([
+        {
+            "number": 5, "title": "Approved draft", "url": "u5", "isDraft": True,
+            "closingIssuesReferences": [],
+        },
+    ])
+    _install_gh(monkeypatch, _base_responses(your_prs=your_prs))
+
+    ct.main()
+
+    result = json.loads(capsys.readouterr().out)
+    yours = result["your_prs"]
+    assert yours[0]["suggestion"] is None
+    assert yours[0]["state"] == "Not ready for review"
+    assert yours[0]["linked_issue"] is None
 
 
 def test_main_disambiguates_multiple_projects_by_repo_name(
