@@ -1,4 +1,4 @@
-"""Pull request review-state computation shared by triage's collect_triage.py."""
+"""Pull request review-state computation used by triage's collect_triage.py."""
 
 from collections.abc import Callable
 from typing import Any
