@@ -51,10 +51,10 @@ def build_review(findings: list[dict[str, Any]]) -> dict[str, Any]:
     body leads with a ``## Review summary`` header, then the explicit
     verdict as its own line, verbatim: ``Approved.`` if ``findings`` is
     empty (with no header, since there's nothing to summarize), otherwise
-    ``Requesting changes.`` (the self-review-signal GitHub Action skips
-    leading blank/header lines to find this verdict, then submits a real
-    review on the user's behalf, since the user can't approve or request
-    changes on their own PR).
+    ``Requesting changes.`` (if the repo has the self-review-signal GitHub
+    Action configured, it skips leading blank/header lines to find this
+    verdict, then may submit a real review on the user's behalf, since the
+    user can't approve or request changes on their own PR).
     """
     def _is_resolvable(finding: dict[str, Any]) -> bool:
         return bool(finding.get("file")) and finding.get("line") is not None
