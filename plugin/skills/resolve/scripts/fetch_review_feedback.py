@@ -50,7 +50,7 @@ def fetch_review_feedback(
     """Fetch a PR's open feedback: unresolved threads and comments.
 
     "Open" means unresolved threads and comments since the last
-    ``Resolved.`` checkpoint; see ``plugin_shared.pr_feedback``.
+    ``Resolved.`` checkpoint; see ``pr_feedback.py``.
     """
     repo_output = run_cmd(["gh", "repo", "view", "--json", "owner,name"])
     repo_data = json.loads(repo_output)

@@ -59,9 +59,9 @@ def post_replies(
 
     Posts one conversation-level reply last, built from ``conversation_summary``
     via ``_render_conversation_reply`` (a ``## Resolution summary`` header
-    followed by the literal verdict ``Resolved.``; `/commons:triage` detects
-    this by skipping leading blank/header lines, not by checking whether the
-    reply merely starts with ``Resolved.``).
+    followed by the verdict ``Resolved.``; `/commons:triage` detects this by
+    skipping leading blank/header lines and checking that the first
+    substantive line starts with ``Resolved.``).
     """
     repo_output = run_cmd(["gh", "repo", "view", "--json", "owner,name"])
     repo_data = json.loads(repo_output)

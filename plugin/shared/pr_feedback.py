@@ -3,8 +3,8 @@
 Used by both the ``triage`` skill (to compute an aggregate state) and the
 ``resolve`` skill (to get the actual items to draft fixes for), so both
 agree on what counts as "unresolved" instead of maintaining separate,
-possibly diverging definitions. Reached via a ``sys.path`` bootstrap from
-each consuming script rather than an installed package, since skill
+possibly diverging definitions. Dynamically loaded by path from each
+consuming script rather than as an installed package, since skill
 scripts run as plain ``python3 script.py`` with no venv/dependency setup.
 """
 
@@ -28,7 +28,7 @@ def comments_since_checkpoint(comments: list[dict[str, Any]]) -> list[dict[str, 
     """Return comments after the last ``Resolved.`` checkpoint, sorted by time.
 
     A checkpoint is a comment whose first substantive line (ignoring
-    leading blank/header lines) is the literal verdict ``Resolved.``. If no
+    leading blank/header lines) starts with the verdict ``Resolved.``. If no
     checkpoint exists, every comment is returned.
     """
     ordered = sorted(comments, key=lambda c: c["createdAt"])
