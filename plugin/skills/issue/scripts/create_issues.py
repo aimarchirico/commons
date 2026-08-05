@@ -6,6 +6,7 @@ import json
 import shutil
 import subprocess
 import sys
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
@@ -66,12 +67,28 @@ def _fail_if_errors(errors: list[str]) -> None:
         sys.exit(1)
 
 
+DepState = tuple[dict[str, str], list[tuple[str, list[str]]]]
+
+
+def _record_dependency_state(
+    item: dict[str, Any], issue_id: str, dep_state: DepState,
+) -> None:
+    id_map, pending_deps = dep_state
+    if local_id := item.get("id"):
+        id_map[local_id] = issue_id
+    if blocked_by := item.get("blocked_by"):
+        pending_deps.append((issue_id, blocked_by))
+
+
 def _create_issue_recursive(
     item: dict[str, Any],
     parent_id: str | None,
     owner: str,
     project_info: tuple[int | None, str | None, str | None, str | None, dict[str, Any]],
+    dep_state: DepState | None = None,
 ) -> None:
+    if dep_state is None:
+        dep_state = ({}, [])
     project_number, project_id, type_field_id, priority_field_id, fields_data = (
         project_info
     )
@@ -110,6 +127,8 @@ def _create_issue_recursive(
     level_str = "child" if parent_id else "top-level"
     sys.stdout.write(f"Created {level_str} issue: {issue_id}\n")
 
+    _record_dependency_state(item, issue_id, dep_state)
+
     if project_id and issue_url:
         try:
             sys.stdout.write(
@@ -141,7 +160,42 @@ def _create_issue_recursive(
             issue_id,
             owner,
             project_info,
+            dep_state,
         )
+
+
+def _wire_blocked_by(
+    run_cmd: Callable[[list[str]], str],
+    id_map: dict[str, str],
+    pending_deps: list[tuple[str, list[str]]],
+) -> None:
+    for issue_id, blocked_by in pending_deps:
+        numbers = []
+        for local_id in blocked_by:
+            blocker_id = id_map.get(local_id)
+            if blocker_id is None:
+                sys.stderr.write(
+                    f"Warning: blocked_by id '{local_id}' for issue {issue_id} does "
+                    "not match any created issue; skipping.\n",
+                )
+                continue
+            numbers.append(blocker_id)
+
+        if not numbers:
+            continue
+
+        sys.stdout.write(
+            f"Marking issue {issue_id} as blocked by {', '.join(numbers)}...\n",
+        )
+        try:
+            run_cmd([
+                "gh", "issue", "edit", issue_id,
+                "--add-blocked-by", ",".join(numbers),
+            ])
+        except subprocess.CalledProcessError as e:
+            sys.stderr.write(
+                f"Warning: Failed to set blocked-by for issue {issue_id}. {e}\n",
+            )
 
 
 def main() -> None:
@@ -182,10 +236,17 @@ def main() -> None:
         project_info = (
             project_number, project_id, type_field_id, priority_field_id, fields_data,
         )
+        id_map: dict[str, str] = {}
+        pending_deps: list[tuple[str, list[str]]] = []
+        dep_state: DepState = (id_map, pending_deps)
         for item in data.get("items", []):
             _create_issue_recursive(
-                item, None, owner or "", project_info,
+                item, None, owner or "", project_info, dep_state,
             )
+
+        if pending_deps:
+            sys.stdout.write("Wiring blocked-by relationships...\n")
+            _wire_blocked_by(_run_cmd, id_map, pending_deps)
 
         sys.stdout.write("Successfully created all issues.\n")
     finally:

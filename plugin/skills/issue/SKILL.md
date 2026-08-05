@@ -23,7 +23,12 @@ argument-hint: "[--auto]"
    required logical child issues to completely represent the hierarchy of
    work. Ensure each issue is assigned its type and priority in their
    respective fields based on the definitions in
-   `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md`.
+   `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md`. Also identify any sibling
+   issues that must be done in a specific order (e.g. one issue's
+   implementation depends on another's), and record those as blocked-by
+   relationships using the `id`/`blocked_by` fields below. Do not use
+   blocked-by for parent/child pairs; that relationship is already expressed
+   by nesting.
 3. Show the drafted hierarchy and wait for user approval. Skip this step if
    the `--auto` flag is set, and proceed directly with the drafted
    hierarchy.
@@ -34,15 +39,22 @@ argument-hint: "[--auto]"
    {
      "items": [
        {
+         "id": "string, optional, a local-only label to reference from another item's blocked_by",
          "title": "string",
          "body": "string",
          "type": "string",
          "priority": "string",
+         "blocked_by": ["array of other items' \"id\" values, optional"],
          "children": [/* nested child objects following the same schema */]
        }
      ]
    }
    ```
+
+   `id` and `blocked_by` are local to this file and never sent to GitHub
+   directly; the script resolves `blocked_by` references to the real issue
+   numbers after every issue in the batch has been created, then wires them
+   up as native GitHub "blocked by" relationships.
 
 5. Execute
    `python3 "${CLAUDE_PLUGIN_ROOT}/skills/issue/scripts/create_issues.py" issues.json`
