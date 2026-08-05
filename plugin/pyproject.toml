@@ -4,6 +4,7 @@ version = "1.0.0"
 requires-python = ">=3.13"
 dependencies = [
   "commons-python",
+  "plugin-shared",
 ]
 
 [tool.uv]
@@ -11,3 +12,4 @@ package = false
 
 [tool.uv.sources]
 commons-python = { path = "../python/commons-python" }
+plugin-shared = { path = "shared" }

@@ -4,6 +4,8 @@
 from collections.abc import Callable
 from typing import Any
 
+from plugin_shared.pr_feedback import comments_since_checkpoint, unresolved_threads
+
 _REVIEW_STATE_QUERY = """
 query($owner: String!, $repo: String!, $number: Int!) {
   repository(owner: $owner, name: $repo) {
@@ -22,14 +24,6 @@ _REVIEW_STATE_MAP = {
     "CHANGES_REQUESTED": "changes_requested",
     "COMMENTED": "commented",
 }
-
-
-def _first_substantive_line(body: str) -> str:
-    for line in body.splitlines():
-        stripped = line.strip()
-        if stripped and not stripped.startswith("#"):
-            return stripped
-    return ""
 
 
 def fetch_review_state(
@@ -64,8 +58,8 @@ def fetch_review_state(
     thread_nodes = pr.get("reviewThreads", {}).get("nodes", [])
     threads = (
         "none" if not thread_nodes
-        else "resolved" if all(t["isResolved"] for t in thread_nodes)
-        else "unresolved"
+        else "unresolved" if unresolved_threads(thread_nodes)
+        else "resolved"
     )
 
     all_comments = [
@@ -75,12 +69,10 @@ def fetch_review_state(
         )
         if c.get("body")
     ]
-    all_comments.sort(key=lambda c: c["createdAt"])
     comments = (
         "none" if not all_comments
+        else "unresolved" if comments_since_checkpoint(all_comments)
         else "resolved"
-        if _first_substantive_line(all_comments[-1]["body"]).startswith("Resolved.")
-        else "unresolved"
     )
 
     return {"state": state, "threads": threads, "comments": comments}

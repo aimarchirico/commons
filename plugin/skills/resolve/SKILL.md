@@ -28,13 +28,15 @@ argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
 3. Execute:
 
    ```bash
-   python3 "${CLAUDE_PLUGIN_ROOT}/skills/resolve/scripts/fetch_pr_feedback.py" <pr-number>
+   python3 "${CLAUDE_PLUGIN_ROOT}/skills/resolve/scripts/fetch_review_feedback.py" <pr-number>
    ```
 
-   to fetch the pull request's conversation comments and unresolved review
-   threads as normalized JSON. Delegate to the `implementation-planner`
-   agent, passing this feedback and `<worktree-path>`, to draft a fix plan
-   mapping each piece of feedback to the fix addressing it.
+   to fetch the pull request's open `threads` and `comments` as normalized
+   JSON (unresolved threads, and comments since the last `Resolved.`
+   checkpoint; see `plugin_shared.pr_feedback`). Delegate to the
+   `implementation-planner` agent, passing this feedback and
+   `<worktree-path>`, to draft a fix plan mapping each piece of feedback to
+   the fix addressing it.
 4. Present the drafted plan, and wait for explicit user approval. Skip this
    step if the `--auto` flag is set, and proceed directly with the drafted
    plan.

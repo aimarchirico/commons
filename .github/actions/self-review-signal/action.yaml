@@ -21,7 +21,7 @@ runs:
           let event;
           if (line.startsWith("Approved.")) {
             event = "APPROVE";
-          } else if (line.startsWith("Requesting changes.")) {
+          } else if (line.startsWith("Changes requested.")) {
             event = "REQUEST_CHANGES";
           } else {
             core.info("Review body carries no recognized verdict, skipping.");
