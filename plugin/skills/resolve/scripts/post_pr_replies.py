@@ -28,18 +28,39 @@ def _check_dependencies() -> None:
         sys.exit(1)
 
 
+_RESOLVE_THREAD_MUTATION = """
+mutation($threadId: ID!) {
+  resolveReviewThread(input: {threadId: $threadId}) { thread { id } }
+}
+"""
+
+
+def _resolve_review_threads(run_cmd: Callable[..., str], thread_ids: set[str]) -> None:
+    for thread_id in sorted(thread_ids):
+        sys.stdout.write(f"Resolving review thread {thread_id}...\n")
+        run_cmd([
+            "gh", "api", "graphql",
+            "-f", f"threadId={thread_id}",
+            "-f", f"query={_RESOLVE_THREAD_MUTATION}",
+        ])
+
+
 def post_replies(
     run_cmd: Callable[..., str],
     pr_number: str,
     thread_replies: list[dict[str, Any]],
     conversation_reply: str,
 ) -> None:
-    """Post a reply to each review-thread comment, then one conversation reply."""
+    """Reply to each review-thread comment, resolve its thread, post the rest.
+
+    Posts one conversation-level reply last.
+    """
     repo_output = run_cmd(["gh", "repo", "view", "--json", "owner,name"])
     repo_data = json.loads(repo_output)
     owner = repo_data["owner"]["login"]
     repo_name = repo_data["name"]
 
+    thread_ids: set[str] = set()
     for reply in thread_replies:
         comment_id = reply["comment_id"]
         sys.stdout.write(f"Replying to review comment {comment_id}...\n")
@@ -51,6 +72,9 @@ def post_replies(
             ["gh", "api", endpoint, "--input", "-"],
             input_text=json.dumps({"body": reply["body"]}),
         )
+        thread_ids.add(reply["thread_id"])
+
+    _resolve_review_threads(run_cmd, thread_ids)
 
     if conversation_reply:
         sys.stdout.write(f"Posting conversation reply on PR #{pr_number}...\n")

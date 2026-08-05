@@ -67,12 +67,12 @@ argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
    this step if the `--auto` flag is set, and proceed directly with posting
    them.
 9. Generate a temporary `replies.json` file matching this schema from the
-   approved replies:
+   approved replies, using each comment's `thread_id` from step 3's script:
 
    ```json
    {
      "thread_replies": [
-       { "comment_id": 0, "body": "string" }
+       { "comment_id": 0, "thread_id": "string", "body": "string" }
      ],
      "conversation_reply": "string"
    }
@@ -84,10 +84,11 @@ argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
    python3 "${CLAUDE_PLUGIN_ROOT}/skills/resolve/scripts/post_pr_replies.py" <pr-number> replies.json
    ```
 
-   (the script resolves `{owner}/{repo}` itself, requests re-review from the
-   pull request's prior reviewers excluding the user, since the user can't
-   be a reviewer of their own PR, and deletes the temporary file upon
-   completion).
+   The script resolves `{owner}/{repo}` itself. It replies to each thread
+   comment, resolves that comment's review thread, posts the
+   conversation-level reply, then requests re-review from the pull
+   request's prior reviewers, excluding the user (who can't be a reviewer
+   of their own PR). It deletes the temporary file on completion.
 10. Execute `git worktree remove <worktree-path>` to remove the isolated
     worktree; `<branch-name>` and its commits remain intact in the repository
     and on the remote.
