@@ -31,7 +31,7 @@ None. This skill takes no arguments.
 3. Render exactly three tables, in this order, each pre-sorted by the
    script's priority order (do not re-sort):
 
-   Others' open PRs (from `others_prs`):
+   PRs to review (from `others_prs`):
 
    | Bucket             | Suggestion                                                                                                |
    | :----------------- | :-------------------------------------------------------------------------------------------------------- |
@@ -57,7 +57,7 @@ None. This skill takes no arguments.
 
 ## Output
 
-Three rendered tables, "Others' open PRs", "Your open PRs", and "Backlog
+Three rendered tables, "PRs to review", "Your open PRs", and "Backlog
 issues", each row pairing an item with a plain-language suggested next
 step. This is a terminal, user-facing report; its output does not feed
 into another skill.
