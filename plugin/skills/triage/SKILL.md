@@ -42,21 +42,22 @@ None. This skill takes no arguments.
 
    | Bucket               | Suggestion                                                             |
    | :------------------- | :--------------------------------------------------------------------- |
-   | `resolve`            | Resolve the unresolved feedback with `/commons:resolve`                |
+   | `ready_to_merge`     | Merge it                                                               |
    | `resolve_then_merge` | Resolve the unresolved feedback with `/commons:resolve`, then merge it |
-   | `get_reviewed`       | Self-review it with `/commons:review`                                 |
-   | `ready_to_merge`     | Merge it                                                         |
+   | `resolve`            | Resolve the unresolved feedback with `/commons:resolve`                |
+   | `get_reviewed`       | Self-review it with `/commons:review`                                  |
    | `draft`              | The judgment from step 2                                               |
 
    Issues in Todo (from `todo_issues`):
 
-   | Bucket       | Suggestion                     |
-   | :----------- | :----------------------------- |
-   | `assigned`   | Solve it with `/commons:solve` |
-   | `unassigned` | Self-assign it, then solve it with `/commons:solve`                 |
+   | Bucket       | Suggestion                                          |
+   | :----------- | :-------------------------------------------------- |
+   | `assigned`   | Solve it with `/commons:solve`                      |
+   | `unassigned` | Self-assign it, then solve it with `/commons:solve` |
 
 ## Output
 
-Three rendered tables, "Others' open PRs", "Your open PRs", and "Backlog issues", each row pairing an item with a plain-language suggested next
+Three rendered tables, "Others' open PRs", "Your open PRs", and "Backlog
+issues", each row pairing an item with a plain-language suggested next
 step. This is a terminal, user-facing report; its output does not feed
 into another skill.
