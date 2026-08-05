@@ -106,11 +106,11 @@ graph TD
 
 ```mermaid
 graph TD
-    survey["1. Survey Work"] --> triage["/commons:triage<br/>Survey PRs & Backlog"]
-
-    triage -->|New Requirements| spec["/commons:spec<br/>Draft Specs & Decisions"]
+    start_proj["Brand-New Project"] --> spec["/commons:spec<br/>Draft Initial Project Specs"]
     spec --> issue["/commons:issue<br/>Create Issue Hierarchy"]
 
+    survey["Survey Work"] --> triage["/commons:triage<br/>Survey PRs & Backlog"]
+    triage -->|New Task/Story| issue
     triage -->|Existing Issue| solve["/commons:solve<br/>Implement Issue Fix"]
     issue --> solve
 
