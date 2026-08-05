@@ -98,9 +98,8 @@ def fetch_review_feedback(
         for c in comments_since_checkpoint(all_comments)
     ]
 
-    open_threads = []
-    for thread in unresolved_threads(pr.get("reviewThreads", {}).get("nodes", [])):
-        open_threads.append({
+    open_threads = [
+        {
             "thread_id": thread["id"],
             "path": thread.get("path"),
             "line": thread.get("line"),
@@ -112,7 +111,9 @@ def fetch_review_feedback(
                 }
                 for c in thread.get("comments", {}).get("nodes", [])
             ],
-        })
+        }
+        for thread in unresolved_threads(pr.get("reviewThreads", {}).get("nodes", []))
+    ]
 
     return {"threads": open_threads, "comments": open_comments}
 
