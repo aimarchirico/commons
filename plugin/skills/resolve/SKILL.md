@@ -50,10 +50,7 @@ argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
    covering every item `fetch_pr_feedback.py` returned exactly once: a
    concise, resolving reply for each line/file review comment, plus a
    single conversation-level reply also covering any conversation-level
-   comments. The conversation-level reply's first substantive line (a
-   `## Resolution summary` header may precede it) must be the literal
-   verdict `Resolved.`, so `/commons:triage` can recognize the PR as
-   resolved, followed by a brief description of what was addressed, e.g.:
+   comments, formatted like:
 
    ```markdown
    ## Resolution summary
@@ -61,6 +58,10 @@ argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
    Resolved. Addressed the null-check feedback in `parse.py` and added
    the missing test case for the empty-input path.
    ```
+
+   The literal verdict `Resolved.` must be the first substantive line
+   (ignoring the header) so `/commons:triage` can recognize the PR as
+   resolved.
 8. Present the drafted replies, and wait for explicit user approval. Skip
    this step if the `--auto` flag is set, and proceed directly with posting
    them.
