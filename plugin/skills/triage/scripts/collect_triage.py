@@ -9,9 +9,6 @@ from collections.abc import Callable
 from typing import Any
 
 SINGLE_MATCH = 1
-
-# Epics are containers for Stories/Tasks/Bugs, not directly solvable in one
-# PR; Subtasks are already excluded via the parent-dedup check below.
 SOLVABLE_ISSUE_TYPES = {"Story", "Task", "Bug"}
 
 
@@ -38,8 +35,17 @@ def _check_dependencies() -> None:
         sys.exit(1)
 
 
+def _graphql(
+    run_cmd: Callable[[list[str]], str], query: str, **variables: str | int,
+) -> dict[str, Any]:
+    args = ["gh", "api", "graphql"]
+    for key, value in variables.items():
+        args += ["-F" if isinstance(value, int) else "-f", f"{key}={value}"]
+    args += ["-f", f"query={query}"]
+    return dict(json.loads(run_cmd(args)))
+
+
 def _get_repo_context(run_cmd: Callable[[list[str]], str]) -> tuple[str, str]:
-    """Fetch the current repository's owner and name."""
     repo_output = run_cmd(["gh", "repo", "view", "--json", "owner,name"])
     repo_data = json.loads(repo_output)
     return str(repo_data["owner"]["login"]), str(repo_data["name"])
@@ -53,31 +59,13 @@ def _title_case_repo_name(repo_name: str) -> str:
 def _get_linked_project(
     run_cmd: Callable[[list[str]], str], owner: str, repo_name: str,
 ) -> tuple[str, int]:
-    """Resolve the repository's single linked open GitHub Project (v2)."""
-    query = """
-    query($owner: String!, $name: String!) {
-      repository(owner: $owner, name: $name) {
-        projectsV2(first: 10) {
-          nodes {
-            number
-            title
-            closed
-            owner {
-              ... on User { login }
-              ... on Organization { login }
-            }
-          }
-        }
-      }
-    }
-    """
-    api_output = run_cmd([
-        "gh", "api", "graphql",
-        "-f", f"owner={owner}",
-        "-f", f"name={repo_name}",
-        "-f", f"query={query}",
-    ])
-    api_data = json.loads(api_output)
+    query = (
+        "query($owner: String!, $name: String!) {"
+        " repository(owner: $owner, name: $name) { projectsV2(first: 10) {"
+        " nodes { number title closed"
+        " owner { ... on User { login } ... on Organization { login } } } } } }"
+    )
+    api_data = _graphql(run_cmd, query, owner=owner, name=repo_name)
     nodes = (
         api_data.get("data", {}).get("repository", {})
         .get("projectsV2", {}).get("nodes", [])
@@ -112,14 +100,12 @@ def _get_linked_project(
 
 
 def _resolve_login(run_cmd: Callable[[list[str]], str]) -> str:
-    """Resolve the authenticated user's login (GraphQL has no `@me` alias)."""
     return run_cmd(["gh", "api", "user", "--jq", ".login"])
 
 
 def _fetch_others_prs(
     run_cmd: Callable[[list[str]], str], login: str,
 ) -> list[dict[str, Any]]:
-    """Fetch other authors' open, non-draft PRs relevant to the user."""
     output = run_cmd([
         "gh", "pr", "list",
         "--search", "is:open -author:@me draft:false",
@@ -156,26 +142,12 @@ def _fetch_others_prs(
 def _fetch_unresolved_threads(
     run_cmd: Callable[[list[str]], str], owner: str, repo_name: str, number: int,
 ) -> bool:
-    """Determine whether a PR has any unresolved review threads."""
-    query = """
-    query($owner: String!, $repo: String!, $number: Int!) {
-      repository(owner: $owner, name: $repo) {
-        pullRequest(number: $number) {
-          reviewThreads(first: 50) {
-            nodes { isResolved }
-          }
-        }
-      }
-    }
-    """
-    api_output = run_cmd([
-        "gh", "api", "graphql",
-        "-f", f"owner={owner}",
-        "-f", f"repo={repo_name}",
-        "-F", f"number={number}",
-        "-f", f"query={query}",
-    ])
-    api_data = json.loads(api_output)
+    query = (
+        "query($owner: String!, $repo: String!, $number: Int!) {"
+        " repository(owner: $owner, name: $repo) { pullRequest(number: $number) {"
+        " reviewThreads(first: 50) { nodes { isResolved } } } } }"
+    )
+    api_data = _graphql(run_cmd, query, owner=owner, repo=repo_name, number=number)
     pr = api_data.get("data", {}).get("repository", {}).get("pullRequest") or {}
     threads = pr.get("reviewThreads", {}).get("nodes", [])
     return any(not t.get("isResolved") for t in threads)
@@ -198,7 +170,6 @@ def _classify_own_pr(
 def _fetch_own_prs(
     run_cmd: Callable[[list[str]], str], owner: str, repo_name: str,
 ) -> list[dict[str, Any]]:
-    """Fetch the user's own open PRs, classified into priority buckets."""
     output = run_cmd([
         "gh", "pr", "list",
         "--search", "is:open author:@me",
@@ -258,7 +229,6 @@ def _fetch_root_todo_issues(
     project_number: int,
     login: str,
 ) -> list[dict[str, Any]]:
-    """Fetch root (non-sub-issue) Todo project items relevant to the user."""
     item_output = run_cmd([
         "gh", "project", "item-list", str(project_number),
         "--owner", project_owner, "--format", "json", "--limit", "200",
@@ -299,7 +269,6 @@ def _fetch_root_todo_issues(
         elif not assignees:
             entry["bucket"] = "unassigned"
             unassigned.append(entry)
-        # else: assigned to someone else, not actionable by this user, drop.
 
     return assigned + unassigned
 

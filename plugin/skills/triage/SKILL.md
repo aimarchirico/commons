@@ -19,8 +19,7 @@ None. This skill takes no arguments.
    python3 "${CLAUDE_PLUGIN_ROOT}/skills/triage/scripts/collect_triage.py"
    ```
 
-   and parse its JSON output, per
-   `${CLAUDE_PLUGIN_ROOT}/skills/triage/REFERENCE.md`.
+   and parse its JSON output.
 2. For each PR in `own_prs` with `bucket == "draft"`: if it has a non-null
    `linked_issue`, fetch that issue's title and body
    (`gh issue view <number> --json title,body`) plus the PR's own diff and
