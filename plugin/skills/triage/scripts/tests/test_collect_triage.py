@@ -117,7 +117,7 @@ def test_main_prints_empty_survey_when_nothing_is_open(
 
     result = json.loads(capsys.readouterr().out)
     assert result == {
-        "prs_to_review": [], "your_prs": [], "your_draft_prs": [], "backlog_issues": [],
+        "prs_to_review": [], "your_open_prs": [], "your_draft_prs": [], "backlog_issues": [],
     }
 
 
@@ -205,7 +205,7 @@ def test_main_classifies_your_prs_and_splits_out_drafts(
     ct.main()
 
     result = json.loads(capsys.readouterr().out)
-    yours = result["your_prs"]
+    yours = result["your_open_prs"]
     assert [pr["number"] for pr in yours] == [2, 3, 4, 5]
     assert [pr["suggestion"] for pr in yours] == [
         "Merge the PR",
@@ -266,7 +266,7 @@ def test_main_disambiguates_multiple_projects_by_repo_name(
 
     result = json.loads(capsys.readouterr().out)
     assert result == {
-        "prs_to_review": [], "your_prs": [], "your_draft_prs": [], "backlog_issues": [],
+        "prs_to_review": [], "your_open_prs": [], "your_draft_prs": [], "backlog_issues": [],
     }
 
 

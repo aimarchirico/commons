@@ -202,7 +202,7 @@ def _linked_issue_for(pr: dict[str, Any]) -> dict[str, Any] | None:
 def _fetch_your_prs(
     run_cmd: Callable[[list[str]], str], owner: str, repo_name: str,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
-    """Fetch the user's open PRs, split into ready ``(your_prs,
+    """Fetch the user's open PRs, split into ``(your_open_prs,
     your_draft_prs)``.
 
     Drafts skip the review-state query entirely: threads, comments,
@@ -216,7 +216,7 @@ def _fetch_your_prs(
     ])
     prs = json.loads(output)
 
-    your_prs = []
+    your_open_prs = []
     ranks = []
     your_draft_prs = []
     for pr in prs:
@@ -238,7 +238,7 @@ def _fetch_your_prs(
             conflicting=review_state["conflicting"], checks=review_state["checks"],
         )
 
-        your_prs.append({
+        your_open_prs.append({
             "number": pr["number"],
             "title": pr["title"],
             "url": pr["url"],
@@ -251,8 +251,8 @@ def _fetch_your_prs(
         })
         ranks.append(_YOUR_PR_BUCKET_ORDER.index(bucket))
 
-    order = sorted(range(len(your_prs)), key=lambda i: ranks[i])
-    return [your_prs[i] for i in order], your_draft_prs
+    order = sorted(range(len(your_open_prs)), key=lambda i: ranks[i])
+    return [your_open_prs[i] for i in order], your_draft_prs
 
 
 def main() -> None:
@@ -263,11 +263,11 @@ def main() -> None:
         owner, repo_name = _get_repo_context(_run_cmd)
         project_owner, project_number = _get_linked_project(_run_cmd, owner, repo_name)
         login = _resolve_login(_run_cmd)
-        your_prs, your_draft_prs = _fetch_your_prs(_run_cmd, owner, repo_name)
+        your_open_prs, your_draft_prs = _fetch_your_prs(_run_cmd, owner, repo_name)
 
         result = {
             "prs_to_review": _fetch_prs_to_review(_run_cmd, login),
-            "your_prs": your_prs,
+            "your_open_prs": your_open_prs,
             "your_draft_prs": your_draft_prs,
             "backlog_issues": fetch_backlog_issues(
                 _run_cmd, project_owner, project_number, login,

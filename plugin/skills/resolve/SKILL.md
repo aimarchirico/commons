@@ -61,13 +61,13 @@ argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
    `--force-with-lease` if step 4 rebased onto the base branch) to push the
    commits to the pull request's existing remote branch. If this rebase (as
    opposed to step 4's) hits conflicts, stop and report them to the user
-   rather than resolving them unilaterally — someone else pushed to this
+   rather than resolving them unilaterally: someone else pushed to this
    branch while `worktree-runner` was working, which needs a human's
    attention.
 8. Draft replies from the implementation-planner's feedback-to-fix mapping,
    covering every `threads`/`comments` item step 3's script returned exactly
    once: a concise, resolving reply for each line/file review comment, plus
-   a brief conversation-level summary of what was addressed — covering any
+   a brief conversation-level summary of what was addressed, covering any
    conversation-level comments, and, if step 4 found conflicts or failing
    checks, a one-line mention of those fixes too (they have no thread of
    their own to reply on).
