@@ -34,7 +34,8 @@ def test_draft_short_circuits_without_querying() -> None:
     """A draft PR is always not_ready/none/none without calling graphql."""
 
     def _fail_graphql(*_args: object, **_kwargs: object) -> dict[str, Any]:
-        raise AssertionError("graphql should not be called for drafts")
+        message = "graphql should not be called for drafts"
+        raise AssertionError(message)
 
     result = fetch_review_state(_fail_graphql, "acme", "widgets", 1, is_draft=True)
 

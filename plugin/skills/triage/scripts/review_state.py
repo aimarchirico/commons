@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Pull request review-state computation used by triage's collect_triage.py."""
 
 from collections.abc import Callable

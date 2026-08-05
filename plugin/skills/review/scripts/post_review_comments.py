@@ -82,8 +82,10 @@ def build_review(findings: list[dict[str, Any]]) -> dict[str, Any]:
         "",
         "Requesting changes.",
         "",
-        f"{total} findings across logic, compliance, performance, and "
-        f"security; {posted} posted as inline comments on the diff.",
+        (
+            f"{total} findings across logic, compliance, performance, and "
+            f"security; {posted} posted as inline comments on the diff."
+        ),
     ]
     if total > posted:
         summary_lines += [
