@@ -36,11 +36,8 @@ None. This skill takes no arguments.
    say plainly that there's no linked issue to check completeness against,
    rather than guessing.
 3. Render exactly three tables, in this order, each pre-sorted by the
-   script's priority order (do not re-sort), per the bucket-to-status and
-   bucket-to-suggestion mappings in
-   `${CLAUDE_PLUGIN_ROOT}/skills/triage/REFERENCE.md`: PRs to review (from
-   `prs_to_review`), Your PRs (from `your_prs`), and Backlog issues (from
-   `backlog_issues`). Each table follows this format:
+   script's priority order (do not re-sort), per the mappings in
+   `${CLAUDE_PLUGIN_ROOT}/skills/triage/REFERENCE.md`: PRs to review, Your PRs, and Backlog issues. Each table follows this format:
 
    | Item                    | Status       | Suggestion       |
    | :----------------------- | :------------ | :---------------- |
