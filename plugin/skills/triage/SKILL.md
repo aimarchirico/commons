@@ -20,7 +20,7 @@ None. This skill takes no arguments.
    ```
 
    and parse its JSON output, per
-   `${CLAUDE_PLUGIN_ROOT}/skills/triage/reference.md`.
+   `${CLAUDE_PLUGIN_ROOT}/skills/triage/REFERENCE.md`.
 2. For each PR in `own_prs` with `bucket == "draft"`: if it has a non-null
    `linked_issue`, fetch that issue's title and body
    (`gh issue view <number> --json title,body`) plus the PR's own diff and
@@ -31,18 +31,22 @@ None. This skill takes no arguments.
    check completeness against, rather than guessing.
 3. For each issue in `todo_issues` with `bucket == "unassigned"`, phrase
    the suggestion in plain language as assigning it to yourself, then
-   solving it.
+   solving it with `/commons:solve`.
 4. Render exactly three tables, in this order, each pre-sorted by the
    script's priority order (do not re-sort):
    - **Others' open PRs**: from `others_prs`, phrasing `review_requested`
-     as something like "Review it" and `not_requested` as "Not yet
-     requested, low priority".
-   - **My open PRs**: from `own_prs`, phrasing each bucket in plain
-     language, e.g. "Ready to merge", "Resolve the unresolved feedback,
-     then merge it", "Resolve the unresolved feedback, then get it
-     reviewed", "Get it reviewed", and the draft judgment from step 2.
+     as "Review it with `/commons:review`" and `not_requested` as "Not yet
+     requested, low priority" (if the user chooses to review it anyway,
+     that's still `/commons:review`).
+   - **Your open PRs**: from `own_prs`, phrasing each bucket in plain
+     language: `resolve` as "Resolve the unresolved feedback with
+     `/commons:resolve`", `resolve_then_merge` as "Resolve the unresolved
+     feedback with `/commons:resolve`, then merge it", `get_reviewed` as
+     "Get it reviewed with `/commons:review`", `ready_to_merge` as "Ready
+     to merge", and `draft` as the judgment from step 2.
    - **Issues in Todo**: from `todo_issues`, phrasing `assigned` as
-     something like "Solve it" and `unassigned` per step 3.
+     something like "Solve it with `/commons:solve`" and `unassigned` per
+     step 3.
 
    Never print internal bucket labels (e.g. `ready_to_merge`,
    `review_requested`) to the user, and never use em dashes anywhere in
@@ -53,7 +57,7 @@ None. This skill takes no arguments.
 
 ## Output
 
-Three rendered tables, "Others' open PRs", "My open PRs", and "Issues in
+Three rendered tables, "Others' open PRs", "Your open PRs", and "Issues in
 Todo", each row pairing an item with a plain-language suggested next
 step. This is a terminal, user-facing report; its output does not feed
 into another skill.
