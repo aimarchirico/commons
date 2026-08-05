@@ -81,7 +81,7 @@ authoritative definition for open PR review feedback across `triage` and
   inline diff findings (with `file` and `line`) from unresolvable summary items,
   posting a single atomic GitHub PR review with a verdict (`Approved.` vs
   `Changes requested.`).
-- **`resolve`** (`skills/resolve/scripts/`): `fetch_pr_issues.py` uses
+- **`resolve`** (`skills/resolve/scripts/`): `fetch_pr_problems.py` uses
   GraphQL and `pr_feedback.py` to extract open review items, plus `gh pr
   view`/`gh pr checks` for conflict and failing-check state;
   `post_pr_replies.py` replies to inline comments, resolves threads via

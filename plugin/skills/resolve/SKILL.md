@@ -28,7 +28,7 @@ argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
 3. Execute:
 
    ```bash
-   python3 "${CLAUDE_PLUGIN_ROOT}/skills/resolve/scripts/fetch_pr_issues.py" <pr-number>
+   python3 "${CLAUDE_PLUGIN_ROOT}/skills/resolve/scripts/fetch_pr_problems.py" <pr-number>
    ```
 
    to fetch, as one normalized JSON object (see

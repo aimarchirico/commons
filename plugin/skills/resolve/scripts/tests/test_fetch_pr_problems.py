@@ -1,10 +1,10 @@
-"""Tests for fetch_pr_issues.py, covering both the library call and CLI."""
+"""Tests for fetch_pr_problems.py, covering both the library call and CLI."""
 
 import json
 import subprocess
 import sys
 
-import fetch_pr_issues as frf
+import fetch_pr_problems as frf
 import pytest
 
 _REPO_OUTPUT = json.dumps({"owner": {"login": "acme"}, "name": "widgets"})
@@ -36,7 +36,7 @@ def _dispatch(
     return graphql_response
 
 
-def test_fetch_pr_issues_collects_comments_and_bodied_reviews() -> None:
+def test_fetch_pr_problems_collects_comments_and_bodied_reviews() -> None:
     """Comments include issue comments and reviews with a body, since createdAt."""
     def fake_run_cmd(args: list[str]) -> str:
         return _dispatch(args, _pr_response(
@@ -59,7 +59,7 @@ def test_fetch_pr_issues_collects_comments_and_bodied_reviews() -> None:
             threads=[],
         ))
 
-    result = frf.fetch_pr_issues(fake_run_cmd, "42")
+    result = frf.fetch_pr_problems(fake_run_cmd, "42")
 
     assert result["comments"] == [
         {"id": 1, "body": "hi", "author": "bob"},
@@ -67,7 +67,7 @@ def test_fetch_pr_issues_collects_comments_and_bodied_reviews() -> None:
     ]
 
 
-def test_fetch_pr_issues_drops_comments_before_the_checkpoint() -> None:
+def test_fetch_pr_problems_drops_comments_before_the_checkpoint() -> None:
     """Only comments after the last Resolved. checkpoint are returned."""
     def fake_run_cmd(args: list[str]) -> str:
         return _dispatch(args, _pr_response(
@@ -89,14 +89,14 @@ def test_fetch_pr_issues_drops_comments_before_the_checkpoint() -> None:
             threads=[],
         ))
 
-    result = frf.fetch_pr_issues(fake_run_cmd, "42")
+    result = frf.fetch_pr_problems(fake_run_cmd, "42")
 
     assert result["comments"] == [
         {"id": 3, "body": "One more thing.", "author": "bob"},
     ]
 
 
-def test_fetch_pr_issues_drops_resolved_threads() -> None:
+def test_fetch_pr_problems_drops_resolved_threads() -> None:
     """Only unresolved review threads are included, with their comments."""
     def fake_run_cmd(args: list[str]) -> str:
         return _dispatch(args, _pr_response(
@@ -115,7 +115,7 @@ def test_fetch_pr_issues_drops_resolved_threads() -> None:
             ],
         ))
 
-    result = frf.fetch_pr_issues(fake_run_cmd, "42")
+    result = frf.fetch_pr_problems(fake_run_cmd, "42")
 
     assert result["threads"] == [{
         "thread_id": "t2", "path": "b.py", "line": 2,
@@ -123,7 +123,7 @@ def test_fetch_pr_issues_drops_resolved_threads() -> None:
     }]
 
 
-def test_fetch_pr_issues_reports_conflicting_and_failing_checks() -> None:
+def test_fetch_pr_problems_reports_conflicting_and_failing_checks() -> None:
     """Conflicting mergeable state and failing checks are surfaced."""
     def fake_run_cmd(args: list[str]) -> str:
         return _dispatch(
@@ -135,27 +135,27 @@ def test_fetch_pr_issues_reports_conflicting_and_failing_checks() -> None:
             ]),
         )
 
-    result = frf.fetch_pr_issues(fake_run_cmd, "42")
+    result = frf.fetch_pr_problems(fake_run_cmd, "42")
 
     assert result["conflicting"] is True
     assert result["failing_checks"] == [{"name": "lint", "link": "https://x/lint"}]
 
 
-def test_fetch_pr_issues_treats_missing_checks_as_none_failing() -> None:
+def test_fetch_pr_problems_treats_missing_checks_as_none_failing() -> None:
     """If `gh pr checks` errors (e.g. no checks configured), default to none."""
     def fake_run_cmd(args: list[str]) -> str:
         if args[:3] == ["gh", "pr", "checks"]:
             raise subprocess.CalledProcessError(1, args)
         return _dispatch(args, _pr_response(comments=[], reviews=[], threads=[]))
 
-    result = frf.fetch_pr_issues(fake_run_cmd, "42")
+    result = frf.fetch_pr_problems(fake_run_cmd, "42")
 
     assert result["failing_checks"] == []
 
 
 def test_main_exits_when_pr_number_missing(monkeypatch: pytest.MonkeyPatch) -> None:
     """main() exits with an error when no PR number is given."""
-    monkeypatch.setattr(sys, "argv", ["fetch_pr_issues"])
+    monkeypatch.setattr(sys, "argv", ["fetch_pr_problems"])
 
     with pytest.raises(SystemExit):
         frf.main()
@@ -163,7 +163,7 @@ def test_main_exits_when_pr_number_missing(monkeypatch: pytest.MonkeyPatch) -> N
 
 def test_main_exits_when_gh_is_not_installed(monkeypatch: pytest.MonkeyPatch) -> None:
     """main() fails fast when the gh CLI isn't on PATH."""
-    monkeypatch.setattr(sys, "argv", ["fetch_pr_issues", "42"])
+    monkeypatch.setattr(sys, "argv", ["fetch_pr_problems", "42"])
     monkeypatch.setattr(frf.shutil, "which", lambda _name: None)
 
     with pytest.raises(SystemExit):
@@ -174,7 +174,7 @@ def test_main_prints_feedback_as_json(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str],
 ) -> None:
     """main() prints the collected feedback as indented JSON."""
-    monkeypatch.setattr(sys, "argv", ["fetch_pr_issues", "42"])
+    monkeypatch.setattr(sys, "argv", ["fetch_pr_problems", "42"])
     monkeypatch.setattr(frf.shutil, "which", lambda _name: "/usr/bin/gh")
 
     def fake_run_cmd(args: list[str]) -> str:
@@ -192,7 +192,7 @@ def test_main_prints_feedback_as_json(
 
 def test_main_exits_when_gh_command_fails(monkeypatch: pytest.MonkeyPatch) -> None:
     """main() exits cleanly when the underlying gh call fails."""
-    monkeypatch.setattr(sys, "argv", ["fetch_pr_issues", "42"])
+    monkeypatch.setattr(sys, "argv", ["fetch_pr_problems", "42"])
     monkeypatch.setattr(frf.shutil, "which", lambda _name: "/usr/bin/gh")
 
     def fake_run_cmd(args: list[str]) -> str:
