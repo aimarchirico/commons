@@ -28,14 +28,14 @@ Render exactly three tables, in this order, each pre-sorted by
 `status` comes from the `status` field, `reviews` from the `reviews` field.
 The Suggestion for each row comes from the `(status, reviews)` pair below:
 
-| `status` value | `reviews` value        | Rendered status | Rendered reviews     | Suggestion                                                                                           |
-| :------------- | :--------------------- | :-------------- | :------------------- | :--------------------------------------------------------------------------------------------------- |
-| `approved`     | `no_unresolved_review` | Approved        | No unresolved review | Merge the PR                                                                                         |
-| `approved`     | `unresolved_review`    | Approved        | Unresolved review    | Resolve the unresolved review with `/commons:resolve`, then merge the PR                             |
-| `not_approved` | `unresolved_review`    | Not approved    | Unresolved review    | Resolve the unresolved review with `/commons:resolve`                                                |
-| `not_approved` | `no_unresolved_review` | Not approved    | No unresolved review | Request a re-review with `/commons:review`                                                           |
-| `not_approved` | `not_reviewed`         | Not approved    | Not reviewed         | Self-review the PR with `/commons:review`                                                            |
-| `draft`        | `not_reviewed`         | Draft           | Not reviewed         | The completeness judgment described in `SKILL.md``${CLAUDE_PLUGIN_ROOT}/skills/triage/SKILL.md`'s workflow |
+| `status` value | `reviews` value        | Rendered status | Rendered reviews     | Suggestion                                                                                       |
+| :------------- | :--------------------- | :-------------- | :------------------- | :----------------------------------------------------------------------------------------------- |
+| `approved`     | `no_unresolved_review` | Approved        | No unresolved review | Merge the PR                                                                                     |
+| `approved`     | `unresolved_review`    | Approved        | Unresolved review    | Resolve the unresolved review with `/commons:resolve`, then merge the PR                         |
+| `not_approved` | `unresolved_review`    | Not approved    | Unresolved review    | Resolve the unresolved review with `/commons:resolve`                                            |
+| `not_approved` | `no_unresolved_review` | Not approved    | No unresolved review | Request a re-review with `/commons:review`                                                       |
+| `not_approved` | `not_reviewed`         | Not approved    | Not reviewed         | Self-review the PR with `/commons:review`                                                        |
+| `draft`        | `not_reviewed`         | Draft           | Not reviewed         | The completeness judgment described in `${CLAUDE_PLUGIN_ROOT}/skills/triage/SKILL.md`'s workflow |
 
 ## Backlog issues (from `backlog_issues`)
 
