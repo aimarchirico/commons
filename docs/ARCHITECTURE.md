@@ -123,5 +123,5 @@ graph TD
 ├── maven/      # Kotlin backend modules and the Gradle convention plugin
 ├── npm/        # frontend configuration packages and the API CLI
 ├── python/     # Python package(s): shared ruff/coverage config + CLI, git dependency @ main
-└── plugin/     # Claude Code plugin (skills/, agents/), the only tree consumers install
+└── plugin/     # Claude Code plugin (skills/, agents/, shared/), the only tree consumers install
 ```

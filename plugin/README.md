@@ -28,9 +28,26 @@ of the monorepo.
 plugin/
 ├── .claude-plugin/plugin.json   # plugin manifest
 ├── .github/                     # bundled conventions (CONTRIBUTING.md, issue/PR templates)
-├── agents/                      # specialized subagent prompts
 ├── shared/                      # shared script utilities (pr_feedback.py)
-└── skills/                      # agent skill definitions and supporting Python scripts
+├── skills/
+│   ├── check/SKILL.md           # verify the tree against the project's own PR-gating CI checks
+│   ├── commit/SKILL.md          # create logical, atomic commits
+│   ├── docs/SKILL.md            # update project documentation
+│   ├── issue/SKILL.md           # create hierarchical issues
+│   ├── pr/SKILL.md              # create a standardized pull request
+│   ├── resolve/SKILL.md         # orchestrate the lifecycle from PR review feedback
+│   ├── review/SKILL.md          # review a pull request via parallel reviewer agents
+│   ├── ship/SKILL.md            # chain issue creation and solving into a single flow
+│   ├── solve/SKILL.md           # orchestrate the lifecycle from an existing issue
+│   ├── spec/SKILL.md            # draft requirements/architecture/decisions for a new project
+│   └── triage/SKILL.md          # survey open PRs and Backlog issues, read-only
+└── agents/
+    ├── compliance-reviewer.md    # reviews a diff against CONTRIBUTING.md (read-only)
+    ├── implementation-planner.md # drafts an implementation plan (read-only)
+    ├── logic-reviewer.md         # reviews a diff for logic errors (read-only)
+    ├── performance-reviewer.md   # reviews a diff for performance regressions (read-only)
+    ├── security-reviewer.md      # reviews a diff for security vulnerabilities (read-only)
+    └── worktree-runner.md        # implements an approved plan unattended
 ```
 
 Each skill directory contains a `SKILL.md` file defining its prompt interface
