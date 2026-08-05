@@ -73,6 +73,13 @@ argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
 
    (the script resolves `{owner}/{repo}` itself and deletes the temporary
    file upon completion).
-10. Execute `git worktree remove <worktree-path>` to remove the isolated
+10. Request re-review from the pull request's prior reviewers, now that their
+    feedback has been addressed:
+
+    ```bash
+    gh pr view <pr-number> --json reviews --jq '[.reviews[].author.login] | unique[]' \
+      | while read -r reviewer; do gh pr edit <pr-number> --add-reviewer "$reviewer"; done
+    ```
+11. Execute `git worktree remove <worktree-path>` to remove the isolated
     worktree; `<branch-name>` and its commits remain intact in the repository
     and on the remote.

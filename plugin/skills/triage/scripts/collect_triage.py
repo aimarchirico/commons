@@ -17,7 +17,8 @@ YOUR_PR_RANK = {
     ("not_approved", "unresolved_review"): 2,
     ("not_approved", "no_unresolved_review"): 3,
     ("not_approved", "not_reviewed"): 4,
-    ("draft", "not_reviewed"): 5,
+    ("not_approved", "not_ready"): 5,
+    ("approved", "not_ready"): 6,
 }
 
 
@@ -178,19 +179,20 @@ def _fetch_your_prs(
     entries = []
     for pr in prs:
         is_draft = bool(pr.get("isDraft"))
-        has_unresolved, has_any_reviews = (
-            (False, False) if is_draft
-            else _fetch_review_state(run_cmd, owner, repo_name, pr["number"])
-        )
-
-        status = "draft" if is_draft else (
+        status = (
             "approved" if pr.get("reviewDecision") == "APPROVED" else "not_approved"
         )
-        reviews = (
-            "not_reviewed" if not has_any_reviews
-            else "unresolved_review" if has_unresolved
-            else "no_unresolved_review"
-        )
+        if is_draft:
+            reviews = "not_ready"
+        else:
+            has_unresolved, has_any_reviews = _fetch_review_state(
+                run_cmd, owner, repo_name, pr["number"],
+            )
+            reviews = (
+                "not_reviewed" if not has_any_reviews
+                else "unresolved_review" if has_unresolved
+                else "no_unresolved_review"
+            )
 
         entry: dict[str, Any] = {
             "number": pr["number"],
@@ -199,7 +201,7 @@ def _fetch_your_prs(
             "status": status,
             "reviews": reviews,
         }
-        if status == "draft":
+        if is_draft:
             linked_issues = pr.get("closingIssuesReferences") or []
             entry["linked_issue"] = (
                 {"number": linked_issues[0]["number"], "url": linked_issues[0]["url"]}

@@ -175,9 +175,29 @@ def test_main_classifies_your_prs_and_includes_linked_issue_for_drafts(
         ("approved", "no_unresolved_review"),
         ("not_approved", "unresolved_review"),
         ("not_approved", "not_reviewed"),
-        ("draft", "not_reviewed"),
+        ("not_approved", "not_ready"),
     ]
     assert yours[3]["linked_issue"] == {"number": 42, "url": "issue-url"}
+
+
+def test_main_computes_real_status_for_approved_draft_prs(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str],
+) -> None:
+    """A draft PR that was approved while in draft still reports approved status."""
+    your_prs = json.dumps([
+        {
+            "number": 5, "title": "Approved draft", "url": "u5", "isDraft": True,
+            "reviewDecision": "APPROVED", "closingIssuesReferences": [],
+        },
+    ])
+    _install_gh(monkeypatch, _base_responses(your_prs=your_prs))
+
+    ct.main()
+
+    result = json.loads(capsys.readouterr().out)
+    yours = result["your_prs"]
+    assert (yours[0]["status"], yours[0]["reviews"]) == ("approved", "not_ready")
+    assert yours[0]["linked_issue"] is None
 
 
 def test_main_disambiguates_multiple_projects_by_repo_name(

@@ -35,7 +35,8 @@ The Suggestion for each row comes from the `(status, reviews)` pair below:
 | `not_approved` | `unresolved_review`    | Not approved    | Unresolved review    | Resolve the unresolved review with `/commons:resolve`                                            |
 | `not_approved` | `no_unresolved_review` | Not approved    | No unresolved review | Request a re-review with `/commons:review`                                                       |
 | `not_approved` | `not_reviewed`         | Not approved    | Not reviewed         | Self-review the PR with `/commons:review`                                                        |
-| `draft`        | `not_reviewed`         | Draft           | Not reviewed         | The completeness judgment described in `${CLAUDE_PLUGIN_ROOT}/skills/triage/SKILL.md`'s workflow |
+| `not_approved` | `not_ready`            | Not approved    | Not ready for review | The completeness judgment described in `${CLAUDE_PLUGIN_ROOT}/skills/triage/SKILL.md`'s workflow |
+| `approved`     | `not_ready`            | Approved        | Not ready for review | The completeness judgment described in `${CLAUDE_PLUGIN_ROOT}/skills/triage/SKILL.md`'s workflow |
 
 ## Backlog issues (from `backlog_issues`)
 
