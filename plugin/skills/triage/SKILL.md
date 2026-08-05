@@ -43,7 +43,5 @@ None. This skill takes no arguments.
 
 ## Output
 
-Three rendered tables, "PRs to review", "Your PRs", and "Backlog issues",
-each row pairing an item with its Status and a plain-language suggested
-next step. This is a terminal, user-facing report; its output does not
-feed into another skill.
+Nothing; this is a terminal, user-facing report that never feeds into
+another skill.
