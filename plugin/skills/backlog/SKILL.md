@@ -22,13 +22,11 @@ argument-hint: "[--auto]"
    passing `--auto` through if it was provided, to draft and write the file
    set under `docs/specs/` (its own approval step surfaces normally unless
    `--auto` is set).
-3. Invoke the `commons:issue` skill with the initiatives in
-   `docs/specs/requirements/`, plus supporting context from
-   `docs/specs/decisions/`, `ARCHITECTURE.md`, and any conditional `API.md`
-   or `DESIGN.md` written by `commons:spec`, as the work to turn into
-   issues, one top-level Epic per initiative, passing `--auto` through if it
-   was provided (its own hierarchy-approval step surfaces normally unless
-   `--auto` is set).
+3. Invoke the `commons:issue` skill with the file set `commons:spec` drafted
+   (per `${CLAUDE_PLUGIN_ROOT}/skills/spec/REFERENCE.md`) as the work to
+   turn into issues, one top-level Epic per initiative in `requirements/`,
+   passing `--auto` through if it was provided (its own hierarchy-approval
+   step surfaces normally unless `--auto` is set).
 
 ## Output
 
