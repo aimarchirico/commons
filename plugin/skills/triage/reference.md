@@ -11,7 +11,7 @@ file, this file wins.
 | `gh pr list --search "is:open -author:@me draft:false" --json number,title,url,author,reviewRequests` | Other authors' open, ready (non-draft) PRs, to see which need this user's review.                                     |
 | `gh pr list --search "is:open author:@me" --json number,title,url,isDraft,reviewDecision,closingIssuesReferences` | This user's own open PRs, to see what needs merging, resolving, or finishing.                                          |
 | GraphQL `reviewThreads(first: 50) { nodes { isResolved } }` on a PR   | REST has no equivalent field for review-thread resolution state; only the GraphQL API exposes `isResolved`.             |
-| `gh project item-list <number> --owner <owner> --format json --limit 200` | Todo-status items in the repo's linked Project, already resolved to option names (status, type) rather than raw IDs. |
+| `gh project item-list <number> --owner <owner> --format json --limit 200` | Todo-status items in the repo's linked Project, already resolved to option names (status, type) rather than raw IDs. If more than one open Project is linked, the one titled to match the repo name is used to disambiguate (same rule as `issue/scripts/project_utils.py`). |
 | `gh issue list --state open --json number,parent --limit 200`        | Cross-reference to drop sub-issues from the Todo survey; only root issues are worth triaging directly.                 |
 | `gh api user --jq .login` (once)                                     | `gh pr list`/`gh issue list` accept the `@me` alias natively, but GraphQL queries (review threads, project ownership) do not, so the login is resolved once up front and reused. |
 
@@ -48,8 +48,11 @@ Sort order: `ready_to_merge`, `resolve_then_merge`, `resolve`,
 | `assignees` is empty                               | `unassigned`  |
 
 Sort order: `assigned`, then `unassigned`. Items assigned to someone other
-than the user, and any issue with a non-null `parent` (a sub-issue), are
-dropped entirely; only root issues actionable by this user are surveyed.
+than the user, any issue with a non-null `parent` (a sub-issue), and any
+issue whose `Type` field isn't `Story`, `Task`, or `Bug`, are dropped
+entirely. Epics are containers, not directly solvable in one pass, and
+Subtasks are already excluded via the `parent` check; only root issues
+actionable by this user in a single `/solve` are surveyed.
 
 ## Out of Scope Here
 

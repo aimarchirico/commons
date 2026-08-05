@@ -10,6 +10,10 @@ from typing import Any
 
 SINGLE_MATCH = 1
 
+# Epics are containers for Stories/Tasks/Bugs, not directly solvable in one
+# PR; Subtasks are already excluded via the parent-dedup check below.
+SOLVABLE_ISSUE_TYPES = {"Story", "Task", "Bug"}
+
 
 def _run_cmd(args: list[str]) -> str:
     result = subprocess.run(args, capture_output=True, text=True, check=True)
@@ -39,6 +43,11 @@ def _get_repo_context(run_cmd: Callable[[list[str]], str]) -> tuple[str, str]:
     repo_output = run_cmd(["gh", "repo", "view", "--json", "owner,name"])
     repo_data = json.loads(repo_output)
     return str(repo_data["owner"]["login"]), str(repo_data["name"])
+
+
+def _title_case_repo_name(repo_name: str) -> str:
+    words = repo_name.replace("_", "-").split("-")
+    return " ".join(word.capitalize() for word in words if word)
 
 
 def _get_linked_project(
@@ -81,14 +90,20 @@ def _get_linked_project(
         )
         sys.exit(1)
     if len(open_projects) > SINGLE_MATCH:
-        project_list = "\n".join(
-            f"  - {p.get('title')} (number: {p['number']})" for p in open_projects
-        )
-        sys.stderr.write(
-            f"Error: Multiple open GitHub Projects linked to "
-            f"'{owner}/{repo_name}', cannot disambiguate:\n{project_list}\n",
-        )
-        sys.exit(1)
+        expected_title = _title_case_repo_name(repo_name)
+        matches = [p for p in open_projects if p.get("title") == expected_title]
+        if len(matches) != SINGLE_MATCH:
+            project_list = "\n".join(
+                f"  - {p.get('title')} (number: {p['number']})"
+                for p in open_projects
+            )
+            sys.stderr.write(
+                f"Error: Multiple open GitHub Projects linked to "
+                f"'{owner}/{repo_name}', and none (or more than one) is titled "
+                f"'{expected_title}' to disambiguate:\n{project_list}\n",
+            )
+            sys.exit(1)
+        open_projects = matches
 
     project = open_projects[0]
     project_owner = str(project["owner"]["login"])
@@ -259,7 +274,11 @@ def _fetch_root_todo_issues(
     unassigned = []
     for item in items:
         content = item.get("content") or {}
-        if item.get("status") != "Todo" or content.get("type") != "Issue":
+        if (
+            item.get("status") != "Todo"
+            or content.get("type") != "Issue"
+            or item.get("type") not in SOLVABLE_ISSUE_TYPES
+        ):
             continue
 
         number = content.get("number")
