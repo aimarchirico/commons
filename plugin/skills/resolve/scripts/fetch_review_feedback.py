@@ -1,14 +1,32 @@
 #!/usr/bin/env python3
 """Script for fetching a pull request's open review feedback."""
 
+import importlib.util
 import json
 import shutil
 import subprocess
 import sys
 from collections.abc import Callable
+from pathlib import Path
+from types import ModuleType
 from typing import Any
 
-from plugin_shared.pr_feedback import comments_since_checkpoint, unresolved_threads
+
+def _load_pr_feedback() -> ModuleType:
+    shared_dir = Path(__file__).resolve().parent.parent.parent.parent / "shared"
+    module_path = shared_dir / "pr_feedback.py"
+    spec = importlib.util.spec_from_file_location("pr_feedback", module_path)
+    if spec is None or spec.loader is None:
+        msg = f"Cannot load pr_feedback from {module_path}"
+        raise ImportError(msg)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+_pr_feedback = _load_pr_feedback()
+comments_since_checkpoint = _pr_feedback.comments_since_checkpoint
+unresolved_threads = _pr_feedback.unresolved_threads
 
 MIN_ARG_COUNT = 2
 

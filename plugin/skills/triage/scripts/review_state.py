@@ -1,10 +1,28 @@
 #!/usr/bin/env python3
 """Pull request review-state computation used by triage's collect_triage.py."""
 
+import importlib.util
 from collections.abc import Callable
+from pathlib import Path
+from types import ModuleType
 from typing import Any
 
-from plugin_shared.pr_feedback import comments_since_checkpoint, unresolved_threads
+
+def _load_pr_feedback() -> ModuleType:
+    shared_dir = Path(__file__).resolve().parent.parent.parent.parent / "shared"
+    module_path = shared_dir / "pr_feedback.py"
+    spec = importlib.util.spec_from_file_location("pr_feedback", module_path)
+    if spec is None or spec.loader is None:
+        msg = f"Cannot load pr_feedback from {module_path}"
+        raise ImportError(msg)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+_pr_feedback = _load_pr_feedback()
+comments_since_checkpoint = _pr_feedback.comments_since_checkpoint
+unresolved_threads = _pr_feedback.unresolved_threads
 
 _REVIEW_STATE_QUERY = """
 query($owner: String!, $repo: String!, $number: Int!) {

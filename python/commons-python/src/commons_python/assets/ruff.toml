@@ -35,6 +35,5 @@ ignore = [
   # EXE001: Executable file permissions vary across operating systems.
   "EXE001",
 ]
-
 [lint.pydocstyle]
 convention = "google"

@@ -1,6 +1,6 @@
 """Tests for the shared unresolved-threads/comments-since-checkpoint logic."""
 
-from plugin_shared.pr_feedback import comments_since_checkpoint, unresolved_threads
+from shared.pr_feedback import comments_since_checkpoint, unresolved_threads
 
 
 def test_unresolved_threads_drops_resolved_ones() -> None:

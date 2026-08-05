@@ -3,7 +3,9 @@
 Used by both the ``triage`` skill (to compute an aggregate state) and the
 ``resolve`` skill (to get the actual items to draft fixes for), so both
 agree on what counts as "unresolved" instead of maintaining separate,
-possibly diverging definitions.
+possibly diverging definitions. Reached via a ``sys.path`` bootstrap from
+each consuming script rather than an installed package, since skill
+scripts run as plain ``python3 script.py`` with no venv/dependency setup.
 """
 
 from typing import Any
