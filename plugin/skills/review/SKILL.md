@@ -41,20 +41,27 @@ argument-hint: "--pr <pr-number> [--auto]"
      ```
 
    - Build a `comments` array (`path`, `line`, `body`) from findings with a
-     resolvable file and line, using the rendered template as `body`. Any
-     findings without one are rendered with the same template and appended
-     to the overall summary `body` instead, below a one-line header stating
-     the total finding count and how many were posted inline, e.g.:
+     resolvable file and line, using the rendered template as `body`.
+   - Build the summary `body`. Let `n` be the total merged finding count
+     (step 4) and `k` be the number placed in `comments`. The first line is
+     always an explicit verdict, verbatim: `Approved.` if `n` is 0,
+     otherwise `Requesting changes.`.
+     - If `n` is 0, the verdict line is the entire body.
+     - Otherwise, follow the verdict line with a blank line, then
+       `## Review summary`, then a summary line stating `n` and `k`. If
+       `n` > `k`, append the unresolvable findings below it, e.g.:
 
-     ```markdown
-     ## Review summary
+       ```markdown
+       Requesting changes.
 
-     <n> findings across logic, compliance, performance, and security — <k>
-     posted as inline comments on the diff. The remainder, listed below,
-     have no resolvable file/line:
+       ## Review summary
 
-     <rendered unresolvable findings, if any>
-     ```
+       <n> findings across logic, compliance, performance, and security — <k>
+       posted as inline comments on the diff. The remainder, listed below,
+       have no resolvable file/line:
+
+       <rendered unresolvable findings, if any>
+       ```
 
    - Generate a temporary `review.json` file matching this schema:
 
