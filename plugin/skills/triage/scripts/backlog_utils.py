@@ -47,6 +47,7 @@ def fetch_backlog_issues(
     items = json.loads(item_output).get("items", [])
 
     entries: list[dict[str, Any]] = []
+    ranks: list[tuple[bool, int, int]] = []
     for item in items:
         content = item.get("content") or {}
         if (
@@ -69,20 +70,22 @@ def fetch_backlog_issues(
         if blocked_by:
             continue
 
+        priority = item.get("priority")
         entries.append({
             "number": number,
             "title": content.get("title"),
             "url": content.get("url"),
-            "assignee": "you" if is_mine else "unassigned",
-            "priority": item.get("priority"),
-            "blocking": blocking,
+            "assignee": "You" if is_mine else "Unassigned",
+            "priority": priority or "Unset",
+            "blocking": (
+                ", ".join(f"#{n}" for n in blocking) if blocking else "Not blocking"
+            ),
         })
+        ranks.append((
+            not is_mine,
+            PRIORITY_RANK.get(priority, len(PRIORITY_RANK)),
+            -len(blocking),
+        ))
 
-    entries.sort(
-        key=lambda e: (
-            e["assignee"] != "you",
-            PRIORITY_RANK.get(e["priority"], len(PRIORITY_RANK)),
-            -len(e["blocking"]),
-        ),
-    )
-    return entries
+    order = sorted(range(len(entries)), key=lambda i: ranks[i])
+    return [entries[i] for i in order]

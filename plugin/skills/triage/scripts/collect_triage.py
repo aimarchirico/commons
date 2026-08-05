@@ -105,6 +105,12 @@ def _resolve_login(run_cmd: Callable[[list[str]], str]) -> str:
     return run_cmd(["gh", "api", "user", "--jq", ".login"])
 
 
+_PRS_TO_REVIEW_LABELS = {
+    True: "Awaiting your review",
+    False: "Not awaiting your review",
+}
+
+
 def _fetch_prs_to_review(
     run_cmd: Callable[[list[str]], str], login: str,
 ) -> list[dict[str, Any]]:
@@ -125,28 +131,48 @@ def _fetch_prs_to_review(
             (r.get("login") or (r.get("requestedReviewer") or {}).get("login"))
             for r in pr.get("reviewRequests", [])
         }
+        is_awaiting = login in requested_logins
         entry = {
             "number": pr["number"],
             "title": pr["title"],
             "url": pr["url"],
-            "author": author.get("login"),
+            "reviews": _PRS_TO_REVIEW_LABELS[is_awaiting],
         }
-        if login in requested_logins:
-            entry["reviews"] = "awaiting_your_review"
-            awaiting.append(entry)
-        else:
-            entry["reviews"] = "not_awaiting_your_review"
-            not_awaiting.append(entry)
+        (awaiting if is_awaiting else not_awaiting).append(entry)
 
     return awaiting + not_awaiting
 
 
-def _your_pr_rank(review: str, threads: str, comments: str) -> int:
+_YOUR_PR_BUCKET_ORDER = [
+    "merge", "resolve_then_merge", "resolve", "self_review", "draft",
+]
+
+_REVIEW_LABELS = {
+    "approved": "Approved",
+    "changes_requested": "Changes requested",
+    "commented": "Commented",
+    "none": "None",
+    "not_ready": "Not ready for review",
+}
+
+_STATE_LABELS = {"none": "None", "resolved": "Resolved", "unresolved": "Unresolved"}
+
+_SUGGESTION_TEXT = {
+    "merge": "Merge the PR",
+    "resolve_then_merge": (
+        "Resolve the unresolved review with `/commons:resolve`, then merge the PR"
+    ),
+    "resolve": "Resolve the unresolved review with `/commons:resolve`",
+    "self_review": "Self-review the PR with `/commons:review`",
+}
+
+
+def _bucket_for(review: str, threads: str, comments: str) -> str:
     if review == "not_ready":
-        return 4
+        return "draft"
     if threads == "unresolved" or comments == "unresolved":
-        return 1 if review == "approved" else 2
-    return 0 if review == "approved" else 3
+        return "resolve_then_merge" if review == "approved" else "resolve"
+    return "merge" if review == "approved" else "self_review"
 
 
 def _fetch_your_prs(
@@ -160,22 +186,25 @@ def _fetch_your_prs(
     prs = json.loads(output)
 
     entries = []
+    ranks = []
     for pr in prs:
         is_draft = bool(pr.get("isDraft"))
         state = fetch_review_state(
             lambda query, **variables: _graphql(run_cmd, query, **variables),
             owner, repo_name, pr["number"], is_draft=is_draft,
         )
+        bucket = _bucket_for(state["review"], state["threads"], state["comments"])
 
         entry: dict[str, Any] = {
             "number": pr["number"],
             "title": pr["title"],
             "url": pr["url"],
-            "review": state["review"],
-            "threads": state["threads"],
-            "comments": state["comments"],
+            "review": _REVIEW_LABELS[state["review"]],
+            "threads": _STATE_LABELS[state["threads"]],
+            "comments": _STATE_LABELS[state["comments"]],
+            "suggestion": _SUGGESTION_TEXT.get(bucket),
         }
-        if is_draft:
+        if bucket == "draft":
             linked_issues = pr.get("closingIssuesReferences") or []
             entry["linked_issue"] = (
                 {"number": linked_issues[0]["number"], "url": linked_issues[0]["url"]}
@@ -183,9 +212,10 @@ def _fetch_your_prs(
                 else None
             )
         entries.append(entry)
+        ranks.append(_YOUR_PR_BUCKET_ORDER.index(bucket))
 
-    entries.sort(key=lambda e: _your_pr_rank(e["review"], e["threads"], e["comments"]))
-    return entries
+    order = sorted(range(len(entries)), key=lambda i: ranks[i])
+    return [entries[i] for i in order]
 
 
 def main() -> None:

@@ -46,23 +46,21 @@ argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
    commits to the pull request's existing remote branch. If the rebase hits
    conflicts, stop and report them to the user rather than resolving them
    unilaterally.
-7. Draft a concise, resolving reply for each resolved line/file review
-   comment, using the implementation-planner's feedback-to-fix mapping;
-   every item `fetch_pr_feedback.py` returned must be covered by exactly one
-   of these replies in this single pass.
-   - Draft a single summarizing reply for the pull request's conversation
-     thread, incorporating any conversation-level (non-line) comments. Its
-     first substantive line (a `## Resolution summary` header may precede
-     it) must be the literal verdict `Resolved.` (this lets
-     `/commons:triage` recognize the PR's conversation as resolved),
-     followed by a brief description of what was addressed, e.g.:
+7. Draft replies from the implementation-planner's feedback-to-fix mapping,
+   covering every item `fetch_pr_feedback.py` returned exactly once: a
+   concise, resolving reply for each line/file review comment, plus a
+   single conversation-level reply also covering any conversation-level
+   comments. The conversation-level reply's first substantive line (a
+   `## Resolution summary` header may precede it) must be the literal
+   verdict `Resolved.`, so `/commons:triage` can recognize the PR as
+   resolved, followed by a brief description of what was addressed, e.g.:
 
-     ```markdown
-     ## Resolution summary
+   ```markdown
+   ## Resolution summary
 
-     Resolved. Addressed the null-check feedback in `parse.py` and added
-     the missing test case for the empty-input path.
-     ```
+   Resolved. Addressed the null-check feedback in `parse.py` and added
+   the missing test case for the empty-input path.
+   ```
 8. Present the drafted replies, and wait for explicit user approval. Skip
    this step if the `--auto` flag is set, and proceed directly with posting
    them.

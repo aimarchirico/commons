@@ -143,8 +143,8 @@ def test_main_drops_bot_and_approved_prs_from_review_list(
 
     result = json.loads(capsys.readouterr().out)
     assert [pr["number"] for pr in result["prs_to_review"]] == [4, 3]
-    assert result["prs_to_review"][0]["reviews"] == "awaiting_your_review"
-    assert result["prs_to_review"][1]["reviews"] == "not_awaiting_your_review"
+    assert result["prs_to_review"][0]["reviews"] == "Awaiting your review"
+    assert result["prs_to_review"][1]["reviews"] == "Not awaiting your review"
 
 
 def test_main_classifies_your_prs_and_includes_linked_issue_for_drafts(
@@ -195,13 +195,15 @@ def test_main_classifies_your_prs_and_includes_linked_issue_for_drafts(
     result = json.loads(capsys.readouterr().out)
     yours = result["your_prs"]
     assert [pr["number"] for pr in yours] == [2, 3, 4, 5, 1]
-    fields = [(pr["review"], pr["threads"], pr["comments"]) for pr in yours]
-    assert fields == [
-        ("approved", "resolved", "none"),
-        ("approved", "unresolved", "none"),
-        ("changes_requested", "unresolved", "none"),
-        ("none", "none", "none"),
-        ("not_ready", "none", "none"),
+    assert [pr["suggestion"] for pr in yours] == [
+        "Merge the PR",
+        "Resolve the unresolved review with `/commons:resolve`, then merge the PR",
+        "Resolve the unresolved review with `/commons:resolve`",
+        "Self-review the PR with `/commons:review`",
+        None,
+    ]
+    assert [pr["review"] for pr in yours] == [
+        "Approved", "Approved", "Changes requested", "None", "Not ready for review",
     ]
     assert yours[4]["linked_issue"] == {"number": 42, "url": "issue-url"}
 
@@ -222,9 +224,8 @@ def test_main_computes_real_review_state_for_approved_draft_prs(
 
     result = json.loads(capsys.readouterr().out)
     yours = result["your_prs"]
-    assert (yours[0]["review"], yours[0]["threads"], yours[0]["comments"]) == (
-        "not_ready", "none", "none",
-    )
+    assert yours[0]["suggestion"] is None
+    assert yours[0]["review"] == "Not ready for review"
     assert yours[0]["linked_issue"] is None
 
 
