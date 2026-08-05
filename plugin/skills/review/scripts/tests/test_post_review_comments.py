@@ -46,7 +46,7 @@ def test_build_review_renders_resolvable_findings_as_inline_comments() -> None:
                     "_category: correctness_",
         },
     ]
-    assert review["body"].startswith("Requesting changes.\n\n## Review summary\n\n")
+    assert review["body"].startswith("## Review summary\n\nRequesting changes.\n\n")
     assert "2 findings" in review["body"]
     assert "2 posted as inline comments" in review["body"]
 

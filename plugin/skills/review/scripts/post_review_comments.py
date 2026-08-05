@@ -47,12 +47,14 @@ def build_review(findings: list[dict[str, Any]]) -> dict[str, Any]:
     """Render merged findings into a PR review body and inline comments array.
 
     Findings with a resolvable ``file``/``line`` become inline comments; the
-    rest are listed in the summary body. The body's first line is always
-    the explicit verdict, verbatim: ``Approved.`` if ``findings`` is empty,
-    otherwise ``Requesting changes.`` (the self-review-signal GitHub Action
-    matches on this exact text to submit a real review on the user's
-    behalf, since the user can't approve or request changes on their own
-    PR).
+    rest are listed in the summary body. If there are any findings, the
+    body leads with a ``## Review summary`` header, then the explicit
+    verdict as its own line, verbatim: ``Approved.`` if ``findings`` is
+    empty (with no header, since there's nothing to summarize), otherwise
+    ``Requesting changes.`` (the self-review-signal GitHub Action skips
+    leading blank/header lines to find this verdict, then submits a real
+    review on the user's behalf, since the user can't approve or request
+    changes on their own PR).
     """
     def _is_resolvable(finding: dict[str, Any]) -> bool:
         return bool(finding.get("file")) and finding.get("line") is not None
@@ -76,9 +78,9 @@ def build_review(findings: list[dict[str, Any]]) -> dict[str, Any]:
         return {"body": "Approved.", "comments": []}
 
     summary_lines = [
-        "Requesting changes.",
-        "",
         "## Review summary",
+        "",
+        "Requesting changes.",
         "",
         f"{total} findings across logic, compliance, performance, and "
         f"security; {posted} posted as inline comments on the diff.",
