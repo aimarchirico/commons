@@ -9,6 +9,22 @@ import pytest
 _REPO_CONTEXT = json.dumps({"owner": {"login": "acme"}, "name": "widgets"})
 _LOGIN = "octocat"
 
+
+@pytest.mark.parametrize(("state", "conflicting", "checks", "expected"), [
+    ("none", True, "passing", "resolve"),
+    ("none", False, "failing", "resolve"),
+    ("approved", True, "passing", "resolve_then_merge"),
+    ("approved", False, "passing", "merge"),
+])
+def test_bucket_for_treats_conflicting_and_failing_checks_as_needing_resolve(
+    state: str, *, conflicting: bool, checks: str, expected: str,
+) -> None:
+    """A conflicting or check-failing PR needs resolve/resolve_then_merge."""
+    assert ct._bucket_for(
+        state, "resolved", "resolved", conflicting=conflicting, checks=checks,
+    ) == expected
+
+
 _PROJECT_QUERY_RESPONSE = json.dumps({
     "data": {"repository": {"projectsV2": {"nodes": [
         {
@@ -74,8 +90,6 @@ def _review_state_response(
     review_state: str | None = None,
     thread_resolutions: list[bool] | None = None,
     comment_bodies: list[str] | None = None,
-    mergeable: str = "MERGEABLE",
-    checks_state: str | None = None,
 ) -> tuple[tuple[str, ...], str]:
     key = _normalize([
         "gh", "api", "graphql", "-f", "owner=acme", "-f", "repo=widgets",
@@ -96,12 +110,6 @@ def _review_state_response(
                     for i, body_text in enumerate(comment_bodies or [])
                 ],
             },
-            "mergeable": mergeable,
-            "commits": {
-                "nodes": [] if checks_state is None else [
-                    {"commit": {"statusCheckRollup": {"state": checks_state}}},
-                ],
-            },
         }}},
     })
     return key, body
@@ -117,7 +125,8 @@ def test_main_prints_empty_survey_when_nothing_is_open(
 
     result = json.loads(capsys.readouterr().out)
     assert result == {
-        "prs_to_review": [], "your_open_prs": [], "your_draft_prs": [], "backlog_issues": [],
+        "prs_to_review": [], "your_open_prs": [], "your_draft_prs": [],
+        "backlog_issues": [],
     }
 
 
@@ -160,9 +169,11 @@ def test_main_drops_bot_and_approved_prs_from_review_list(
 def test_main_classifies_your_prs_and_splits_out_drafts(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str],
 ) -> None:
-    """Non-draft PRs sort merge, resolve-then-merge, resolve, self-review;
-    drafts land in your_draft_prs instead, with no review-state query made
-    for them (not actionable until they're out of draft)."""
+    """Non-draft PRs sort merge, resolve-then-merge, resolve, self-review.
+
+    Drafts land in your_draft_prs instead, with no review-state query made
+    for them (not actionable until they're out of draft).
+    """
     your_prs = json.dumps([
         {
             "number": 1, "title": "Draft", "url": "u1", "isDraft": True,
@@ -186,20 +197,17 @@ def test_main_classifies_your_prs_and_splits_out_drafts(
         },
     ])
     responses = _base_responses(your_prs=your_prs)
-    key, body = _review_state_response(
-        number=2, review_state="APPROVED", thread_resolutions=[True],
-    )
-    responses[key] = body
-    key, body = _review_state_response(
-        number=3, review_state="APPROVED", thread_resolutions=[False],
-    )
-    responses[key] = body
-    key, body = _review_state_response(
-        number=4, review_state="CHANGES_REQUESTED", thread_resolutions=[False],
-    )
-    responses[key] = body
-    key, body = _review_state_response(number=5, review_state=None)
-    responses[key] = body
+    for number, review_state, thread_resolutions in (
+        (2, "APPROVED", [True]),
+        (3, "APPROVED", [False]),
+        (4, "CHANGES_REQUESTED", [False]),
+        (5, None, None),
+    ):
+        key, body = _review_state_response(
+            number=number, review_state=review_state,
+            thread_resolutions=thread_resolutions,
+        )
+        responses[key] = body
     _install_gh(monkeypatch, responses)
 
     ct.main()
@@ -266,7 +274,8 @@ def test_main_disambiguates_multiple_projects_by_repo_name(
 
     result = json.loads(capsys.readouterr().out)
     assert result == {
-        "prs_to_review": [], "your_open_prs": [], "your_draft_prs": [], "backlog_issues": [],
+        "prs_to_review": [], "your_open_prs": [], "your_draft_prs": [],
+        "backlog_issues": [],
     }
 
 

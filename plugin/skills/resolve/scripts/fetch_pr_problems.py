@@ -71,13 +71,12 @@ def _fetch_failing_checks(
 def fetch_pr_problems(
     run_cmd: Callable[[list[str]], str], pr_number: str,
 ) -> dict[str, Any]:
-    """Fetch everything blocking a PR from being merged: unresolved review
-    threads, comments, whether it conflicts with its base branch, and any
-    failing checks.
+    """Fetch everything blocking a PR from being merged.
 
-    "Open" means unresolved threads and comments since the last
-    ``Resolved.`` checkpoint; see
-    ``${CLAUDE_PLUGIN_ROOT}/shared/pr_feedback.py``.
+    Returns unresolved review threads, comments since the last
+    ``Resolved.`` checkpoint (see
+    ``${CLAUDE_PLUGIN_ROOT}/shared/pr_feedback.py``), whether it conflicts
+    with its base branch, and any failing checks.
     """
     repo_output = run_cmd(["gh", "repo", "view", "--json", "owner,name"])
     repo_data = json.loads(repo_output)

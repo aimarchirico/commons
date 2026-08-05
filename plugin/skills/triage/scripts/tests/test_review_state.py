@@ -134,9 +134,11 @@ def test_no_commits_reports_no_checks() -> None:
 
 
 def test_draft_review_activity_and_merge_state_are_still_computed_for_real() -> None:
-    """A draft's comments/threads/conflicting/checks are real, not forced to
-    none: drafts can carry all the same activity, only the bucket/suggestion
-    a caller derives from `isDraft` treats them specially, not this data."""
+    """A draft's comments/threads/conflicting/checks are real, not forced to none.
+
+    Drafts can carry all the same activity; only the bucket/suggestion a
+    caller derives from `isDraft` treats them specially, not this data.
+    """
     response = _response(
         review_state="COMMENTED", thread_resolutions=[False], comment_bodies=["wip"],
         mergeable="CONFLICTING", checks_state="FAILURE",

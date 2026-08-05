@@ -199,16 +199,9 @@ def _linked_issue_for(pr: dict[str, Any]) -> dict[str, Any] | None:
     )
 
 
-def _fetch_your_prs(
+def _fetch_open_and_draft_prs(
     run_cmd: Callable[[list[str]], str], owner: str, repo_name: str,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
-    """Fetch the user's open PRs, split into ``(your_open_prs,
-    your_draft_prs)``.
-
-    Drafts skip the review-state query entirely: threads, comments,
-    conflicts, and check failures aren't actionable signals until the PR is
-    out of draft, so there's no reason to pay for that API call yet.
-    """
     output = run_cmd([
         "gh", "pr", "list",
         "--search", "is:open author:@me",
@@ -263,7 +256,9 @@ def main() -> None:
         owner, repo_name = _get_repo_context(_run_cmd)
         project_owner, project_number = _get_linked_project(_run_cmd, owner, repo_name)
         login = _resolve_login(_run_cmd)
-        your_open_prs, your_draft_prs = _fetch_your_prs(_run_cmd, owner, repo_name)
+        your_open_prs, your_draft_prs = _fetch_open_and_draft_prs(
+            _run_cmd, owner, repo_name,
+        )
 
         result = {
             "prs_to_review": _fetch_prs_to_review(_run_cmd, login),

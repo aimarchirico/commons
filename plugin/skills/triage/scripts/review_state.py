@@ -62,8 +62,7 @@ def fetch_review_state(
     repo_name: str,
     number: int,
 ) -> dict[str, Any]:
-    """Compute a pull request's real ``state``, ``threads``, ``comments``,
-    ``conflicting``, and ``checks``, regardless of draft status.
+    """Compute a pull request's real review and merge state.
 
     ``graphql`` must match ``graphql(query: str, **variables) -> dict``,
     returning the parsed GraphQL response, so callers can reuse their own
