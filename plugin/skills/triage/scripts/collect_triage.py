@@ -182,7 +182,7 @@ def _fetch_unresolved_threads(
 
 
 def _classify_own_pr(
-    is_draft: bool, review_decision: str | None, has_unresolved_threads: bool,
+    *, is_draft: bool, review_decision: str | None, has_unresolved_threads: bool,
 ) -> str:
     if is_draft:
         return "draft"
@@ -222,7 +222,9 @@ def _fetch_own_prs(
                 run_cmd, owner, repo_name, pr["number"],
             )
         bucket = _classify_own_pr(
-            is_draft, pr.get("reviewDecision"), has_unresolved_threads,
+            is_draft=is_draft,
+            review_decision=pr.get("reviewDecision"),
+            has_unresolved_threads=has_unresolved_threads,
         )
 
         entry: dict[str, Any] = {
