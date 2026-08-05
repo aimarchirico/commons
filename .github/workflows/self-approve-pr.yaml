@@ -1,0 +1,16 @@
+name: Self Approve PR
+
+on:
+  pull_request_review:
+    types: [submitted]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  approve:
+    name: Self Approve PR
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/self-approve-pr
