@@ -46,13 +46,37 @@ def _check_dependencies() -> None:
         sys.exit(1)
 
 
+def _fetch_conflicting(run_cmd: Callable[[list[str]], str], pr_number: str) -> bool:
+    output = run_cmd(["gh", "pr", "view", pr_number, "--json", "mergeable"])
+    return bool(json.loads(output)["mergeable"] == "CONFLICTING")
+
+
+def _fetch_failing_checks(
+    run_cmd: Callable[[list[str]], str], pr_number: str,
+) -> list[dict[str, str]]:
+    try:
+        output = run_cmd([
+            "gh", "pr", "checks", pr_number, "--json", "name,bucket,link",
+        ])
+    except subprocess.CalledProcessError:
+        return []
+    checks = json.loads(output) if output else []
+    return [
+        {"name": c["name"], "link": c["link"]}
+        for c in checks
+        if c.get("bucket") == "fail"
+    ]
+
+
 def fetch_review_feedback(
     run_cmd: Callable[[list[str]], str], pr_number: str,
 ) -> dict[str, Any]:
-    """Fetch a PR's open feedback: unresolved threads and comments.
+    """Fetch a PR's open feedback: unresolved threads, comments,
+    whether it conflicts with its base branch, and any failing checks.
 
     "Open" means unresolved threads and comments since the last
-    ``Resolved.`` checkpoint; see ``pr_feedback.py``.
+    ``Resolved.`` checkpoint; see
+    ``${CLAUDE_PLUGIN_ROOT}/shared/pr_feedback.py``.
     """
     repo_output = run_cmd(["gh", "repo", "view", "--json", "owner,name"])
     repo_data = json.loads(repo_output)
@@ -135,7 +159,12 @@ def fetch_review_feedback(
         for thread in unresolved_threads(pr.get("reviewThreads", {}).get("nodes", []))
     ]
 
-    return {"threads": open_threads, "comments": open_comments}
+    return {
+        "threads": open_threads,
+        "comments": open_comments,
+        "conflicting": _fetch_conflicting(run_cmd, pr_number),
+        "failing_checks": _fetch_failing_checks(run_cmd, pr_number),
+    }
 
 
 def main() -> None:

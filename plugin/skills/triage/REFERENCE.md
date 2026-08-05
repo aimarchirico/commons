@@ -25,9 +25,9 @@ field of the same name; none of them need further mapping.
 
 ## Your PRs (from `your_prs`)
 
-| Item                         | State     | Threads     | Comments     | Suggestion     |
-| :--------------------------- | :-------- | :---------- | :----------- | :------------- |
-| `[#<number>](<url>) <title>` | `<state>` | `<threads>` | `<comments>` | `<suggestion>` |
+| Item                         | State     | Threads     | Comments     | Conflicting     | Checks     | Suggestion     |
+| :--------------------------- | :-------- | :---------- | :----------- | :-------------- | :--------- | :------------- |
+| `[#<number>](<url>) <title>` | `<state>` | `<threads>` | `<comments>` | `<conflicting>` | `<checks>` | `<suggestion>` |
 
 If `suggestion` is `null`: the entry is a draft. If it has a non-null
 `linked_issue`, fetch that issue's title and body, plus the PR's own

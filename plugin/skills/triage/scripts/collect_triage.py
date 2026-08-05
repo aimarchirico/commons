@@ -154,17 +154,30 @@ _PR_STATE_LABELS = {
     "changes_requested": "Changes requested",
     "commented": "Commented",
     "none": "None",
-    "not_ready": "Not ready for review",
 }
 
 _THREAD_STATE_LABELS = {
     "none": "None", "resolved": "Resolved", "unresolved": "Unresolved",
 }
 
-def _bucket_for(state: str, threads: str, comments: str) -> str:
-    if state == "not_ready":
+_CHECKS_STATE_LABELS = {
+    "none": "None", "passing": "Passing", "pending": "Pending", "failing": "Failing",
+}
+
+_CONFLICTING_LABELS = {True: "Yes", False: "No"}
+
+
+def _bucket_for(
+    state: str, threads: str, comments: str, *,
+    conflicting: bool, checks: str, is_draft: bool,
+) -> str:
+    if is_draft:
         return "draft"
-    if threads == "unresolved" or comments == "unresolved":
+    needs_resolve = (
+        threads == "unresolved" or comments == "unresolved"
+        or conflicting or checks == "failing"
+    )
+    if needs_resolve:
         return "resolve_then_merge" if state == "approved" else "resolve"
     return "merge" if state == "approved" else "self_review"
 
@@ -174,11 +187,11 @@ def _suggestion_for(bucket: str, pr_number: int) -> str | None:
         return "Merge the PR"
     if bucket == "resolve_then_merge":
         return (
-            f"Resolve the unresolved review with `/commons:resolve --pr {pr_number}`,"
+            f"Resolve outstanding issues with `/commons:resolve --pr {pr_number}`,"
             " then merge the PR"
         )
     if bucket == "resolve":
-        return f"Resolve the unresolved review with `/commons:resolve --pr {pr_number}`"
+        return f"Resolve outstanding issues with `/commons:resolve --pr {pr_number}`"
     if bucket == "self_review":
         return f"Self-review the PR with `/commons:review --pr {pr_number}`"
     return None
@@ -200,10 +213,12 @@ def _fetch_your_prs(
         is_draft = bool(pr.get("isDraft"))
         review_state = fetch_review_state(
             lambda query, **variables: _graphql(run_cmd, query, **variables),
-            owner, repo_name, pr["number"], is_draft=is_draft,
+            owner, repo_name, pr["number"],
         )
         bucket = _bucket_for(
             review_state["state"], review_state["threads"], review_state["comments"],
+            conflicting=review_state["conflicting"], checks=review_state["checks"],
+            is_draft=is_draft,
         )
 
         entry: dict[str, Any] = {
@@ -213,6 +228,8 @@ def _fetch_your_prs(
             "state": _PR_STATE_LABELS[review_state["state"]],
             "threads": _THREAD_STATE_LABELS[review_state["threads"]],
             "comments": _THREAD_STATE_LABELS[review_state["comments"]],
+            "conflicting": _CONFLICTING_LABELS[review_state["conflicting"]],
+            "checks": _CHECKS_STATE_LABELS[review_state["checks"]],
             "suggestion": _suggestion_for(bucket, pr["number"]),
         }
         if bucket == "draft":

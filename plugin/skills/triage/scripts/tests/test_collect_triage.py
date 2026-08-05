@@ -74,6 +74,8 @@ def _review_state_response(
     review_state: str | None = None,
     thread_resolutions: list[bool] | None = None,
     comment_bodies: list[str] | None = None,
+    mergeable: str = "MERGEABLE",
+    checks_state: str | None = None,
 ) -> tuple[tuple[str, ...], str]:
     key = _normalize([
         "gh", "api", "graphql", "-f", "owner=acme", "-f", "repo=widgets",
@@ -92,6 +94,12 @@ def _review_state_response(
                 "nodes": [
                     {"body": body_text, "createdAt": f"2024-01-01T00:00:{i:02d}Z"}
                     for i, body_text in enumerate(comment_bodies or [])
+                ],
+            },
+            "mergeable": mergeable,
+            "commits": {
+                "nodes": [] if checks_state is None else [
+                    {"commit": {"statusCheckRollup": {"state": checks_state}}},
                 ],
             },
         }}},
@@ -174,6 +182,8 @@ def test_main_classifies_your_prs_and_includes_linked_issue_for_drafts(
         },
     ])
     responses = _base_responses(your_prs=your_prs)
+    key, body = _review_state_response(number=1, review_state=None)
+    responses[key] = body
     key, body = _review_state_response(
         number=2, review_state="APPROVED", thread_resolutions=[True],
     )
@@ -198,37 +208,48 @@ def test_main_classifies_your_prs_and_includes_linked_issue_for_drafts(
     assert [pr["suggestion"] for pr in yours] == [
         "Merge the PR",
         (
-            "Resolve the unresolved review with `/commons:resolve --pr 3`, "
+            "Resolve outstanding issues with `/commons:resolve --pr 3`, "
             "then merge the PR"
         ),
-        "Resolve the unresolved review with `/commons:resolve --pr 4`",
+        "Resolve outstanding issues with `/commons:resolve --pr 4`",
         "Self-review the PR with `/commons:review --pr 5`",
         None,
     ]
     assert [pr["state"] for pr in yours] == [
-        "Approved", "Approved", "Changes requested", "None", "Not ready for review",
+        "Approved", "Approved", "Changes requested", "None", "None",
     ]
     assert yours[4]["linked_issue"] == {"number": 42, "url": "issue-url"}
 
 
-def test_main_computes_real_review_state_for_approved_draft_prs(
+def test_main_reports_real_review_activity_for_draft_prs(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str],
 ) -> None:
-    """A draft PR is always not_ready regardless of any underlying review activity."""
+    """A draft PR's threads/comments/conflicting/checks are real values, not
+    forced to none — only its bucket (draft, suggestion None) is special."""
     your_prs = json.dumps([
         {
-            "number": 5, "title": "Approved draft", "url": "u5", "isDraft": True,
+            "number": 5, "title": "Draft with activity", "url": "u5", "isDraft": True,
             "closingIssuesReferences": [],
         },
     ])
-    _install_gh(monkeypatch, _base_responses(your_prs=your_prs))
+    responses = _base_responses(your_prs=your_prs)
+    key, body = _review_state_response(
+        number=5, review_state="COMMENTED", thread_resolutions=[False],
+        comment_bodies=["wip"], mergeable="CONFLICTING", checks_state="FAILURE",
+    )
+    responses[key] = body
+    _install_gh(monkeypatch, responses)
 
     ct.main()
 
     result = json.loads(capsys.readouterr().out)
     yours = result["your_prs"]
     assert yours[0]["suggestion"] is None
-    assert yours[0]["state"] == "Not ready for review"
+    assert yours[0]["state"] == "Commented"
+    assert yours[0]["threads"] == "Unresolved"
+    assert yours[0]["comments"] == "Unresolved"
+    assert yours[0]["conflicting"] == "Yes"
+    assert yours[0]["checks"] == "Failing"
     assert yours[0]["linked_issue"] is None
 
 
