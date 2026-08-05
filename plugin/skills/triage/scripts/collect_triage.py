@@ -1,0 +1,310 @@
+#!/usr/bin/env python3
+"""Script for surveying open PRs and Todo issues relevant to the user."""
+
+import json
+import shutil
+import subprocess
+import sys
+from collections.abc import Callable
+from typing import Any
+
+SINGLE_MATCH = 1
+
+
+def _run_cmd(args: list[str]) -> str:
+    result = subprocess.run(args, capture_output=True, text=True, check=True)
+    return result.stdout.strip()
+
+
+def _check_dependencies() -> None:
+    gh_bin = shutil.which("gh")
+    if not gh_bin:
+        sys.stderr.write(
+            "Error: GitHub CLI (gh) is not installed or not in PATH.\n",
+        )
+        sys.exit(1)
+
+    try:
+        subprocess.run([gh_bin, "auth", "status"], capture_output=True, check=True)
+    except subprocess.CalledProcessError:
+        sys.stderr.write(
+            "Error: GitHub CLI is not authenticated. "
+            "Please run 'gh auth login' first.\n",
+        )
+        sys.exit(1)
+
+
+def _get_repo_context(run_cmd: Callable[[list[str]], str]) -> tuple[str, str]:
+    """Fetch the current repository's owner and name."""
+    repo_output = run_cmd(["gh", "repo", "view", "--json", "owner,name"])
+    repo_data = json.loads(repo_output)
+    return str(repo_data["owner"]["login"]), str(repo_data["name"])
+
+
+def _get_linked_project(
+    run_cmd: Callable[[list[str]], str], owner: str, repo_name: str,
+) -> tuple[str, int]:
+    """Resolve the repository's single linked open GitHub Project (v2)."""
+    query = """
+    query($owner: String!, $name: String!) {
+      repository(owner: $owner, name: $name) {
+        projectsV2(first: 10) {
+          nodes {
+            number
+            title
+            closed
+            owner {
+              ... on User { login }
+              ... on Organization { login }
+            }
+          }
+        }
+      }
+    }
+    """
+    api_output = run_cmd([
+        "gh", "api", "graphql",
+        "-f", f"owner={owner}",
+        "-f", f"name={repo_name}",
+        "-f", f"query={query}",
+    ])
+    api_data = json.loads(api_output)
+    nodes = (
+        api_data.get("data", {}).get("repository", {})
+        .get("projectsV2", {}).get("nodes", [])
+    )
+    open_projects = [p for p in nodes if not p.get("closed", False)]
+
+    if not open_projects:
+        sys.stderr.write(
+            f"Error: No open GitHub Project linked to '{owner}/{repo_name}'.\n",
+        )
+        sys.exit(1)
+    if len(open_projects) > SINGLE_MATCH:
+        project_list = "\n".join(
+            f"  - {p.get('title')} (number: {p['number']})" for p in open_projects
+        )
+        sys.stderr.write(
+            f"Error: Multiple open GitHub Projects linked to "
+            f"'{owner}/{repo_name}', cannot disambiguate:\n{project_list}\n",
+        )
+        sys.exit(1)
+
+    project = open_projects[0]
+    project_owner = str(project["owner"]["login"])
+    project_number = int(project["number"])
+    return project_owner, project_number
+
+
+def _resolve_login(run_cmd: Callable[[list[str]], str]) -> str:
+    """Resolve the authenticated user's login (GraphQL has no `@me` alias)."""
+    return run_cmd(["gh", "api", "user", "--jq", ".login"])
+
+
+def _fetch_others_prs(
+    run_cmd: Callable[[list[str]], str], login: str,
+) -> list[dict[str, Any]]:
+    """Fetch other authors' open, non-draft PRs relevant to the user."""
+    output = run_cmd([
+        "gh", "pr", "list",
+        "--search", "is:open -author:@me draft:false",
+        "--json", "number,title,url,author,reviewRequests",
+    ])
+    prs = json.loads(output)
+
+    review_requested = []
+    not_requested = []
+    for pr in prs:
+        author = pr.get("author") or {}
+        if author.get("is_bot"):
+            continue
+        requested_logins = {
+            (r.get("login") or (r.get("requestedReviewer") or {}).get("login"))
+            for r in pr.get("reviewRequests", [])
+        }
+        entry = {
+            "number": pr["number"],
+            "title": pr["title"],
+            "url": pr["url"],
+            "author": author.get("login"),
+        }
+        if login in requested_logins:
+            entry["bucket"] = "review_requested"
+            review_requested.append(entry)
+        else:
+            entry["bucket"] = "not_requested"
+            not_requested.append(entry)
+
+    return review_requested + not_requested
+
+
+def _fetch_unresolved_threads(
+    run_cmd: Callable[[list[str]], str], owner: str, repo_name: str, number: int,
+) -> bool:
+    """Determine whether a PR has any unresolved review threads."""
+    query = """
+    query($owner: String!, $repo: String!, $number: Int!) {
+      repository(owner: $owner, name: $repo) {
+        pullRequest(number: $number) {
+          reviewThreads(first: 50) {
+            nodes { isResolved }
+          }
+        }
+      }
+    }
+    """
+    api_output = run_cmd([
+        "gh", "api", "graphql",
+        "-f", f"owner={owner}",
+        "-f", f"repo={repo_name}",
+        "-F", f"number={number}",
+        "-f", f"query={query}",
+    ])
+    api_data = json.loads(api_output)
+    pr = api_data.get("data", {}).get("repository", {}).get("pullRequest") or {}
+    threads = pr.get("reviewThreads", {}).get("nodes", [])
+    return any(not t.get("isResolved") for t in threads)
+
+
+def _classify_own_pr(
+    is_draft: bool, review_decision: str | None, has_unresolved_threads: bool,
+) -> str:
+    if is_draft:
+        return "draft"
+    if review_decision == "APPROVED" and not has_unresolved_threads:
+        return "ready_to_merge"
+    if review_decision == "APPROVED" and has_unresolved_threads:
+        return "resolve_then_merge"
+    if review_decision != "APPROVED" and has_unresolved_threads:
+        return "resolve"
+    return "get_reviewed"
+
+
+def _fetch_own_prs(
+    run_cmd: Callable[[list[str]], str], owner: str, repo_name: str,
+) -> list[dict[str, Any]]:
+    """Fetch the user's own open PRs, classified into priority buckets."""
+    output = run_cmd([
+        "gh", "pr", "list",
+        "--search", "is:open author:@me",
+        "--json", "number,title,url,isDraft,reviewDecision,closingIssuesReferences",
+    ])
+    prs = json.loads(output)
+
+    buckets: dict[str, list[dict[str, Any]]] = {
+        "ready_to_merge": [],
+        "resolve_then_merge": [],
+        "resolve": [],
+        "get_reviewed": [],
+        "draft": [],
+    }
+
+    for pr in prs:
+        is_draft = bool(pr.get("isDraft"))
+        has_unresolved_threads = False
+        if not is_draft:
+            has_unresolved_threads = _fetch_unresolved_threads(
+                run_cmd, owner, repo_name, pr["number"],
+            )
+        bucket = _classify_own_pr(
+            is_draft, pr.get("reviewDecision"), has_unresolved_threads,
+        )
+
+        entry: dict[str, Any] = {
+            "number": pr["number"],
+            "title": pr["title"],
+            "url": pr["url"],
+            "is_draft": is_draft,
+            "bucket": bucket,
+        }
+        if bucket == "draft":
+            linked_issues = pr.get("closingIssuesReferences") or []
+            entry["linked_issue"] = (
+                {"number": linked_issues[0]["number"], "url": linked_issues[0]["url"]}
+                if linked_issues
+                else None
+            )
+        buckets[bucket].append(entry)
+
+    return (
+        buckets["ready_to_merge"]
+        + buckets["resolve_then_merge"]
+        + buckets["resolve"]
+        + buckets["get_reviewed"]
+        + buckets["draft"]
+    )
+
+
+def _fetch_root_todo_issues(
+    run_cmd: Callable[[list[str]], str],
+    project_owner: str,
+    project_number: int,
+    login: str,
+) -> list[dict[str, Any]]:
+    """Fetch root (non-sub-issue) Todo project items relevant to the user."""
+    item_output = run_cmd([
+        "gh", "project", "item-list", str(project_number),
+        "--owner", project_owner, "--format", "json", "--limit", "200",
+    ])
+    items = json.loads(item_output).get("items", [])
+
+    issue_output = run_cmd([
+        "gh", "issue", "list",
+        "--state", "open", "--json", "number,parent", "--limit", "200",
+    ])
+    issues = json.loads(issue_output)
+    parent_by_number = {i["number"]: i.get("parent") for i in issues}
+
+    assigned = []
+    unassigned = []
+    for item in items:
+        content = item.get("content") or {}
+        if item.get("status") != "Todo" or content.get("type") != "Issue":
+            continue
+
+        number = content.get("number")
+        if number is None or parent_by_number.get(number) is not None:
+            continue
+
+        assignees = item.get("assignees") or []
+        entry = {
+            "number": number,
+            "title": content.get("title"),
+            "url": content.get("url"),
+        }
+        if login in assignees:
+            entry["bucket"] = "assigned"
+            assigned.append(entry)
+        elif not assignees:
+            entry["bucket"] = "unassigned"
+            unassigned.append(entry)
+        # else: assigned to someone else, not actionable by this user, drop.
+
+    return assigned + unassigned
+
+
+def main() -> None:
+    """Main entry point for printing the triage survey as JSON."""
+    _check_dependencies()
+
+    try:
+        owner, repo_name = _get_repo_context(_run_cmd)
+        project_owner, project_number = _get_linked_project(_run_cmd, owner, repo_name)
+        login = _resolve_login(_run_cmd)
+
+        result = {
+            "others_prs": _fetch_others_prs(_run_cmd, login),
+            "own_prs": _fetch_own_prs(_run_cmd, owner, repo_name),
+            "todo_issues": _fetch_root_todo_issues(
+                _run_cmd, project_owner, project_number, login,
+            ),
+        }
+    except (subprocess.CalledProcessError, json.JSONDecodeError, KeyError) as e:
+        sys.stderr.write(f"Error: Failed to collect triage data. {e}\n")
+        sys.exit(1)
+
+    sys.stdout.write(f"{json.dumps(result, indent=2)}\n")
+
+
+if __name__ == "__main__":
+    main()
