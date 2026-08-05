@@ -45,15 +45,23 @@ def _resolve_review_threads(run_cmd: Callable[..., str], thread_ids: set[str]) -
         ])
 
 
+def _render_conversation_reply(summary: str) -> str:
+    return f"## Resolution summary\n\nResolved. {summary}"
+
+
 def post_replies(
     run_cmd: Callable[..., str],
     pr_number: str,
     thread_replies: list[dict[str, Any]],
-    conversation_reply: str,
+    conversation_summary: str,
 ) -> None:
     """Reply to each review-thread comment, resolve its thread, post the rest.
 
-    Posts one conversation-level reply last.
+    Posts one conversation-level reply last, built from ``conversation_summary``
+    via ``_render_conversation_reply`` (a ``## Resolution summary`` header
+    followed by the literal verdict ``Resolved.``; `/commons:triage` detects
+    this by skipping leading blank/header lines, not by checking whether the
+    reply merely starts with ``Resolved.``).
     """
     repo_output = run_cmd(["gh", "repo", "view", "--json", "owner,name"])
     repo_data = json.loads(repo_output)
@@ -76,12 +84,14 @@ def post_replies(
 
     _resolve_review_threads(run_cmd, thread_ids)
 
-    if conversation_reply:
+    if conversation_summary:
         sys.stdout.write(f"Posting conversation reply on PR #{pr_number}...\n")
         endpoint = f"repos/{owner}/{repo_name}/issues/{pr_number}/comments"
         run_cmd(
             ["gh", "api", endpoint, "--input", "-"],
-            input_text=json.dumps({"body": conversation_reply}),
+            input_text=json.dumps(
+                {"body": _render_conversation_reply(conversation_summary)},
+            ),
         )
 
 
@@ -130,7 +140,7 @@ def main() -> None:
             _run_cmd,
             pr_number,
             data.get("thread_replies", []),
-            data.get("conversation_reply", ""),
+            data.get("conversation_summary", ""),
         )
         request_re_reviews(_run_cmd, pr_number)
         sys.stdout.write("Successfully posted all replies.\n")

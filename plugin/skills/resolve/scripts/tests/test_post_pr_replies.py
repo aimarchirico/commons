@@ -25,7 +25,7 @@ def test_post_replies_replies_to_each_thread_then_the_conversation() -> None:
             {"comment_id": 1, "thread_id": "T_1", "body": "fixed"},
             {"comment_id": 2, "thread_id": "T_2", "body": "done"},
         ],
-        "All resolved.",
+        "Addressed the null-check feedback.",
     )
 
     thread_call_1, thread_call_2 = calls[1], calls[2]
@@ -35,7 +35,12 @@ def test_post_replies_replies_to_each_thread_then_the_conversation() -> None:
 
     conversation_call = calls[-1]
     assert conversation_call[0][2] == "repos/acme/widgets/issues/42/comments"
-    assert json.loads(conversation_call[1] or "") == {"body": "All resolved."}
+    assert json.loads(conversation_call[1] or "") == {
+        "body": (
+            "## Resolution summary\n\n"
+            "Resolved. Addressed the null-check feedback."
+        ),
+    }
 
 
 def test_post_replies_resolves_each_unique_thread_once() -> None:
@@ -62,8 +67,15 @@ def test_post_replies_resolves_each_unique_thread_once() -> None:
     assert resolved_thread_ids == {"T_1", "T_2"}
 
 
+def test_render_conversation_reply_leads_with_header_then_verdict() -> None:
+    """The header comes first, then the literal Resolved. verdict."""
+    body = ppr._render_conversation_reply("Fixed the thing.")
+
+    assert body == "## Resolution summary\n\nResolved. Fixed the thing."
+
+
 def test_post_replies_skips_conversation_reply_when_empty() -> None:
-    """No conversation-level call is made when conversation_reply is empty."""
+    """No conversation-level call is made when conversation_summary is empty."""
     calls: list[list[str]] = []
 
     def fake_run_cmd(args: list[str], input_text: str | None = None) -> str:
@@ -139,7 +151,7 @@ def test_main_posts_replies_and_deletes_the_file_on_success(
     """main() posts replies, prints a confirmation, and cleans up the file."""
     replies_file = tmp_path / "replies.json"
     replies_file.write_text(json.dumps({
-        "thread_replies": [], "conversation_reply": "",
+        "thread_replies": [], "conversation_summary": "",
     }))
     monkeypatch.setattr(sys, "argv", ["post_pr_replies", "42", str(replies_file)])
     monkeypatch.setattr(ppr.shutil, "which", lambda _name: "/usr/bin/gh")
@@ -162,7 +174,7 @@ def test_main_exits_and_cleans_up_when_gh_command_fails(
     """main() exits and still deletes the file when the gh call fails."""
     replies_file = tmp_path / "replies.json"
     replies_file.write_text(json.dumps({
-        "thread_replies": [], "conversation_reply": "",
+        "thread_replies": [], "conversation_summary": "",
     }))
     monkeypatch.setattr(sys, "argv", ["post_pr_replies", "42", str(replies_file)])
     monkeypatch.setattr(ppr.shutil, "which", lambda _name: "/usr/bin/gh")

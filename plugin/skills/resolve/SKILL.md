@@ -47,22 +47,11 @@ argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
    conflicts, stop and report them to the user rather than resolving them
    unilaterally.
 7. Draft replies from the implementation-planner's feedback-to-fix mapping,
-   covering every item step 3's script returned exactly once: a
-   concise, resolving reply for each line/file review comment, plus a
-   single conversation-level reply also covering any conversation-level
-   comments, formatted like:
-
-   ```markdown
-   ## Resolution summary
-
-   Resolved. Addressed the null-check feedback in `parse.py` and added
-   the missing test case for the empty-input path.
-   ```
-
-   The literal verdict `Resolved.` must be the first line that isn't blank
-   or a markdown header; no other content may precede it. `/commons:triage`
-   detects this by skipping leading blank/header lines, not by checking
-   whether the reply merely starts with `Resolved.`.
+   covering every item step 3's script returned exactly once: a concise,
+   resolving reply for each line/file review comment, plus a brief
+   conversation-level summary (also covering any conversation-level
+   comments) of what was addressed, e.g. "Addressed the null-check feedback
+   in `parse.py` and added the missing test case for the empty-input path."
 8. Present the drafted replies, and wait for explicit user approval. Skip
    this step if the `--auto` flag is set, and proceed directly with posting
    them.
@@ -74,7 +63,7 @@ argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
      "thread_replies": [
        { "comment_id": 0, "thread_id": "string", "body": "string" }
      ],
-     "conversation_reply": "string"
+     "conversation_summary": "string"
    }
    ```
 
@@ -85,10 +74,11 @@ argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
    ```
 
    The script resolves `{owner}/{repo}` itself. It replies to each thread
-   comment, resolves that comment's review thread, posts the
-   conversation-level reply, then requests re-review from the pull
-   request's prior reviewers, excluding the user (who can't be a reviewer
-   of their own PR). It deletes the temporary file on completion.
+   comment, resolves that comment's review thread, then builds and posts
+   the conversation-level reply from `conversation_summary` (`post_replies()`
+   owns the exact format; see its docstring), then requests re-review from
+   the pull request's prior reviewers, excluding the user (who can't be a
+   reviewer of their own PR). It deletes the temporary file on completion.
 10. Execute `git worktree remove <worktree-path>` to remove the isolated
     worktree; `<branch-name>` and its commits remain intact in the repository
     and on the remote.
