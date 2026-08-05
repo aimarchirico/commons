@@ -9,6 +9,7 @@ tasks:
       - uv run commons-python ruff check
       - uv run commons-python ty check
       - uv run commons-python commons check
+      - uv run commons-python pytest
 
   fix:
     desc: Fix Python files

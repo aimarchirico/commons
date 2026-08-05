@@ -71,7 +71,7 @@ def test_dispatches_pytest(monkeypatch: pytest.MonkeyPatch) -> None:
     assert exc_info.value.code == 0
     command = captured["command"]
     assert command[0] == "pytest"
-    assert command[1] == "--cov"
+    assert command[1] == "--cov=."
     assert command[2] == "--cov-config"
     assert command[3].endswith("coverage.toml")
     assert command[4:] == ["-v"]

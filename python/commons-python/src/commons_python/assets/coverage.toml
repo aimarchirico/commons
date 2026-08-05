@@ -4,3 +4,4 @@ omit = ["*/tests/*", "**/.venv/*", "**/__pycache__/*"]
 
 [report]
 fail_under = 80
+include_namespace_packages = true
