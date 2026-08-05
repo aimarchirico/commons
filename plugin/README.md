@@ -29,7 +29,6 @@ plugin/
 ├── .claude-plugin/plugin.json   # plugin manifest
 ├── .github/                     # bundled conventions (CONTRIBUTING.md, issue/PR templates)
 ├── skills/
-│   ├── backlog/SKILL.md         # chain spec drafting and issue creation into a single flow
 │   ├── check/SKILL.md           # verify the tree against the project's own PR-gating CI checks
 │   ├── commit/SKILL.md          # create logical, atomic commits
 │   ├── docs/SKILL.md            # update project documentation
@@ -57,9 +56,8 @@ and `worktree-runner` agents in [`agents/`](agents) (which in turn invokes
 `check` before handing back), `review` delegating to the `logic-reviewer`,
 `performance-reviewer`, `security-reviewer`, and `compliance-reviewer`
 agents, `ship` delegating to the `issue`, `solve`, `review`, and `resolve`
-skills themselves, `spec` delegating to parallel `general-purpose`
-agents for substantial external research, and `backlog` delegating to
-the `spec` and `issue` skills themselves.
+skills themselves, and `spec` delegating to parallel `general-purpose`
+agents for substantial external research.
 
 `.github/` is currently a manual copy of
 `npm/packages/commons-github/src/assets/` (`CONTRIBUTING.md` and the GitHub

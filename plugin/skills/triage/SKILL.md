@@ -20,7 +20,7 @@ None. This skill takes no arguments.
    ```
 
    and parse its JSON output.
-2. For each PR in `your_prs` with `bucket == "draft"`: if it has a non-null
+1. For each PR in `your_prs` with `status == "draft"`: if it has a non-null
    `linked_issue`, fetch that issue's title and body, plus the PR's own
    description and diff:
 
@@ -35,10 +35,5 @@ None. This skill takes no arguments.
    it ready for review, based on that judgment. If `linked_issue` is null,
    say plainly that there's no linked issue to check completeness against,
    rather than guessing.
-3. Render the three tables per
+1. Render the three tables per
    `${CLAUDE_PLUGIN_ROOT}/skills/triage/REFERENCE.md`.
-
-## Output
-
-Nothing; this is a terminal, user-facing report that never feeds into
-another skill.
