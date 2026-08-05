@@ -9,17 +9,9 @@ from collections.abc import Callable
 from typing import Any
 
 from backlog_utils import fetch_backlog_issues
+from commons_python.review_state import fetch_review_state
 
 SINGLE_MATCH = 1
-YOUR_PR_RANK = {
-    ("approved", "no_unresolved_review"): 0,
-    ("approved", "unresolved_review"): 1,
-    ("not_approved", "unresolved_review"): 2,
-    ("not_approved", "no_unresolved_review"): 3,
-    ("not_approved", "not_reviewed"): 4,
-    ("not_approved", "not_ready"): 5,
-    ("approved", "not_ready"): 6,
-}
 
 
 def _run_cmd(args: list[str]) -> str:
@@ -149,21 +141,12 @@ def _fetch_prs_to_review(
     return awaiting + not_awaiting
 
 
-def _fetch_review_state(
-    run_cmd: Callable[[list[str]], str], owner: str, repo_name: str, number: int,
-) -> tuple[bool, bool]:
-    query = (
-        "query($owner: String!, $repo: String!, $number: Int!) {"
-        " repository(owner: $owner, name: $repo) { pullRequest(number: $number) {"
-        " reviewThreads(first: 50) { nodes { isResolved } }"
-        " reviews(first: 1) { totalCount } } } }"
-    )
-    api_data = _graphql(run_cmd, query, owner=owner, repo=repo_name, number=number)
-    pr = api_data.get("data", {}).get("repository", {}).get("pullRequest") or {}
-    threads = pr.get("reviewThreads", {}).get("nodes", [])
-    has_unresolved = any(not t.get("isResolved") for t in threads)
-    has_any_reviews = pr.get("reviews", {}).get("totalCount", 0) > 0
-    return has_unresolved, has_any_reviews
+def _your_pr_rank(review: str, threads: str, comments: str) -> int:
+    if review == "not_ready":
+        return 4
+    if threads == "unresolved" or comments == "unresolved":
+        return 1 if review == "approved" else 2
+    return 0 if review == "approved" else 3
 
 
 def _fetch_your_prs(
@@ -172,34 +155,25 @@ def _fetch_your_prs(
     output = run_cmd([
         "gh", "pr", "list",
         "--search", "is:open author:@me",
-        "--json", "number,title,url,isDraft,reviewDecision,closingIssuesReferences",
+        "--json", "number,title,url,isDraft,closingIssuesReferences",
     ])
     prs = json.loads(output)
 
     entries = []
     for pr in prs:
         is_draft = bool(pr.get("isDraft"))
-        status = (
-            "approved" if pr.get("reviewDecision") == "APPROVED" else "not_approved"
+        state = fetch_review_state(
+            lambda query, **variables: _graphql(run_cmd, query, **variables),
+            owner, repo_name, pr["number"], is_draft=is_draft,
         )
-        if is_draft:
-            reviews = "not_ready"
-        else:
-            has_unresolved, has_any_reviews = _fetch_review_state(
-                run_cmd, owner, repo_name, pr["number"],
-            )
-            reviews = (
-                "not_reviewed" if not has_any_reviews
-                else "unresolved_review" if has_unresolved
-                else "no_unresolved_review"
-            )
 
         entry: dict[str, Any] = {
             "number": pr["number"],
             "title": pr["title"],
             "url": pr["url"],
-            "status": status,
-            "reviews": reviews,
+            "review": state["review"],
+            "threads": state["threads"],
+            "comments": state["comments"],
         }
         if is_draft:
             linked_issues = pr.get("closingIssuesReferences") or []
@@ -210,7 +184,7 @@ def _fetch_your_prs(
             )
         entries.append(entry)
 
-    entries.sort(key=lambda e: YOUR_PR_RANK[(e["status"], e["reviews"])])
+    entries.sort(key=lambda e: _your_pr_rank(e["review"], e["threads"], e["comments"]))
     return entries
 
 

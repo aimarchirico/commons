@@ -43,9 +43,12 @@ argument-hint: "--pr <pr-number> [--auto]"
    - Build a `comments` array (`path`, `line`, `body`) from findings with a
      resolvable file and line, using the rendered template as `body`.
    - Build the summary `body`. Let `n` be the total merged finding count
-     (step 4) and `k` be the number placed in `comments`. The first line is
+     (step 4) and `k` be the number placed in `comments`. The first line,
+     with nothing preceding it (any header comes after, never before), is
      always an explicit verdict, verbatim: `Approved.` if `n` is 0,
-     otherwise `Requesting changes.`.
+     otherwise `Requesting changes.` (the self-review-signal GitHub Action
+     matches on this exact text to submit a real review on your behalf,
+     since you can't approve or request changes on your own PR).
      - If `n` is 0, the verdict line is the entire body.
      - Otherwise, follow the verdict line with a blank line, then
        `## Review summary`, then a summary line stating `n` and `k`. If

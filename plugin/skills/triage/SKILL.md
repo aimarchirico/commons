@@ -20,7 +20,7 @@ None. This skill takes no arguments.
    ```
 
    and parse its JSON output.
-1. For each PR in `your_prs` with `reviews == "not_ready"`: if it has a non-null
+1. For each PR in `your_prs` with `review == "not_ready"`: if it has a non-null
    `linked_issue`, fetch that issue's title and body, plus the PR's own
    description and diff:
 

@@ -49,7 +49,13 @@ argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
 7. Draft a concise, resolving reply for each resolved line/file review
    comment, and a single summarizing reply for the pull request's
    conversation thread incorporating any conversation-level (non-line)
-   comments, using the implementation-planner's feedback-to-fix mapping.
+   comments, using the implementation-planner's feedback-to-fix mapping —
+   every item `fetch_pr_feedback.py` returned must be covered by exactly one
+   of these replies in this single pass. The conversation-level reply's
+   first line must be the literal verdict `Resolved.`, with nothing before
+   it; follow it with a blank line, then `## Resolution summary`, then a
+   brief description of what was addressed (this lets `/commons:triage`
+   recognize the PR's conversation as resolved).
 8. Present the drafted replies, and wait for explicit user approval. Skip
    this step if the `--auto` flag is set, and proceed directly with posting
    them.
@@ -73,12 +79,16 @@ argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
 
    (the script resolves `{owner}/{repo}` itself and deletes the temporary
    file upon completion).
-10. Request re-review from the pull request's prior reviewers, now that their
+10. Request re-review from the pull request's prior reviewers (excluding
+    yourself, since you can't be a reviewer of your own PR), now that their
     feedback has been addressed:
 
     ```bash
     gh pr view <pr-number> --json reviews --jq '[.reviews[].author.login] | unique[]' \
-      | while read -r reviewer; do gh pr edit <pr-number> --add-reviewer "$reviewer"; done
+      | while read -r reviewer; do
+          [ "$reviewer" = "$(gh api user --jq .login)" ] && continue
+          gh pr edit <pr-number> --add-reviewer "$reviewer"
+        done
     ```
 11. Execute `git worktree remove <worktree-path>` to remove the isolated
     worktree; `<branch-name>` and its commits remain intact in the repository
