@@ -1,10 +1,4 @@
-"""Shared pull request review-state computation for skills that need it.
-
-Both the ``triage`` and ``resolve`` skills need to answer the same question —
-what state is a pull request's review, threads, and comments in — so the
-GraphQL query and its interpretation live here once instead of being
-duplicated per skill.
-"""
+"""Pull request review-state computation shared by triage's collect_triage.py."""
 
 from collections.abc import Callable
 from typing import Any

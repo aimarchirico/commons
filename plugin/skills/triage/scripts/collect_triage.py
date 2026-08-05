@@ -9,7 +9,7 @@ from collections.abc import Callable
 from typing import Any
 
 from backlog_utils import fetch_backlog_issues
-from commons_python.review_state import fetch_review_state
+from review_state import fetch_review_state
 
 SINGLE_MATCH = 1
 

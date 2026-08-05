@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from commons_python.review_state import fetch_review_state
+from review_state import fetch_review_state
 
 
 def _response(
