@@ -10,7 +10,7 @@ argument-hint: "[--auto]"
 ## Arguments
 
 | Flag     | Required | Description                                                              |
-| :------- | :------- | :------------------------------------------------------------------------ |
+| :------- | :------- | :----------------------------------------------------------------------- |
 | `--auto` | No       | Skip every sub-skill's approval step and run the full flow autonomously. |
 
 ## Workflow
