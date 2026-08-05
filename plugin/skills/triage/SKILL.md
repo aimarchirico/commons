@@ -33,13 +33,11 @@ None. This skill takes no arguments.
    bucket-to-suggestion mappings in
    `${CLAUDE_PLUGIN_ROOT}/skills/triage/REFERENCE.md`: PRs to review (from
    `prs_to_review`), Your PRs (from `your_prs`), and Backlog issues (from
-   `backlog_issues`). Each table has three columns: the item (number, title,
-   and for drafts, "(draft)"), its Status, and its Suggestion. The draft
-   row's Suggestion is the judgment from step 2, not a fixed mapping.
+   `backlog_issues`). Each table follows this format:
 
-   Never print internal bucket labels (e.g. `unresolved_approved`,
-   `review_requested`) directly; always use the mapped Status phrase
-   instead. Never use em dashes anywhere in the output.
+   | Item                    | Status       | Suggestion       |
+   | :----------------------- | :------------ | :---------------- |
+   | #`<number>` `<title>`   | `<status>`   | `<suggestion>`   |
 
 ## Output
 
