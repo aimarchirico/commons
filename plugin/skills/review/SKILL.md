@@ -47,8 +47,8 @@ argument-hint: "--pr <pr-number> [--auto]"
      substantive line (ignoring any markdown header before it) is always an
      explicit verdict, verbatim: `Approved.` if `n` is 0, otherwise
      `Requesting changes.` (the self-review-signal GitHub Action matches on
-     this exact text to submit a real review on your behalf, since you
-     can't approve or request changes on your own PR).
+     this exact text to submit a real review on the user's behalf, since
+     the user can't approve or request changes on their own PR).
      - If `n` is 0, the verdict line is the entire body.
      - Otherwise, follow the verdict line with a blank line, then
        `## Review summary`, then a summary line stating `n` and `k`. If

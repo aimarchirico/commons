@@ -80,8 +80,8 @@ argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
    (the script resolves `{owner}/{repo}` itself and deletes the temporary
    file upon completion).
 10. Request re-review from the pull request's prior reviewers (excluding
-    yourself, since you can't be a reviewer of your own PR), now that their
-    feedback has been addressed:
+    the user, since the user can't be a reviewer of their own PR), now that
+    their feedback has been addressed:
 
     ```bash
     gh pr view <pr-number> --json reviews --jq '[.reviews[].author.login] | unique[]' \
