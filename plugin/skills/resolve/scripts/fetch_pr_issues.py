@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Script for fetching a pull request's open review feedback."""
+"""Script for fetching everything blocking a pull request from being merged."""
 
 import importlib.util
 import json
@@ -68,11 +68,12 @@ def _fetch_failing_checks(
     ]
 
 
-def fetch_review_feedback(
+def fetch_pr_issues(
     run_cmd: Callable[[list[str]], str], pr_number: str,
 ) -> dict[str, Any]:
-    """Fetch a PR's open feedback: unresolved threads, comments,
-    whether it conflicts with its base branch, and any failing checks.
+    """Fetch everything blocking a PR from being merged: unresolved review
+    threads, comments, whether it conflicts with its base branch, and any
+    failing checks.
 
     "Open" means unresolved threads and comments since the last
     ``Resolved.`` checkpoint; see
@@ -168,7 +169,7 @@ def fetch_review_feedback(
 
 
 def main() -> None:
-    """Main entry point for printing a PR's open feedback as JSON."""
+    """Main entry point for printing a PR's blocking issues as JSON."""
     if len(sys.argv) < MIN_ARG_COUNT:
         sys.stderr.write("Error: PR number not specified.\n")
         sys.stderr.write(f"Usage: {sys.argv[0]} <pr-number>\n")
@@ -179,12 +180,12 @@ def main() -> None:
     _check_dependencies()
 
     try:
-        feedback = fetch_review_feedback(_run_cmd, pr_number)
+        issues = fetch_pr_issues(_run_cmd, pr_number)
     except (subprocess.CalledProcessError, json.JSONDecodeError, KeyError) as e:
-        sys.stderr.write(f"Error: Failed to fetch PR feedback. {e}\n")
+        sys.stderr.write(f"Error: Failed to fetch PR issues. {e}\n")
         sys.exit(1)
 
-    sys.stdout.write(f"{json.dumps(feedback, indent=2)}\n")
+    sys.stdout.write(f"{json.dumps(issues, indent=2)}\n")
 
 
 if __name__ == "__main__":
