@@ -162,6 +162,11 @@ def test_main_classifies_your_prs_and_includes_linked_issue_for_drafts(
     assert yours[2]["linked_issue"] == {"number": 42, "url": "issue-url"}
 
 
+def _no_blockers_response(number: int) -> tuple[tuple[str, ...], str]:
+    key = ("gh", "issue", "view", str(number), "--json", "blockedBy")
+    return key, json.dumps({"blockedBy": {"nodes": [], "totalCount": 0}})
+
+
 def test_main_filters_backlog_issues_by_type_and_assignee(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str],
 ) -> None:
@@ -192,7 +197,11 @@ def test_main_filters_backlog_issues_by_type_and_assignee(
             "content": {"type": "Issue", "number": 5, "title": "Done", "url": "u5"},
         },
     ]})
-    _install_gh(monkeypatch, _base_responses(project_items=project_items))
+    responses = _base_responses(project_items=project_items)
+    for number in (1, 2):
+        key, body = _no_blockers_response(number)
+        responses[key] = body
+    _install_gh(monkeypatch, responses)
 
     ct.main()
 
@@ -201,6 +210,44 @@ def test_main_filters_backlog_issues_by_type_and_assignee(
     assert [issue["number"] for issue in backlog] == [1, 2]
     assert backlog[0]["bucket"] == "assigned"
     assert backlog[1]["bucket"] == "unassigned"
+
+
+def test_main_moves_blocked_backlog_issues_to_their_own_bucket(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str],
+) -> None:
+    """An issue with an open blocker is reported as blocked, not actionable."""
+    project_items = json.dumps({"items": [
+        {
+            "status": "Todo", "type": "Task", "assignees": ["octocat"],
+            "content": {"type": "Issue", "number": 1, "title": "Mine", "url": "u1"},
+        },
+        {
+            "status": "Todo", "type": "Task", "assignees": [],
+            "content": {"type": "Issue", "number": 2, "title": "Free", "url": "u2"},
+        },
+    ]})
+    responses = _base_responses(project_items=project_items)
+    responses[("gh", "issue", "view", "1", "--json", "blockedBy")] = json.dumps({
+        "blockedBy": {
+            "nodes": [
+                {"number": 10, "state": "OPEN"},
+                {"number": 11, "state": "CLOSED"},
+            ],
+            "totalCount": 2,
+        },
+    })
+    key, body = _no_blockers_response(2)
+    responses[key] = body
+    _install_gh(monkeypatch, responses)
+
+    ct.main()
+
+    result = json.loads(capsys.readouterr().out)
+    backlog = result["backlog_issues"]
+    assert [issue["number"] for issue in backlog] == [2, 1]
+    assert backlog[0]["bucket"] == "unassigned"
+    assert backlog[1]["bucket"] == "blocked"
+    assert backlog[1]["blocked_by"] == [10]
 
 
 def test_main_disambiguates_multiple_projects_by_repo_name(

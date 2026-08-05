@@ -8,8 +8,9 @@ import sys
 from collections.abc import Callable
 from typing import Any
 
+from backlog_utils import fetch_backlog_issues
+
 SINGLE_MATCH = 1
-SOLVABLE_ISSUE_TYPES = {"Story", "Task", "Bug"}
 
 
 def _run_cmd(args: list[str]) -> str:
@@ -223,49 +224,6 @@ def _fetch_your_prs(
     )
 
 
-def _fetch_backlog_issues(
-    run_cmd: Callable[[list[str]], str],
-    project_owner: str,
-    project_number: int,
-    login: str,
-) -> list[dict[str, Any]]:
-    item_output = run_cmd([
-        "gh", "project", "item-list", str(project_number),
-        "--owner", project_owner, "--format", "json", "--limit", "200",
-    ])
-    items = json.loads(item_output).get("items", [])
-
-    assigned = []
-    unassigned = []
-    for item in items:
-        content = item.get("content") or {}
-        if (
-            item.get("status") != "Todo"
-            or content.get("type") != "Issue"
-            or item.get("type") not in SOLVABLE_ISSUE_TYPES
-        ):
-            continue
-
-        number = content.get("number")
-        if number is None:
-            continue
-
-        assignees = item.get("assignees") or []
-        entry = {
-            "number": number,
-            "title": content.get("title"),
-            "url": content.get("url"),
-        }
-        if login in assignees:
-            entry["bucket"] = "assigned"
-            assigned.append(entry)
-        elif not assignees:
-            entry["bucket"] = "unassigned"
-            unassigned.append(entry)
-
-    return assigned + unassigned
-
-
 def main() -> None:
     """Main entry point for printing the triage survey as JSON."""
     _check_dependencies()
@@ -278,7 +236,7 @@ def main() -> None:
         result = {
             "prs_to_review": _fetch_prs_to_review(_run_cmd, login),
             "your_prs": _fetch_your_prs(_run_cmd, owner, repo_name),
-            "backlog_issues": _fetch_backlog_issues(
+            "backlog_issues": fetch_backlog_issues(
                 _run_cmd, project_owner, project_number, login,
             ),
         }

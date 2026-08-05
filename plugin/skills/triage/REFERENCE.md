@@ -31,7 +31,8 @@ below.
 
 ## Backlog issues (from `backlog_issues`)
 
-| Bucket       | Status          | Suggestion                            |
-| :----------- | :-------------- | :------------------------------------ |
-| `assigned`   | Assigned to you | Solve the issue with `/commons:solve` |
-| `unassigned` | Unassigned      | Solve the issue with `/commons:solve` |
+| Bucket       | Status          | Suggestion                                                 |
+| :----------- | :-------------- | :--------------------------------------------------------- |
+| `assigned`   | Assigned to you | Solve the issue with `/commons:solve`                      |
+| `unassigned` | Unassigned      | Solve the issue with `/commons:solve`                      |
+| `blocked`    | Blocked         | Not actionable; list the open blocker(s) from `blocked_by` |
