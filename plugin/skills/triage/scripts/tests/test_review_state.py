@@ -94,3 +94,17 @@ def test_latest_comment_not_starting_with_resolved_marks_comments_unresolved() -
     )
 
     assert result["comments"] == "unresolved"
+
+
+def test_verdict_after_a_leading_header_is_still_recognized() -> None:
+    """A markdown header before the verdict line doesn't hide the verdict."""
+    response = _response(
+        review_state=None,
+        thread_resolutions=[],
+        comment_bodies=["## Resolution summary\n\nResolved. Addressed above."],
+    )
+    result = fetch_review_state(
+        lambda *_a, **_kw: response, "acme", "widgets", 6, is_draft=False,
+    )
+
+    assert result["comments"] == "resolved"

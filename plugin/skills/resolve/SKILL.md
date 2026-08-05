@@ -49,13 +49,13 @@ argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
 7. Draft a concise, resolving reply for each resolved line/file review
    comment, and a single summarizing reply for the pull request's
    conversation thread incorporating any conversation-level (non-line)
-   comments, using the implementation-planner's feedback-to-fix mapping —
+   comments, using the implementation-planner's feedback-to-fix mapping;
    every item `fetch_pr_feedback.py` returned must be covered by exactly one
    of these replies in this single pass. The conversation-level reply's
-   first line must be the literal verdict `Resolved.`, with nothing before
-   it; follow it with a blank line, then `## Resolution summary`, then a
-   brief description of what was addressed (this lets `/commons:triage`
-   recognize the PR's conversation as resolved).
+   first substantive line (a `## Resolution summary` header may precede it)
+   must be the literal verdict `Resolved.`, followed by a brief description
+   of what was addressed (this lets `/commons:triage` recognize the PR's
+   conversation as resolved).
 8. Present the drafted replies, and wait for explicit user approval. Skip
    this step if the `--auto` flag is set, and proceed directly with posting
    them.

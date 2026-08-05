@@ -14,13 +14,17 @@ runs:
         github-token: ${{ inputs.token }}
         script: |
           const body = context.payload.review.body || "";
+          const line = body
+            .split("\n")
+            .map((l) => l.trim())
+            .find((l) => l !== "" && !l.startsWith("#")) || "";
           let event;
-          if (body.startsWith("Approved.")) {
+          if (line.startsWith("Approved.")) {
             event = "APPROVE";
-          } else if (body.startsWith("Requesting changes.")) {
+          } else if (line.startsWith("Requesting changes.")) {
             event = "REQUEST_CHANGES";
           } else {
-            core.info("Review body carries no recognized verdict — skipping.");
+            core.info("Review body carries no recognized verdict, skipping.");
             return;
           }
           await github.rest.pulls.createReview({

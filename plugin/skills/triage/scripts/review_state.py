@@ -23,6 +23,14 @@ _REVIEW_STATE_MAP = {
 }
 
 
+def _first_substantive_line(body: str) -> str:
+    for line in body.splitlines():
+        stripped = line.strip()
+        if stripped and not stripped.startswith("#"):
+            return stripped
+    return ""
+
+
 def fetch_review_state(
     graphql: Callable[..., dict[str, Any]],
     owner: str,
@@ -69,7 +77,8 @@ def fetch_review_state(
     all_comments.sort(key=lambda c: c["createdAt"])
     comments = (
         "none" if not all_comments
-        else "resolved" if all_comments[-1]["body"].startswith("Resolved.")
+        else "resolved"
+        if _first_substantive_line(all_comments[-1]["body"]).startswith("Resolved.")
         else "unresolved"
     )
 
