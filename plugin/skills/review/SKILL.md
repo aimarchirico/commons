@@ -30,61 +30,33 @@ argument-hint: "--pr <pr-number> [--auto]"
 5. Present the merged findings to the user.
 6. Offer to post the findings as PR review comments. Wait for explicit user
    approval before posting, unless the `--auto` flag is set. On approval:
-   - Render each finding into a comment body using this template:
-
-     ```markdown
-     **<summary>**
-
-     <failure_scenario>
-
-     _category: <category>_
-     ```
-
-   - Build a `comments` array (`path`, `line`, `body`) from findings with a
-     resolvable file and line, using the rendered template as `body`.
-   - Build the summary `body`. Let `n` be the total merged finding count
-     (step 4) and `k` be the number placed in `comments`. The first
-     substantive line (ignoring any markdown header before it) is always an
-     explicit verdict, verbatim: `Approved.` if `n` is 0, otherwise
-     `Requesting changes.` (the self-review-signal GitHub Action matches on
-     this exact text to submit a real review on the user's behalf, since
-     the user can't approve or request changes on their own PR).
-     - If `n` is 0, the verdict line is the entire body.
-     - Otherwise, follow the verdict line with a blank line, then
-       `## Review summary`, then a summary line stating `n` and `k`. If
-       `n` > `k`, append the unresolvable findings below it, e.g.:
-
-       ```markdown
-       Requesting changes.
-
-       ## Review summary
-
-       <n> findings across logic, compliance, performance, and security — <k>
-       posted as inline comments on the diff. The remainder, listed below,
-       have no resolvable file/line:
-
-       <rendered unresolvable findings, if any>
-       ```
-
-   - Generate a temporary `review.json` file matching this schema:
+   - Generate a temporary `findings.json` file containing the merged
+     findings list from step 4, each matching this schema:
 
      ```json
      {
-       "body": "string",
-       "comments": [
-         { "path": "string", "line": 0, "body": "string" }
-       ]
+       "file": "string",
+       "line": 0,
+       "summary": "string",
+       "failure_scenario": "string",
+       "category": "string"
      }
      ```
 
    - Execute:
 
      ```bash
-     python3 "${CLAUDE_PLUGIN_ROOT}/skills/review/scripts/post_review_comments.py" <pr-number> review.json
+     python3 "${CLAUDE_PLUGIN_ROOT}/skills/review/scripts/post_review_comments.py" <pr-number> findings.json
      ```
 
-     (the script resolves `{owner}/{repo}` itself and deletes the temporary
-     file upon completion).
+     The script (`build_review` in `post_review_comments.py`) renders each
+     finding into a comment, decides the verdict (`Approved.` if there are
+     no findings, otherwise `Requesting changes.`; the self-review-signal
+     GitHub Action matches on this exact text to submit a real review on
+     the user's behalf, since the user can't approve or request changes on
+     their own PR), builds a `## Review summary` listing any findings with
+     no resolvable file/line, posts everything as a single PR review, then
+     deletes the temporary file.
 
 ## Output
 
