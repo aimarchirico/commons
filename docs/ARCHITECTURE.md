@@ -5,6 +5,8 @@ repository; implementation detail lives in each subsystem's README.
 
 ## Data Flow
 
+### Package Publishing & Monorepo Distribution
+
 Commons is built and published from a single monorepo. Release Please cuts
 versioned releases, the matching artifacts are published to GitHub Packages, and
 downstream repositories consume them.
@@ -36,6 +38,8 @@ graph LR
     python_src -->|git dependency @ main| consumers
     plugin -->|plugin install| consumers
 ```
+
+### Provisioning Commands & External Services
 
 Alongside the libraries and configs it publishes, Commons publishes CLI
 commands that provision the external resources a newly scaffolded project
@@ -75,6 +79,28 @@ graph LR
 ```
 
 Command and variable reference: [npm/README.md](../npm/README.md).
+
+### Agent Skill & Subagent Execution
+
+The agent plugin packages reusable workflows (`skills/`) and subagent prompts
+(`agents/`). Agent skills delegate task execution to specialized subagents
+or deterministic Python scripts, which execute GitHub GraphQL/REST operations
+and manage git worktrees.
+
+```mermaid
+graph TD
+    user["User / Developer"]
+    skill["Agent Skill<br/>(plugin/skills/*)"]
+    agents["Subagents<br/>(plugin/agents/*)"]
+    scripts["Python Scripts<br/>(skills/*/scripts/*)"]
+    github_git["GitHub API & Git Repositories"]
+
+    user -->|invokes| skill
+    skill -->|delegates task| agents
+    skill -->|runs script| scripts
+    agents -->|executes via| scripts
+    scripts -->|API calls & worktrees| github_git
+```
 
 ## Infrastructure Overview
 
