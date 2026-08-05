@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.7.0](https://github.com/aimarchirico/commons/compare/commons-github-v1.6.0...commons-github-v1.7.0) (2026-08-05)
+
+
+### Features
+
+* add spec skill for bootstrapping new projects ([ab2f87c](https://github.com/aimarchirico/commons/commit/ab2f87cdc60d5218a02c05a3238da3057de3d155))
+
+
+### Bug Fixes
+
+* **CONTRIBUTING:** mark API.md/DESIGN.md conditional, reorder API before DESIGN ([9f20e11](https://github.com/aimarchirico/commons/commit/9f20e118cc19914fa119ebb0190712945bb4400c))
+
 ## [1.6.0](https://github.com/aimarchirico/commons/compare/commons-github-v1.5.0...commons-github-v1.6.0) (2026-08-04)
 
 
