@@ -51,7 +51,7 @@ worktree management.
 ### Shared Feedback State (`shared/pr_feedback.py`)
 
 Shared utility dynamically loaded by script path to provide a single
-authoritative definition (DRY) for open PR review feedback across `triage` and
+authoritative definition for open PR review feedback across `triage` and
 `resolve`:
 
 - `unresolved_threads`: Identifies review threads where `isResolved` is false.
@@ -71,9 +71,9 @@ authoritative definition (DRY) for open PR review feedback across `triage` and
   re-requests review.
 - **`triage`** (`skills/triage/scripts/`): `collect_triage.py` surveys
   assigned PRs, user PRs, and project backlog items. Uses `review_state.py` to
-  compute PR action buckets (`merge`, `resolve`, `self_review`, `draft`) and
-  `backlog_utils.py` to filter out blocked items and rank tasks by priority and
-  impact.
+  compute PR action buckets (`merge`, `resolve_then_merge`, `resolve`,
+  `self_review`, `draft`) and `backlog_utils.py` to filter out blocked items
+  and rank tasks by priority and impact.
 
 ## Environment Variables
 
