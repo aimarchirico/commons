@@ -61,6 +61,21 @@ def post_replies(
         )
 
 
+def request_re_reviews(run_cmd: Callable[..., str], pr_number: str) -> None:
+    """Request re-review from the PR's prior reviewers, excluding the user."""
+    reviews_output = run_cmd(["gh", "pr", "view", pr_number, "--json", "reviews"])
+    reviewers = {
+        r["author"]["login"]
+        for r in json.loads(reviews_output).get("reviews", [])
+        if r.get("author", {}).get("login")
+    }
+    login = run_cmd(["gh", "api", "user", "--jq", ".login"])
+
+    for reviewer in sorted(reviewers - {login}):
+        sys.stdout.write(f"Requesting re-review from {reviewer}...\n")
+        run_cmd(["gh", "pr", "edit", pr_number, "--add-reviewer", reviewer])
+
+
 def main() -> None:
     """Main entry point for posting resolving replies from a JSON file."""
     if len(sys.argv) < MIN_ARG_COUNT:
@@ -93,6 +108,7 @@ def main() -> None:
             data.get("thread_replies", []),
             data.get("conversation_reply", ""),
         )
+        request_re_reviews(_run_cmd, pr_number)
         sys.stdout.write("Successfully posted all replies.\n")
     except (subprocess.CalledProcessError, json.JSONDecodeError, KeyError) as e:
         sys.stderr.write(f"Error: Failed to post replies. {e}\n")

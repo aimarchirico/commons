@@ -47,15 +47,22 @@ argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
    conflicts, stop and report them to the user rather than resolving them
    unilaterally.
 7. Draft a concise, resolving reply for each resolved line/file review
-   comment, and a single summarizing reply for the pull request's
-   conversation thread incorporating any conversation-level (non-line)
-   comments, using the implementation-planner's feedback-to-fix mapping;
+   comment, using the implementation-planner's feedback-to-fix mapping;
    every item `fetch_pr_feedback.py` returned must be covered by exactly one
-   of these replies in this single pass. The conversation-level reply's
-   first substantive line (a `## Resolution summary` header may precede it)
-   must be the literal verdict `Resolved.`, followed by a brief description
-   of what was addressed (this lets `/commons:triage` recognize the PR's
-   conversation as resolved).
+   of these replies in this single pass.
+   - Draft a single summarizing reply for the pull request's conversation
+     thread, incorporating any conversation-level (non-line) comments. Its
+     first substantive line (a `## Resolution summary` header may precede
+     it) must be the literal verdict `Resolved.` (this lets
+     `/commons:triage` recognize the PR's conversation as resolved),
+     followed by a brief description of what was addressed, e.g.:
+
+     ```markdown
+     ## Resolution summary
+
+     Resolved. Addressed the null-check feedback in `parse.py` and added
+     the missing test case for the empty-input path.
+     ```
 8. Present the drafted replies, and wait for explicit user approval. Skip
    this step if the `--auto` flag is set, and proceed directly with posting
    them.
@@ -77,19 +84,10 @@ argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
    python3 "${CLAUDE_PLUGIN_ROOT}/skills/resolve/scripts/post_pr_replies.py" <pr-number> replies.json
    ```
 
-   (the script resolves `{owner}/{repo}` itself and deletes the temporary
-   file upon completion).
-10. Request re-review from the pull request's prior reviewers (excluding
-    the user, since the user can't be a reviewer of their own PR), now that
-    their feedback has been addressed:
-
-    ```bash
-    gh pr view <pr-number> --json reviews --jq '[.reviews[].author.login] | unique[]' \
-      | while read -r reviewer; do
-          [ "$reviewer" = "$(gh api user --jq .login)" ] && continue
-          gh pr edit <pr-number> --add-reviewer "$reviewer"
-        done
-    ```
-11. Execute `git worktree remove <worktree-path>` to remove the isolated
+   (the script resolves `{owner}/{repo}` itself, requests re-review from the
+   pull request's prior reviewers excluding the user, since the user can't
+   be a reviewer of their own PR, and deletes the temporary file upon
+   completion).
+10. Execute `git worktree remove <worktree-path>` to remove the isolated
     worktree; `<branch-name>` and its commits remain intact in the repository
     and on the remote.

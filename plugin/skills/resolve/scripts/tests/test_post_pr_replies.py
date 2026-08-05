@@ -47,6 +47,27 @@ def test_post_replies_skips_conversation_reply_when_empty() -> None:
     assert len(calls) == 1
 
 
+def test_request_re_reviews_requests_from_all_reviewers_except_the_user() -> None:
+    """Re-review is requested from every unique prior reviewer except the user."""
+    calls: list[list[str]] = []
+
+    def fake_run_cmd(args: list[str], input_text: str | None = None) -> str:
+        del input_text
+        calls.append(args)
+        if args[:3] == ["gh", "pr", "view"]:
+            return json.dumps({"reviews": [
+                {"author": {"login": "alice"}},
+                {"author": {"login": "bob"}},
+                {"author": {"login": "alice"}},
+            ]})
+        return "bob"
+
+    ppr.request_re_reviews(fake_run_cmd, "42")
+
+    add_reviewer_calls = [c for c in calls if c[:3] == ["gh", "pr", "edit"]]
+    assert add_reviewer_calls == [["gh", "pr", "edit", "42", "--add-reviewer", "alice"]]
+
+
 def test_main_exits_when_args_missing(monkeypatch: pytest.MonkeyPatch) -> None:
     """main() exits with an error when the PR number or file path is missing."""
     monkeypatch.setattr(sys, "argv", ["post_pr_replies", "42"])
