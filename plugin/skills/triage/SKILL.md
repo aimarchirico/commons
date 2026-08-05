@@ -21,16 +21,13 @@ None. This skill takes no arguments.
 
    and parse its JSON output.
 2. For each PR in `your_prs` with `bucket == "draft"`: if it has a non-null
-   `linked_issue`, fetch that issue's title and body:
+   `linked_issue`, fetch that issue's title and body, plus the PR's own
+   description and diff:
 
    ```bash
-   gh issue view <number> --json title,body
-   ```
-
-   plus the PR's own diff:
-
-   ```bash
-   gh pr diff <number>
+   gh issue view <issue-number> --json title,body
+   gh pr view <pr-number> --json body
+   gh pr diff <pr-number>
    ```
 
    and judge whether the implementation looks complete against what the
