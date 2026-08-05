@@ -197,9 +197,9 @@ def test_main_classifies_your_prs_and_includes_linked_issue_for_drafts(
     assert [pr["number"] for pr in yours] == [2, 3, 4, 5, 1]
     assert [pr["suggestion"] for pr in yours] == [
         "Merge the PR",
-        "Resolve the unresolved review with `/commons:resolve`, then merge the PR",
-        "Resolve the unresolved review with `/commons:resolve`",
-        "Self-review the PR with `/commons:review`",
+        "Resolve the unresolved review with `/commons:resolve --pr 3`, then merge the PR",
+        "Resolve the unresolved review with `/commons:resolve --pr 4`",
+        "Self-review the PR with `/commons:review --pr 5`",
         None,
     ]
     assert [pr["state"] for pr in yours] == [

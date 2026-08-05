@@ -1,6 +1,14 @@
 # Triage Reference
 
-Render up to three tables, but only if their source list is not empty,
+Start the output with a summary header:
+
+```markdown
+### Triage Survey: `<owner>/<repo>`
+* **User**: `@<login>`
+* **Status**: <count> active item(s) needing attention (items are priority-ranked by actionability below)
+```
+
+Followed by a divider (`---`), then render up to three tables, but only if their source list is not empty,
 in this order, each pre-sorted by `collect_triage.py`'s priority order
 (never re-sort): PRs to review (from `prs_to_review`), Your PRs (from
 `your_prs`), and Backlog issues (from `backlog_issues`). Every table's Item
@@ -10,9 +18,9 @@ none of them need further mapping.
 
 ## PRs to review (from `prs_to_review`)
 
-| Item                         | State     | Suggestion                           |
-| :--------------------------- | :-------- | :----------------------------------- |
-| `[#<number>](<url>) <title>` | `<state>` | Review the PR with `/commons:review` |
+| Item                         | State     | Suggestion                                        |
+| :--------------------------- | :-------- | :------------------------------------------------ |
+| `[#<number>](<url>) <title>` | `<state>` | Review the PR with `/commons:review --pr <number>` |
 
 ## Your PRs (from `your_prs`)
 
@@ -37,6 +45,6 @@ linked issue to check completeness against, rather than guessing.
 
 ## Backlog issues (from `backlog_issues`)
 
-| Item                         | Assignee     | Priority     | Blocking     | Suggestion                            |
-| :--------------------------- | :----------- | :----------- | :----------- | :------------------------------------ |
-| `[#<number>](<url>) <title>` | `<assignee>` | `<priority>` | `<blocking>` | Solve the issue with `/commons:solve` |
+| Item                         | Assignee     | Priority     | Blocking     | Suggestion                                         |
+| :--------------------------- | :----------- | :----------- | :----------- | :------------------------------------------------- |
+| `[#<number>](<url>) <title>` | `<assignee>` | `<priority>` | `<blocking>` | Solve the issue with `/commons:solve --issue <number>` |

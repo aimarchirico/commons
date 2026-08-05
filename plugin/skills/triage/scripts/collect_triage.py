@@ -161,22 +161,27 @@ _THREAD_STATE_LABELS = {
     "none": "None", "resolved": "Resolved", "unresolved": "Unresolved",
 }
 
-_SUGGESTION_TEXT = {
-    "merge": "Merge the PR",
-    "resolve_then_merge": (
-        "Resolve the unresolved review with `/commons:resolve`, then merge the PR"
-    ),
-    "resolve": "Resolve the unresolved review with `/commons:resolve`",
-    "self_review": "Self-review the PR with `/commons:review`",
-}
-
-
 def _bucket_for(state: str, threads: str, comments: str) -> str:
     if state == "not_ready":
         return "draft"
     if threads == "unresolved" or comments == "unresolved":
         return "resolve_then_merge" if state == "approved" else "resolve"
     return "merge" if state == "approved" else "self_review"
+
+
+def _suggestion_for(bucket: str, pr_number: int) -> str | None:
+    if bucket == "merge":
+        return "Merge the PR"
+    if bucket == "resolve_then_merge":
+        return (
+            f"Resolve the unresolved review with `/commons:resolve --pr {pr_number}`,"
+            " then merge the PR"
+        )
+    if bucket == "resolve":
+        return f"Resolve the unresolved review with `/commons:resolve --pr {pr_number}`"
+    if bucket == "self_review":
+        return f"Self-review the PR with `/commons:review --pr {pr_number}`"
+    return None
 
 
 def _fetch_your_prs(
@@ -208,7 +213,7 @@ def _fetch_your_prs(
             "state": _PR_STATE_LABELS[review_state["state"]],
             "threads": _THREAD_STATE_LABELS[review_state["threads"]],
             "comments": _THREAD_STATE_LABELS[review_state["comments"]],
-            "suggestion": _SUGGESTION_TEXT.get(bucket),
+            "suggestion": _suggestion_for(bucket, pr["number"]),
         }
         if bucket == "draft":
             linked_issues = pr.get("closingIssuesReferences") or []
