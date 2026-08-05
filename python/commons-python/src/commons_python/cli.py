@@ -41,7 +41,7 @@ def _resolve_ruff_config(bundled_path: Path, tmp_dir: str) -> Path:
     """Layer a consumer-local ``ruff.toml`` (if any) on top of the bundled one.
 
     Consumers extend the shared base by dropping their own ``ruff.toml``
-    in their working directory, rather than editing the bundled config. 
+    in their working directory, rather than editing the bundled config.
     Ruff's own ``extend`` merges it with the bundled config.
     """
     local_config = Path.cwd() / "ruff.toml"

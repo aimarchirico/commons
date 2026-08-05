@@ -1,5 +1,0 @@
-[lint.per-file-ignores]
-"*cli*.py" = [
-  # S603: subprocess.run calls are used for executing wrapped tools.
-  "S603",
-]

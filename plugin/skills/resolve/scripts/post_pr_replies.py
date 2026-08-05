@@ -15,7 +15,12 @@ MIN_ARG_COUNT = 3
 
 def _run_cmd(args: list[str], input_text: str | None = None) -> str:
     result = subprocess.run(
-        args, input=input_text, capture_output=True, text=True, check=True,
+        args,
+        input=input_text,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        check=True,
     )
     return result.stdout.strip()
 
@@ -45,7 +50,8 @@ def _resolve_review_threads(run_cmd: Callable[..., str], thread_ids: set[str]) -
         ])
 
 
-def _render_conversation_reply(summary: str) -> str:
+def render_conversation_reply(summary: str) -> str:
+    """Format a conversation-level reply with resolution summary header and verdict."""
     return f"## Resolution summary\n\nResolved. {summary}"
 
 
@@ -58,7 +64,7 @@ def post_replies(
     """Reply to each review-thread comment, resolve its thread, post the rest.
 
     Posts one conversation-level reply last, built from ``conversation_summary``
-    via ``_render_conversation_reply`` (a ``## Resolution summary`` header
+    via ``render_conversation_reply`` (a ``## Resolution summary`` header
     followed by the verdict ``Resolved.``; `/commons:triage` detects this by
     skipping leading blank/header lines and checking that the first
     substantive line starts with ``Resolved.``).
@@ -90,7 +96,7 @@ def post_replies(
         run_cmd(
             ["gh", "api", endpoint, "--input", "-"],
             input_text=json.dumps(
-                {"body": _render_conversation_reply(conversation_summary)},
+                {"body": render_conversation_reply(conversation_summary)},
             ),
         )
 

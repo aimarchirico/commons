@@ -15,7 +15,9 @@ SINGLE_MATCH = 1
 
 
 def _run_cmd(args: list[str]) -> str:
-    result = subprocess.run(args, capture_output=True, text=True, check=True)
+    result = subprocess.run(
+        args, capture_output=True, text=True, encoding="utf-8", check=True,
+    )
     return result.stdout.strip()
 
 
