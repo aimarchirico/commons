@@ -43,7 +43,7 @@ def _install_gh(
 
 def _base_responses(
     *, others_prs: str = "[]", own_prs: str = "[]",
-    project_items: str = '{"items": []}', open_issues: str = "[]",
+    project_items: str = '{"items": []}',
     project_query_response: str = _PROJECT_QUERY_RESPONSE,
 ) -> dict[tuple[str, ...], str]:
     return {
@@ -65,10 +65,6 @@ def _base_responses(
             "gh", "project", "item-list", "9", "--owner", "acme",
             "--format", "json", "--limit", "200",
         ): project_items,
-        (
-            "gh", "issue", "list", "--state", "open", "--json",
-            "number,parent", "--limit", "200",
-        ): open_issues,
     }
 
 
@@ -94,7 +90,7 @@ def test_main_prints_empty_survey_when_nothing_is_open(
     ct.main()
 
     result = json.loads(capsys.readouterr().out)
-    assert result == {"others_prs": [], "own_prs": [], "todo_issues": []}
+    assert result == {"others_prs": [], "own_prs": [], "backlog_issues": []}
 
 
 def test_main_drops_bot_prs_and_orders_review_requested_first(
@@ -166,10 +162,14 @@ def test_main_classifies_own_prs_and_includes_linked_issue_for_drafts(
     assert own[2]["linked_issue"] == {"number": 42, "url": "issue-url"}
 
 
-def test_main_filters_todo_issues_by_type_parent_and_assignee(
+def test_main_filters_backlog_issues_by_type_and_assignee(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str],
 ) -> None:
-    """Only root Story/Task/Bug issues survive, assigned first, then unassigned."""
+    """Only Story/Task/Bug issues survive, assigned first, then unassigned.
+
+    A Story/Task/Bug decomposed from an Epic still has a parent, but that's
+    expected: those are the actionable leaf items and belong in the backlog.
+    """
     project_items = json.dumps({"items": [
         {
             "status": "Todo", "type": "Task", "assignees": ["octocat"],
@@ -188,33 +188,19 @@ def test_main_filters_todo_issues_by_type_parent_and_assignee(
             "content": {"type": "Issue", "number": 4, "title": "Epic", "url": "u4"},
         },
         {
-            "status": "Todo", "type": "Task", "assignees": [],
-            "content": {"type": "Issue", "number": 5, "title": "Sub", "url": "u5"},
-        },
-        {
             "status": "Done", "type": "Task", "assignees": [],
-            "content": {"type": "Issue", "number": 6, "title": "Done", "url": "u6"},
+            "content": {"type": "Issue", "number": 5, "title": "Done", "url": "u5"},
         },
     ]})
-    open_issues = json.dumps([
-        {"number": 1, "parent": None},
-        {"number": 2, "parent": None},
-        {"number": 3, "parent": None},
-        {"number": 4, "parent": None},
-        {"number": 5, "parent": {"number": 1}},
-    ])
-    _install_gh(
-        monkeypatch,
-        _base_responses(project_items=project_items, open_issues=open_issues),
-    )
+    _install_gh(monkeypatch, _base_responses(project_items=project_items))
 
     ct.main()
 
     result = json.loads(capsys.readouterr().out)
-    todo = result["todo_issues"]
-    assert [issue["number"] for issue in todo] == [1, 2]
-    assert todo[0]["bucket"] == "assigned"
-    assert todo[1]["bucket"] == "unassigned"
+    backlog = result["backlog_issues"]
+    assert [issue["number"] for issue in backlog] == [1, 2]
+    assert backlog[0]["bucket"] == "assigned"
+    assert backlog[1]["bucket"] == "unassigned"
 
 
 def test_main_disambiguates_multiple_projects_by_repo_name(
@@ -238,7 +224,7 @@ def test_main_disambiguates_multiple_projects_by_repo_name(
     ct.main()
 
     result = json.loads(capsys.readouterr().out)
-    assert result == {"others_prs": [], "own_prs": [], "todo_issues": []}
+    assert result == {"others_prs": [], "own_prs": [], "backlog_issues": []}
 
 
 def test_main_exits_when_no_open_project_is_linked(

@@ -48,7 +48,7 @@ None. This skill takes no arguments.
    | `get_reviewed`       | Self-review it with `/commons:review`                                  |
    | `draft`              | The judgment from step 2                                               |
 
-   Backlog issues (from `todo_issues`):
+   Backlog issues (from `backlog_issues`):
 
    | Bucket       | Suggestion                                          |
    | :----------- | :-------------------------------------------------- |

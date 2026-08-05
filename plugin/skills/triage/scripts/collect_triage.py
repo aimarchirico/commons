@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Script for surveying open PRs and Todo issues relevant to the user."""
+"""Script for surveying open PRs and backlog issues relevant to the user."""
 
 import json
 import shutil
@@ -223,7 +223,7 @@ def _fetch_own_prs(
     )
 
 
-def _fetch_root_todo_issues(
+def _fetch_backlog_issues(
     run_cmd: Callable[[list[str]], str],
     project_owner: str,
     project_number: int,
@@ -234,13 +234,6 @@ def _fetch_root_todo_issues(
         "--owner", project_owner, "--format", "json", "--limit", "200",
     ])
     items = json.loads(item_output).get("items", [])
-
-    issue_output = run_cmd([
-        "gh", "issue", "list",
-        "--state", "open", "--json", "number,parent", "--limit", "200",
-    ])
-    issues = json.loads(issue_output)
-    parent_by_number = {i["number"]: i.get("parent") for i in issues}
 
     assigned = []
     unassigned = []
@@ -254,7 +247,7 @@ def _fetch_root_todo_issues(
             continue
 
         number = content.get("number")
-        if number is None or parent_by_number.get(number) is not None:
+        if number is None:
             continue
 
         assignees = item.get("assignees") or []
@@ -285,7 +278,7 @@ def main() -> None:
         result = {
             "others_prs": _fetch_others_prs(_run_cmd, login),
             "own_prs": _fetch_own_prs(_run_cmd, owner, repo_name),
-            "todo_issues": _fetch_root_todo_issues(
+            "backlog_issues": _fetch_backlog_issues(
                 _run_cmd, project_owner, project_number, login,
             ),
         }
