@@ -29,35 +29,21 @@ None. This skill takes no arguments.
    If `linked_issue` is null, say plainly that there's no linked issue to
    check completeness against, rather than guessing.
 3. Render exactly three tables, in this order, each pre-sorted by the
-   script's priority order (do not re-sort):
+   script's priority order (do not re-sort), per the bucket-to-status and
+   bucket-to-suggestion mappings in
+   `${CLAUDE_PLUGIN_ROOT}/skills/triage/REFERENCE.md`: PRs to review (from
+   `prs_to_review`), Your PRs (from `your_prs`), and Backlog issues (from
+   `backlog_issues`). Each table has three columns: the item (number, title,
+   and for drafts, "(draft)"), its Status, and its Suggestion. The draft
+   row's Suggestion is the judgment from step 2, not a fixed mapping.
 
-   PRs to review (from `prs_to_review`):
-
-   | Bucket             | Suggestion                       |
-   | :----------------- | :-------------------------------- |
-   | `review_requested` | Review it with `/commons:review` |
-   | `not_requested`    | Review it with `/commons:review` |
-
-   Your PRs (from `your_prs`):
-
-   | Bucket                 | Suggestion                                                             |
-   | :---------------------- | :--------------------------------------------------------------------- |
-   | `approved`              | Merge it                                                               |
-   | `unresolved_approved`   | Resolve the unresolved feedback with `/commons:resolve`, then merge it |
-   | `unresolved`            | Resolve the unresolved feedback with `/commons:resolve`                |
-   | `no_unresolved`         | Self-review it with `/commons:review`                                  |
-   | `draft`                 | The judgment from step 2                                               |
-
-   Backlog issues (from `backlog_issues`):
-
-   | Bucket       | Suggestion                                          |
-   | :----------- | :-------------------------------------------------- |
-   | `assigned`   | Solve it with `/commons:solve`                      |
-   | `unassigned` | Self-assign it, then solve it with `/commons:solve` |
+   Never print internal bucket labels (e.g. `unresolved_approved`,
+   `review_requested`) directly; always use the mapped Status phrase
+   instead. Never use em dashes anywhere in the output.
 
 ## Output
 
-Three rendered tables, "PRs to review", "Your PRs", and "Backlog
-issues", each row pairing an item with a plain-language suggested next
-step. This is a terminal, user-facing report; its output does not feed
-into another skill.
+Three rendered tables, "PRs to review", "Your PRs", and "Backlog issues",
+each row pairing an item with its Status and a plain-language suggested
+next step. This is a terminal, user-facing report; its output does not
+feed into another skill.
