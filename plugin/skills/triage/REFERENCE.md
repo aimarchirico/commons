@@ -45,9 +45,20 @@ The Suggestion for each row comes from this decision procedure, evaluated
 top to bottom (never re-derive it from anything other than these three
 fields):
 
-1. If `review` is `not_ready`: the completeness judgment described in
-   `${CLAUDE_PLUGIN_ROOT}/skills/triage/SKILL.md`'s workflow (yields either
-   "Continue implementing" or "Mark ready for review").
+1. If `review` is `not_ready`: if the entry has a non-null `linked_issue`,
+   fetch that issue's title and body, plus the PR's own description and
+   diff:
+
+   ```bash
+   gh issue view <issue-number> --json title,body
+   gh pr view <pr-number> --json body
+   gh pr diff <pr-number>
+   ```
+
+   and judge whether the implementation looks complete against what the
+   issue asks for: "Continue implementing" or "Mark ready for review". If
+   `linked_issue` is null, say plainly that there's no linked issue to
+   check completeness against, rather than guessing.
 2. Else if `threads` is `unresolved` or `comments` is `unresolved`:
    - `review == approved` → "Resolve the unresolved review with
      `/commons:resolve`, then merge the PR"
