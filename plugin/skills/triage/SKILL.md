@@ -20,7 +20,7 @@ None. This skill takes no arguments.
    ```
 
    and parse its JSON output.
-2. For each PR in `own_prs` with `bucket == "draft"`: if it has a non-null
+2. For each PR in `your_prs` with `bucket == "draft"`: if it has a non-null
    `linked_issue`, fetch that issue's title and body
    (`gh issue view <number> --json title,body`) plus the PR's own diff and
    description, and judge whether the implementation looks complete
@@ -31,22 +31,22 @@ None. This skill takes no arguments.
 3. Render exactly three tables, in this order, each pre-sorted by the
    script's priority order (do not re-sort):
 
-   PRs to review (from `others_prs`):
+   PRs to review (from `prs_to_review`):
 
-   | Bucket             | Suggestion                                                                                                |
-   | :----------------- | :-------------------------------------------------------------------------------------------------------- |
-   | `review_requested` | Review it with `/commons:review`                                                                          |
-   | `not_requested`    | Not yet requested, low priority (if the user chooses to review it anyway, that's still `/commons:review`) |
+   | Bucket             | Suggestion                       |
+   | :----------------- | :-------------------------------- |
+   | `review_requested` | Review it with `/commons:review` |
+   | `not_requested`    | Review it with `/commons:review` |
 
-   Your open PRs (from `own_prs`):
+   Your PRs (from `your_prs`):
 
-   | Bucket               | Suggestion                                                             |
-   | :------------------- | :--------------------------------------------------------------------- |
-   | `ready_to_merge`     | Merge it                                                               |
-   | `resolve_then_merge` | Resolve the unresolved feedback with `/commons:resolve`, then merge it |
-   | `resolve`            | Resolve the unresolved feedback with `/commons:resolve`                |
-   | `get_reviewed`       | Self-review it with `/commons:review`                                  |
-   | `draft`              | The judgment from step 2                                               |
+   | Bucket                 | Suggestion                                                             |
+   | :---------------------- | :--------------------------------------------------------------------- |
+   | `approved`              | Merge it                                                               |
+   | `unresolved_approved`   | Resolve the unresolved feedback with `/commons:resolve`, then merge it |
+   | `unresolved`            | Resolve the unresolved feedback with `/commons:resolve`                |
+   | `no_unresolved`         | Self-review it with `/commons:review`                                  |
+   | `draft`                 | The judgment from step 2                                               |
 
    Backlog issues (from `backlog_issues`):
 
@@ -57,7 +57,7 @@ None. This skill takes no arguments.
 
 ## Output
 
-Three rendered tables, "PRs to review", "Your open PRs", and "Backlog
+Three rendered tables, "PRs to review", "Your PRs", and "Backlog
 issues", each row pairing an item with a plain-language suggested next
 step. This is a terminal, user-facing report; its output does not feed
 into another skill.

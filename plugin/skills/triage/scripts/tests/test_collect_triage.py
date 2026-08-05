@@ -42,7 +42,7 @@ def _install_gh(
 
 
 def _base_responses(
-    *, others_prs: str = "[]", own_prs: str = "[]",
+    *, prs_to_review: str = "[]", your_prs: str = "[]",
     project_items: str = '{"items": []}',
     project_query_response: str = _PROJECT_QUERY_RESPONSE,
 ) -> dict[tuple[str, ...], str]:
@@ -56,11 +56,11 @@ def _base_responses(
         (
             "gh", "pr", "list", "--search", "is:open -author:@me draft:false",
             "--json", "number,title,url,author,reviewRequests",
-        ): others_prs,
+        ): prs_to_review,
         (
             "gh", "pr", "list", "--search", "is:open author:@me",
             "--json", "number,title,url,isDraft,reviewDecision,closingIssuesReferences",
-        ): own_prs,
+        ): your_prs,
         (
             "gh", "project", "item-list", "9", "--owner", "acme",
             "--format", "json", "--limit", "200",
@@ -90,14 +90,14 @@ def test_main_prints_empty_survey_when_nothing_is_open(
     ct.main()
 
     result = json.loads(capsys.readouterr().out)
-    assert result == {"others_prs": [], "own_prs": [], "backlog_issues": []}
+    assert result == {"prs_to_review": [], "your_prs": [], "backlog_issues": []}
 
 
 def test_main_drops_bot_prs_and_orders_review_requested_first(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str],
 ) -> None:
     """Bot PRs are dropped; review-requested PRs sort before not-requested ones."""
-    others_prs = json.dumps([
+    prs_to_review = json.dumps([
         {
             "number": 1, "title": "Bot PR", "url": "u1",
             "author": {"login": "dependabot", "is_bot": True},
@@ -114,21 +114,21 @@ def test_main_drops_bot_prs_and_orders_review_requested_first(
             "reviewRequests": [{"login": "octocat"}],
         },
     ])
-    _install_gh(monkeypatch, _base_responses(others_prs=others_prs))
+    _install_gh(monkeypatch, _base_responses(prs_to_review=prs_to_review))
 
     ct.main()
 
     result = json.loads(capsys.readouterr().out)
-    assert [pr["number"] for pr in result["others_prs"]] == [3, 2]
-    assert result["others_prs"][0]["bucket"] == "review_requested"
-    assert result["others_prs"][1]["bucket"] == "not_requested"
+    assert [pr["number"] for pr in result["prs_to_review"]] == [3, 2]
+    assert result["prs_to_review"][0]["bucket"] == "review_requested"
+    assert result["prs_to_review"][1]["bucket"] == "not_requested"
 
 
-def test_main_classifies_own_prs_and_includes_linked_issue_for_drafts(
+def test_main_classifies_your_prs_and_includes_linked_issue_for_drafts(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str],
 ) -> None:
-    """Own PRs sort ready_to_merge, resolve, then draft; drafts carry linked_issue."""
-    own_prs = json.dumps([
+    """Your PRs sort approved, unresolved, then draft; drafts carry linked_issue."""
+    your_prs = json.dumps([
         {
             "number": 1, "title": "Draft", "url": "u1", "isDraft": True,
             "reviewDecision": "", "closingIssuesReferences": [
@@ -144,7 +144,7 @@ def test_main_classifies_own_prs_and_includes_linked_issue_for_drafts(
             "reviewDecision": "", "closingIssuesReferences": [],
         },
     ])
-    responses = _base_responses(own_prs=own_prs)
+    responses = _base_responses(your_prs=your_prs)
     key, body = _threads_response(unresolved=False, number=2)
     responses[key] = body
     key, body = _threads_response(unresolved=True, number=3)
@@ -154,12 +154,12 @@ def test_main_classifies_own_prs_and_includes_linked_issue_for_drafts(
     ct.main()
 
     result = json.loads(capsys.readouterr().out)
-    own = result["own_prs"]
-    assert [pr["number"] for pr in own] == [2, 3, 1]
-    assert own[0]["bucket"] == "ready_to_merge"
-    assert own[1]["bucket"] == "resolve"
-    assert own[2]["bucket"] == "draft"
-    assert own[2]["linked_issue"] == {"number": 42, "url": "issue-url"}
+    yours = result["your_prs"]
+    assert [pr["number"] for pr in yours] == [2, 3, 1]
+    assert yours[0]["bucket"] == "approved"
+    assert yours[1]["bucket"] == "unresolved"
+    assert yours[2]["bucket"] == "draft"
+    assert yours[2]["linked_issue"] == {"number": 42, "url": "issue-url"}
 
 
 def test_main_filters_backlog_issues_by_type_and_assignee(
@@ -224,7 +224,7 @@ def test_main_disambiguates_multiple_projects_by_repo_name(
     ct.main()
 
     result = json.loads(capsys.readouterr().out)
-    assert result == {"others_prs": [], "own_prs": [], "backlog_issues": []}
+    assert result == {"prs_to_review": [], "your_prs": [], "backlog_issues": []}
 
 
 def test_main_exits_when_no_open_project_is_linked(

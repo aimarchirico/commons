@@ -103,7 +103,7 @@ def _resolve_login(run_cmd: Callable[[list[str]], str]) -> str:
     return run_cmd(["gh", "api", "user", "--jq", ".login"])
 
 
-def _fetch_others_prs(
+def _fetch_prs_to_review(
     run_cmd: Callable[[list[str]], str], login: str,
 ) -> list[dict[str, Any]]:
     output = run_cmd([
@@ -153,21 +153,21 @@ def _fetch_unresolved_threads(
     return any(not t.get("isResolved") for t in threads)
 
 
-def _classify_own_pr(
+def _classify_your_pr(
     *, is_draft: bool, review_decision: str | None, has_unresolved_threads: bool,
 ) -> str:
     if is_draft:
         return "draft"
     if review_decision == "APPROVED" and not has_unresolved_threads:
-        return "ready_to_merge"
+        return "approved"
     if review_decision == "APPROVED" and has_unresolved_threads:
-        return "resolve_then_merge"
+        return "unresolved_approved"
     if review_decision != "APPROVED" and has_unresolved_threads:
-        return "resolve"
-    return "get_reviewed"
+        return "unresolved"
+    return "no_unresolved"
 
 
-def _fetch_own_prs(
+def _fetch_your_prs(
     run_cmd: Callable[[list[str]], str], owner: str, repo_name: str,
 ) -> list[dict[str, Any]]:
     output = run_cmd([
@@ -178,10 +178,10 @@ def _fetch_own_prs(
     prs = json.loads(output)
 
     buckets: dict[str, list[dict[str, Any]]] = {
-        "ready_to_merge": [],
-        "resolve_then_merge": [],
-        "resolve": [],
-        "get_reviewed": [],
+        "approved": [],
+        "unresolved_approved": [],
+        "unresolved": [],
+        "no_unresolved": [],
         "draft": [],
     }
 
@@ -192,7 +192,7 @@ def _fetch_own_prs(
             has_unresolved_threads = _fetch_unresolved_threads(
                 run_cmd, owner, repo_name, pr["number"],
             )
-        bucket = _classify_own_pr(
+        bucket = _classify_your_pr(
             is_draft=is_draft,
             review_decision=pr.get("reviewDecision"),
             has_unresolved_threads=has_unresolved_threads,
@@ -215,10 +215,10 @@ def _fetch_own_prs(
         buckets[bucket].append(entry)
 
     return (
-        buckets["ready_to_merge"]
-        + buckets["resolve_then_merge"]
-        + buckets["resolve"]
-        + buckets["get_reviewed"]
+        buckets["approved"]
+        + buckets["unresolved_approved"]
+        + buckets["unresolved"]
+        + buckets["no_unresolved"]
         + buckets["draft"]
     )
 
@@ -276,8 +276,8 @@ def main() -> None:
         login = _resolve_login(_run_cmd)
 
         result = {
-            "others_prs": _fetch_others_prs(_run_cmd, login),
-            "own_prs": _fetch_own_prs(_run_cmd, owner, repo_name),
+            "prs_to_review": _fetch_prs_to_review(_run_cmd, login),
+            "your_prs": _fetch_your_prs(_run_cmd, owner, repo_name),
             "backlog_issues": _fetch_backlog_issues(
                 _run_cmd, project_owner, project_number, login,
             ),
