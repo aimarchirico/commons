@@ -1,6 +1,6 @@
 # Triage Reference
 
-Render exactly three tables, in this order, each pre-sorted by
+Render up to three tables, but only if their source lists are not empty. Display them in this order, each pre-sorted by
 `collect_triage.py`'s priority order (never re-sort): PRs to review (from
 `prs_to_review`), Your PRs (from `your_prs`), and Backlog issues (from
 `backlog_issues`). Every table's Item column is
