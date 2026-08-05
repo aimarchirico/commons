@@ -13,6 +13,13 @@ runs:
       with:
         github-token: ${{ inputs.token }}
         script: |
+          const reviewer = context.payload.review?.user?.login;
+          const author = context.payload.pull_request?.user?.login;
+          if (reviewer !== author) {
+            core.info(`Reviewer (${reviewer}) is not the PR author (${author}), skipping self-review signal.`);
+            return;
+          }
+
           const body = context.payload.review.body || "";
           const line = body
             .split("\n")
@@ -31,5 +38,6 @@ runs:
             ...context.repo,
             pull_number: context.payload.pull_request.number,
             event,
+            body: `🤖 **Self-Review Signal**: Automated ${event === "APPROVE" ? "approval" : "changes requested"} submitted on behalf of the PR author.`,
           });
           core.info(`Submitted ${event} on PR #${context.payload.pull_request.number}`);
