@@ -50,8 +50,7 @@ argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
    covering every item step 3's script returned exactly once: a concise,
    resolving reply for each line/file review comment, plus a brief
    conversation-level summary (also covering any conversation-level
-   comments) of what was addressed, e.g. "Addressed the null-check feedback
-   in `parse.py` and added the missing test case for the empty-input path."
+   comments) of what was addressed.
 8. Present the drafted replies, and wait for explicit user approval. Skip
    this step if the `--auto` flag is set, and proceed directly with posting
    them.
