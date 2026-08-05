@@ -28,10 +28,7 @@ None. This skill takes no arguments.
    implementation or marking it ready for review, based on that judgment.
    If `linked_issue` is null, say plainly that there's no linked issue to
    check completeness against, rather than guessing.
-3. For each issue in `todo_issues` with `bucket == "unassigned"`, phrase
-   the suggestion in plain language as assigning it to yourself, then
-   solving it with `/commons:solve`.
-4. Render exactly three tables, in this order, each pre-sorted by the
+3. Render exactly three tables, in this order, each pre-sorted by the
    script's priority order (do not re-sort):
 
    Others' open PRs (from `others_prs`):
@@ -47,8 +44,8 @@ None. This skill takes no arguments.
    | :------------------- | :--------------------------------------------------------------------- |
    | `resolve`            | Resolve the unresolved feedback with `/commons:resolve`                |
    | `resolve_then_merge` | Resolve the unresolved feedback with `/commons:resolve`, then merge it |
-   | `get_reviewed`       | Get it reviewed with `/commons:review`                                 |
-   | `ready_to_merge`     | Ready to merge                                                         |
+   | `get_reviewed`       | Self-review it with `/commons:review`                                 |
+   | `ready_to_merge`     | Merge it                                                         |
    | `draft`              | The judgment from step 2                                               |
 
    Issues in Todo (from `todo_issues`):
@@ -56,11 +53,10 @@ None. This skill takes no arguments.
    | Bucket       | Suggestion                     |
    | :----------- | :----------------------------- |
    | `assigned`   | Solve it with `/commons:solve` |
-   | `unassigned` | Per step 3                     |
+   | `unassigned` | Self-assign it, then solve it with `/commons:solve`                 |
 
 ## Output
 
-Three rendered tables, "Others' open PRs", "Your open PRs", and "Issues in
-Todo", each row pairing an item with a plain-language suggested next
+Three rendered tables, "Others' open PRs", "Your open PRs", and "Backlog issues", each row pairing an item with a plain-language suggested next
 step. This is a terminal, user-facing report; its output does not feed
-into another skill. Never use em dashes anywhere in the output.
+into another skill.
