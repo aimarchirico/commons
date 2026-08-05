@@ -102,6 +102,31 @@ graph TD
     scripts -->|API calls & worktrees| github_git
 ```
 
+#### Skill Selection & Development Lifecycle Flow
+
+```mermaid
+graph TD
+    survey["1. Survey Work"] --> triage["/commons:triage<br/>Survey PRs & Backlog"]
+
+    triage -->|New Requirements| spec["/commons:spec<br/>Draft Specs & Decisions"]
+    spec --> issue["/commons:issue<br/>Create Issue Hierarchy"]
+
+    triage -->|Existing Issue| solve["/commons:solve<br/>Implement Issue Fix"]
+    issue --> solve
+
+    solve --> pr["/commons:pr<br/>Create Pull Request"]
+    pr --> review["/commons:review<br/>Parallel Code Review"]
+
+    review -->|Changes Requested| resolve["/commons:resolve<br/>Address Feedback & Re-review"]
+    resolve --> review
+
+    review -->|Approved| merge["Merge PR"]
+
+    subgraph FastTrack["Fast-Track Flow"]
+        ship["/commons:ship<br/>Chains issue → solve → review → resolve"]
+    end
+```
+
 ## Infrastructure Overview
 
 | Layer             | Technology                                               | Hosting                                       |
