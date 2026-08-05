@@ -59,9 +59,10 @@ argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
    the missing test case for the empty-input path.
    ```
 
-   The literal verdict `Resolved.` must be the first substantive line
-   (ignoring the header) so `/commons:triage` can recognize the PR as
-   resolved.
+   The literal verdict `Resolved.` must be the first line that isn't blank
+   or a markdown header; no other content may precede it. `/commons:triage`
+   detects this by skipping leading blank/header lines, not by checking
+   whether the reply merely starts with `Resolved.`.
 8. Present the drafted replies, and wait for explicit user approval. Skip
    this step if the `--auto` flag is set, and proceed directly with posting
    them.
