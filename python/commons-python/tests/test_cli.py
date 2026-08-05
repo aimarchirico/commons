@@ -2,8 +2,10 @@
 
 import subprocess
 import sys
+from pathlib import Path
 
 import pytest
+
 from commons_python import cli
 
 EXPECTED_EXIT_CODE_EXTRA = 3
@@ -51,6 +53,59 @@ def test_dispatches_wrapped_tool(
     assert command[2] == config_flag
     assert command[3].endswith(asset_name)
     assert command[4:] == ["extra"]
+
+
+def test_ruff_extends_a_consumer_local_config(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    """A ``ruff.toml`` in the working directory is layered onto the bundled one."""
+    captured: dict[str, list[str]] = {}
+
+    def fake_run(command: list[str], *, check: bool = False) -> _FakeCompletedProcess:
+        _ = check
+        captured["command"] = command
+        captured["merged_content"] = [Path(command[3]).read_text()]
+        return _FakeCompletedProcess(returncode=0)
+
+    local_config = tmp_path / "ruff.toml"
+    local_config.write_text('[lint.per-file-ignores]\n"*_bootstrap.py" = ["E402"]\n')
+
+    monkeypatch.setattr(subprocess, "run", fake_run)
+    monkeypatch.setattr(sys, "argv", ["commons-python", "ruff", "check"])
+    monkeypatch.chdir(tmp_path)
+
+    with pytest.raises(SystemExit) as exc_info:
+        cli.main()
+
+    assert exc_info.value.code == 0
+    command = captured["command"]
+    assert command[:3] == ["ruff", "check", "--config"]
+    assert Path(command[3]) != local_config
+    merged_content = captured["merged_content"][0]
+    assert merged_content.startswith('extend = "')
+    assert merged_content.endswith(local_config.read_text())
+
+
+def test_ruff_uses_bundled_config_without_a_local_one(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    """With no local ``ruff.toml``, the bundled config is used directly."""
+    captured: dict[str, list[str]] = {}
+
+    def fake_run(command: list[str], *, check: bool = False) -> _FakeCompletedProcess:
+        _ = check
+        captured["command"] = command
+        return _FakeCompletedProcess(returncode=0)
+
+    monkeypatch.setattr(subprocess, "run", fake_run)
+    monkeypatch.setattr(sys, "argv", ["commons-python", "ruff", "check"])
+    monkeypatch.chdir(tmp_path)
+
+    with pytest.raises(SystemExit):
+        cli.main()
+
+    assert captured["command"][3].endswith("ruff.toml")
+    assert "commons_python" in captured["command"][3]
 
 
 def test_dispatches_pytest(monkeypatch: pytest.MonkeyPatch) -> None:
