@@ -7,10 +7,6 @@ description:
   on next or wants a status survey of open work.
 ---
 
-## Arguments
-
-None. This skill takes no arguments.
-
 ## Workflow
 
 1. Execute:

@@ -32,7 +32,9 @@ MIN_ARG_COUNT = 2
 
 
 def _run_cmd(args: list[str]) -> str:
-    result = subprocess.run(args, capture_output=True, text=True, check=True)
+    result = subprocess.run(
+        args, capture_output=True, text=True, encoding="utf-8", check=True,
+    )
     return result.stdout.strip()
 
 
@@ -50,7 +52,7 @@ def fetch_review_feedback(
     """Fetch a PR's open feedback: unresolved threads and comments.
 
     "Open" means unresolved threads and comments since the last
-    ``Resolved.`` checkpoint; see ``plugin_shared.pr_feedback``.
+    ``Resolved.`` checkpoint; see ``pr_feedback.py``.
     """
     repo_output = run_cmd(["gh", "repo", "view", "--json", "owner,name"])
     repo_data = json.loads(repo_output)

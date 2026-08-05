@@ -36,9 +36,9 @@ def test_create_issue_recursive_skips_items_without_a_title(
         calls.append(args)
         return ""
 
-    monkeypatch.setattr(ci, "_run_cmd", fake_run_cmd)
+    monkeypatch.setattr(ci, "run_cmd", fake_run_cmd)
 
-    ci._create_issue_recursive({}, None, "acme", _NO_PROJECT_INFO)
+    ci.create_issue_recursive({}, None, "acme", _NO_PROJECT_INFO)
 
     assert calls == []
 
@@ -53,9 +53,9 @@ def test_create_issue_recursive_creates_a_top_level_issue(
         calls.append(args)
         return "https://github.com/acme/widgets/issues/101"
 
-    monkeypatch.setattr(ci, "_run_cmd", fake_run_cmd)
+    monkeypatch.setattr(ci, "run_cmd", fake_run_cmd)
 
-    ci._create_issue_recursive(
+    ci.create_issue_recursive(
         {"title": "Fix bug", "body": "desc"}, None, "acme", _NO_PROJECT_INFO,
     )
 
@@ -72,9 +72,9 @@ def test_create_issue_recursive_creates_a_child_issue_with_parent(
         calls.append(args)
         return "https://github.com/acme/widgets/issues/102"
 
-    monkeypatch.setattr(ci, "_run_cmd", fake_run_cmd)
+    monkeypatch.setattr(ci, "run_cmd", fake_run_cmd)
 
-    ci._create_issue_recursive(
+    ci.create_issue_recursive(
         {"title": "Child"}, "101", "acme", _NO_PROJECT_INFO,
     )
 
@@ -98,9 +98,9 @@ def test_create_issue_recursive_links_to_project_and_sets_fields(
             return json.dumps({"id": "ITEM1"})
         return ""
 
-    monkeypatch.setattr(ci, "_run_cmd", fake_run_cmd)
+    monkeypatch.setattr(ci, "run_cmd", fake_run_cmd)
 
-    ci._create_issue_recursive(
+    ci.create_issue_recursive(
         {"title": "Fix bug", "type": "Task", "priority": "P1"},
         None, "acme", _project_info(),
     )
@@ -128,9 +128,9 @@ def test_create_issue_recursive_warns_when_project_add_fails(
             return "https://github.com/acme/widgets/issues/101"
         return "not json"
 
-    monkeypatch.setattr(ci, "_run_cmd", fake_run_cmd)
+    monkeypatch.setattr(ci, "run_cmd", fake_run_cmd)
 
-    ci._create_issue_recursive({"title": "Fix bug"}, None, "acme", _project_info())
+    ci.create_issue_recursive({"title": "Fix bug"}, None, "acme", _project_info())
 
     assert "Warning: Failed to add/configure project fields" in capsys.readouterr().err
 
@@ -147,9 +147,9 @@ def test_create_issue_recursive_recurses_into_children(
             return "https://github.com/acme/widgets/issues/101"
         return "https://github.com/acme/widgets/issues/102"
 
-    monkeypatch.setattr(ci, "_run_cmd", fake_run_cmd)
+    monkeypatch.setattr(ci, "run_cmd", fake_run_cmd)
 
-    ci._create_issue_recursive(
+    ci.create_issue_recursive(
         {"title": "Parent", "children": [{"title": "Child"}]},
         None, "acme", _NO_PROJECT_INFO,
     )
@@ -209,7 +209,7 @@ def _install_gh(monkeypatch: pytest.MonkeyPatch, responses: dict[str, str]) -> N
 
     monkeypatch.setattr(ci.shutil, "which", lambda _name: "/usr/bin/gh")
     monkeypatch.setattr(ci.subprocess, "run", fake_subprocess_run)
-    monkeypatch.setattr(ci, "_run_cmd", fake_run_cmd)
+    monkeypatch.setattr(ci, "run_cmd", fake_run_cmd)
 
 
 def test_main_exits_when_project_setup_is_invalid(

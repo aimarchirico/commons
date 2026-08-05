@@ -69,7 +69,7 @@ def test_post_replies_resolves_each_unique_thread_once() -> None:
 
 def test_render_conversation_reply_leads_with_header_then_verdict() -> None:
     """The header comes first, then the literal Resolved. verdict."""
-    body = ppr._render_conversation_reply("Fixed the thing.")
+    body = ppr.render_conversation_reply("Fixed the thing.")
 
     assert body == "## Resolution summary\n\nResolved. Fixed the thing."
 

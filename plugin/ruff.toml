@@ -1,7 +1,0 @@
-[lint.per-file-ignores]
-"*skills*" = [
-  # S603: subprocess.run calls are used in skill scripts to run shell commands.
-  "S603",
-  # EXE001: Executable file permissions vary across operating systems.
-  "EXE001",
-]

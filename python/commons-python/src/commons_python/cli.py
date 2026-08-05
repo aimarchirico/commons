@@ -38,16 +38,6 @@ def _deep_merge(base: dict[str, Any], override: dict[str, Any]) -> dict[str, Any
 
 
 def _resolve_ruff_config(bundled_path: Path, tmp_dir: str) -> Path:
-    """Layer a consumer-local ``ruff.toml`` (if any) on top of the bundled one.
-
-    Consumers extend the shared base by dropping their own ``ruff.toml``
-    (with only the extra ignores/rules they need) in their working
-    directory, rather than editing the bundled config. Ruff's native
-    ``extend`` replaces whole tables like ``per-file-ignores`` instead of
-    merging them key-by-key, so the merge is done here: tables are merged
-    recursively and lists (e.g. ``ignore``, each ``per-file-ignores`` entry)
-    are unioned, with the local file winning on any scalar conflict.
-    """
     local_config = Path.cwd() / "ruff.toml"
     if not local_config.exists():
         return bundled_path

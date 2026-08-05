@@ -15,7 +15,12 @@ MIN_ARG_COUNT = 3
 
 def _run_cmd(args: list[str], input_text: str | None = None) -> str:
     result = subprocess.run(
-        args, input=input_text, capture_output=True, text=True, check=True,
+        args,
+        input=input_text,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        check=True,
     )
     return result.stdout.strip()
 
