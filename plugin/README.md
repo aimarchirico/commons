@@ -40,7 +40,7 @@ plugin/
 │   ├── ship/SKILL.md            # chain issue creation and solving into a single flow
 │   ├── solve/SKILL.md           # orchestrate the lifecycle from an existing issue
 │   ├── spec/SKILL.md            # draft requirements/architecture/decisions for a new project
-│   └── triage/SKILL.md          # survey open PRs and Todo issues, read-only
+│   └── triage/SKILL.md          # survey open PRs and Backlog issues, read-only
 └── agents/
     ├── compliance-reviewer.md    # reviews a diff against CONTRIBUTING.md (read-only)
     ├── implementation-planner.md # drafts an implementation plan (read-only)
