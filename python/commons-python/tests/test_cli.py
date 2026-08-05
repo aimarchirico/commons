@@ -2,10 +2,11 @@
 
 import subprocess
 import sys
+import tomllib
 from pathlib import Path
+from typing import Any
 
 import pytest
-
 from commons_python import cli
 
 EXPECTED_EXIT_CODE_EXTRA = 3
@@ -55,16 +56,23 @@ def test_dispatches_wrapped_tool(
     assert command[4:] == ["extra"]
 
 
-def test_ruff_extends_a_consumer_local_config(
+def test_ruff_merges_a_consumer_local_config_onto_the_bundled_one(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
 ) -> None:
-    """A ``ruff.toml`` in the working directory is layered onto the bundled one."""
+    """A local ``ruff.toml``'s per-file-ignores are merged, not substituted.
+
+    Ruff's own ``extend`` replaces whole tables like ``per-file-ignores``
+    rather than merging them key-by-key, which would silently drop every
+    ignore the bundled config declares (e.g. ``S101`` for tests) the
+    moment a consumer added its own. The merge must keep both.
+    """
     captured: dict[str, list[str]] = {}
+    merged_config: dict[str, Any] = {}
 
     def fake_run(command: list[str], *, check: bool = False) -> _FakeCompletedProcess:
         _ = check
         captured["command"] = command
-        captured["merged_content"] = [Path(command[3]).read_text()]
+        merged_config.update(tomllib.loads(Path(command[3]).read_text()))
         return _FakeCompletedProcess(returncode=0)
 
     local_config = tmp_path / "ruff.toml"
@@ -81,9 +89,9 @@ def test_ruff_extends_a_consumer_local_config(
     command = captured["command"]
     assert command[:3] == ["ruff", "check", "--config"]
     assert Path(command[3]) != local_config
-    merged_content = captured["merged_content"][0]
-    assert merged_content.startswith('extend = "')
-    assert merged_content.endswith(local_config.read_text())
+    per_file_ignores = merged_config["lint"]["per-file-ignores"]
+    assert per_file_ignores["*_bootstrap.py"] == ["E402"]
+    assert "S101" in per_file_ignores["*tests*"]
 
 
 def test_ruff_uses_bundled_config_without_a_local_one(

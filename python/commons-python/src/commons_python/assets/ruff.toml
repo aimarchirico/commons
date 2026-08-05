@@ -24,16 +24,5 @@ ignore = [
   "INP001",
 ]
 
-# Scoped ignores for CLI entry points and CLI utility scripts.
-"*cli*.py" = [
-  # S603: subprocess.run calls are used for executing wrapped tools.
-  "S603",
-]
-"*skills*" = [
-  # S603: subprocess.run calls are used in skill scripts to run shell commands.
-  "S603",
-  # EXE001: Executable file permissions vary across operating systems.
-  "EXE001",
-]
 [lint.pydocstyle]
 convention = "google"
