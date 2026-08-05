@@ -42,7 +42,7 @@ def main() -> None:
     if tool == "pytest":
         asset = importlib.resources.files("commons_python.assets") / "coverage.toml"
         with importlib.resources.as_file(asset) as config_path:
-            cov_args = [] if any(a.startswith("--cov") for a in rest) else ["--cov"]
+            cov_args = [] if any(a.startswith("--cov") for a in rest) else ["--cov=."]
             command = ["pytest", *cov_args, "--cov-config", str(config_path), *rest]
             result = subprocess.run(command, check=False)
         sys.exit(result.returncode)
