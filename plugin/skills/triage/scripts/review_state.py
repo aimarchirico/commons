@@ -39,7 +39,7 @@ def fetch_review_state(
     *,
     is_draft: bool,
 ) -> dict[str, str]:
-    """Compute a pull request's ``review``, ``threads``, and ``comments`` state.
+    """Compute a pull request's ``state``, ``threads``, and ``comments``.
 
     ``graphql`` must match ``graphql(query: str, **variables) -> dict``,
     returning the parsed GraphQL response, so callers can reuse their own
@@ -49,13 +49,13 @@ def fetch_review_state(
     since a draft's review activity isn't actionable until it's marked ready.
     """
     if is_draft:
-        return {"review": "not_ready", "threads": "none", "comments": "none"}
+        return {"state": "not_ready", "threads": "none", "comments": "none"}
 
     api_data = graphql(_REVIEW_STATE_QUERY, owner=owner, repo=repo_name, number=number)
     pr = api_data.get("data", {}).get("repository", {}).get("pullRequest") or {}
 
     latest_review_nodes = pr.get("latestReview", {}).get("nodes", [])
-    review = (
+    state = (
         "none" if not latest_review_nodes
         else _REVIEW_STATE_MAP.get(latest_review_nodes[0]["state"], "none")
     )
@@ -82,4 +82,4 @@ def fetch_review_state(
         else "unresolved"
     )
 
-    return {"review": review, "threads": threads, "comments": comments}
+    return {"state": state, "threads": threads, "comments": comments}

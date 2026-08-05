@@ -10,15 +10,15 @@ none of them need further mapping.
 
 ## PRs to review (from `prs_to_review`)
 
-| Item                         | Reviews     | Suggestion                           |
-| :--------------------------- | :---------- | :----------------------------------- |
-| `[#<number>](<url>) <title>` | `<reviews>` | Review the PR with `/commons:review` |
+| Item                         | State     | Suggestion                           |
+| :--------------------------- | :-------- | :----------------------------------- |
+| `[#<number>](<url>) <title>` | `<state>` | Review the PR with `/commons:review` |
 
 ## Your PRs (from `your_prs`)
 
-| Item                         | Review     | Threads     | Comments     | Suggestion     |
-| :--------------------------- | :--------- | :---------- | :----------- | :------------- |
-| `[#<number>](<url>) <title>` | `<review>` | `<threads>` | `<comments>` | `<suggestion>` |
+| Item                         | State     | Threads     | Comments     | Suggestion     |
+| :--------------------------- | :-------- | :---------- | :----------- | :------------- |
+| `[#<number>](<url>) <title>` | `<state>` | `<threads>` | `<comments>` | `<suggestion>` |
 
 If `suggestion` is `null`: the entry is a draft. If it has a non-null
 `linked_issue`, fetch that issue's title and body, plus the PR's own

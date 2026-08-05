@@ -38,7 +38,7 @@ def test_draft_short_circuits_without_querying() -> None:
 
     result = fetch_review_state(_fail_graphql, "acme", "widgets", 1, is_draft=True)
 
-    assert result == {"review": "not_ready", "threads": "none", "comments": "none"}
+    assert result == {"state": "not_ready", "threads": "none", "comments": "none"}
 
 
 def test_maps_latest_review_state_and_resolves_threads() -> None:
@@ -50,7 +50,7 @@ def test_maps_latest_review_state_and_resolves_threads() -> None:
         lambda *_a, **_kw: response, "acme", "widgets", 2, is_draft=False,
     )
 
-    assert result == {"review": "approved", "threads": "resolved", "comments": "none"}
+    assert result == {"state": "approved", "threads": "resolved", "comments": "none"}
 
 
 def test_any_unresolved_thread_marks_threads_unresolved() -> None:
@@ -65,7 +65,7 @@ def test_any_unresolved_thread_marks_threads_unresolved() -> None:
     )
 
     assert result["threads"] == "unresolved"
-    assert result["review"] == "changes_requested"
+    assert result["state"] == "changes_requested"
 
 
 def test_latest_comment_starting_with_resolved_marks_comments_resolved() -> None:
@@ -79,7 +79,7 @@ def test_latest_comment_starting_with_resolved_marks_comments_resolved() -> None
         lambda *_a, **_kw: response, "acme", "widgets", 4, is_draft=False,
     )
 
-    assert result == {"review": "none", "threads": "none", "comments": "resolved"}
+    assert result == {"state": "none", "threads": "none", "comments": "resolved"}
 
 
 def test_latest_comment_not_starting_with_resolved_marks_comments_unresolved() -> None:

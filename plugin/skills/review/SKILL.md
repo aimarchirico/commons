@@ -49,9 +49,9 @@ argument-hint: "--pr <pr-number> [--auto]"
      python3 "${CLAUDE_PLUGIN_ROOT}/skills/review/scripts/post_review_comments.py" <pr-number> findings.json
      ```
 
-     (`build_review()` in that script owns the rendering, verdict, and
-     summary rules; see its docstring. Posts everything as a single PR
-     review, then deletes the temporary file.)
+     `build_review()` in that script owns the rendering, verdict, and
+     summary rules; see its docstring. It posts everything as a single PR
+     review, then deletes the temporary file.
 
 ## Output
 

@@ -136,7 +136,7 @@ def _fetch_prs_to_review(
             "number": pr["number"],
             "title": pr["title"],
             "url": pr["url"],
-            "reviews": _PRS_TO_REVIEW_LABELS[is_awaiting],
+            "state": _PRS_TO_REVIEW_LABELS[is_awaiting],
         }
         (awaiting if is_awaiting else not_awaiting).append(entry)
 
@@ -147,7 +147,7 @@ _YOUR_PR_BUCKET_ORDER = [
     "merge", "resolve_then_merge", "resolve", "self_review", "draft",
 ]
 
-_REVIEW_LABELS = {
+_PR_STATE_LABELS = {
     "approved": "Approved",
     "changes_requested": "Changes requested",
     "commented": "Commented",
@@ -155,7 +155,9 @@ _REVIEW_LABELS = {
     "not_ready": "Not ready for review",
 }
 
-_STATE_LABELS = {"none": "None", "resolved": "Resolved", "unresolved": "Unresolved"}
+_THREAD_STATE_LABELS = {
+    "none": "None", "resolved": "Resolved", "unresolved": "Unresolved",
+}
 
 _SUGGESTION_TEXT = {
     "merge": "Merge the PR",
@@ -167,12 +169,12 @@ _SUGGESTION_TEXT = {
 }
 
 
-def _bucket_for(review: str, threads: str, comments: str) -> str:
-    if review == "not_ready":
+def _bucket_for(state: str, threads: str, comments: str) -> str:
+    if state == "not_ready":
         return "draft"
     if threads == "unresolved" or comments == "unresolved":
-        return "resolve_then_merge" if review == "approved" else "resolve"
-    return "merge" if review == "approved" else "self_review"
+        return "resolve_then_merge" if state == "approved" else "resolve"
+    return "merge" if state == "approved" else "self_review"
 
 
 def _fetch_your_prs(
@@ -189,19 +191,21 @@ def _fetch_your_prs(
     ranks = []
     for pr in prs:
         is_draft = bool(pr.get("isDraft"))
-        state = fetch_review_state(
+        review_state = fetch_review_state(
             lambda query, **variables: _graphql(run_cmd, query, **variables),
             owner, repo_name, pr["number"], is_draft=is_draft,
         )
-        bucket = _bucket_for(state["review"], state["threads"], state["comments"])
+        bucket = _bucket_for(
+            review_state["state"], review_state["threads"], review_state["comments"],
+        )
 
         entry: dict[str, Any] = {
             "number": pr["number"],
             "title": pr["title"],
             "url": pr["url"],
-            "review": _REVIEW_LABELS[state["review"]],
-            "threads": _STATE_LABELS[state["threads"]],
-            "comments": _STATE_LABELS[state["comments"]],
+            "state": _PR_STATE_LABELS[review_state["state"]],
+            "threads": _THREAD_STATE_LABELS[review_state["threads"]],
+            "comments": _THREAD_STATE_LABELS[review_state["comments"]],
             "suggestion": _SUGGESTION_TEXT.get(bucket),
         }
         if bucket == "draft":
