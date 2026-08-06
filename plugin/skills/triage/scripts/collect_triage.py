@@ -324,13 +324,14 @@ def main() -> None:
 
         categories = {
             "action_required": {
+                "review_requests": prs_to_review,
                 "merge_ready": pr_data["merge_ready"],
                 "merge_blockers": pr_data["merge_blockers"],
-                "review_requests": prs_to_review,
                 "draft_prs": pr_data["draft_prs"],
                 "assigned_ready": backlog_data["assigned_ready"],
                 "assigned_stackable": backlog_data["assigned_stackable"],
             },
+
             "waiting": {
                 "pending_approval": pr_data["pending_approval"],
                 "stacked_queue": pr_data["stacked_queue"],
