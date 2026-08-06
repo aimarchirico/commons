@@ -2,35 +2,20 @@
 
 import json
 import subprocess
+from collections.abc import Sequence
 
 import collect_triage as ct
 import pytest
 
 _REPO_CONTEXT = json.dumps({"owner": {"login": "acme"}, "name": "widgets"})
 _LOGIN = "octocat"
-
-
+node_def = {"number": 9, "title": "Widgets", "closed": False}
 _PROJECT_QUERY_RESPONSE = json.dumps(
-    {
-        "data": {
-            "repository": {
-                "projectsV2": {
-                    "nodes": [
-                        {
-                            "number": 9,
-                            "title": "Widgets",
-                            "closed": False,
-                            "owner": {"login": "acme"},
-                        },
-                    ],
-                },
-            },
-        },
-    },
+    {"data": {"repository": {"projectsV2": {"nodes": [node_def]}}}},
 )
 
 
-def _normalize(args: list[str]) -> tuple[str, ...]:
+def _normalize(args: Sequence[str]) -> tuple[str, ...]:
     return tuple("query=<Q>" if a.startswith("query=") else a for a in args)
 
 
@@ -65,47 +50,20 @@ def _base_responses(
     project_items: str = '{"items": []}',
     project_query_response: str = _PROJECT_QUERY_RESPONSE,
 ) -> dict[tuple[str, ...], str]:
-    q_args = [
-        "gh",
-        "api",
-        "graphql",
-        "-f",
-        "owner=acme",
-        "-f",
-        "name=widgets",
-        "-f",
-        "query=placeholder",
-    ]
-    pr_rev_args = [
-        "gh",
-        "pr",
-        "list",
-        "--search",
-        "is:open -author:@me draft:false",
-        "--json",
-        "number,title,url,author,reviewRequests,reviewDecision",
-    ]
-    pr_me_args = [
-        "gh",
-        "pr",
-        "list",
-        "--search",
-        "is:open author:@me",
-        "--json",
-        "number,title,url,isDraft,closingIssuesReferences",
-    ]
-    item_args = [
-        "gh",
-        "project",
-        "item-list",
-        "9",
-        "--owner",
-        "acme",
-        "--format",
-        "json",
-        "--limit",
-        "200",
-    ]
+    q_str = "gh|api|graphql|-f|owner=acme|-f|name=widgets|-f|query=placeholder"
+    q_args = q_str.split("|")
+    pr_rev_str = (
+        "gh|pr|list|--search|is:open -author:@me draft:false|"
+        "--json|number,title,url,author,reviewRequests,reviewDecision"
+    )
+    pr_rev_args = pr_rev_str.split("|")
+    pr_me_str = (
+        "gh|pr|list|--search|is:open author:@me|"
+        "--json|number,title,url,isDraft,closingIssuesReferences"
+    )
+    pr_me_args = pr_me_str.split("|")
+    item_str = "gh|project|item-list|9|--owner|acme|--format|json|--limit|200"
+    item_args = item_str.split("|")
     return {
         ("gh", "repo", "view", "--json", "owner,name"): _REPO_CONTEXT,
         _normalize(q_args): project_query_response,
@@ -125,55 +83,26 @@ def _review_state_response(
     checks_state: str | None = None,
 ) -> tuple[tuple[str, ...], str]:
     key = _normalize(
-        [
-            "gh",
-            "api",
-            "graphql",
-            "-f",
-            "owner=acme",
-            "-f",
-            "repo=widgets",
-            "-F",
-            f"number={number}",
-            "-f",
-            "query=placeholder",
-        ],
+        f"gh|api|graphql|-f|owner=acme|-f|repo=widgets|-F|number={number}|-f|query=placeholder".split(
+            "|",
+        ),
     )
-    body = json.dumps(
-        {
-            "data": {
-                "repository": {
-                    "pullRequest": {
-                        "latestReview": {
-                            "nodes": []
-                            if review_state is None
-                            else [{"state": review_state}],
-                        },
-                        "allReviews": {"nodes": []},
-                        "reviewThreads": {
-                            "nodes": [
-                                {"isResolved": r} for r in (thread_resolutions or [])
-                            ],
-                        },
-                        "comments": {"nodes": []},
-                        "mergeable": mergeable,
-                        "commits": {
-                            "nodes": []
-                            if checks_state is None
-                            else [
-                                {
-                                    "commit": {
-                                        "statusCheckRollup": {"state": checks_state},
-                                    },
-                                },
-                            ],
-                        },
-                    },
-                },
-            },
-        },
+    rev = [] if review_state is None else [{"state": review_state}]
+    thr = [{"isResolved": r} for r in (thread_resolutions or [])]
+    chk = (
+        []
+        if checks_state is None
+        else [{"commit": {"statusCheckRollup": {"state": checks_state}}}]
     )
-    return key, body
+    pr_data = {
+        "latestReview": {"nodes": rev},
+        "allReviews": {"nodes": []},
+        "reviewThreads": {"nodes": thr},
+        "comments": {"nodes": []},
+        "mergeable": mergeable,
+        "commits": {"nodes": chk},
+    }
+    return key, json.dumps({"data": {"repository": {"pullRequest": pr_data}}})
 
 
 def test_main_prints_empty_survey_when_nothing_is_open(
@@ -186,13 +115,31 @@ def test_main_prints_empty_survey_when_nothing_is_open(
     ct.main()
 
     result = json.loads(capsys.readouterr().out)
-    assert result == {
-        "prs_to_review": [],
-        "your_open_prs": [],
-        "your_draft_prs": [],
-        "backlog_issues": [],
-        "assigned_to_others_count": 0,
-        "fully_blocked_count": 0,
+    assert result["prs_to_review"] == []
+    assert result["your_open_prs"] == []
+    assert result["your_draft_prs"] == []
+    assert result["backlog_issues"] == []
+    assert (result["assigned_to_others_count"], result["fully_blocked_count"]) == (0, 0)
+
+
+def _make_review_pr(
+    *,
+    num: int,
+    bot: bool = False,
+    app: bool = False,
+    req: bool = False,
+) -> dict[str, object]:
+    login = "dependabot" if bot else ("bob" if not req else "carol")
+    author = {"login": login, "is_bot": bot}
+    reqs = [{"login": "octocat"}] if (app or req) else []
+    dec = "APPROVED" if app else ""
+    return {
+        "number": num,
+        "title": f"P{num}",
+        "url": f"u{num}",
+        "author": author,
+        "reviewRequests": reqs,
+        "reviewDecision": dec,
     }
 
 
@@ -203,38 +150,10 @@ def test_main_drops_bot_and_approved_prs_from_review_list(
     """Bot and already-approved PRs are dropped; awaiting-review sorts first."""
     prs_to_review = json.dumps(
         [
-            {
-                "number": 1,
-                "title": "Bot PR",
-                "url": "u1",
-                "author": {"login": "dependabot", "is_bot": True},
-                "reviewRequests": [],
-                "reviewDecision": "",
-            },
-            {
-                "number": 2,
-                "title": "Already approved",
-                "url": "u2",
-                "author": {"login": "bob", "is_bot": False},
-                "reviewRequests": [{"login": "octocat"}],
-                "reviewDecision": "APPROVED",
-            },
-            {
-                "number": 3,
-                "title": "Not requested",
-                "url": "u3",
-                "author": {"login": "bob", "is_bot": False},
-                "reviewRequests": [],
-                "reviewDecision": "",
-            },
-            {
-                "number": 4,
-                "title": "Requested",
-                "url": "u4",
-                "author": {"login": "carol", "is_bot": False},
-                "reviewRequests": [{"login": "octocat"}],
-                "reviewDecision": "",
-            },
+            _make_review_pr(num=1, bot=True),
+            _make_review_pr(num=2, app=True, req=True),
+            _make_review_pr(num=3),
+            _make_review_pr(num=4, req=True),
         ],
     )
     _install_gh(monkeypatch, _base_responses(prs_to_review=prs_to_review))
@@ -247,26 +166,109 @@ def test_main_drops_bot_and_approved_prs_from_review_list(
     assert result["prs_to_review"][1]["state"] == "Not awaiting your review"
 
 
+def _make_pr(
+    num: int,
+    title: str,
+    *,
+    draft: bool = False,
+    refs: list[object] | None = None,
+) -> dict[str, object]:
+    return {
+        "number": num,
+        "title": title,
+        "url": f"u{num}",
+        "isDraft": draft,
+        "closingIssuesReferences": refs or [],
+    }
+
+
+def test_main_classifies_your_prs_and_splits_out_drafts(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """Non-draft PRs sort merge, resolve-then-merge, resolve, self-review."""
+    your_prs = json.dumps(
+        [
+            _make_pr(1, "Draft", draft=True, refs=[{"number": 42, "url": "issue-url"}]),
+            _make_pr(2, "Approved clean"),
+            _make_pr(3, "Approved unresolved"),
+            _make_pr(4, "Changes requested"),
+            _make_pr(5, "Untouched"),
+            _make_pr(6, "Approved but blocked"),
+        ],
+    )
+    responses = _base_responses(your_prs=your_prs)
+    states = (
+        (2, "APPROVED", [True], "MERGEABLE", None),
+        (3, "APPROVED", [False], "MERGEABLE", None),
+        (4, "CHANGES_REQUESTED", [False], "MERGEABLE", None),
+        (5, None, None, "MERGEABLE", None),
+        (6, "APPROVED", [True], "CONFLICTING", "FAILURE"),
+    )
+    for num, state, threads, mergeable, checks in states:
+        k, b = _review_state_response(
+            number=num,
+            review_state=state,
+            thread_resolutions=threads,
+            mergeable=mergeable,
+            checks_state=checks,
+        )
+        responses[k] = b
+    _install_gh(monkeypatch, responses)
+
+    ct.main()
+
+    result = json.loads(capsys.readouterr().out)
+    yours = result["your_open_prs"]
+    assert [pr["number"] for pr in yours] == [2, 3, 6, 4, 5]
+    suggs = [
+        "Merge the PR",
+        "Resolve problems with `/commons:resolve --pr 3`, then merge the PR",
+        "Resolve problems with `/commons:resolve --pr 6`, then merge the PR",
+        "Resolve problems with `/commons:resolve --pr 4`",
+        "Self-review the PR with `/commons:review --pr 5`",
+    ]
+    assert [pr["suggestion"] for pr in yours] == suggs
+    states = ["Approved", "Approved", "Approved", "Changes requested", "No reviews"]
+    assert [pr["state"] for pr in yours] == states
+    assert (yours[2]["conflicting"], yours[2]["checks"]) == ("Yes", "Failing")
+
+    assert result["your_draft_prs"] == [
+        {
+            "number": 1,
+            "title": "Draft",
+            "url": "u1",
+            "linked_issue": {"number": 42, "url": "issue-url"},
+        },
+    ]
+
+
+def test_main_draft_prs_without_linked_issue_report_null(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """A draft with no closing issue reference reports linked_issue as null."""
+    your_prs = json.dumps([_make_pr(5, "Untouched draft", draft=True)])
+    _install_gh(monkeypatch, _base_responses(your_prs=your_prs))
+
+    ct.main()
+
+    result = json.loads(capsys.readouterr().out)
+    assert result["your_draft_prs"] == [
+        {"number": 5, "title": "Untouched draft", "url": "u5", "linked_issue": None},
+    ]
+
+
 def test_main_disambiguates_multiple_projects_by_repo_name(
     monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture[str],
 ) -> None:
     """When several open Projects are linked, the one titled after the repo wins."""
-    node2 = {"number": 10, "title": "Widgets Template", "closed": False}
-    response = json.dumps(
-        {
-            "data": {
-                "repository": {
-                    "projectsV2": {
-                        "nodes": [
-                            {"number": 9, "title": "Widgets", "closed": False},
-                            node2,
-                        ],
-                    },
-                },
-            },
-        },
-    )
+    nodes = [
+        {"number": 9, "title": "Widgets", "closed": False},
+        {"number": 10, "title": "Widgets Template", "closed": False},
+    ]
+    response = json.dumps({"data": {"repository": {"projectsV2": {"nodes": nodes}}}})
     _install_gh(monkeypatch, _base_responses(project_query_response=response))
 
     ct.main()
