@@ -78,8 +78,8 @@ def fetch_review_state(
 
     latest_review_nodes = pr.get("latestReview", {}).get("nodes", [])
     state = (
-        "none" if not latest_review_nodes
-        else _REVIEW_STATE_MAP.get(latest_review_nodes[0]["state"], "none")
+        "no_reviews" if not latest_review_nodes
+        else _REVIEW_STATE_MAP.get(latest_review_nodes[0]["state"], "no_reviews")
     )
 
     thread_nodes = pr.get("reviewThreads", {}).get("nodes", [])

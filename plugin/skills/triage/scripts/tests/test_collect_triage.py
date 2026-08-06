@@ -216,7 +216,7 @@ def test_main_classifies_your_prs_and_splits_out_drafts(
         "Self-review the PR with `/commons:review --pr 5`",
     ]
     assert [pr["state"] for pr in yours] == [
-        "Approved", "Approved", "Approved", "Changes requested", "None",
+        "Approved", "Approved", "Approved", "Changes requested", "No reviews",
     ]
     assert (yours[2]["conflicting"], yours[2]["checks"]) == ("Yes", "Failing")
 
