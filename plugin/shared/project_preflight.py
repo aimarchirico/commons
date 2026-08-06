@@ -158,20 +158,67 @@ def fetch_project_fields(
             ],
         )
         fields_data = json.loads(fields_output)
+        type_opts = []
+        priority_opts = []
         for field in fields_data.get("fields", []):
             if field.get("name") == "Type":
                 type_field_id = field["id"]
+                type_opts = field.get("options", [])
             elif field.get("name") == "Priority":
                 priority_field_id = field["id"]
+                priority_opts = field.get("options", [])
     except (subprocess.CalledProcessError, json.JSONDecodeError, KeyError) as e:
         errors.append(f"Could not retrieve project fields: {e}")
 
     if type_field_id is None:
         errors.append("Project is missing required 'Type' field.")
+    elif not type_opts:
+        errors.append("Project 'Type' field has no options configured.")
+
     if priority_field_id is None:
         errors.append("Project is missing required 'Priority' field.")
+    elif not priority_opts:
+        errors.append("Project 'Priority' field has no options configured.")
 
     return type_field_id, priority_field_id, fields_data, errors
+
+
+def validate_item_options(
+    items: list[dict[str, Any]],
+    fields_data: dict[str, Any],
+) -> list[str]:
+    """Validate that issue type and priority values in items match project options."""
+    types_used: set[str] = set()
+    priorities_used: set[str] = set()
+
+    def walk(item_list: list[dict[str, Any]]) -> None:
+        for item in item_list:
+            if type_val := item.get("type"):
+                types_used.add(type_val)
+            if priority_val := item.get("priority"):
+                priorities_used.add(priority_val)
+            walk(item.get("children", []))
+
+    walk(items)
+    errors: list[str] = []
+
+    def check_options(field_name: str, values: set[str]) -> None:
+        available = {
+            opt["name"]
+            for field in fields_data.get("fields", [])
+            if field.get("name") == field_name
+            for opt in field.get("options", [])
+        }
+        errors.extend(
+            f"{field_name} value '{val}' does not match any option in the "
+            f"project's {field_name} field. Available: {sorted(available)}."
+            for val in sorted(values)
+            if val not in available
+        )
+
+    check_options("Type", types_used)
+    check_options("Priority", priorities_used)
+    return errors
 
 
 def run_project_preflight(

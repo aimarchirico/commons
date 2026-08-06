@@ -112,7 +112,11 @@ def test_get_project_fields_extracts_type_and_priority_ids() -> None:
                         "name": "Type",
                         "options": [{"id": "o1", "name": "Task"}],
                     },
-                    {"id": "PRID", "name": "Priority", "options": []},
+                    {
+                        "id": "PRID",
+                        "name": "Priority",
+                        "options": [{"id": "o2", "name": "P1"}],
+                    },
                     {"id": "OID", "name": "Other", "options": []},
                 ],
             },

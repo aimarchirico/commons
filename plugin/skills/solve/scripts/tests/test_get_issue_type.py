@@ -107,11 +107,12 @@ _PROJECTS_RESPONSE = json.dumps(
     },
 )
 
+_OPTS = [{"id": "t1", "name": "Story"}]
 _FIELDS_RESPONSE = json.dumps(
     {
         "fields": [
-            {"id": "F_TYPE", "name": "Type"},
-            {"id": "F_PRIO", "name": "Priority"},
+            {"id": "F_TYPE", "name": "Type", "options": _OPTS},
+            {"id": "F_PRIO", "name": "Priority", "options": _OPTS},
         ],
     },
 )

@@ -146,11 +146,12 @@ def test_run_project_preflight_exits_when_no_projects_exist(
 
 def test_fetch_project_fields_extracts_type_and_priority() -> None:
     """Correctly parses Type and Priority field IDs."""
+    opts = [{"id": "t1", "name": "Task"}]
     fields_data = json.dumps(
         {
             "fields": [
-                {"id": "F_TYPE", "name": "Type"},
-                {"id": "F_PRIO", "name": "Priority"},
+                {"id": "F_TYPE", "name": "Type", "options": opts},
+                {"id": "F_PRIO", "name": "Priority", "options": opts},
             ],
         },
     )
@@ -160,6 +161,49 @@ def test_fetch_project_fields_extracts_type_and_priority() -> None:
 
     type_id, prio_id, _data, errors = pf.fetch_project_fields(mock_run_cmd, "acme", 9)
     assert (type_id, prio_id, errors) == ("F_TYPE", "F_PRIO", [])
+
+
+def test_fetch_project_fields_flags_empty_options() -> None:
+    """Reports error when Type or Priority field has no options configured."""
+    fields_data = json.dumps(
+        {
+            "fields": [
+                {"id": "F_TYPE", "name": "Type", "options": []},
+                {"id": "F_PRIO", "name": "Priority", "options": []},
+            ],
+        },
+    )
+
+    def mock_run_cmd(_args: list[str]) -> str:
+        return fields_data
+
+    _t_id, _p_id, _data, errors = pf.fetch_project_fields(mock_run_cmd, "acme", 9)
+    expected_errors = 2
+    assert len(errors) == expected_errors
+    assert "no options configured" in errors[0]
+
+
+def test_validate_item_options_checks_used_values() -> None:
+    """Returns errors when items specify unknown Type or Priority options."""
+    fields_data = {
+        "fields": [
+            {"name": "Type", "options": [{"name": "Task"}, {"name": "Bug"}]},
+            {"name": "Priority", "options": [{"name": "P1"}]},
+        ],
+    }
+    items = [
+        {
+            "title": "A",
+            "type": "Task",
+            "priority": "P1",
+            "children": [{"title": "B", "type": "UnknownType", "priority": "P2"}],
+        },
+    ]
+    errors = pf.validate_item_options(items, fields_data)
+    expected_errors = 2
+    assert len(errors) == expected_errors
+    assert "Type value 'UnknownType'" in errors[0]
+    assert "Priority value 'P2'" in errors[1]
 
 
 def test_fetch_project_fields_returns_errors_on_command_failure() -> None:
@@ -212,11 +256,12 @@ def test_run_project_preflight_succeeds(
     repo_data = json.dumps({"owner": {"login": "acme"}, "name": "widgets"})
     node = {"id": "P1", "number": 9, "title": "Widgets", "closed": False}
     api_data = json.dumps({"data": {"repository": {"projectsV2": {"nodes": [node]}}}})
+    opts = [{"id": "t1", "name": "Task"}]
     fields_data = json.dumps(
         {
             "fields": [
-                {"id": "F_TYPE", "name": "Type"},
-                {"id": "F_PRIO", "name": "Priority"},
+                {"id": "F_TYPE", "name": "Type", "options": opts},
+                {"id": "F_PRIO", "name": "Priority", "options": opts},
             ],
         },
     )

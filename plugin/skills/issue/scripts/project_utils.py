@@ -72,22 +72,7 @@ def get_project_fields(
     return _fetch_project_fields(run_cmd, owner, project_number)
 
 
-def _collect_issue_type_priority_values(
-    items: list[dict[str, Any]],
-) -> tuple[set[str], set[str]]:
-    types_used: set[str] = set()
-    priorities_used: set[str] = set()
-
-    def walk(item_list: list[dict[str, Any]]) -> None:
-        for item in item_list:
-            if type_val := item.get("type"):
-                types_used.add(type_val)
-            if priority_val := item.get("priority"):
-                priorities_used.add(priority_val)
-            walk(item.get("children", []))
-
-    walk(items)
-    return types_used, priorities_used
+validate_item_options = _project_preflight.validate_item_options
 
 
 def validate_project_setup(
@@ -107,30 +92,8 @@ def validate_project_setup(
     if project_number is not None:
         errors.extend(fields_errors)
 
-    types_used, priorities_used = _collect_issue_type_priority_values(items)
-
-    def check_options(
-        field_name: str,
-        field_id: str | None,
-        values: set[str],
-    ) -> None:
-        if field_id is None:
-            return
-        available = {
-            opt["name"]
-            for field in fields_data.get("fields", [])
-            if field.get("name") == field_name
-            for opt in field.get("options", [])
-        }
-        errors.extend(
-            f"{field_name} value '{val}' does not match any option in the "
-            f"project's {field_name} field. Available: {sorted(available)}."
-            for val in values
-            if val not in available
-        )
-
-    check_options("Type", type_field_id, types_used)
-    check_options("Priority", priority_field_id, priorities_used)
+    if type_field_id is not None or priority_field_id is not None:
+        errors.extend(validate_item_options(items, fields_data))
 
     return errors
 
