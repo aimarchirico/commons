@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """PR review utilities for requesting re-reviews on pull requests."""
 
 import json
