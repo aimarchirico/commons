@@ -10,7 +10,7 @@ from pathlib import Path
 from types import ModuleType
 from typing import Any
 
-from backlog_utils import fetch_backlog_issues
+from backlog_utils import PRIORITY_RANK, fetch_backlog_issues
 from review_state import fetch_review_state
 
 SINGLE_MATCH = 1
@@ -29,7 +29,6 @@ REV_BLOCKER_RANK = {
     "None": 3,
 }
 
-PRIORITY_RANK = {"High": 0, "Medium": 1, "Low": 2, "Unset": 3}
 
 
 def _load_project_preflight() -> ModuleType:
