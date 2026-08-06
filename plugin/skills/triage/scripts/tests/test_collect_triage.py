@@ -10,21 +10,6 @@ _REPO_CONTEXT = json.dumps({"owner": {"login": "acme"}, "name": "widgets"})
 _LOGIN = "octocat"
 
 
-@pytest.mark.parametrize(("state", "conflicting", "checks", "expected"), [
-    ("none", True, "passing", "resolve"),
-    ("none", False, "failing", "resolve"),
-    ("approved", True, "passing", "resolve_then_merge"),
-    ("approved", False, "passing", "merge"),
-])
-def test_bucket_for_treats_conflicting_and_failing_checks_as_needing_resolve(
-    state: str, *, conflicting: bool, checks: str, expected: str,
-) -> None:
-    """A conflicting or check-failing PR needs resolve/resolve_then_merge."""
-    assert ct._bucket_for(
-        state, "resolved", "resolved", conflicting=conflicting, checks=checks,
-    ) == expected
-
-
 _PROJECT_QUERY_RESPONSE = json.dumps({
     "data": {"repository": {"projectsV2": {"nodes": [
         {
@@ -89,7 +74,8 @@ def _review_state_response(
     number: int,
     review_state: str | None = None,
     thread_resolutions: list[bool] | None = None,
-    comment_bodies: list[str] | None = None,
+    mergeable: str = "MERGEABLE",
+    checks_state: str | None = None,
 ) -> tuple[tuple[str, ...], str]:
     key = _normalize([
         "gh", "api", "graphql", "-f", "owner=acme", "-f", "repo=widgets",
@@ -104,10 +90,11 @@ def _review_state_response(
             "reviewThreads": {
                 "nodes": [{"isResolved": r} for r in (thread_resolutions or [])],
             },
-            "comments": {
-                "nodes": [
-                    {"body": body_text, "createdAt": f"2024-01-01T00:00:{i:02d}Z"}
-                    for i, body_text in enumerate(comment_bodies or [])
+            "comments": {"nodes": []},
+            "mergeable": mergeable,
+            "commits": {
+                "nodes": [] if checks_state is None else [
+                    {"commit": {"statusCheckRollup": {"state": checks_state}}},
                 ],
             },
         }}},
@@ -195,17 +182,23 @@ def test_main_classifies_your_prs_and_splits_out_drafts(
             "number": 5, "title": "Untouched", "url": "u5", "isDraft": False,
             "closingIssuesReferences": [],
         },
+        {
+            "number": 6, "title": "Approved but blocked", "url": "u6",
+            "isDraft": False, "closingIssuesReferences": [],
+        },
     ])
     responses = _base_responses(your_prs=your_prs)
-    for number, review_state, thread_resolutions in (
-        (2, "APPROVED", [True]),
-        (3, "APPROVED", [False]),
-        (4, "CHANGES_REQUESTED", [False]),
-        (5, None, None),
+    for number, review_state, thread_resolutions, mergeable, checks_state in (
+        (2, "APPROVED", [True], "MERGEABLE", None),
+        (3, "APPROVED", [False], "MERGEABLE", None),
+        (4, "CHANGES_REQUESTED", [False], "MERGEABLE", None),
+        (5, None, None, "MERGEABLE", None),
+        (6, "APPROVED", [True], "CONFLICTING", "FAILURE"),
     ):
         key, body = _review_state_response(
             number=number, review_state=review_state,
             thread_resolutions=thread_resolutions,
+            mergeable=mergeable, checks_state=checks_state,
         )
         responses[key] = body
     _install_gh(monkeypatch, responses)
@@ -214,16 +207,18 @@ def test_main_classifies_your_prs_and_splits_out_drafts(
 
     result = json.loads(capsys.readouterr().out)
     yours = result["your_open_prs"]
-    assert [pr["number"] for pr in yours] == [2, 3, 4, 5]
+    assert [pr["number"] for pr in yours] == [2, 3, 6, 4, 5]
     assert [pr["suggestion"] for pr in yours] == [
         "Merge the PR",
         "Resolve problems with `/commons:resolve --pr 3`, then merge the PR",
+        "Resolve problems with `/commons:resolve --pr 6`, then merge the PR",
         "Resolve problems with `/commons:resolve --pr 4`",
         "Self-review the PR with `/commons:review --pr 5`",
     ]
     assert [pr["state"] for pr in yours] == [
-        "Approved", "Approved", "Changes requested", "None",
+        "Approved", "Approved", "Approved", "Changes requested", "None",
     ]
+    assert (yours[2]["conflicting"], yours[2]["checks"]) == ("Yes", "Failing")
 
     drafts = result["your_draft_prs"]
     assert drafts == [{

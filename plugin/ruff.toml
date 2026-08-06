@@ -1,7 +1,0 @@
-[lint.per-file-ignores]
-"*tests*" = [
-  # SLF001: Tests reach into a module's private helpers (e.g. `_bucket_for`)
-  # to unit-test pure logic directly, instead of only through public entry
-  # points.
-  "SLF001",
-]
