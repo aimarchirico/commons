@@ -22,7 +22,8 @@ def test_fetch_issue_dependencies_parses_open_blockers_and_prs() -> None:
                                     "timelineItems": {
                                         "nodes": [
                                             {
-                                                "subject": {
+                                                "willCloseTarget": True,
+                                                "source": {
                                                     "number": 25,
                                                     "url": "https://github.com/owner/repo/pull/25",
                                                     "title": "Add auth API endpoint",
@@ -39,7 +40,21 @@ def test_fetch_issue_dependencies_parses_open_blockers_and_prs() -> None:
                                     "url": "https://github.com/owner/repo/issues/13",
                                     "state": "OPEN",
                                     "title": "Setup database",
-                                    "timelineItems": {"nodes": []},
+                                    "timelineItems": {
+                                        "nodes": [
+                                            {
+                                                "willCloseTarget": False,
+                                                "source": {
+                                                    "number": 26,
+                                                    "url": "https://github.com/owner/repo/pull/26",
+                                                    "title": "Just a mention",
+                                                    "headRefName": "feature/mention",
+                                                    "state": "OPEN",
+                                                    "isDraft": False,
+                                                },
+                                            },
+                                        ],
+                                    },
                                 },
                                 {
                                     "number": 5,
