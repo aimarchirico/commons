@@ -9,7 +9,7 @@ from types import ModuleType
 from typing import Any
 
 SOLVABLE_ISSUE_TYPES = {"Story", "Task", "Bug"}
-PRIORITY_RANK = {"High": 0, "Medium": 1, "Low": 2}
+PRIORITY_RANK = {"High": 0, "Medium": 1, "Low": 2, "Unset": 3}
 
 
 def _load_blocking_prs() -> ModuleType:
@@ -30,40 +30,16 @@ fetch_issue_dependencies = _blocking_prs.fetch_issue_dependencies
 
 def _format_blocked_by(
     blocked_by_items: list[dict[str, Any]],
-    owner: str,
-    repo_name: str,
 ) -> str:
     if not blocked_by_items:
         return "None"
     formatted = []
     for b in blocked_by_items:
-        num = b["number"]
-        url = b.get("url", f"https://github.com/{owner}/{repo_name}/issues/{num}")
         pr = b.get("open_pr")
         if pr:
-            pr_num = pr["number"]
-            pr_url = pr.get(
-                "url",
-                f"https://github.com/{owner}/{repo_name}/pull/{pr_num}",
-            )
-            formatted.append(f"[#{num}]({url}) (PR [#{pr_num}]({pr_url}))")
+            formatted.append(str(pr["number"]))
         else:
-            formatted.append(f"[#{num}]({url})")
-    return ", ".join(formatted)
-
-
-def _format_blocking(
-    blocking_items: list[dict[str, Any]],
-    owner: str,
-    repo_name: str,
-) -> str:
-    if not blocking_items:
-        return "None"
-    formatted = []
-    for b in blocking_items:
-        num = b["number"]
-        url = b.get("url", f"https://github.com/{owner}/{repo_name}/issues/{num}")
-        formatted.append(f"[#{num}]({url})")
+            formatted.append(str(b["number"]))
     return ", ".join(formatted)
 
 
@@ -78,8 +54,8 @@ def fetch_backlog_issues(
 
     Issues blocked by an open issue that lacks an open PR are excluded.
     Issues blocked only by open issues with attached open PRs are included.
-    Returns a dict with `backlog_issues`, `assigned_to_others_count`,
-    and `fully_blocked_count`.
+    Returns a dict with `backlog_issues`, categorized sub-lists,
+    `assigned_to_others_count`, and `fully_blocked_count`.
     """
     owner, repo_name = repo
     item_output = run_cmd(
@@ -99,7 +75,11 @@ def fetch_backlog_issues(
     items = json.loads(item_output).get("items", [])
 
     entries: list[dict[str, Any]] = []
-    ranks: list[tuple[bool, int, int]] = []
+    assigned_ready: list[dict[str, Any]] = []
+    assigned_stackable: list[dict[str, Any]] = []
+    available_ready: list[dict[str, Any]] = []
+    available_stackable: list[dict[str, Any]] = []
+
     assigned_to_others_count = 0
     fully_blocked_count = 0
 
@@ -130,29 +110,60 @@ def fetch_backlog_issues(
             fully_blocked_count += 1
             continue
 
-        priority = item.get("priority")
-        entries.append(
-            {
-                "number": number,
-                "title": content.get("title"),
-                "url": content.get("url"),
-                "assignee": "You" if is_mine else "Unassigned",
-                "priority": priority or "Unset",
-                "blocked_by": _format_blocked_by(blocked_by_items, owner, repo_name),
-                "blocking": _format_blocking(blocking_items, owner, repo_name),
-            },
-        )
-        ranks.append(
-            (
-                not is_mine,
-                PRIORITY_RANK.get(priority, len(PRIORITY_RANK)),
-                -len(blocking_items),
-            ),
-        )
+        priority = item.get("priority") or "Unset"
+        blocking_count = len(blocking_items)
+        blocking_str = f"{blocking_count} issues"
 
-    order = sorted(range(len(entries)), key=lambda i: ranks[i])
+        entry = {
+            "number": number,
+            "title": content.get("title"),
+            "url": content.get("url"),
+            "assignee": "You" if is_mine else "Unassigned",
+            "priority": priority,
+            "blocked_by": _format_blocked_by(blocked_by_items),
+            "blocking": blocking_str,
+            "blocking_count": blocking_count,
+            "suggestion": f"Start issue with `/commons:solve --issue {number}`",
+        }
+        entries.append(entry)
+
+        is_blocked = bool(blocked_by_items)
+        if is_mine:
+            if is_blocked:
+                assigned_stackable.append(entry)
+            else:
+                assigned_ready.append(entry)
+        else:
+            if is_blocked:
+                available_stackable.append(entry)
+            else:
+                available_ready.append(entry)
+
+    def sort_key(issue: dict[str, Any]) -> tuple[int, int]:
+        p_rank = PRIORITY_RANK.get(issue["priority"], 3)
+        return (p_rank, -issue["blocking_count"])
+
+    assigned_ready.sort(key=sort_key)
+    assigned_stackable.sort(key=sort_key)
+    available_ready.sort(key=sort_key)
+    available_stackable.sort(key=sort_key)
+
+    all_backlog = sorted(
+        entries,
+        key=lambda i: (
+            0 if i["assignee"] == "You" else 1,
+            PRIORITY_RANK.get(i["priority"], 3),
+            -i["blocking_count"],
+        ),
+    )
+
     return {
-        "backlog_issues": [entries[i] for i in order],
+        "backlog_issues": all_backlog,
+        "assigned_ready": assigned_ready,
+        "assigned_stackable": assigned_stackable,
+        "available_ready": available_ready,
+        "available_stackable": available_stackable,
         "assigned_to_others_count": assigned_to_others_count,
         "fully_blocked_count": fully_blocked_count,
     }
+

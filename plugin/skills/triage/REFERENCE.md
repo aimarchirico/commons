@@ -13,50 +13,105 @@ include them in parenthetical notes after `<count> active item(s) needing
 attention` (joining non-zero items cleanly with ", and "). If both are 0, omit
 the parenthetical note entirely.
 
-Followed by a divider (`---`), then render up to four tables, but only if
-their source list is not empty, in this order, each pre-sorted by
-`collect_triage.py`'s priority order (never re-sort): PRs to review (from
-`prs_to_review`), Your open PRs (from `your_open_prs`), Your draft PRs (from
-`your_draft_prs`), and Backlog issues (from `backlog_issues`).
-Every table's Item column is `` [#`<number>`](<url>) `<title>` ``,
-linking only the number. Every other column is rendered verbatim from the
-field of the same name; none of them need further mapping.
+Followed by a divider (`---`), then render up to three categories and their sub-tables, omitting empty tables.
+Every table's Item column is `[#<number>](<url>) <title>`, linking only the number. Every other column is rendered verbatim from the field of the same name.
 
-## PRs to review (from `prs_to_review`)
+---
 
-| Item                         | State     | Suggestion                                         |
-| :--------------------------- | :-------- | :------------------------------------------------- |
-| `[#<number>](<url>) <title>` | `<state>` | Review the PR with `/commons:review --pr <number>` |
+# Category 1: Action Required
+Work that is currently blocked by you or requires your immediate input to move forward. Ordered from closest to production to furthest.
 
-## Your open PRs (from `your_open_prs`)
+## Merge Ready
+These are your approved PRs and they are ready to merge.
 
-| Item                         | State     | Threads     | Comments     | Conflicting     | Checks     | Suggestion     |
-| :--------------------------- | :-------- | :---------- | :----------- | :-------------- | :--------- | :------------- |
-| `[#<number>](<url>) <title>` | `<state>` | `<threads>` | `<comments>` | `<conflicting>` | `<checks>` | `<suggestion>` |
+| Item | Priority | Blocking | Suggestion |
+| :--- | :------- | :------- | :--------- |
+| `[#<number>](<url>) <title>` | `<priority>` | `<blocking>` | Merge the PR |
 
-## Your draft PRs (from `your_draft_prs`)
+## Merge Blockers
+These are your PRs targeting the default branch, but they have blockers to resolve before merging.
 
-| Item                         | Suggestion     |
-| :--------------------------- | :------------- |
-| `[#<number>](<url>) <title>` | `<suggestion>` |
+| Item | Technical Blockers | Review Blockers | Priority | Blocking | Suggestion |
+| :--- | :----------------- | :-------------- | :------- | :------- | :--------- |
+| `[#<number>](<url>) <title>` | `<technical_blockers>` | `<review_blockers>` | `<priority>` | `<blocking>` | Resolve problems with `/commons:resolve --pr <number>` |
 
-`your_draft_prs` entries have no `suggestion` field of their own, so compute
-it per row. If the entry has a non-null `linked_issue`, fetch that issue's
-title and body, plus the PR's own description and diff:
+## Stacked Blockers
+These are your PRs targeting another branch, and they have blockers to resolve.
 
+| Item | Stacked on | Technical Blockers | Review Blockers | Priority | Blocking | Suggestion |
+| :--- | :--------- | :----------------- | :-------------- | :------- | :------- | :--------- |
+| `[#<number>](<url>) <title>` | `PR #<stacked_on>` | `<technical_blockers>` | `<review_blockers>` | `<priority>` | `<blocking>` | Resolve problems with `/commons:resolve --pr <number>` |
+
+## Review Requests
+These PRs are authored by others and are waiting to be approved.
+
+| Item | Review | Priority | Blocking | Suggestion |
+| :--- | :----- | :------- | :------- | :--------- |
+| `[#<number>](<url>) <title>` | `<review>` | `<priority>` | `<blocking>` | Review the PR with `/commons:review --pr <number>` |
+
+## Draft PRs
+These are your PRs currently marked as Draft.
+
+| Item | Priority | Blocking | Suggestion |
+| :--- | :------- | :------- | :--------- |
+| `[#<number>](<url>) <title>` | `<priority>` | `<blocking>` | `<suggestion>` |
+
+`draft_prs` entries compute `<suggestion>` per row. If the entry has a non-null `linked_issue`, fetch that issue's title and body, plus the PR's description and diff:
 ```bash
 gh issue view <issue-number> --json title,body
 gh pr view <pr-number> --json body
 gh pr diff <pr-number>
 ```
+Judge whether the implementation looks complete against what the issue asks for, rendering Suggestion as "Continue implementing" or "Mark ready for review". If `linked_issue` is null, say plainly that there is no linked issue to check completeness against.
 
-Judge whether the implementation looks complete against what the issue asks
-for, rendering the Suggestion cell as "Continue implementing" or "Mark ready
-for review". If `linked_issue` is null, say plainly that there's no linked
-issue to check completeness against, rather than guessing.
+## Assigned Ready
+These are issues assigned to you and not blocked by anything.
 
-## Backlog issues (from `backlog_issues`)
+| Item | Priority | Blocking | Suggestion |
+| :--- | :------- | :------- | :--------- |
+| `[#<number>](<url>) <title>` | `<priority>` | `<blocking>` | Start issue with `/commons:solve --issue <number>` |
 
-| Item                         | Assignee     | Priority     | Blocked By     | Blocking     | Suggestion                                             |
-| :--------------------------- | :----------- | :----------- | :------------- | :----------- | :----------------------------------------------------- |
-| `[#<number>](<url>) <title>` | `<assignee>` | `<priority>` | `<blocked_by>` | `<blocking>` | Solve the issue with `/commons:solve --issue <number>` |
+## Assigned Stackable
+These are issues assigned to you, blocked by an issue that has an open PR.
+
+| Item | Blocked by | Priority | Blocking | Suggestion |
+| :--- | :--------- | :------- | :------- | :--------- |
+| `[#<number>](<url>) <title>` | `PR #<blocked_by>` | `<priority>` | `<blocking>` | Start issue with `/commons:solve --issue <number>` |
+
+---
+
+# Category 2: Waiting
+Work you own but cannot advance until reviewers or automated processes finish their tasks.
+
+## Pending Approval
+These are your PRs targeting the default branch, but they are waiting to be approved.
+
+| Item | Priority | Blocking | Suggestion |
+| :--- | :------- | :------- | :--------- |
+| `[#<number>](<url>) <title>` | `<priority>` | `<blocking>` | Self-review the PR with `/commons:review --pr <number>` |
+
+## Stacked Queue
+These are your PRs targeting another branch, but their base branch has not been merged yet.
+
+| Item | Stacked on | Priority | Blocking | Suggestion |
+| :--- | :--------- | :------- | :------- | :--------- |
+| `[#<number>](<url>) <title>` | `PR #<stacked_on>` | `<priority>` | `<blocking>` | Self-review the PR with `/commons:review --pr <number>` |
+
+---
+
+# Category 3: Unassigned
+The open pool of available tickets ready to be claimed and started.
+
+## Available Ready
+These are unassigned issues not blocked by anything.
+
+| Item | Priority | Blocking | Suggestion |
+| :--- | :------- | :------- | :--------- |
+| `[#<number>](<url>) <title>` | `<priority>` | `<blocking>` | Start issue with `/commons:solve --issue <number>` |
+
+## Available Stackable
+These are unassigned issues blocked by an issue that has an open PR.
+
+| Item | Blocked by | Priority | Blocking | Suggestion |
+| :--- | :--------- | :------- | :------- | :--------- |
+| `[#<number>](<url>) <title>` | `PR #<blocked_by>` | `<priority>` | `<blocking>` | Start issue with `/commons:solve --issue <number>` |
