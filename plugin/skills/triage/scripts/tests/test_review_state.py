@@ -74,7 +74,7 @@ def test_latest_comment_starting_with_resolved_marks_comments_resolved() -> None
     result = fetch_review_state(lambda *_a, **_kw: response, "acme", "widgets", 4)
 
     assert result == {
-        "state": "none", "threads": "none", "comments": "resolved",
+        "state": "no_reviews", "threads": "none", "comments": "resolved",
         "conflicting": False, "checks": "none",
     }
 

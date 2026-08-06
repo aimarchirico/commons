@@ -151,7 +151,7 @@ _PR_STATE_LABELS = {
     "approved": "Approved",
     "changes_requested": "Changes requested",
     "commented": "Commented",
-    "none": "None",
+    "no_reviews": "No reviews",
 }
 
 _THREAD_STATE_LABELS = {
