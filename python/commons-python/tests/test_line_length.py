@@ -19,7 +19,8 @@ def test_file_under_limit_passes(tmp_path: Path) -> None:
 
 
 def test_file_over_limit_fails(
-    tmp_path: Path, capsys: pytest.CaptureFixture[str],
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
 ) -> None:
     """A file with more than MAX_LINES lines is reported as a violation."""
     file = tmp_path / "long.py"
