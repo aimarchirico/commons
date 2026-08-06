@@ -38,12 +38,11 @@ def _format_blocked_by(
         return NO_BLOCKERS
 
     formatted = []
-    for b in blocked_by_items:
+    for idx, b in enumerate(blocked_by_items):
         pr = b.get("open_pr")
-        if pr:
-            formatted.append(str(pr["number"]))
-        else:
-            formatted.append(str(b["number"]))
+        num = str(pr["number"]) if pr else str(b["number"])
+        prefix = "PR #" if idx == 0 else "#"
+        formatted.append(f"{prefix}{num}")
     return ", ".join(formatted)
 
 

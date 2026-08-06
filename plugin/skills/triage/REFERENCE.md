@@ -88,7 +88,7 @@ These are issues assigned to you, blocked by an issue that has an open PR.
 
 | Item | Blocked by | Priority | Blocking | Suggestion |
 | :--- | :--------- | :------- | :------- | :--------- |
-| `[#<number>](<url>) <title>` | `PR #<blocked_by>` | `<priority>` | `<blocking>` | Solve issue with `/commons:solve --issue <number>` |
+| `[#<number>](<url>) <title>` | `<blocked_by>` | `<priority>` | `<blocking>` | Solve issue with `/commons:solve --issue <number>` |
 
 ---
 
@@ -133,4 +133,4 @@ These are unassigned issues blocked by an issue that has an open PR.
 
 | Item | Blocked by | Priority | Blocking | Suggestion |
 | :--- | :--------- | :------- | :------- | :--------- |
-| `[#<number>](<url>) <title>` | `PR #<blocked_by>` | `<priority>` | `<blocking>` | Solve issue with `/commons:solve --issue <number>` |
+| `[#<number>](<url>) <title>` | `<blocked_by>` | `<priority>` | `<blocking>` | Solve issue with `/commons:solve --issue <number>` |

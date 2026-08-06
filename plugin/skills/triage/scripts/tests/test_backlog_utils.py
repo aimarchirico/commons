@@ -253,7 +253,7 @@ def test_fetch_backlog_issues_includes_issue_blocked_by_open_pr() -> None:
 
     result = bu.fetch_backlog_issues(fake_run_cmd, _REPO, "acme", _PROJECT_NUM, _LOGIN)
     issues = result["backlog_issues"]
-    assert issues[0]["blocked_by"] == "25"
+    assert issues[0]["blocked_by"] == "PR #25"
     assert issues[0]["blocking"] == "0 issues"
 
 
@@ -286,3 +286,13 @@ def test_fetch_backlog_issues_renders_null_priority_as_unset() -> None:
     result = bu.fetch_backlog_issues(fake_run_cmd, _REPO, "acme", _PROJECT_NUM, _LOGIN)
     issues = result["backlog_issues"]
     assert issues[0]["priority"] == "Unset"
+
+
+def test_format_blocked_by_multiple_prs() -> None:
+    """Multiple blocking PRs are formatted as PR #n, #m."""
+    items = [
+        {"number": 10, "open_pr": {"number": 25}},
+        {"number": 11, "open_pr": {"number": 26}},
+    ]
+    assert bu._format_blocked_by(items) == "PR #25, #26"
+
