@@ -1,8 +1,8 @@
-"""Tests for shared pr_reviews module."""
+"""Tests for pr_reviews.py in resolve skill."""
 
 import json
 
-from shared import pr_reviews
+import pr_reviews
 
 
 def test_request_re_reviews_requests_reviewers_excluding_user() -> None:

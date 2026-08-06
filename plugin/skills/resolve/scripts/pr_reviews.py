@@ -1,4 +1,4 @@
-"""Shared PR review utilities for requesting re-reviews and processing review state."""
+"""PR review utilities for requesting re-reviews on pull requests."""
 
 import json
 import sys
