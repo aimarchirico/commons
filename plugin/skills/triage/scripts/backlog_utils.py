@@ -10,6 +10,9 @@ from typing import Any
 
 SOLVABLE_ISSUE_TYPES = {"Story", "Task", "Bug"}
 PRIORITY_RANK = {"High": 0, "Medium": 1, "Low": 2, "Unset": 3}
+ASSIGNEE_YOU = "You"
+ASSIGNEE_UNASSIGNED = "Unassigned"
+NO_BLOCKERS = "None"
 
 
 def _load_blocking_prs() -> ModuleType:
@@ -32,7 +35,8 @@ def _format_blocked_by(
     blocked_by_items: list[dict[str, Any]],
 ) -> str:
     if not blocked_by_items:
-        return "None"
+        return NO_BLOCKERS
+
     formatted = []
     for b in blocked_by_items:
         pr = b.get("open_pr")
@@ -118,7 +122,7 @@ def fetch_backlog_issues(
             "number": number,
             "title": content.get("title"),
             "url": content.get("url"),
-            "assignee": "You" if is_mine else "Unassigned",
+            "assignee": ASSIGNEE_YOU if is_mine else ASSIGNEE_UNASSIGNED,
             "priority": priority,
             "blocked_by": _format_blocked_by(blocked_by_items),
             "blocking": blocking_str,
@@ -151,11 +155,12 @@ def fetch_backlog_issues(
     all_backlog = sorted(
         entries,
         key=lambda i: (
-            0 if i["assignee"] == "You" else 1,
+            0 if i["assignee"] == ASSIGNEE_YOU else 1,
             PRIORITY_RANK.get(i["priority"], 3),
             -i["blocking_count"],
         ),
     )
+
 
     return {
         "backlog_issues": all_backlog,

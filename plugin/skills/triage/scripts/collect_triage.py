@@ -13,22 +13,43 @@ from typing import Any
 from backlog_utils import PRIORITY_RANK, fetch_backlog_issues
 from review_state import fetch_review_state
 
-SINGLE_MATCH = 1
+TECHNICAL_BLOCKERS = {
+    "BOTH": "Conflicting and failing checks",
+    "CHECKS": "Failing checks",
+    "CONFLICT": "Conflicting",
+    "NONE": "None",
+}
+
+REVIEW_BLOCKERS = {
+    "BOTH": "Unresolved threads and comments",
+    "COMMENTS": "Unresolved comments",
+    "THREADS": "Unresolved threads",
+    "NONE": "None",
+}
+
+REVIEW_REQUEST_STATE = {
+    True: "Requested",
+    False: "Not requested",
+}
+
+AWAITING_REVIEW_LABEL = {
+    True: "Awaiting your review",
+    False: "Not awaiting your review",
+}
 
 TECH_BLOCKER_RANK = {
-    "Conflicting and failing checks": 0,
-    "Failing checks": 1,
-    "Conflicting": 2,
-    "None": 3,
+    TECHNICAL_BLOCKERS["BOTH"]: 0,
+    TECHNICAL_BLOCKERS["CHECKS"]: 1,
+    TECHNICAL_BLOCKERS["CONFLICT"]: 2,
+    TECHNICAL_BLOCKERS["NONE"]: 3,
 }
 
 REV_BLOCKER_RANK = {
-    "Unresolved threads and comments": 0,
-    "Unresolved comments": 1,
-    "Unresolved threads": 2,
-    "None": 3,
+    REVIEW_BLOCKERS["BOTH"]: 0,
+    REVIEW_BLOCKERS["COMMENTS"]: 1,
+    REVIEW_BLOCKERS["THREADS"]: 2,
+    REVIEW_BLOCKERS["NONE"]: 3,
 }
-
 
 
 def _load_project_preflight() -> ModuleType:
@@ -110,14 +131,13 @@ def _fetch_prs_to_review(
             for r in pr.get("reviewRequests", [])
         }
         is_awaiting = login in requested_logins
-        review_val = "Requested" if is_awaiting else "Not requested"
         items.append(
             {
                 "number": pr["number"],
                 "title": pr["title"],
                 "url": pr["url"],
-                "state": "Awaiting your review" if is_awaiting else "Not awaiting your review",
-                "review": review_val,
+                "state": AWAITING_REVIEW_LABEL[is_awaiting],
+                "review": REVIEW_REQUEST_STATE[is_awaiting],
                 "priority": "Medium",
                 "blocking": "0 PRs, 0 issues",
                 "suggestion": f"Review the PR with `/commons:review --pr {pr['number']}`",
@@ -126,7 +146,7 @@ def _fetch_prs_to_review(
 
     items.sort(
         key=lambda x: (
-            0 if x["review"] == "Requested" else 1,
+            0 if x["review"] == REVIEW_REQUEST_STATE[True] else 1,
             PRIORITY_RANK.get(x["priority"], 3),
         ),
     )
@@ -135,22 +155,23 @@ def _fetch_prs_to_review(
 
 def _compute_technical_blockers(conflicting: bool, checks: str) -> str:
     if conflicting and checks == "failing":
-        return "Conflicting and failing checks"
+        return TECHNICAL_BLOCKERS["BOTH"]
     if checks == "failing":
-        return "Failing checks"
+        return TECHNICAL_BLOCKERS["CHECKS"]
     if conflicting:
-        return "Conflicting"
-    return "None"
+        return TECHNICAL_BLOCKERS["CONFLICT"]
+    return TECHNICAL_BLOCKERS["NONE"]
 
 
 def _compute_review_blockers(threads: str, comments: str) -> str:
     if threads == "unresolved" and comments == "unresolved":
-        return "Unresolved threads and comments"
+        return REVIEW_BLOCKERS["BOTH"]
     if comments == "unresolved":
-        return "Unresolved comments"
+        return REVIEW_BLOCKERS["COMMENTS"]
     if threads == "unresolved":
-        return "Unresolved threads"
-    return "None"
+        return REVIEW_BLOCKERS["THREADS"]
+    return REVIEW_BLOCKERS["NONE"]
+
 
 
 def _linked_issue_for(pr: dict[str, Any]) -> dict[str, Any] | None:

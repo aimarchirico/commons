@@ -11,6 +11,9 @@ scripts run as plain ``python3 script.py`` with no venv/dependency setup.
 from typing import Any
 
 
+RESOLVED_VERDICT_PREFIX = "Resolved."
+
+
 def _first_substantive_line(body: str) -> str:
     for line in body.splitlines():
         stripped = line.strip()
@@ -35,9 +38,10 @@ def comments_since_checkpoint(comments: list[dict[str, Any]]) -> list[dict[str, 
 
     checkpoint_index = None
     for i, comment in enumerate(ordered):
-        if _first_substantive_line(comment["body"]).startswith("Resolved."):
+        if _first_substantive_line(comment["body"]).startswith(RESOLVED_VERDICT_PREFIX):
             checkpoint_index = i
 
     if checkpoint_index is None:
         return ordered
     return ordered[checkpoint_index + 1 :]
+
