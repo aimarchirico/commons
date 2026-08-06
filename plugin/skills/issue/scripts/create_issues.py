@@ -11,10 +11,9 @@ from pathlib import Path
 from typing import Any
 
 from project_utils import (
-    get_project_context,
-    get_project_fields,
+    run_project_preflight,
     set_project_field,
-    validate_project_setup,
+    validate_item_options,
 )
 
 MIN_ARG_COUNT = 2
@@ -32,28 +31,13 @@ def run_cmd(args: list[str]) -> str:
     return result.stdout.strip()
 
 
-def check_dependencies() -> None:
-    """Ensure required CLI tools and extensions are installed and authenticated."""
-    gh_bin = shutil.which("gh")
-    if not gh_bin:
-        sys.stderr.write(
-            "Error: GitHub CLI (gh) is not installed or not in PATH.\n",
-        )
-        sys.exit(1)
-
-    try:
-        subprocess.run([gh_bin, "auth", "status"], capture_output=True, check=True)
-    except subprocess.CalledProcessError:
-        sys.stderr.write(
-            "Error: GitHub CLI is not authenticated. "
-            "Please run 'gh auth login' first.\n",
-        )
-        sys.exit(1)
-
+def check_sub_issue_extension() -> None:
+    """Ensure gh-sub-issue extension is installed."""
     try:
         output = run_cmd(["gh", "extension", "list"])
         if "gh-sub-issue" not in output:
             sys.stdout.write("Installing gh-sub-issue extension...\n")
+            gh_bin = shutil.which("gh") or "gh"
             subprocess.run(
                 [gh_bin, "extension", "install", "yahsan2/gh-sub-issue"],
                 check=True,
@@ -257,34 +241,26 @@ def main() -> None:
         sys.exit(1)
 
     try:
-        check_dependencies()
-        owner, project_number, project_id, context_error = get_project_context(run_cmd)
-        type_field_id, priority_field_id, fields_data, fields_errors = (
-            get_project_fields(run_cmd, owner or "", project_number)
-        )
-        field_ids = (project_number, project_id, type_field_id, priority_field_id)
-        error_info = (context_error, fields_errors)
-        errors = validate_project_setup(
-            data.get("items", []),
-            field_ids,
-            fields_data,
-            error_info,
-        )
-        fail_if_errors(errors)
+        pf = run_project_preflight(run_cmd, require_fields=True)
+        check_sub_issue_extension()
+        items = data.get("items", [])
+        if item_errors := validate_item_options(items, pf["fields_data"]):
+            fail_if_errors(item_errors)
 
         sys.stdout.write("Processing and creating issues...\n")
         project_info = (
-            project_number,
-            project_id,
-            type_field_id,
-            priority_field_id,
-            fields_data,
+            pf["project_number"],
+            pf["project_id"],
+            pf["type_field_id"],
+            pf["priority_field_id"],
+            pf["fields_data"],
         )
+        owner = str(pf["owner"])
         id_map: dict[str, str] = {}
         pending_deps: list[tuple[str, list[str]]] = []
         dep_state: DepState = (id_map, pending_deps)
-        for item in data.get("items", []):
-            create_issue_recursive(item, None, owner or "", project_info, dep_state)
+        for item in items:
+            create_issue_recursive(item, None, owner, project_info, dep_state)
 
         if pending_deps:
             sys.stdout.write("Wiring blocked-by relationships...\n")

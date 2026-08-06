@@ -219,19 +219,33 @@ def test_main_exits_when_pr_number_missing(monkeypatch: pytest.MonkeyPatch) -> N
 def test_main_exits_when_gh_is_not_installed(monkeypatch: pytest.MonkeyPatch) -> None:
     """main() fails fast when the gh CLI isn't on PATH."""
     monkeypatch.setattr(sys, "argv", ["fetch_pr_problems", "42"])
-    monkeypatch.setattr(frf.shutil, "which", lambda _name: None)
+    monkeypatch.setattr(frf.project_preflight.shutil, "which", lambda _name: None)
 
     with pytest.raises(SystemExit):
         frf.main()
 
 
-def test_main_prints_feedback_as_json(
+def test_main_outputs_json(
     monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture[str],
 ) -> None:
-    """main() prints the collected feedback as indented JSON."""
+    """main() prints problem state as JSON to stdout."""
     monkeypatch.setattr(sys, "argv", ["fetch_pr_problems", "42"])
-    monkeypatch.setattr(frf.shutil, "which", lambda _name: "/usr/bin/gh")
+    monkeypatch.setattr(frf.project_preflight.shutil, "which", lambda _name: None)
+
+    with pytest.raises(SystemExit):
+        frf.main()
+
+    monkeypatch.setattr(
+        frf.project_preflight.shutil,
+        "which",
+        lambda _name: "/usr/bin/gh",
+    )
+    monkeypatch.setattr(
+        frf.project_preflight.subprocess,
+        "run",
+        lambda *_a, **_k: None,
+    )
 
     def fake_run_cmd(args: list[str]) -> str:
         return _dispatch(args, _pr_response(comments=[], reviews=[], threads=[]))
@@ -240,8 +254,8 @@ def test_main_prints_feedback_as_json(
 
     frf.main()
 
-    printed = json.loads(capsys.readouterr().out)
-    assert printed == {
+    res = json.loads(capsys.readouterr().out)
+    assert res == {
         "threads": [],
         "comments": [],
         "conflicting": False,
@@ -249,10 +263,19 @@ def test_main_prints_feedback_as_json(
     }
 
 
-def test_main_exits_when_gh_command_fails(monkeypatch: pytest.MonkeyPatch) -> None:
-    """main() exits cleanly when the underlying gh call fails."""
+def test_main_exits_when_command_fails(monkeypatch: pytest.MonkeyPatch) -> None:
+    """main() exits with code 1 when gh pr view fails."""
     monkeypatch.setattr(sys, "argv", ["fetch_pr_problems", "42"])
-    monkeypatch.setattr(frf.shutil, "which", lambda _name: "/usr/bin/gh")
+    monkeypatch.setattr(
+        frf.project_preflight.shutil,
+        "which",
+        lambda _name: "/usr/bin/gh",
+    )
+    monkeypatch.setattr(
+        frf.project_preflight.subprocess,
+        "run",
+        lambda *_a, **_k: None,
+    )
 
     def fake_run_cmd(args: list[str]) -> str:
         raise subprocess.CalledProcessError(1, args)

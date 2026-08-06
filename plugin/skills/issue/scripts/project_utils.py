@@ -27,6 +27,8 @@ def _load_project_preflight() -> ModuleType:
 
 
 _project_preflight = _load_project_preflight()
+project_preflight = _project_preflight
+run_project_preflight = _project_preflight.run_project_preflight
 _resolve_project_context = _project_preflight.resolve_project_context
 _fetch_project_fields = _project_preflight.fetch_project_fields
 ProjectPreflightError = _project_preflight.ProjectPreflightError

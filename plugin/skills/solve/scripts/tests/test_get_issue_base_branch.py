@@ -152,7 +152,16 @@ def test_main_prints_base_branch_single(
 ) -> None:
     """main() prints base branch to stdout when single or default."""
     monkeypatch.setattr(sys, "argv", ["get_issue_base_branch", "42"])
-    monkeypatch.setattr(gibb.shutil, "which", lambda _name: "/usr/bin/gh")
+    monkeypatch.setattr(
+        gibb.project_preflight.shutil,
+        "which",
+        lambda _name: "/usr/bin/gh",
+    )
+    monkeypatch.setattr(
+        gibb.project_preflight.subprocess,
+        "run",
+        lambda *_a, **_k: None,
+    )
 
     def fake_run_cmd(args: list[str]) -> str:
         if args[:3] == ["gh", "repo", "view"]:

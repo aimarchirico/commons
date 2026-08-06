@@ -3,7 +3,6 @@
 
 import importlib.util
 import json
-import shutil
 import subprocess
 import sys
 from collections.abc import Callable
@@ -41,12 +40,21 @@ def _run_cmd(args: list[str]) -> str:
     return result.stdout.strip()
 
 
-def _check_dependencies() -> None:
-    if not shutil.which("gh"):
-        sys.stderr.write(
-            "Error: GitHub CLI (gh) is not installed or not in PATH.\n",
-        )
-        sys.exit(1)
+def _load_project_preflight() -> ModuleType:
+    shared_dir = Path(__file__).resolve().parent.parent.parent.parent / "shared"
+    module_path = shared_dir / "project_preflight.py"
+    spec = importlib.util.spec_from_file_location("project_preflight", module_path)
+    if spec is None or spec.loader is None:
+        msg = f"Cannot load project_preflight from {module_path}"
+        raise ImportError(msg)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+_project_preflight = _load_project_preflight()
+project_preflight = _project_preflight
+check_cli_dependencies = _project_preflight.check_cli_dependencies
 
 
 def get_issue_base_branch(
@@ -135,7 +143,7 @@ def main() -> None:
     issue_id = sys.argv[1]
     output_json = "--json" in sys.argv
 
-    _check_dependencies()
+    check_cli_dependencies()
 
     try:
         res = get_issue_base_branch(_run_cmd, issue_id)

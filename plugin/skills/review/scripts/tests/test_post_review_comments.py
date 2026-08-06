@@ -128,7 +128,7 @@ def test_main_exits_when_gh_is_not_installed(
         "argv",
         ["post_review_comments", "42", str(findings_file)],
     )
-    monkeypatch.setattr(prc.shutil, "which", lambda _name: None)
+    monkeypatch.setattr(prc.project_preflight.shutil, "which", lambda _name: None)
 
     with pytest.raises(SystemExit):
         prc.main()
@@ -146,7 +146,16 @@ def test_main_exits_when_json_file_is_invalid(
         "argv",
         ["post_review_comments", "42", str(findings_file)],
     )
-    monkeypatch.setattr(prc.shutil, "which", lambda _name: "/usr/bin/gh")
+    monkeypatch.setattr(
+        prc.project_preflight.shutil,
+        "which",
+        lambda _name: "/usr/bin/gh",
+    )
+    monkeypatch.setattr(
+        prc.project_preflight.subprocess,
+        "run",
+        lambda *_a, **_k: None,
+    )
 
     with pytest.raises(SystemExit):
         prc.main()
@@ -165,7 +174,16 @@ def test_main_posts_review_and_deletes_the_file_on_success(
         "argv",
         ["post_review_comments", "42", str(findings_file)],
     )
-    monkeypatch.setattr(prc.shutil, "which", lambda _name: "/usr/bin/gh")
+    monkeypatch.setattr(
+        prc.project_preflight.shutil,
+        "which",
+        lambda _name: "/usr/bin/gh",
+    )
+    monkeypatch.setattr(
+        prc.project_preflight.subprocess,
+        "run",
+        lambda *_a, **_k: None,
+    )
 
     def fake_run_cmd(args: list[str], input_text: str | None = None) -> str:
         del input_text
@@ -191,7 +209,16 @@ def test_main_exits_and_cleans_up_when_gh_command_fails(
         "argv",
         ["post_review_comments", "42", str(findings_file)],
     )
-    monkeypatch.setattr(prc.shutil, "which", lambda _name: "/usr/bin/gh")
+    monkeypatch.setattr(
+        prc.project_preflight.shutil,
+        "which",
+        lambda _name: "/usr/bin/gh",
+    )
+    monkeypatch.setattr(
+        prc.project_preflight.subprocess,
+        "run",
+        lambda *_a, **_k: None,
+    )
 
     def fake_run_cmd(args: list[str], input_text: str | None = None) -> str:
         del input_text, args

@@ -2,12 +2,13 @@
 """Script for posting resolving replies to a pull request's feedback."""
 
 import contextlib
+import importlib.util
 import json
-import shutil
 import subprocess
 import sys
 from collections.abc import Callable
 from pathlib import Path
+from types import ModuleType
 from typing import Any
 
 MIN_ARG_COUNT = 3
@@ -25,12 +26,21 @@ def _run_cmd(args: list[str], input_text: str | None = None) -> str:
     return result.stdout.strip()
 
 
-def _check_dependencies() -> None:
-    if not shutil.which("gh"):
-        sys.stderr.write(
-            "Error: GitHub CLI (gh) is not installed or not in PATH.\n",
-        )
-        sys.exit(1)
+def _load_project_preflight() -> ModuleType:
+    shared_dir = Path(__file__).resolve().parent.parent.parent.parent / "shared"
+    module_path = shared_dir / "project_preflight.py"
+    spec = importlib.util.spec_from_file_location("project_preflight", module_path)
+    if spec is None or spec.loader is None:
+        msg = f"Cannot load project_preflight from {module_path}"
+        raise ImportError(msg)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+_project_preflight = _load_project_preflight()
+project_preflight = _project_preflight
+check_cli_dependencies = _project_preflight.check_cli_dependencies
 
 
 _RESOLVE_THREAD_MUTATION = """
@@ -135,7 +145,7 @@ def main() -> None:
     pr_number = sys.argv[1]
     json_file_path = Path(sys.argv[2])
 
-    _check_dependencies()
+    check_cli_dependencies()
 
     try:
         with json_file_path.open(encoding="utf-8") as f:
