@@ -127,7 +127,7 @@ def fetch_backlog_issues(
             "blocked_by": _format_blocked_by(blocked_by_items),
             "blocking": blocking_str,
             "blocking_count": blocking_count,
-            "suggestion": f"Start issue with `/commons:solve --issue {number}`",
+            "suggestion": f"Solve issue with `/commons:solve --issue {number}`",
         }
         entries.append(entry)
 

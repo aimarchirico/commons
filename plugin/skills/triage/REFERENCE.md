@@ -80,7 +80,7 @@ These are issues assigned to you and not blocked by anything.
 
 | Item | Priority | Blocking | Suggestion |
 | :--- | :------- | :------- | :--------- |
-| `[#<number>](<url>) <title>` | `<priority>` | `<blocking>` | Start issue with `/commons:solve --issue <number>` |
+| `[#<number>](<url>) <title>` | `<priority>` | `<blocking>` | Solve issue with `/commons:solve --issue <number>` |
 
 ### Assigned Stackable
 
@@ -88,7 +88,7 @@ These are issues assigned to you, blocked by an issue that has an open PR.
 
 | Item | Blocked by | Priority | Blocking | Suggestion |
 | :--- | :--------- | :------- | :------- | :--------- |
-| `[#<number>](<url>) <title>` | `PR #<blocked_by>` | `<priority>` | `<blocking>` | Start issue with `/commons:solve --issue <number>` |
+| `[#<number>](<url>) <title>` | `PR #<blocked_by>` | `<priority>` | `<blocking>` | Solve issue with `/commons:solve --issue <number>` |
 
 ---
 
@@ -125,7 +125,7 @@ These are unassigned issues not blocked by anything.
 
 | Item | Priority | Blocking | Suggestion |
 | :--- | :------- | :------- | :--------- |
-| `[#<number>](<url>) <title>` | `<priority>` | `<blocking>` | Start issue with `/commons:solve --issue <number>` |
+| `[#<number>](<url>) <title>` | `<priority>` | `<blocking>` | Solve issue with `/commons:solve --issue <number>` |
 
 ### Available Stackable
 
@@ -133,4 +133,4 @@ These are unassigned issues blocked by an issue that has an open PR.
 
 | Item | Blocked by | Priority | Blocking | Suggestion |
 | :--- | :--------- | :------- | :------- | :--------- |
-| `[#<number>](<url>) <title>` | `PR #<blocked_by>` | `<priority>` | `<blocking>` | Start issue with `/commons:solve --issue <number>` |
+| `[#<number>](<url>) <title>` | `PR #<blocked_by>` | `<priority>` | `<blocking>` | Solve issue with `/commons:solve --issue <number>` |
