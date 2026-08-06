@@ -13,7 +13,7 @@ include them in parenthetical notes after `<count> active item(s) needing
 attention` (joining non-zero items cleanly with ", and "). If both are 0, omit
 the parenthetical note entirely.
 
-Followed by a divider (`---`), then render up to three categories and their sub-tables, omitting empty tables.
+Followed by a divider (`---`), then render up to three categories and their sub-tables, omitting empty categories or tables.
 Every table's Item column is `[#<number>](<url>) <title>`, linking only the number. Every other column is rendered verbatim from the field of the same name.
 
 ---
@@ -22,7 +22,7 @@ Every table's Item column is `[#<number>](<url>) <title>`, linking only the numb
 Work that is currently blocked by you or requires your immediate input to move forward. Ordered from closest to production to furthest.
 
 ## Merge Ready
-These are your approved PRs and they are ready to merge.
+These are your approved PRs targeting the default branch and they are ready to merge.
 
 | Item | Priority | Blocking | Suggestion |
 | :--- | :------- | :------- | :--------- |
@@ -81,7 +81,7 @@ These are issues assigned to you, blocked by an issue that has an open PR.
 ---
 
 # Category 2: Waiting
-Work you own but cannot advance until reviewers or automated processes finish their tasks.
+Work you own but cannot advance until reviewers finish their tasks.
 
 ## Pending Approval
 These are your PRs targeting the default branch, but they are waiting to be approved.
@@ -100,7 +100,7 @@ These are your PRs targeting another branch, but their base branch has not been 
 ---
 
 # Category 3: Unassigned
-The open pool of available tickets ready to be claimed and started.
+The open pool of available issues ready to be claimed and started.
 
 ## Available Ready
 These are unassigned issues not blocked by anything.
