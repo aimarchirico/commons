@@ -58,22 +58,11 @@ def get_issue_base_branch(
               title
               timelineItems(
                 first: 20
-                itemTypes: [CONNECTED_EVENT, CROSS_REFERENCED_EVENT]
+                itemTypes: [CONNECTED_EVENT]
               ) {
                 nodes {
                   ... on ConnectedEvent {
                     subject {
-                      ... on PullRequest {
-                        number
-                        title
-                        headRefName
-                        state
-                        isDraft
-                      }
-                    }
-                  }
-                  ... on CrossReferencedEvent {
-                    source {
                       ... on PullRequest {
                         number
                         title
@@ -126,7 +115,7 @@ def get_issue_base_branch(
         timeline = blocking_node.get("timelineItems", {}).get("nodes", [])
 
         for item in timeline:
-            pr = item.get("subject") or item.get("source")
+            pr = item.get("subject")
             if not isinstance(pr, dict):
                 continue
 
