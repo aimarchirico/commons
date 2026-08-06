@@ -16,11 +16,12 @@ query($owner: String!, $repo: String!, $number: Int!) {
           title
           timelineItems(
             first: 20
-            itemTypes: [CONNECTED_EVENT]
+            itemTypes: [CROSS_REFERENCED_EVENT]
           ) {
             nodes {
-              ... on ConnectedEvent {
-                subject {
+              ... on CrossReferencedEvent {
+                willCloseTarget
+                source {
                   ... on PullRequest {
                     number
                     url
@@ -113,7 +114,9 @@ def fetch_issue_dependencies(
         open_pr = None
         timeline = node.get("timelineItems", {}).get("nodes", [])
         for item in timeline:
-            pr = item.get("subject")
+            if not item.get("willCloseTarget"):
+                continue
+            pr = item.get("source")
             if isinstance(pr, dict) and pr.get("state") == "OPEN":
                 head_ref = pr.get("headRefName")
                 if head_ref:

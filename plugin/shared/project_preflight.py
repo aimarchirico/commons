@@ -21,13 +21,9 @@ def _title_case_repo_name(repo_name: str) -> str:
 
 def check_cli_dependencies() -> None:
     """Verify gh CLI is installed and authenticated."""
-    gh_bin = shutil.which("gh")
-    if not gh_bin:
-        sys.stderr.write(
-            "Error: GitHub CLI (gh) is not installed or not in PATH.\n",
-        )
+    if not (gh_bin := shutil.which("gh")):
+        sys.stderr.write("Error: GitHub CLI (gh) is not installed or not in PATH.\n")
         sys.exit(1)
-
     try:
         subprocess.run([gh_bin, "auth", "status"], capture_output=True, check=True)
     except (subprocess.CalledProcessError, OSError):
@@ -56,21 +52,12 @@ def resolve_project_context(
         msg = f"Could not retrieve GitHub repository context: {e}"
         raise ProjectPreflightError(msg) from e
 
-    query = """
-    query($owner: String!, $name: String!) {
-      repository(owner: $owner, name: $name) {
-        projectsV2(first: 10) {
-          nodes {
-            id
-            number
-            title
-            closed
-            owner { ... on User { login } ... on Organization { login } }
-          }
-        }
-      }
-    }
-    """
+    query = (
+        "query($owner: String!, $name: String!) { repository(owner: $owner, name: "
+        "$name) { projectsV2(first: 10) { nodes { id number title closed owner { "
+        "... on User { login } ... on Organization { login } } } } } }"
+    )
+
     try:
         api_output = run_cmd(
             [
@@ -124,13 +111,7 @@ def resolve_project_context(
 
     proj = open_projects[0]
     project_owner = str(proj.get("owner", {}).get("login", owner))
-    return (
-        owner,
-        repo_name,
-        int(proj["number"]),
-        str(proj.get("id", "")),
-        project_owner,
-    )
+    return owner, repo_name, int(proj["number"]), str(proj.get("id", "")), project_owner
 
 
 def fetch_project_fields(
@@ -183,13 +164,69 @@ def fetch_project_fields(
     return type_field_id, priority_field_id, fields_data, errors
 
 
+ALLOWED_TOP_LEVEL_TYPES = {"Epic", "Story", "Task", "Bug"}
+ALLOWED_CHILD_TYPES = {
+    "Epic": {"Story", "Task", "Bug"},
+    "Story": {"Subtask"},
+    "Task": {"Subtask"},
+    "Bug": {"Subtask"},
+    "Subtask": set(),
+}
+
+
+def validate_issue_hierarchy(items: list[dict[str, Any]]) -> list[str]:
+    """Validate issue type hierarchy against Jira/CONTRIBUTING.md rules."""
+    errors: list[str] = []
+
+    def validate_node(item: dict[str, Any], parent_type: str | None) -> None:
+        title = item.get("title", "<untitled>")
+        item_type = item.get("type")
+
+        if parent_type is None:
+            if item_type == "Subtask":
+                msg = f"Subtask '{title}' cannot be a top-level issue without a parent."
+                errors.append(msg)
+            elif item_type and item_type not in ALLOWED_TOP_LEVEL_TYPES:
+                msg = (
+                    f"Issue type '{item_type}' for '{title}' is "
+                    "not allowed at top level."
+                )
+                errors.append(msg)
+        else:
+            allowed = ALLOWED_CHILD_TYPES.get(parent_type, set())
+            if item_type and item_type not in allowed:
+                if parent_type == "Subtask":
+                    msg = (
+                        f"Subtask '{parent_type}' cannot contain "
+                        f"child issues ('{title}')."
+                    )
+                    errors.append(msg)
+                else:
+                    arr_str = f"{sorted(allowed)}"
+                    msg = (
+                        f"Issue '{title}' of type '{item_type}' cannot "
+                        f"be a child of '{parent_type}'. Allowed child "
+                        f"types for '{parent_type}': {arr_str}."
+                    )
+                    errors.append(msg)
+
+        children = item.get("children", [])
+        for child in children:
+            validate_node(child, item_type)
+
+    for top_item in items:
+        validate_node(top_item, None)
+
+    return errors
+
+
 def validate_item_options(
     items: list[dict[str, Any]],
     fields_data: dict[str, Any],
 ) -> list[str]:
     """Validate that issue type and priority values in items match project options."""
-    types_used: set[str] = set()
-    priorities_used: set[str] = set()
+    errors: list[str] = validate_issue_hierarchy(items)
+    types_used, priorities_used = set(), set()
 
     def walk(item_list: list[dict[str, Any]]) -> None:
         for item in item_list:
@@ -200,24 +237,19 @@ def validate_item_options(
             walk(item.get("children", []))
 
     walk(items)
-    errors: list[str] = []
-
-    def check_options(field_name: str, values: set[str]) -> None:
-        available = {
+    for f_name, vals in (("Type", types_used), ("Priority", priorities_used)):
+        avail = {
             opt["name"]
-            for field in fields_data.get("fields", [])
-            if field.get("name") == field_name
-            for opt in field.get("options", [])
+            for f in fields_data.get("fields", [])
+            if f.get("name") == f_name
+            for opt in f.get("options", [])
         }
         errors.extend(
-            f"{field_name} value '{val}' does not match any option in the "
-            f"project's {field_name} field. Available: {sorted(available)}."
-            for val in sorted(values)
-            if val not in available
+            f"{f_name} value '{v}' does not match any option in the project's "
+            f"{f_name} field. Available: {sorted(avail)}."
+            for v in sorted(vals)
+            if v not in avail
         )
-
-    check_options("Type", types_used)
-    check_options("Priority", priorities_used)
     return errors
 
 
@@ -226,11 +258,7 @@ def run_project_preflight(
     *,
     require_fields: bool = True,
 ) -> dict[str, Any]:
-    """Run CLI, project resolution, and field preflight validation.
-
-    If any validation check fails, prints structured diagnostic messages to stderr
-    and exits immediately with status code 1.
-    """
+    """Run CLI, project resolution, and field preflight validation."""
     check_cli_dependencies()
     try:
         ctx = resolve_project_context(run_cmd)
@@ -239,22 +267,21 @@ def run_project_preflight(
         sys.exit(1)
 
     owner, repo_name, project_number, project_id, project_owner = ctx
-
-    type_field_id = None
-    priority_field_id = None
-    fields_data = {}
+    t_id, p_id, fields_data = None, None, {}
 
     if require_fields:
-        type_field_id, priority_field_id, fields_data, field_errors = (
-            fetch_project_fields(run_cmd, project_owner, project_number)
+        t_id, p_id, fields_data, field_errors = fetch_project_fields(
+            run_cmd,
+            project_owner,
+            project_number,
         )
         if field_errors:
-            sys.stderr.write(
+            err_msg = (
                 "Error: GitHub project setup is incomplete. "
-                f"Found {len(field_errors)} problem(s):\n",
+                f"Found {len(field_errors)} problem(s):\n"
+                + "".join(f"  - {err}\n" for err in field_errors)
             )
-            for err in field_errors:
-                sys.stderr.write(f"  - {err}\n")
+            sys.stderr.write(err_msg)
             sys.exit(1)
 
     return {
@@ -263,7 +290,7 @@ def run_project_preflight(
         "project_number": project_number,
         "project_id": project_id,
         "project_owner": project_owner,
-        "type_field_id": type_field_id,
-        "priority_field_id": priority_field_id,
+        "type_field_id": t_id,
+        "priority_field_id": p_id,
         "fields_data": fields_data,
     }

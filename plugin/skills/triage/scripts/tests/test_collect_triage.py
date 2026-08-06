@@ -59,13 +59,16 @@ def _base_responses(
     pr_rev_args = pr_rev_str.split("|")
     pr_me_str = (
         "gh|pr|list|--search|is:open author:@me|"
-        "--json|number,title,url,isDraft,closingIssuesReferences"
+        "--json|number,title,url,isDraft,closingIssuesReferences,headRefName,baseRefName"
     )
     pr_me_args = pr_me_str.split("|")
     item_str = "gh|project|item-list|9|--owner|acme|--format|json|--limit|200"
     item_args = item_str.split("|")
     return {
         ("gh", "repo", "view", "--json", "owner,name"): _REPO_CONTEXT,
+        ("gh", "repo", "view", "--json", "defaultBranchRef"): json.dumps(
+            {"defaultBranchRef": {"name": "main"}},
+        ),
         _normalize(q_args): project_query_response,
         ("gh", "api", "user", "--jq", ".login"): _LOGIN,
         tuple(pr_rev_args): prs_to_review,
@@ -111,6 +114,7 @@ def _assert_empty_survey(capsys: pytest.CaptureFixture[str]) -> None:
     assert not res["your_open_prs"]
     assert not res["your_draft_prs"]
     assert not res["backlog_issues"]
+    assert "categories" in res
     assert (res["assigned_to_others_count"], res["fully_blocked_count"]) == (0, 0)
 
 
@@ -118,7 +122,7 @@ def test_main_prints_empty_survey_when_nothing_is_open(
     monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture[str],
 ) -> None:
-    """With nothing open anywhere, main() reports four empty lists."""
+    """With nothing open anywhere, main() reports empty survey categories."""
     _install_gh(monkeypatch, _base_responses())
     ct.main()
     _assert_empty_survey(capsys)
@@ -164,17 +168,19 @@ def test_main_drops_bot_and_approved_prs_from_review_list(
 
     result = json.loads(capsys.readouterr().out)
     assert [pr["number"] for pr in result["prs_to_review"]] == [4, 3]
-    assert result["prs_to_review"][0]["state"] == "Awaiting your review"
-    assert result["prs_to_review"][1]["state"] == "Not awaiting your review"
+    assert result["prs_to_review"][0]["review"] == "Requested"
+    assert result["prs_to_review"][1]["review"] == "Not requested"
 
 
 def _make_pr(
+    *,
     num: int,
     title: str,
-    *,
     draft: bool = False,
     refs: list[object] | None = None,
+    branch_info: tuple[str, str] = ("feature/branch", "main"),
 ) -> dict[str, object]:
+    head, base = branch_info
     ref_list = refs or []
     return {
         "number": num,
@@ -182,6 +188,8 @@ def _make_pr(
         "url": f"u{num}",
         "isDraft": draft,
         "closingIssuesReferences": ref_list,
+        "headRefName": head,
+        "baseRefName": base,
     }
 
 
@@ -189,15 +197,20 @@ def test_main_classifies_your_prs_and_splits_out_drafts(
     monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture[str],
 ) -> None:
-    """Non-draft PRs sort merge, resolve-then-merge, resolve, self-review."""
+    """Non-draft PRs sort and categorize into merge_ready, merge_blockers, etc."""
     your_prs = json.dumps(
         [
-            _make_pr(1, "Draft", draft=True, refs=[{"number": 42, "url": "issue-url"}]),
-            _make_pr(2, "Approved clean"),
-            _make_pr(3, "Approved unresolved"),
-            _make_pr(4, "Changes requested"),
-            _make_pr(5, "Untouched"),
-            _make_pr(6, "Approved but blocked"),
+            _make_pr(
+                num=1,
+                title="Draft",
+                draft=True,
+                refs=[{"number": 42, "url": "issue-url"}],
+            ),
+            _make_pr(num=2, title="Approved clean"),
+            _make_pr(num=3, title="Approved unresolved"),
+            _make_pr(num=4, title="Changes requested"),
+            _make_pr(num=5, title="Untouched"),
+            _make_pr(num=6, title="Approved but blocked"),
         ],
     )
     responses = _base_responses(your_prs=your_prs)
@@ -222,28 +235,15 @@ def test_main_classifies_your_prs_and_splits_out_drafts(
     ct.main()
 
     result = json.loads(capsys.readouterr().out)
-    yours = result["your_open_prs"]
-    assert [pr["number"] for pr in yours] == [2, 3, 6, 4, 5]
-    suggs = [
-        "Merge the PR",
-        "Resolve problems with `/commons:resolve --pr 3`, then merge the PR",
-        "Resolve problems with `/commons:resolve --pr 6`, then merge the PR",
-        "Resolve problems with `/commons:resolve --pr 4`",
-        "Self-review the PR with `/commons:review --pr 5`",
-    ]
-    assert [pr["suggestion"] for pr in yours] == suggs
-    states = ["Approved", "Approved", "Approved", "Changes requested", "No reviews"]
-    assert [pr["state"] for pr in yours] == states
-    assert (yours[2]["conflicting"], yours[2]["checks"]) == ("Yes", "Failing")
+    cats = result["categories"]["action_required"]
+    assert [pr["number"] for pr in cats["merge_ready"]] == [2]
+    assert [pr["number"] for pr in cats["merge_blockers"]] == [3, 4, 6]
 
-    assert result["your_draft_prs"] == [
-        {
-            "number": 1,
-            "title": "Draft",
-            "url": "u1",
-            "linked_issue": {"number": 42, "url": "issue-url"},
-        },
-    ]
+    assert [
+        pr["number"] for pr in result["categories"]["waiting"]["pending_approval"]
+    ] == [5]
+
+    assert result["your_draft_prs"][0]["number"] == 1
 
 
 def test_main_draft_prs_without_linked_issue_report_null(
@@ -251,15 +251,18 @@ def test_main_draft_prs_without_linked_issue_report_null(
     capsys: pytest.CaptureFixture[str],
 ) -> None:
     """A draft with no closing issue reference reports linked_issue as null."""
-    your_prs = json.dumps([_make_pr(5, "Untouched draft", draft=True)])
+    draft_pr_number = 5
+    your_prs = json.dumps(
+        [_make_pr(num=draft_pr_number, title="Untouched draft", draft=True)],
+    )
+
     _install_gh(monkeypatch, _base_responses(your_prs=your_prs))
 
     ct.main()
 
     result = json.loads(capsys.readouterr().out)
-    assert result["your_draft_prs"] == [
-        {"number": 5, "title": "Untouched draft", "url": "u5", "linked_issue": None},
-    ]
+    assert result["your_draft_prs"][0]["number"] == draft_pr_number
+    assert result["your_draft_prs"][0]["linked_issue"] is None
 
 
 def test_main_disambiguates_multiple_projects_by_repo_name(

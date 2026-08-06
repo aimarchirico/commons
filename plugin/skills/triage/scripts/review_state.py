@@ -41,6 +41,11 @@ query($owner: String!, $repo: String!, $number: Int!) {
 }
 """
 
+NO_REVIEWS = "no_reviews"
+STATE_NONE = "none"
+STATE_UNRESOLVED = "unresolved"
+STATE_RESOLVED = "resolved"
+
 _REVIEW_STATE_MAP = {
     "APPROVED": "approved",
     "CHANGES_REQUESTED": "changes_requested",
@@ -78,18 +83,18 @@ def fetch_review_state(
 
     latest_review_nodes = pr.get("latestReview", {}).get("nodes", [])
     state = (
-        "no_reviews"
+        NO_REVIEWS
         if not latest_review_nodes
-        else _REVIEW_STATE_MAP.get(latest_review_nodes[0]["state"], "no_reviews")
+        else _REVIEW_STATE_MAP.get(latest_review_nodes[0]["state"], NO_REVIEWS)
     )
 
     thread_nodes = pr.get("reviewThreads", {}).get("nodes", [])
     threads = (
-        "none"
+        STATE_NONE
         if not thread_nodes
-        else "unresolved"
+        else STATE_UNRESOLVED
         if unresolved_threads(thread_nodes)
-        else "resolved"
+        else STATE_RESOLVED
     )
 
     all_comments = [
@@ -101,11 +106,11 @@ def fetch_review_state(
         if c.get("body")
     ]
     comments = (
-        "none"
+        STATE_NONE
         if not all_comments
-        else "unresolved"
+        else STATE_UNRESOLVED
         if comments_since_checkpoint(all_comments)
-        else "resolved"
+        else STATE_RESOLVED
     )
 
     conflicting = pr.get("mergeable") == "CONFLICTING"
@@ -116,7 +121,7 @@ def fetch_review_state(
         if commit_nodes
         else None
     )
-    checks = "none" if rollup is None else _CHECKS_STATE_MAP.get(rollup, "none")
+    checks = STATE_NONE if rollup is None else _CHECKS_STATE_MAP.get(rollup, STATE_NONE)
 
     return {
         "state": state,
