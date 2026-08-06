@@ -252,24 +252,20 @@ def _fetch_open_and_draft_prs(
             "checks": review_state["checks"].capitalize(),
         }
 
-        if is_default_target:
-            if is_approved and not has_blockers:
+        if has_blockers:
+            base_entry["suggestion"] = f"Resolve problems with `/commons:resolve --pr {pr_number}`"
+            merge_blockers.append(base_entry)
+        elif is_default_target:
+            if is_approved:
                 base_entry["suggestion"] = "Merge the PR"
                 merge_ready.append(base_entry)
-            elif has_blockers:
-                base_entry["suggestion"] = f"Resolve problems with `/commons:resolve --pr {pr_number}`"
-                merge_blockers.append(base_entry)
             else:
                 base_entry["suggestion"] = f"Self-review the PR with `/commons:review --pr {pr_number}`"
                 pending_approval.append(base_entry)
         else:
             base_entry["stacked_on"] = f"PR #{stacked_on_num}" if stacked_on_num else base_branch
-            if has_blockers:
-                base_entry["suggestion"] = f"Resolve problems with `/commons:resolve --pr {pr_number}`"
-                stacked_blockers.append(base_entry)
-            else:
-                base_entry["suggestion"] = f"Self-review the PR with `/commons:review --pr {pr_number}`"
-                stacked_queue.append(base_entry)
+            base_entry["suggestion"] = f"Self-review the PR with `/commons:review --pr {pr_number}`"
+            stacked_queue.append(base_entry)
 
         your_open_prs.append(base_entry)
 
@@ -284,7 +280,6 @@ def _fetch_open_and_draft_prs(
 
     merge_ready.sort(key=sort_std)
     merge_blockers.sort(key=sort_blockers)
-    stacked_blockers.sort(key=sort_blockers)
     draft_prs.sort(key=sort_std)
     pending_approval.sort(key=sort_std)
     stacked_queue.sort(key=sort_std)
@@ -294,7 +289,6 @@ def _fetch_open_and_draft_prs(
         "your_draft_prs": your_draft_prs,
         "merge_ready": merge_ready,
         "merge_blockers": merge_blockers,
-        "stacked_blockers": stacked_blockers,
         "draft_prs": draft_prs,
         "pending_approval": pending_approval,
         "stacked_queue": stacked_queue,
@@ -332,7 +326,6 @@ def main() -> None:
             "action_required": {
                 "merge_ready": pr_data["merge_ready"],
                 "merge_blockers": pr_data["merge_blockers"],
-                "stacked_blockers": pr_data["stacked_blockers"],
                 "review_requests": prs_to_review,
                 "draft_prs": pr_data["draft_prs"],
                 "assigned_ready": backlog_data["assigned_ready"],
@@ -347,6 +340,7 @@ def main() -> None:
                 "available_stackable": backlog_data["available_stackable"],
             },
         }
+
 
         result = {
             "categories": categories,

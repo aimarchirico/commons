@@ -29,18 +29,12 @@ These are your approved PRs targeting the default branch and they are ready to m
 | `[#<number>](<url>) <title>` | `<priority>` | `<blocking>` | Merge the PR |
 
 ## Merge Blockers
-These are your PRs targeting the default branch, but they have blockers to resolve before merging.
+These are your PRs with blockers to resolve before merging.
 
 | Item | Technical Blockers | Review Blockers | Priority | Blocking | Suggestion |
 | :--- | :----------------- | :-------------- | :------- | :------- | :--------- |
 | `[#<number>](<url>) <title>` | `<technical_blockers>` | `<review_blockers>` | `<priority>` | `<blocking>` | Resolve problems with `/commons:resolve --pr <number>` |
 
-## Stacked Blockers
-These are your PRs targeting another branch, and they have blockers to resolve.
-
-| Item | Stacked on | Technical Blockers | Review Blockers | Priority | Blocking | Suggestion |
-| :--- | :--------- | :----------------- | :-------------- | :------- | :------- | :--------- |
-| `[#<number>](<url>) <title>` | `PR #<stacked_on>` | `<technical_blockers>` | `<review_blockers>` | `<priority>` | `<blocking>` | Resolve problems with `/commons:resolve --pr <number>` |
 
 ## Review Requests
 These PRs are authored by others and are waiting to be approved.
