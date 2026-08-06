@@ -6,11 +6,13 @@ import sys
 import get_issue_base_branch as gibb
 import pytest
 
-_REPO_OUTPUT = json.dumps({
-    "owner": {"login": "acme"},
-    "name": "widgets",
-    "defaultBranchRef": {"name": "main"},
-})
+_REPO_OUTPUT = json.dumps(
+    {
+        "owner": {"login": "acme"},
+        "name": "widgets",
+        "defaultBranchRef": {"name": "main"},
+    },
+)
 
 _EXPECTED_CANDIDATES_SINGLE = 1
 _EXPECTED_CANDIDATES_MULTIPLE = 2
@@ -18,21 +20,24 @@ _EXPECTED_PR_NUMBER = 15
 
 
 def _api_response(nodes: list[dict]) -> str:
-    return json.dumps({
-        "data": {
-            "repository": {
-                "issue": {
-                    "blockedBy": {
-                        "nodes": nodes,
+    return json.dumps(
+        {
+            "data": {
+                "repository": {
+                    "issue": {
+                        "blockedBy": {
+                            "nodes": nodes,
+                        },
                     },
                 },
             },
         },
-    })
+    )
 
 
 def test_get_issue_base_branch_default() -> None:
     """Returns default branch when there are no blocking issues with open PRs."""
+
     def fake_run_cmd(args: list[str]) -> str:
         if args[:3] == ["gh", "repo", "view"]:
             return _REPO_OUTPUT
@@ -147,7 +152,16 @@ def test_main_prints_base_branch_single(
 ) -> None:
     """main() prints base branch to stdout when single or default."""
     monkeypatch.setattr(sys, "argv", ["get_issue_base_branch", "42"])
-    monkeypatch.setattr(gibb.shutil, "which", lambda _name: "/usr/bin/gh")
+    monkeypatch.setattr(
+        gibb.project_preflight.shutil,
+        "which",
+        lambda _name: "/usr/bin/gh",
+    )
+    monkeypatch.setattr(
+        gibb.project_preflight.subprocess,
+        "run",
+        lambda *_a, **_k: None,
+    )
 
     def fake_run_cmd(args: list[str]) -> str:
         if args[:3] == ["gh", "repo", "view"]:

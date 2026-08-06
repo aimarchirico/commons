@@ -15,12 +15,15 @@ def _projects_response(nodes: list[dict[str, object]]) -> str:
 
 def test_get_project_context_returns_the_single_open_project() -> None:
     """With one open project linked, its owner/number/id are returned."""
+
     def fake_run_cmd(args: list[str]) -> str:
         if args[:3] == ["gh", "repo", "view"]:
             return _REPO_OUTPUT
-        return _projects_response([
-            {"id": "PID", "number": 9, "title": "Widgets", "closed": False},
-        ])
+        return _projects_response(
+            [
+                {"id": "PID", "number": 9, "title": "Widgets", "closed": False},
+            ],
+        )
 
     owner, number, project_id, error = pu.get_project_context(fake_run_cmd)
 
@@ -29,13 +32,21 @@ def test_get_project_context_returns_the_single_open_project() -> None:
 
 def test_get_project_context_disambiguates_multiple_by_repo_name() -> None:
     """With several open projects, the one titled after the repo wins."""
+
     def fake_run_cmd(args: list[str]) -> str:
         if args[:3] == ["gh", "repo", "view"]:
             return _REPO_OUTPUT
-        return _projects_response([
-            {"id": "PID", "number": 9, "title": "Widgets", "closed": False},
-            {"id": "PID2", "number": 10, "title": "Widgets Template", "closed": False},
-        ])
+        return _projects_response(
+            [
+                {"id": "PID", "number": 9, "title": "Widgets", "closed": False},
+                {
+                    "id": "PID2",
+                    "number": 10,
+                    "title": "Widgets Template",
+                    "closed": False,
+                },
+            ],
+        )
 
     owner, number, project_id, error = pu.get_project_context(fake_run_cmd)
 
@@ -44,13 +55,16 @@ def test_get_project_context_disambiguates_multiple_by_repo_name() -> None:
 
 def test_get_project_context_errors_when_ambiguous() -> None:
     """With several open projects and no title matching the repo, it errors."""
+
     def fake_run_cmd(args: list[str]) -> str:
         if args[:3] == ["gh", "repo", "view"]:
             return _REPO_OUTPUT
-        return _projects_response([
-            {"id": "PID", "number": 9, "title": "Foo", "closed": False},
-            {"id": "PID2", "number": 10, "title": "Bar", "closed": False},
-        ])
+        return _projects_response(
+            [
+                {"id": "PID", "number": 9, "title": "Foo", "closed": False},
+                {"id": "PID2", "number": 10, "title": "Bar", "closed": False},
+            ],
+        )
 
     owner, number, project_id, error = pu.get_project_context(fake_run_cmd)
 
@@ -61,6 +75,7 @@ def test_get_project_context_errors_when_ambiguous() -> None:
 
 def test_get_project_context_errors_when_no_open_project() -> None:
     """With no open projects linked, it reports that clearly."""
+
     def fake_run_cmd(args: list[str]) -> str:
         if args[:3] == ["gh", "repo", "view"]:
             return _REPO_OUTPUT
@@ -74,6 +89,7 @@ def test_get_project_context_errors_when_no_open_project() -> None:
 
 def test_get_project_context_errors_when_repo_view_fails() -> None:
     """When the repo context itself can't be fetched, that's reported too."""
+
     def fake_run_cmd(args: list[str]) -> str:
         raise subprocess.CalledProcessError(1, args)
 
@@ -86,15 +102,30 @@ def test_get_project_context_errors_when_repo_view_fails() -> None:
 
 def test_get_project_fields_extracts_type_and_priority_ids() -> None:
     """Type and Priority field IDs are pulled out of the field list."""
+
     def fake_run_cmd(_args: list[str]) -> str:
-        return json.dumps({"fields": [
-            {"id": "TID", "name": "Type", "options": [{"id": "o1", "name": "Task"}]},
-            {"id": "PRID", "name": "Priority", "options": []},
-            {"id": "OID", "name": "Other", "options": []},
-        ]})
+        return json.dumps(
+            {
+                "fields": [
+                    {
+                        "id": "TID",
+                        "name": "Type",
+                        "options": [{"id": "o1", "name": "Task"}],
+                    },
+                    {
+                        "id": "PRID",
+                        "name": "Priority",
+                        "options": [{"id": "o2", "name": "P1"}],
+                    },
+                    {"id": "OID", "name": "Other", "options": []},
+                ],
+            },
+        )
 
     type_id, priority_id, fields_data, errors = pu.get_project_fields(
-        fake_run_cmd, "acme", 9,
+        fake_run_cmd,
+        "acme",
+        9,
     )
 
     assert (type_id, priority_id, errors) == ("TID", "PRID", [])
@@ -111,7 +142,9 @@ def test_get_project_fields_returns_empty_without_a_project_number() -> None:
 def test_get_project_fields_reports_missing_required_fields() -> None:
     """Missing Type/Priority fields on the project surface as errors."""
     type_id, priority_id, _fields_data, errors = pu.get_project_fields(
-        lambda _args: json.dumps({"fields": []}), "acme", 9,
+        lambda _args: json.dumps({"fields": []}),
+        "acme",
+        9,
     )
 
     assert (type_id, priority_id) == (None, None)
@@ -145,14 +178,19 @@ def test_validate_project_setup_skips_field_errors_without_a_project() -> None:
 
 def test_validate_project_setup_flags_type_and_priority_values_not_in_options() -> None:
     """Type/Priority values used in items must match an existing project option."""
-    fields_data = {"fields": [
-        {"name": "Type", "options": [{"name": "Task"}]},
-        {"name": "Priority", "options": [{"name": "P1"}]},
-    ]}
-    items = [{
-        "type": "Epic", "priority": "P9",
-        "children": [{"type": "Task", "priority": "P1"}],
-    }]
+    fields_data = {
+        "fields": [
+            {"name": "Type", "options": [{"name": "Task"}]},
+            {"name": "Priority", "options": [{"name": "P1"}]},
+        ],
+    }
+    items = [
+        {
+            "type": "Epic",
+            "priority": "P9",
+            "children": [{"type": "Task", "priority": "P1"}],
+        },
+    ]
 
     errors = pu.validate_project_setup(
         items=items,
@@ -178,20 +216,35 @@ def _recording_run_cmd(calls: list[list[str]]) -> Callable[[list[str]], str]:
 def test_set_project_field_sets_the_matching_option() -> None:
     """Sets the single-select option whose name matches the target value."""
     calls: list[list[str]] = []
-    fields_data = {"fields": [
-        {"name": "Type", "options": [{"id": "opt1", "name": "Task"}]},
-    ]}
+    fields_data = {
+        "fields": [
+            {"name": "Type", "options": [{"id": "opt1", "name": "Task"}]},
+        ],
+    }
 
     pu.set_project_field(
-        _recording_run_cmd(calls), "item1", "PID", ("Type", "TID", "Task"),
+        _recording_run_cmd(calls),
+        "item1",
+        "PID",
+        ("Type", "TID", "Task"),
         fields_data,
     )
 
-    assert calls == [[
-        "gh", "project", "item-edit",
-        "--id", "item1", "--project-id", "PID",
-        "--field-id", "TID", "--single-select-option-id", "opt1",
-    ]]
+    assert calls == [
+        [
+            "gh",
+            "project",
+            "item-edit",
+            "--id",
+            "item1",
+            "--project-id",
+            "PID",
+            "--field-id",
+            "TID",
+            "--single-select-option-id",
+            "opt1",
+        ],
+    ]
 
 
 def test_set_project_field_is_a_noop_without_a_value_or_field_id() -> None:
@@ -208,12 +261,17 @@ def test_set_project_field_is_a_noop_without_a_value_or_field_id() -> None:
 def test_set_project_field_is_a_noop_when_no_option_matches() -> None:
     """Nothing is run when the value doesn't match any known option."""
     calls: list[list[str]] = []
-    fields_data = {"fields": [
-        {"name": "Type", "options": [{"id": "o1", "name": "Bug"}]},
-    ]}
+    fields_data = {
+        "fields": [
+            {"name": "Type", "options": [{"id": "o1", "name": "Bug"}]},
+        ],
+    }
 
     pu.set_project_field(
-        _recording_run_cmd(calls), "item1", "PID", ("Type", "TID", "Task"),
+        _recording_run_cmd(calls),
+        "item1",
+        "PID",
+        ("Type", "TID", "Task"),
         fields_data,
     )
 

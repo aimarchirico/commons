@@ -57,7 +57,8 @@ def test_dispatches_wrapped_tool(
 
 
 def test_ruff_merges_a_consumer_local_config_onto_the_bundled_one(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
 ) -> None:
     """A local ``ruff.toml``'s per-file-ignores are merged, not substituted.
 
@@ -95,7 +96,8 @@ def test_ruff_merges_a_consumer_local_config_onto_the_bundled_one(
 
 
 def test_ruff_uses_bundled_config_without_a_local_one(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
 ) -> None:
     """With no local ``ruff.toml``, the bundled config is used directly."""
     captured: dict[str, list[str]] = {}
@@ -155,7 +157,8 @@ def test_commons_check_dispatches_to_native_checks(
         return 1
 
     monkeypatch.setattr(
-        "commons_python.line_length.check_line_length", fake_line_length,
+        "commons_python.line_length.check_line_length",
+        fake_line_length,
     )
     monkeypatch.setattr("commons_python.comments.check_comments", fake_comments)
     monkeypatch.setattr(sys, "argv", ["commons-python", "commons", "check", "src"])
@@ -173,7 +176,8 @@ def test_commons_check_passes_when_both_succeed(
 ) -> None:
     """``commons check`` exits 0 when both native checks succeed."""
     monkeypatch.setattr(
-        "commons_python.line_length.check_line_length", lambda _paths: 0,
+        "commons_python.line_length.check_line_length",
+        lambda _paths: 0,
     )
     monkeypatch.setattr("commons_python.comments.check_comments", lambda _paths: 0)
     monkeypatch.setattr(sys, "argv", ["commons-python", "commons", "check"])
@@ -185,7 +189,8 @@ def test_commons_check_passes_when_both_succeed(
 
 
 def test_unknown_tool_prints_usage_and_exits_2(
-    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str],
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
 ) -> None:
     """An unrecognized first argument prints usage to stderr and exits 2."""
     monkeypatch.setattr(sys, "argv", ["commons-python", "bogus"])

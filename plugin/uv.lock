@@ -13,7 +13,7 @@ wheels = [
 
 [[package]]
 name = "commons-python"
-version = "1.0.0"
+version = "1.0.1"
 source = { directory = "../python/commons-python" }
 dependencies = [
     { name = "coverage" },

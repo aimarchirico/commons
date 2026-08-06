@@ -9,19 +9,39 @@ import create_issues as ci
 import pytest
 
 _REPO_OUTPUT = json.dumps({"owner": {"login": "acme"}, "name": "widgets"})
-_PROJECTS_RESPONSE = json.dumps({"data": {"repository": {"projectsV2": {"nodes": [
-    {"id": "PID", "number": 9, "title": "Widgets", "closed": False},
-]}}}})
-_FIELDS_RESPONSE = json.dumps({"fields": [
-    {"id": "TID", "name": "Type", "options": [{"id": "t1", "name": "Task"}]},
-    {"id": "PRID", "name": "Priority", "options": [{"id": "p1", "name": "P1"}]},
-]})
+_PROJECTS_RESPONSE = json.dumps(
+    {
+        "data": {
+            "repository": {
+                "projectsV2": {
+                    "nodes": [
+                        {"id": "PID", "number": 9, "title": "Widgets", "closed": False},
+                    ],
+                },
+            },
+        },
+    },
+)
+_FIELDS_RESPONSE = json.dumps(
+    {
+        "fields": [
+            {"id": "TID", "name": "Type", "options": [{"id": "t1", "name": "Task"}]},
+            {"id": "PRID", "name": "Priority", "options": [{"id": "p1", "name": "P1"}]},
+        ],
+    },
+)
 
 _NO_PROJECT_INFO = (None, None, None, None, {})
 
 
-def _project_info(project_id: str | None = "PID") -> tuple[
-    int | None, str | None, str | None, str | None, dict[str, object],
+def _project_info(
+    project_id: str | None = "PID",
+) -> tuple[
+    int | None,
+    str | None,
+    str | None,
+    str | None,
+    dict[str, object],
 ]:
     return (9, project_id, "TID", "PRID", json.loads(_FIELDS_RESPONSE))
 
@@ -56,7 +76,10 @@ def test_create_issue_recursive_creates_a_top_level_issue(
     monkeypatch.setattr(ci, "run_cmd", fake_run_cmd)
 
     ci.create_issue_recursive(
-        {"title": "Fix bug", "body": "desc"}, None, "acme", _NO_PROJECT_INFO,
+        {"title": "Fix bug", "body": "desc"},
+        None,
+        "acme",
+        _NO_PROJECT_INFO,
     )
 
     assert calls == [["gh", "issue", "create", "--title", "Fix bug", "--body", "desc"]]
@@ -75,13 +98,25 @@ def test_create_issue_recursive_creates_a_child_issue_with_parent(
     monkeypatch.setattr(ci, "run_cmd", fake_run_cmd)
 
     ci.create_issue_recursive(
-        {"title": "Child"}, "101", "acme", _NO_PROJECT_INFO,
+        {"title": "Child"},
+        "101",
+        "acme",
+        _NO_PROJECT_INFO,
     )
 
-    assert calls == [[
-        "gh", "sub-issue", "create",
-        "--title", "Child", "--body", "", "--parent", "101",
-    ]]
+    assert calls == [
+        [
+            "gh",
+            "sub-issue",
+            "create",
+            "--title",
+            "Child",
+            "--body",
+            "",
+            "--parent",
+            "101",
+        ],
+    ]
 
 
 def test_create_issue_recursive_links_to_project_and_sets_fields(
@@ -102,14 +137,23 @@ def test_create_issue_recursive_links_to_project_and_sets_fields(
 
     ci.create_issue_recursive(
         {"title": "Fix bug", "type": "Task", "priority": "P1"},
-        None, "acme", _project_info(),
+        None,
+        "acme",
+        _project_info(),
     )
 
     item_add_call = next(c for c in calls if c[:3] == ["gh", "project", "item-add"])
     assert item_add_call == [
-        "gh", "project", "item-add", "9",
-        "--owner", "acme", "--url", "https://github.com/acme/widgets/issues/101",
-        "--format", "json",
+        "gh",
+        "project",
+        "item-add",
+        "9",
+        "--owner",
+        "acme",
+        "--url",
+        "https://github.com/acme/widgets/issues/101",
+        "--format",
+        "json",
     ]
     edit_calls = [c for c in calls if c[:3] == ["gh", "project", "item-edit"]]
     expected_edit_count = 2
@@ -123,6 +167,7 @@ def test_create_issue_recursive_warns_when_project_add_fails(
     capsys: pytest.CaptureFixture[str],
 ) -> None:
     """A failed project item-add is reported as a warning, not an exception."""
+
     def fake_run_cmd(args: list[str]) -> str:
         if args[:3] == ["gh", "issue", "create"]:
             return "https://github.com/acme/widgets/issues/101"
@@ -151,7 +196,9 @@ def test_create_issue_recursive_recurses_into_children(
 
     ci.create_issue_recursive(
         {"title": "Parent", "children": [{"title": "Child"}]},
-        None, "acme", _NO_PROJECT_INFO,
+        None,
+        "acme",
+        _NO_PROJECT_INFO,
     )
 
     child_call = next(c for c in calls if c[0:2] == ["gh", "sub-issue"])
@@ -176,7 +223,8 @@ def test_main_exits_when_file_does_not_exist(monkeypatch: pytest.MonkeyPatch) ->
 
 
 def test_main_exits_and_cleans_up_when_json_is_invalid(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
 ) -> None:
     """main() exits and deletes the file when it isn't valid JSON."""
     issues_file = tmp_path / "issues.json"
@@ -203,7 +251,8 @@ def _install_gh(monkeypatch: pytest.MonkeyPatch, responses: dict[str, str]) -> N
         return fixed_responses.get(tuple(args[:3]), "")
 
     def fake_subprocess_run(
-        _args: list[str], **_kwargs: object,
+        _args: list[str],
+        **_kwargs: object,
     ) -> subprocess.CompletedProcess[str]:
         return subprocess.CompletedProcess(args=[], returncode=0)
 
@@ -213,13 +262,13 @@ def _install_gh(monkeypatch: pytest.MonkeyPatch, responses: dict[str, str]) -> N
 
 
 def test_main_exits_when_project_setup_is_invalid(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
 ) -> None:
     """main() exits before creating anything when project validation fails."""
     issues_file = tmp_path / "issues.json"
-    issues_file.write_text(json.dumps({"items": [
-        {"title": "Fix bug", "type": "NotAType", "body": ""},
-    ]}))
+    item = {"title": "Fix bug", "type": "NotAType", "body": ""}
+    issues_file.write_text(json.dumps({"items": [item]}))
     monkeypatch.setattr(sys, "argv", ["create_issues", str(issues_file)])
     _install_gh(monkeypatch, {})
 
@@ -234,9 +283,8 @@ def test_main_creates_issues_and_cleans_up_on_success(
 ) -> None:
     """main() creates every item, reports success, and deletes the input file."""
     issues_file = tmp_path / "issues.json"
-    issues_file.write_text(json.dumps({"items": [
-        {"title": "Fix bug", "type": "Task", "priority": "P1", "body": ""},
-    ]}))
+    item = {"title": "Fix bug", "type": "Task", "priority": "P1", "body": ""}
+    issues_file.write_text(json.dumps({"items": [item]}))
     monkeypatch.setattr(sys, "argv", ["create_issues", str(issues_file)])
     _install_gh(monkeypatch, {})
 

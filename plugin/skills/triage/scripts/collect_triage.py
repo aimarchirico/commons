@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """Script for surveying open PRs and backlog issues relevant to the user."""
 
+import importlib.util
 import json
-import shutil
 import subprocess
 import sys
 from collections.abc import Callable
+from pathlib import Path
+from types import ModuleType
 from typing import Any
 
 from backlog_utils import fetch_backlog_issues
@@ -14,93 +16,43 @@ from review_state import fetch_review_state
 SINGLE_MATCH = 1
 
 
+def _load_project_preflight() -> ModuleType:
+    shared_dir = Path(__file__).resolve().parent.parent.parent.parent / "shared"
+    module_path = shared_dir / "project_preflight.py"
+    spec = importlib.util.spec_from_file_location("project_preflight", module_path)
+    if spec is None or spec.loader is None:
+        msg = f"Cannot load project_preflight from {module_path}"
+        raise ImportError(msg)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+project_preflight = _load_project_preflight()
+run_project_preflight = project_preflight.run_project_preflight
+
+
 def _run_cmd(args: list[str]) -> str:
     result = subprocess.run(
-        args, capture_output=True, text=True, encoding="utf-8", check=True,
+        args,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        check=True,
     )
     return result.stdout.strip()
 
 
-def _check_dependencies() -> None:
-    gh_bin = shutil.which("gh")
-    if not gh_bin:
-        sys.stderr.write(
-            "Error: GitHub CLI (gh) is not installed or not in PATH.\n",
-        )
-        sys.exit(1)
-
-    try:
-        subprocess.run([gh_bin, "auth", "status"], capture_output=True, check=True)
-    except subprocess.CalledProcessError:
-        sys.stderr.write(
-            "Error: GitHub CLI is not authenticated. "
-            "Please run 'gh auth login' first.\n",
-        )
-        sys.exit(1)
-
-
 def _graphql(
-    run_cmd: Callable[[list[str]], str], query: str, **variables: str | int,
+    run_cmd: Callable[[list[str]], str],
+    query: str,
+    **variables: str | int,
 ) -> dict[str, Any]:
     args = ["gh", "api", "graphql"]
     for key, value in variables.items():
         args += ["-F" if isinstance(value, int) else "-f", f"{key}={value}"]
     args += ["-f", f"query={query}"]
     return dict(json.loads(run_cmd(args)))
-
-
-def _get_repo_context(run_cmd: Callable[[list[str]], str]) -> tuple[str, str]:
-    repo_output = run_cmd(["gh", "repo", "view", "--json", "owner,name"])
-    repo_data = json.loads(repo_output)
-    return str(repo_data["owner"]["login"]), str(repo_data["name"])
-
-
-def _title_case_repo_name(repo_name: str) -> str:
-    words = repo_name.replace("_", "-").split("-")
-    return " ".join(word.capitalize() for word in words if word)
-
-
-def _get_linked_project(
-    run_cmd: Callable[[list[str]], str], owner: str, repo_name: str,
-) -> tuple[str, int]:
-    query = (
-        "query($owner: String!, $name: String!) {"
-        " repository(owner: $owner, name: $name) { projectsV2(first: 10) {"
-        " nodes { number title closed"
-        " owner { ... on User { login } ... on Organization { login } } } } } }"
-    )
-    api_data = _graphql(run_cmd, query, owner=owner, name=repo_name)
-    nodes = (
-        api_data.get("data", {}).get("repository", {})
-        .get("projectsV2", {}).get("nodes", [])
-    )
-    open_projects = [p for p in nodes if not p.get("closed", False)]
-
-    if not open_projects:
-        sys.stderr.write(
-            f"Error: No open GitHub Project linked to '{owner}/{repo_name}'.\n",
-        )
-        sys.exit(1)
-    if len(open_projects) > SINGLE_MATCH:
-        expected_title = _title_case_repo_name(repo_name)
-        matches = [p for p in open_projects if p.get("title") == expected_title]
-        if len(matches) != SINGLE_MATCH:
-            project_list = "\n".join(
-                f"  - {p.get('title')} (number: {p['number']})"
-                for p in open_projects
-            )
-            sys.stderr.write(
-                f"Error: Multiple open GitHub Projects linked to "
-                f"'{owner}/{repo_name}', and none (or more than one) is titled "
-                f"'{expected_title}' to disambiguate:\n{project_list}\n",
-            )
-            sys.exit(1)
-        open_projects = matches
-
-    project = open_projects[0]
-    project_owner = str(project["owner"]["login"])
-    project_number = int(project["number"])
-    return project_owner, project_number
 
 
 def _resolve_login(run_cmd: Callable[[list[str]], str]) -> str:
@@ -114,13 +66,20 @@ _PRS_TO_REVIEW_LABELS = {
 
 
 def _fetch_prs_to_review(
-    run_cmd: Callable[[list[str]], str], login: str,
+    run_cmd: Callable[[list[str]], str],
+    login: str,
 ) -> list[dict[str, Any]]:
-    output = run_cmd([
-        "gh", "pr", "list",
-        "--search", "is:open -author:@me draft:false",
-        "--json", "number,title,url,author,reviewRequests,reviewDecision",
-    ])
+    output = run_cmd(
+        [
+            "gh",
+            "pr",
+            "list",
+            "--search",
+            "is:open -author:@me draft:false",
+            "--json",
+            "number,title,url,author,reviewRequests,reviewDecision",
+        ],
+    )
     prs = json.loads(output)
 
     awaiting = []
@@ -155,22 +114,34 @@ _PR_STATE_LABELS = {
 }
 
 _THREAD_STATE_LABELS = {
-    "none": "None", "resolved": "Resolved", "unresolved": "Unresolved",
+    "none": "None",
+    "resolved": "Resolved",
+    "unresolved": "Unresolved",
 }
 
 _CHECKS_STATE_LABELS = {
-    "none": "None", "passing": "Passing", "pending": "Pending", "failing": "Failing",
+    "none": "None",
+    "passing": "Passing",
+    "pending": "Pending",
+    "failing": "Failing",
 }
 
 _CONFLICTING_LABELS = {True: "Yes", False: "No"}
 
 
 def _bucket_for(
-    state: str, threads: str, comments: str, *, conflicting: bool, checks: str,
+    state: str,
+    threads: str,
+    comments: str,
+    *,
+    conflicting: bool,
+    checks: str,
 ) -> str:
     needs_resolve = (
-        threads == "unresolved" or comments == "unresolved"
-        or conflicting or checks == "failing"
+        threads == "unresolved"
+        or comments == "unresolved"
+        or conflicting
+        or checks == "failing"
     )
     if needs_resolve:
         return "resolve_then_merge" if state == "approved" else "resolve"
@@ -200,13 +171,21 @@ def _linked_issue_for(pr: dict[str, Any]) -> dict[str, Any] | None:
 
 
 def _fetch_open_and_draft_prs(
-    run_cmd: Callable[[list[str]], str], owner: str, repo_name: str,
+    run_cmd: Callable[[list[str]], str],
+    owner: str,
+    repo_name: str,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
-    output = run_cmd([
-        "gh", "pr", "list",
-        "--search", "is:open author:@me",
-        "--json", "number,title,url,isDraft,closingIssuesReferences",
-    ])
+    output = run_cmd(
+        [
+            "gh",
+            "pr",
+            "list",
+            "--search",
+            "is:open author:@me",
+            "--json",
+            "number,title,url,isDraft,closingIssuesReferences",
+        ],
+    )
     prs = json.loads(output)
 
     your_open_prs = []
@@ -214,34 +193,43 @@ def _fetch_open_and_draft_prs(
     your_draft_prs = []
     for pr in prs:
         if bool(pr.get("isDraft")):
-            your_draft_prs.append({
-                "number": pr["number"],
-                "title": pr["title"],
-                "url": pr["url"],
-                "linked_issue": _linked_issue_for(pr),
-            })
+            your_draft_prs.append(
+                {
+                    "number": pr["number"],
+                    "title": pr["title"],
+                    "url": pr["url"],
+                    "linked_issue": _linked_issue_for(pr),
+                },
+            )
             continue
 
         review_state = fetch_review_state(
             lambda query, **variables: _graphql(run_cmd, query, **variables),
-            owner, repo_name, pr["number"],
+            owner,
+            repo_name,
+            pr["number"],
         )
         bucket = _bucket_for(
-            review_state["state"], review_state["threads"], review_state["comments"],
-            conflicting=review_state["conflicting"], checks=review_state["checks"],
+            review_state["state"],
+            review_state["threads"],
+            review_state["comments"],
+            conflicting=review_state["conflicting"],
+            checks=review_state["checks"],
         )
 
-        your_open_prs.append({
-            "number": pr["number"],
-            "title": pr["title"],
-            "url": pr["url"],
-            "state": _PR_STATE_LABELS[review_state["state"]],
-            "threads": _THREAD_STATE_LABELS[review_state["threads"]],
-            "comments": _THREAD_STATE_LABELS[review_state["comments"]],
-            "conflicting": _CONFLICTING_LABELS[review_state["conflicting"]],
-            "checks": _CHECKS_STATE_LABELS[review_state["checks"]],
-            "suggestion": _suggestion_for(bucket, pr["number"]),
-        })
+        your_open_prs.append(
+            {
+                "number": pr["number"],
+                "title": pr["title"],
+                "url": pr["url"],
+                "state": _PR_STATE_LABELS[review_state["state"]],
+                "threads": _THREAD_STATE_LABELS[review_state["threads"]],
+                "comments": _THREAD_STATE_LABELS[review_state["comments"]],
+                "conflicting": _CONFLICTING_LABELS[review_state["conflicting"]],
+                "checks": _CHECKS_STATE_LABELS[review_state["checks"]],
+                "suggestion": _suggestion_for(bucket, pr["number"]),
+            },
+        )
         ranks.append(_YOUR_PR_BUCKET_ORDER.index(bucket))
 
     order = sorted(range(len(your_open_prs)), key=lambda i: ranks[i])
@@ -250,23 +238,34 @@ def _fetch_open_and_draft_prs(
 
 def main() -> None:
     """Main entry point for printing the triage survey as JSON."""
-    _check_dependencies()
+    preflight = run_project_preflight(_run_cmd, require_fields=False)
+    owner = preflight["owner"]
+    repo_name = preflight["repo_name"]
+    project_number = preflight["project_number"]
+    project_owner = preflight["project_owner"]
 
     try:
-        owner, repo_name = _get_repo_context(_run_cmd)
-        project_owner, project_number = _get_linked_project(_run_cmd, owner, repo_name)
         login = _resolve_login(_run_cmd)
         your_open_prs, your_draft_prs = _fetch_open_and_draft_prs(
-            _run_cmd, owner, repo_name,
+            _run_cmd,
+            owner,
+            repo_name,
+        )
+        backlog_data = fetch_backlog_issues(
+            _run_cmd,
+            (owner, repo_name),
+            project_owner,
+            project_number,
+            login,
         )
 
         result = {
             "prs_to_review": _fetch_prs_to_review(_run_cmd, login),
             "your_open_prs": your_open_prs,
             "your_draft_prs": your_draft_prs,
-            "backlog_issues": fetch_backlog_issues(
-                _run_cmd, project_owner, project_number, login,
-            ),
+            "backlog_issues": backlog_data["backlog_issues"],
+            "assigned_to_others_count": backlog_data["assigned_to_others_count"],
+            "fully_blocked_count": backlog_data["fully_blocked_count"],
         }
     except (subprocess.CalledProcessError, json.JSONDecodeError, KeyError) as e:
         sys.stderr.write(f"Error: Failed to collect triage data. {e}\n")

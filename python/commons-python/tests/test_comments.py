@@ -17,7 +17,8 @@ def test_public_docstring_passes(tmp_path: Path) -> None:
 
 
 def test_non_public_docstring_fails(
-    tmp_path: Path, capsys: pytest.CaptureFixture[str],
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
 ) -> None:
     """A docstring on a non-public function is rejected."""
     file = tmp_path / "mod.py"
@@ -31,7 +32,8 @@ def test_non_public_docstring_fails(
 
 
 def test_orphaned_string_literal_fails(
-    tmp_path: Path, capsys: pytest.CaptureFixture[str],
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
 ) -> None:
     """A bare string expression with no owning declaration is rejected."""
     file = tmp_path / "mod.py"
@@ -46,7 +48,8 @@ def test_orphaned_string_literal_fails(
 
 
 def test_hash_comment_fails(
-    tmp_path: Path, capsys: pytest.CaptureFixture[str],
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
 ) -> None:
     """A plain ``#`` comment is rejected."""
     file = tmp_path / "mod.py"
@@ -74,7 +77,8 @@ def test_syntax_error_file_is_skipped(tmp_path: Path) -> None:
 
 
 def test_unreadable_file_is_skipped(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """A file that cannot be read (OSError) is skipped rather than raising."""
     file = tmp_path / "mod.py"

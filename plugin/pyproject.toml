@@ -3,7 +3,7 @@ name = "plugin"
 version = "1.0.0"
 requires-python = ">=3.13"
 dependencies = [
-  "commons-python",
+  "commons-python>=1.0.1",
 ]
 
 [tool.uv]

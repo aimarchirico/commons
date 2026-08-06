@@ -13,19 +13,32 @@ _CHECKS_OUTPUT = json.dumps([])
 
 
 def _pr_response(
-    *, comments: list[dict[str, object]], reviews: list[dict[str, object]],
+    *,
+    comments: list[dict[str, object]],
+    reviews: list[dict[str, object]],
     threads: list[dict[str, object]],
 ) -> str:
-    return json.dumps({"data": {"repository": {"pullRequest": {
-        "comments": {"nodes": comments},
-        "reviews": {"nodes": reviews},
-        "reviewThreads": {"nodes": threads},
-    }}}})
+    return json.dumps(
+        {
+            "data": {
+                "repository": {
+                    "pullRequest": {
+                        "comments": {"nodes": comments},
+                        "reviews": {"nodes": reviews},
+                        "reviewThreads": {"nodes": threads},
+                    },
+                },
+            },
+        },
+    )
 
 
 def _dispatch(
-    args: list[str], graphql_response: str,
-    *, mergeable: str = _MERGEABLE_OUTPUT, checks: str = _CHECKS_OUTPUT,
+    args: list[str],
+    graphql_response: str,
+    *,
+    mergeable: str = _MERGEABLE_OUTPUT,
+    checks: str = _CHECKS_OUTPUT,
 ) -> str:
     if args[:3] == ["gh", "repo", "view"]:
         return _REPO_OUTPUT
@@ -38,26 +51,36 @@ def _dispatch(
 
 def test_fetch_pr_problems_collects_comments_and_bodied_reviews() -> None:
     """Comments include issue comments and reviews with a body, since createdAt."""
+
     def fake_run_cmd(args: list[str]) -> str:
-        return _dispatch(args, _pr_response(
-            comments=[
-                {
-                    "databaseId": 1, "body": "hi", "author": {"login": "bob"},
-                    "createdAt": "2024-01-01T00:00:00Z",
-                },
-            ],
-            reviews=[
-                {
-                    "databaseId": 2, "body": "LGTM", "author": {"login": "carol"},
-                    "createdAt": "2024-01-02T00:00:00Z",
-                },
-                {
-                    "databaseId": 3, "body": "", "author": {"login": "dave"},
-                    "createdAt": "2024-01-03T00:00:00Z",
-                },
-            ],
-            threads=[],
-        ))
+        return _dispatch(
+            args,
+            _pr_response(
+                comments=[
+                    {
+                        "databaseId": 1,
+                        "body": "hi",
+                        "author": {"login": "bob"},
+                        "createdAt": "2024-01-01T00:00:00Z",
+                    },
+                ],
+                reviews=[
+                    {
+                        "databaseId": 2,
+                        "body": "LGTM",
+                        "author": {"login": "carol"},
+                        "createdAt": "2024-01-02T00:00:00Z",
+                    },
+                    {
+                        "databaseId": 3,
+                        "body": "",
+                        "author": {"login": "dave"},
+                        "createdAt": "2024-01-03T00:00:00Z",
+                    },
+                ],
+                threads=[],
+            ),
+        )
 
     result = frf.fetch_pr_problems(fake_run_cmd, "42")
 
@@ -69,25 +92,35 @@ def test_fetch_pr_problems_collects_comments_and_bodied_reviews() -> None:
 
 def test_fetch_pr_problems_drops_comments_before_the_checkpoint() -> None:
     """Only comments after the last Resolved. checkpoint are returned."""
+
     def fake_run_cmd(args: list[str]) -> str:
-        return _dispatch(args, _pr_response(
-            comments=[
-                {
-                    "databaseId": 1, "body": "Please fix this.",
-                    "author": {"login": "bob"}, "createdAt": "2024-01-01T00:00:00Z",
-                },
-                {
-                    "databaseId": 2, "body": "Resolved. Fixed it.",
-                    "author": {"login": "carol"}, "createdAt": "2024-01-02T00:00:00Z",
-                },
-                {
-                    "databaseId": 3, "body": "One more thing.",
-                    "author": {"login": "bob"}, "createdAt": "2024-01-03T00:00:00Z",
-                },
-            ],
-            reviews=[],
-            threads=[],
-        ))
+        return _dispatch(
+            args,
+            _pr_response(
+                comments=[
+                    {
+                        "databaseId": 1,
+                        "body": "Please fix this.",
+                        "author": {"login": "bob"},
+                        "createdAt": "2024-01-01T00:00:00Z",
+                    },
+                    {
+                        "databaseId": 2,
+                        "body": "Resolved. Fixed it.",
+                        "author": {"login": "carol"},
+                        "createdAt": "2024-01-02T00:00:00Z",
+                    },
+                    {
+                        "databaseId": 3,
+                        "body": "One more thing.",
+                        "author": {"login": "bob"},
+                        "createdAt": "2024-01-03T00:00:00Z",
+                    },
+                ],
+                reviews=[],
+                threads=[],
+            ),
+        )
 
     result = frf.fetch_pr_problems(fake_run_cmd, "42")
 
@@ -98,41 +131,62 @@ def test_fetch_pr_problems_drops_comments_before_the_checkpoint() -> None:
 
 def test_fetch_pr_problems_drops_resolved_threads() -> None:
     """Only unresolved review threads are included, with their comments."""
+
     def fake_run_cmd(args: list[str]) -> str:
-        return _dispatch(args, _pr_response(
-            comments=[], reviews=[],
-            threads=[
-                {
-                    "id": "t1", "isResolved": True, "path": "a.py", "line": 1,
-                    "comments": {"nodes": []},
-                },
-                {
-                    "id": "t2", "isResolved": False, "path": "b.py", "line": 2,
-                    "comments": {"nodes": [
-                        {"databaseId": 9, "body": "fix this", "author": None},
-                    ]},
-                },
-            ],
-        ))
+        return _dispatch(
+            args,
+            _pr_response(
+                comments=[],
+                reviews=[],
+                threads=[
+                    {
+                        "id": "t1",
+                        "isResolved": True,
+                        "path": "a.py",
+                        "line": 1,
+                        "comments": {"nodes": []},
+                    },
+                    {
+                        "id": "t2",
+                        "isResolved": False,
+                        "path": "b.py",
+                        "line": 2,
+                        "comments": {
+                            "nodes": [
+                                {"databaseId": 9, "body": "fix this", "author": None},
+                            ],
+                        },
+                    },
+                ],
+            ),
+        )
 
     result = frf.fetch_pr_problems(fake_run_cmd, "42")
 
-    assert result["threads"] == [{
-        "thread_id": "t2", "path": "b.py", "line": 2,
-        "comments": [{"id": 9, "body": "fix this", "author": None}],
-    }]
+    assert result["threads"] == [
+        {
+            "thread_id": "t2",
+            "path": "b.py",
+            "line": 2,
+            "comments": [{"id": 9, "body": "fix this", "author": None}],
+        },
+    ]
 
 
 def test_fetch_pr_problems_reports_conflicting_and_failing_checks() -> None:
     """Conflicting mergeable state and failing checks are surfaced."""
+
     def fake_run_cmd(args: list[str]) -> str:
         return _dispatch(
-            args, _pr_response(comments=[], reviews=[], threads=[]),
+            args,
+            _pr_response(comments=[], reviews=[], threads=[]),
             mergeable=json.dumps({"mergeable": "CONFLICTING"}),
-            checks=json.dumps([
-                {"name": "lint", "bucket": "fail", "link": "https://x/lint"},
-                {"name": "tests", "bucket": "pass", "link": "https://x/tests"},
-            ]),
+            checks=json.dumps(
+                [
+                    {"name": "lint", "bucket": "fail", "link": "https://x/lint"},
+                    {"name": "tests", "bucket": "pass", "link": "https://x/tests"},
+                ],
+            ),
         )
 
     result = frf.fetch_pr_problems(fake_run_cmd, "42")
@@ -143,6 +197,7 @@ def test_fetch_pr_problems_reports_conflicting_and_failing_checks() -> None:
 
 def test_fetch_pr_problems_treats_missing_checks_as_none_failing() -> None:
     """If `gh pr checks` errors (e.g. no checks configured), default to none."""
+
     def fake_run_cmd(args: list[str]) -> str:
         if args[:3] == ["gh", "pr", "checks"]:
             raise subprocess.CalledProcessError(1, args)
@@ -164,18 +219,33 @@ def test_main_exits_when_pr_number_missing(monkeypatch: pytest.MonkeyPatch) -> N
 def test_main_exits_when_gh_is_not_installed(monkeypatch: pytest.MonkeyPatch) -> None:
     """main() fails fast when the gh CLI isn't on PATH."""
     monkeypatch.setattr(sys, "argv", ["fetch_pr_problems", "42"])
-    monkeypatch.setattr(frf.shutil, "which", lambda _name: None)
+    monkeypatch.setattr(frf.project_preflight.shutil, "which", lambda _name: None)
 
     with pytest.raises(SystemExit):
         frf.main()
 
 
-def test_main_prints_feedback_as_json(
-    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str],
+def test_main_outputs_json(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
 ) -> None:
-    """main() prints the collected feedback as indented JSON."""
+    """main() prints problem state as JSON to stdout."""
     monkeypatch.setattr(sys, "argv", ["fetch_pr_problems", "42"])
-    monkeypatch.setattr(frf.shutil, "which", lambda _name: "/usr/bin/gh")
+    monkeypatch.setattr(frf.project_preflight.shutil, "which", lambda _name: None)
+
+    with pytest.raises(SystemExit):
+        frf.main()
+
+    monkeypatch.setattr(
+        frf.project_preflight.shutil,
+        "which",
+        lambda _name: "/usr/bin/gh",
+    )
+    monkeypatch.setattr(
+        frf.project_preflight.subprocess,
+        "run",
+        lambda *_a, **_k: None,
+    )
 
     def fake_run_cmd(args: list[str]) -> str:
         return _dispatch(args, _pr_response(comments=[], reviews=[], threads=[]))
@@ -184,16 +254,28 @@ def test_main_prints_feedback_as_json(
 
     frf.main()
 
-    printed = json.loads(capsys.readouterr().out)
-    assert printed == {
-        "threads": [], "comments": [], "conflicting": False, "failing_checks": [],
+    res = json.loads(capsys.readouterr().out)
+    assert res == {
+        "threads": [],
+        "comments": [],
+        "conflicting": False,
+        "failing_checks": [],
     }
 
 
-def test_main_exits_when_gh_command_fails(monkeypatch: pytest.MonkeyPatch) -> None:
-    """main() exits cleanly when the underlying gh call fails."""
+def test_main_exits_when_command_fails(monkeypatch: pytest.MonkeyPatch) -> None:
+    """main() exits with code 1 when gh pr view fails."""
     monkeypatch.setattr(sys, "argv", ["fetch_pr_problems", "42"])
-    monkeypatch.setattr(frf.shutil, "which", lambda _name: "/usr/bin/gh")
+    monkeypatch.setattr(
+        frf.project_preflight.shutil,
+        "which",
+        lambda _name: "/usr/bin/gh",
+    )
+    monkeypatch.setattr(
+        frf.project_preflight.subprocess,
+        "run",
+        lambda *_a, **_k: None,
+    )
 
     def fake_run_cmd(args: list[str]) -> str:
         raise subprocess.CalledProcessError(1, args)

@@ -14,7 +14,10 @@ from commons_python import comments, line_length
 
 
 def _run_wrapped(
-    binary: str, config_flag: str, asset_name: str, args: list[str],
+    binary: str,
+    config_flag: str,
+    asset_name: str,
+    args: list[str],
 ) -> int:
     asset = importlib.resources.files("commons_python.assets") / asset_name
     with importlib.resources.as_file(asset) as config_path:

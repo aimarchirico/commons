@@ -78,27 +78,33 @@ def fetch_review_state(
 
     latest_review_nodes = pr.get("latestReview", {}).get("nodes", [])
     state = (
-        "no_reviews" if not latest_review_nodes
+        "no_reviews"
+        if not latest_review_nodes
         else _REVIEW_STATE_MAP.get(latest_review_nodes[0]["state"], "no_reviews")
     )
 
     thread_nodes = pr.get("reviewThreads", {}).get("nodes", [])
     threads = (
-        "none" if not thread_nodes
-        else "unresolved" if unresolved_threads(thread_nodes)
+        "none"
+        if not thread_nodes
+        else "unresolved"
+        if unresolved_threads(thread_nodes)
         else "resolved"
     )
 
     all_comments = [
-        c for c in (
+        c
+        for c in (
             pr.get("comments", {}).get("nodes", [])
             + pr.get("allReviews", {}).get("nodes", [])
         )
         if c.get("body")
     ]
     comments = (
-        "none" if not all_comments
-        else "unresolved" if comments_since_checkpoint(all_comments)
+        "none"
+        if not all_comments
+        else "unresolved"
+        if comments_since_checkpoint(all_comments)
         else "resolved"
     )
 
@@ -107,11 +113,15 @@ def fetch_review_state(
     commit_nodes = pr.get("commits", {}).get("nodes", [])
     rollup = (
         (commit_nodes[0]["commit"].get("statusCheckRollup") or {}).get("state")
-        if commit_nodes else None
+        if commit_nodes
+        else None
     )
     checks = "none" if rollup is None else _CHECKS_STATE_MAP.get(rollup, "none")
 
     return {
-        "state": state, "threads": threads, "comments": comments,
-        "conflicting": conflicting, "checks": checks,
+        "state": state,
+        "threads": threads,
+        "comments": comments,
+        "conflicting": conflicting,
+        "checks": checks,
     }

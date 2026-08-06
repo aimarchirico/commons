@@ -3,7 +3,6 @@
 
 import importlib.util
 import json
-import shutil
 import subprocess
 import sys
 from collections.abc import Callable
@@ -33,17 +32,30 @@ MIN_ARG_COUNT = 2
 
 def _run_cmd(args: list[str]) -> str:
     result = subprocess.run(
-        args, capture_output=True, text=True, encoding="utf-8", check=True,
+        args,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        check=True,
     )
     return result.stdout.strip()
 
 
-def _check_dependencies() -> None:
-    if not shutil.which("gh"):
-        sys.stderr.write(
-            "Error: GitHub CLI (gh) is not installed or not in PATH.\n",
-        )
-        sys.exit(1)
+def _load_project_preflight() -> ModuleType:
+    shared_dir = Path(__file__).resolve().parent.parent.parent.parent / "shared"
+    module_path = shared_dir / "project_preflight.py"
+    spec = importlib.util.spec_from_file_location("project_preflight", module_path)
+    if spec is None or spec.loader is None:
+        msg = f"Cannot load project_preflight from {module_path}"
+        raise ImportError(msg)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+_project_preflight = _load_project_preflight()
+project_preflight = _project_preflight
+check_cli_dependencies = _project_preflight.check_cli_dependencies
 
 
 def _fetch_conflicting(run_cmd: Callable[[list[str]], str], pr_number: str) -> bool:
@@ -52,12 +64,20 @@ def _fetch_conflicting(run_cmd: Callable[[list[str]], str], pr_number: str) -> b
 
 
 def _fetch_failing_checks(
-    run_cmd: Callable[[list[str]], str], pr_number: str,
+    run_cmd: Callable[[list[str]], str],
+    pr_number: str,
 ) -> list[dict[str, str]]:
     try:
-        output = run_cmd([
-            "gh", "pr", "checks", pr_number, "--json", "name,bucket,link",
-        ])
+        output = run_cmd(
+            [
+                "gh",
+                "pr",
+                "checks",
+                pr_number,
+                "--json",
+                "name,bucket,link",
+            ],
+        )
     except subprocess.CalledProcessError:
         return []
     checks = json.loads(output) if output else []
@@ -69,7 +89,8 @@ def _fetch_failing_checks(
 
 
 def fetch_pr_problems(
-    run_cmd: Callable[[list[str]], str], pr_number: str,
+    run_cmd: Callable[[list[str]], str],
+    pr_number: str,
 ) -> dict[str, Any]:
     """Fetch everything blocking a PR from being merged.
 
@@ -108,13 +129,21 @@ def fetch_pr_problems(
       }
     }
     """
-    api_output = run_cmd([
-        "gh", "api", "graphql",
-        "-f", f"owner={owner}",
-        "-f", f"repo={repo_name}",
-        "-F", f"number={pr_number}",
-        "-f", f"query={query}",
-    ])
+    api_output = run_cmd(
+        [
+            "gh",
+            "api",
+            "graphql",
+            "-f",
+            f"owner={owner}",
+            "-f",
+            f"repo={repo_name}",
+            "-F",
+            f"number={pr_number}",
+            "-f",
+            f"query={query}",
+        ],
+    )
     api_data = json.loads(api_output)
     pr = api_data.get("data", {}).get("repository", {}).get("pullRequest") or {}
 
@@ -176,7 +205,7 @@ def main() -> None:
 
     pr_number = sys.argv[1]
 
-    _check_dependencies()
+    check_cli_dependencies()
 
     try:
         problems = fetch_pr_problems(_run_cmd, pr_number)
