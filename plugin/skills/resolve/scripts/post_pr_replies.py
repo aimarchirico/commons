@@ -31,8 +31,8 @@ cli_utils = _cli_utils
 _run_cmd = _cli_utils.run_cmd
 check_cli_dependencies = _cli_utils.check_cli_dependencies
 
-_pr_reviews = _load_shared_module("pr_reviews")
-request_re_reviews = _pr_reviews.request_re_reviews
+from pr_reviews import request_re_reviews
+
 
 
 
