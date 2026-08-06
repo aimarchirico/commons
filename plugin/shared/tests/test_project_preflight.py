@@ -196,14 +196,15 @@ def test_validate_item_options_checks_used_values() -> None:
             "title": "A",
             "type": "Task",
             "priority": "P1",
-            "children": [{"title": "B", "type": "UnknownType", "priority": "P2"}],
+            "children": [{"title": "B", "type": "Subtask", "priority": "P2"}],
         },
     ]
     errors = pf.validate_item_options(items, fields_data)
     expected_errors = 2
     assert len(errors) == expected_errors
-    assert "Type value 'UnknownType'" in errors[0]
+    assert "Type value 'Subtask'" in errors[0]
     assert "Priority value 'P2'" in errors[1]
+
 
 
 def test_fetch_project_fields_returns_errors_on_command_failure() -> None:
@@ -277,3 +278,33 @@ def test_run_project_preflight_succeeds(
     assert res["owner"] == "acme"
     assert res["type_field_id"] == "F_TYPE"
     assert res["priority_field_id"] == "F_PRIO"
+
+
+def test_validate_issue_hierarchy_flags_loose_subtasks_and_invalid_nesting() -> None:
+    """Flags loose subtasks at top level and invalid parent-child nesting."""
+    items = [
+        {"title": "Loose Subtask", "type": "Subtask"},
+        {
+            "title": "Valid Epic",
+            "type": "Epic",
+            "children": [
+                {
+                    "title": "Valid Story",
+                    "type": "Story",
+                    "children": [{"title": "Sub", "type": "Subtask"}],
+                },
+                {"title": "Invalid Child", "type": "Subtask"},
+            ],
+        },
+        {
+            "title": "Valid Task",
+            "type": "Task",
+            "children": [{"title": "Invalid Story", "type": "Story"}],
+        },
+    ]
+    errors = pf.validate_issue_hierarchy(items)
+    assert len(errors) == 3
+    assert "Subtask 'Loose Subtask' cannot be a top-level issue" in errors[0]
+    assert "cannot be a child of 'Epic'" in errors[1]
+    assert "cannot be a child of 'Task'" in errors[2]
+
