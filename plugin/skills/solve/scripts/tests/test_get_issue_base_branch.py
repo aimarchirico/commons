@@ -107,7 +107,7 @@ def test_get_issue_base_branch_multiple_prs() -> None:
             "timelineItems": {
                 "nodes": [
                     {
-                        "source": {
+                        "subject": {
                             "number": 16,
                             "title": "Fix blocker 2",
                             "headRefName": "feature/blocker-2",
