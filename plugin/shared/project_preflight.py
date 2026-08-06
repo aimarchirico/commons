@@ -183,11 +183,63 @@ def fetch_project_fields(
     return type_field_id, priority_field_id, fields_data, errors
 
 
+ALLOWED_TOP_LEVEL_TYPES = {"Epic", "Story", "Task", "Bug"}
+ALLOWED_CHILD_TYPES = {
+    "Epic": {"Story", "Task", "Bug"},
+    "Story": {"Subtask"},
+    "Task": {"Subtask"},
+    "Bug": {"Subtask"},
+    "Subtask": set(),
+}
+
+
+def validate_issue_hierarchy(items: list[dict[str, Any]]) -> list[str]:
+    """Validate issue type hierarchy against Jira/CONTRIBUTING.md rules."""
+    errors: list[str] = []
+
+    def validate_node(item: dict[str, Any], parent_type: str | None) -> None:
+        title = item.get("title", "<untitled>")
+        item_type = item.get("type")
+
+        if parent_type is None:
+            if item_type == "Subtask":
+                errors.append(
+                    f"Subtask '{title}' cannot be a top-level issue without a parent.",
+                )
+            elif item_type and item_type not in ALLOWED_TOP_LEVEL_TYPES:
+                errors.append(
+                    f"Issue type '{item_type}' for '{title}' is not allowed at top level.",
+                )
+        else:
+            allowed = ALLOWED_CHILD_TYPES.get(parent_type, set())
+            if item_type and item_type not in allowed:
+                if parent_type == "Subtask":
+                    errors.append(
+                        f"Subtask '{parent_type}' cannot contain child issues ('{title}').",
+                    )
+                else:
+                    errors.append(
+                        f"Issue '{title}' of type '{item_type}' cannot be a child of '{parent_type}'. "
+                        f"Allowed child types for '{parent_type}': {sorted(allowed)}.",
+                    )
+
+        children = item.get("children", [])
+        for child in children:
+            validate_node(child, item_type)
+
+    for top_item in items:
+        validate_node(top_item, None)
+
+    return errors
+
+
 def validate_item_options(
     items: list[dict[str, Any]],
     fields_data: dict[str, Any],
 ) -> list[str]:
     """Validate that issue type and priority values in items match project options."""
+    errors: list[str] = validate_issue_hierarchy(items)
+
     types_used: set[str] = set()
     priorities_used: set[str] = set()
 
@@ -200,7 +252,6 @@ def validate_item_options(
             walk(item.get("children", []))
 
     walk(items)
-    errors: list[str] = []
 
     def check_options(field_name: str, values: set[str]) -> None:
         available = {
@@ -219,6 +270,7 @@ def validate_item_options(
     check_options("Type", types_used)
     check_options("Priority", priorities_used)
     return errors
+
 
 
 def run_project_preflight(

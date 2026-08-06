@@ -11,81 +11,32 @@ from types import ModuleType
 from typing import Any
 
 
-def _load_pr_feedback() -> ModuleType:
+def _load_shared_module(name: str) -> ModuleType:
     shared_dir = Path(__file__).resolve().parent.parent.parent.parent / "shared"
-    module_path = shared_dir / "pr_feedback.py"
-    spec = importlib.util.spec_from_file_location("pr_feedback", module_path)
+    module_path = shared_dir / f"{name}.py"
+    spec = importlib.util.spec_from_file_location(name, module_path)
     if spec is None or spec.loader is None:
-        msg = f"Cannot load pr_feedback from {module_path}"
+        msg = f"Cannot load {name} from {module_path}"
         raise ImportError(msg)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
 
 
-_pr_feedback = _load_pr_feedback()
+_cli_utils = _load_shared_module("cli_utils")
+cli_utils = _cli_utils
+_run_cmd = _cli_utils.run_cmd
+check_cli_dependencies = _cli_utils.check_cli_dependencies
+
+
+_pr_feedback = _load_shared_module("pr_feedback")
 comments_since_checkpoint = _pr_feedback.comments_since_checkpoint
 unresolved_threads = _pr_feedback.unresolved_threads
 
+from pr_problems_utils import fetch_conflicting, fetch_failing_checks
+
 MIN_ARG_COUNT = 2
 
-
-def _run_cmd(args: list[str]) -> str:
-    result = subprocess.run(
-        args,
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-        check=True,
-    )
-    return result.stdout.strip()
-
-
-def _load_project_preflight() -> ModuleType:
-    shared_dir = Path(__file__).resolve().parent.parent.parent.parent / "shared"
-    module_path = shared_dir / "project_preflight.py"
-    spec = importlib.util.spec_from_file_location("project_preflight", module_path)
-    if spec is None or spec.loader is None:
-        msg = f"Cannot load project_preflight from {module_path}"
-        raise ImportError(msg)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-
-_project_preflight = _load_project_preflight()
-project_preflight = _project_preflight
-check_cli_dependencies = _project_preflight.check_cli_dependencies
-
-
-def _fetch_conflicting(run_cmd: Callable[[list[str]], str], pr_number: str) -> bool:
-    output = run_cmd(["gh", "pr", "view", pr_number, "--json", "mergeable"])
-    return bool(json.loads(output)["mergeable"] == "CONFLICTING")
-
-
-def _fetch_failing_checks(
-    run_cmd: Callable[[list[str]], str],
-    pr_number: str,
-) -> list[dict[str, str]]:
-    try:
-        output = run_cmd(
-            [
-                "gh",
-                "pr",
-                "checks",
-                pr_number,
-                "--json",
-                "name,bucket,link",
-            ],
-        )
-    except subprocess.CalledProcessError:
-        return []
-    checks = json.loads(output) if output else []
-    return [
-        {"name": c["name"], "link": c["link"]}
-        for c in checks
-        if c.get("bucket") == "fail"
-    ]
 
 
 def fetch_pr_problems(
@@ -191,9 +142,10 @@ def fetch_pr_problems(
     return {
         "threads": open_threads,
         "comments": open_comments,
-        "conflicting": _fetch_conflicting(run_cmd, pr_number),
-        "failing_checks": _fetch_failing_checks(run_cmd, pr_number),
+        "conflicting": fetch_conflicting(run_cmd, pr_number),
+        "failing_checks": fetch_failing_checks(run_cmd, pr_number),
     }
+
 
 
 def main() -> None:
