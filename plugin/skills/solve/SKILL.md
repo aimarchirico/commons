@@ -19,33 +19,59 @@ argument-hint: "--issue <issue-id> [--draft] [--auto] [--skip-check]"
 
 1. Extract `<issue-id>` from the `--issue` flag in `$ARGUMENTS`. Prompt the
    user if it was not provided.
-2. Execute `gh issue view <issue-id> --json title,body` to fetch the issue's
-   title and body, then fetch its Type field by running
-   `python3 "${CLAUDE_PLUGIN_ROOT}/skills/solve/scripts/get_issue_type.py" <issue-id>`.
-3. Execute `gh issue edit <issue-id> --add-assignee @me` to assign the issue
-   to the current user.
-4. Determine `<branch-name>` following the naming rules in
-   `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md`, then execute
-   `git fetch origin` and `git worktree add -b <branch-name> <worktree-path>
-   origin/main` to create the branch off the up-to-date remote `main`, in
-   an isolated worktree, where `<worktree-path>` is `../<branch-name>` (a
-   sibling of the repository root).
-5. Delegate to the `implementation-planner` agent, passing the issue's title,
+2. Fetch the issue details and assign it:
+
+   ```bash
+   gh issue view <issue-id> --json title,body
+   python3 "${CLAUDE_PLUGIN_ROOT}/skills/solve/scripts/get_issue_type.py" <issue-id>
+   gh issue edit <issue-id> --add-assignee @me
+   ```
+
+   This retrieves the title, body, and linked project Type field, and assigns
+   the issue to the current user.
+3. Determine `<branch-name>` following the naming rules in
+   `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md`, resolve `<base-branch>`,
+   and set up the worktree:
+
+   ```bash
+   python3 "${CLAUDE_PLUGIN_ROOT}/skills/solve/scripts/get_issue_base_branch.py" <issue-id>
+   git fetch origin
+   git worktree add -b <branch-name> <worktree-path> origin/<base-branch>
+   ```
+
+   If the script reports multiple candidate branches (because the issue is
+   blocked by multiple open PRs), prompt the user to choose which base branch
+   to stack on or use the default branch.
+   This creates the branch off the up-to-date remote base branch in an isolated
+   worktree, where `<worktree-path>` is `../<branch-name>` (a sibling of the
+   repository root).
+4. Delegate to the `implementation-planner` agent, passing the issue's title,
    body, type, and `<worktree-path>`, to draft an implementation plan.
-6. Present the drafted plan, and wait for explicit user approval. Skip this
+5. Present the drafted plan, and wait for explicit user approval. Skip this
    step if the `--auto` flag is set, and proceed directly with the drafted
    plan.
-7. Delegate to the `worktree-runner` agent, passing the approved plan,
+6. Delegate to the `worktree-runner` agent, passing the approved plan,
    `<worktree-path>`, and whether `--skip-check` was set, to implement it
    (it invokes `commons:commit` and `commons:docs` itself as it goes).
-8. Execute `git push -u origin <branch-name>` to push the commits to the remote
-   repository.
-9. Invoke the `commons:pr` skill to open a pull request (its own title/body
-   approval is the final review). Pass the `--draft` and `--auto` flags
-   through if they were provided by the user.
-10. Execute `git worktree remove <worktree-path>` to remove the isolated
-    worktree; `<branch-name>` and its commits remain intact in the repository
-    and on the remote.
+7. Push commits and open the pull request:
+
+   ```bash
+   git push -u origin <branch-name>
+   ```
+
+   This pushes the commits to the remote repository. Next, invoke the
+   `commons:pr` skill to open a pull request (its own title/body approval is
+   the final review), passing `--base <base-branch>` (if `<base-branch>` is
+   set and differs from the default branch), along with `--draft` and `--auto`
+   flags if provided by the user.
+8. Remove the isolated worktree:
+
+   ```bash
+   git worktree remove <worktree-path>
+   ```
+
+   This cleans up the temporary worktree while preserving `<branch-name>` and
+   its commits in the repository and on the remote.
 
 ## Output
 

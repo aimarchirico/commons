@@ -56,9 +56,14 @@ argument-hint: "[--auto]"
    numbers after every issue in the batch has been created, then wires them
    up as native GitHub "blocked by" relationships.
 
-5. Execute
-   `python3 "${CLAUDE_PLUGIN_ROOT}/skills/issue/scripts/create_issues.py" issues.json`
-   (the script automatically deletes the temporary file upon completion).
+5. Create all issues in the hierarchy:
+
+   ```bash
+   python3 "${CLAUDE_PLUGIN_ROOT}/skills/issue/scripts/create_issues.py" issues.json
+   ```
+
+   This creates each item, wires native GitHub blocked-by relationships, and
+   automatically deletes the temporary file upon completion.
 
 ## Output
 
