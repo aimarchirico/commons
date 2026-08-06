@@ -61,7 +61,6 @@ _CHECKS_STATE_MAP = {
 }
 
 
-
 def fetch_review_state(
     graphql: Callable[..., dict[str, Any]],
     owner: str,
@@ -123,7 +122,6 @@ def fetch_review_state(
         else None
     )
     checks = STATE_NONE if rollup is None else _CHECKS_STATE_MAP.get(rollup, STATE_NONE)
-
 
     return {
         "state": state,

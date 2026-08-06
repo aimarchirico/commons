@@ -10,8 +10,11 @@ from pathlib import Path
 from types import ModuleType
 from typing import Any
 
+from pr_problems_utils import fetch_conflicting, fetch_failing_checks
+
 
 def _load_shared_module(name: str) -> ModuleType:
+
     shared_dir = Path(__file__).resolve().parent.parent.parent.parent / "shared"
     module_path = shared_dir / f"{name}.py"
     spec = importlib.util.spec_from_file_location(name, module_path)
@@ -33,10 +36,7 @@ _pr_feedback = _load_shared_module("pr_feedback")
 comments_since_checkpoint = _pr_feedback.comments_since_checkpoint
 unresolved_threads = _pr_feedback.unresolved_threads
 
-from pr_problems_utils import fetch_conflicting, fetch_failing_checks
-
 MIN_ARG_COUNT = 2
-
 
 
 def fetch_pr_problems(
@@ -145,7 +145,6 @@ def fetch_pr_problems(
         "conflicting": fetch_conflicting(run_cmd, pr_number),
         "failing_checks": fetch_failing_checks(run_cmd, pr_number),
     }
-
 
 
 def main() -> None:

@@ -11,6 +11,8 @@ from pathlib import Path
 from types import ModuleType
 from typing import Any
 
+from pr_reviews import request_re_reviews
+
 MIN_ARG_COUNT = 3
 
 
@@ -31,13 +33,8 @@ cli_utils = _cli_utils
 _run_cmd = _cli_utils.run_cmd
 check_cli_dependencies = _cli_utils.check_cli_dependencies
 
-from pr_reviews import request_re_reviews
-
-
-
-
-
 _RESOLVE_THREAD_MUTATION = """
+
 mutation($threadId: ID!) {
   resolveReviewThread(input: {threadId: $threadId}) { thread { id } }
 }
@@ -108,10 +105,6 @@ def post_replies(
                 {"body": render_conversation_reply(conversation_summary)},
             ),
         )
-
-
-
-
 
 
 def main() -> None:

@@ -10,7 +10,6 @@ scripts run as plain ``python3 script.py`` with no venv/dependency setup.
 
 from typing import Any
 
-
 RESOLVED_VERDICT_PREFIX = "Resolved."
 
 
@@ -44,4 +43,3 @@ def comments_since_checkpoint(comments: list[dict[str, Any]]) -> list[dict[str, 
     if checkpoint_index is None:
         return ordered
     return ordered[checkpoint_index + 1 :]
-

@@ -226,7 +226,8 @@ def test_fetch_backlog_issues_includes_issue_blocked_by_open_pr() -> None:
                                     "timelineItems": {
                                         "nodes": [
                                             {
-                                                "subject": {
+                                                "willCloseTarget": True,
+                                                "source": {
                                                     "number": 25,
                                                     "state": "OPEN",
                                                     "headRefName": "feature/auth-api",
@@ -254,7 +255,6 @@ def test_fetch_backlog_issues_includes_issue_blocked_by_open_pr() -> None:
     issues = result["backlog_issues"]
     assert issues[0]["blocked_by"] == "25"
     assert issues[0]["blocking"] == "0 issues"
-
 
 
 def test_fetch_backlog_issues_renders_null_priority_as_unset() -> None:

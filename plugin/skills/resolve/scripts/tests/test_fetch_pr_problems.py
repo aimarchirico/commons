@@ -277,7 +277,6 @@ def test_main_exits_when_command_fails(monkeypatch: pytest.MonkeyPatch) -> None:
         lambda *_a, **_k: None,
     )
 
-
     def fake_run_cmd(args: list[str]) -> str:
         raise subprocess.CalledProcessError(1, args)
 

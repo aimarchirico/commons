@@ -4,7 +4,6 @@
 import json
 import subprocess
 from collections.abc import Callable
-from typing import Any
 
 
 def fetch_conflicting(run_cmd: Callable[[list[str]], str], pr_number: str) -> bool:

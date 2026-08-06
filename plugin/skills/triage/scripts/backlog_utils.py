@@ -137,11 +137,10 @@ def fetch_backlog_issues(
                 assigned_stackable.append(entry)
             else:
                 assigned_ready.append(entry)
+        elif is_blocked:
+            available_stackable.append(entry)
         else:
-            if is_blocked:
-                available_stackable.append(entry)
-            else:
-                available_ready.append(entry)
+            available_ready.append(entry)
 
     def sort_key(issue: dict[str, Any]) -> tuple[int, int]:
         p_rank = PRIORITY_RANK.get(issue["priority"], 3)
@@ -161,7 +160,6 @@ def fetch_backlog_issues(
         ),
     )
 
-
     return {
         "backlog_issues": all_backlog,
         "assigned_ready": assigned_ready,
@@ -171,4 +169,3 @@ def fetch_backlog_issues(
         "assigned_to_others_count": assigned_to_others_count,
         "fully_blocked_count": fully_blocked_count,
     }
-

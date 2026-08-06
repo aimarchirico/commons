@@ -224,7 +224,6 @@ def test_main_exits_and_cleans_up_when_gh_command_fails(
         lambda *_a, **_k: None,
     )
 
-
     def fake_run_cmd(args: list[str], input_text: str | None = None) -> str:
         del input_text, args
         raise subprocess.CalledProcessError(1, ["gh"])

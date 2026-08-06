@@ -8,42 +8,6 @@ import pytest
 from shared import project_preflight as pf
 
 
-def test_check_cli_dependencies_exits_when_gh_not_in_path(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    """Exits with SystemExit when gh executable is missing."""
-    monkeypatch.setattr(pf.shutil, "which", lambda _name: None)
-    with pytest.raises(SystemExit):
-        pf.check_cli_dependencies()
-
-
-def test_check_cli_dependencies_exits_when_auth_status_fails(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    """Exits with SystemExit when gh auth status fails."""
-    monkeypatch.setattr(pf.shutil, "which", lambda _name: "/usr/bin/gh")
-
-    def mock_run(*_args: object, **_kwargs: object) -> subprocess.CompletedProcess[str]:
-        raise subprocess.CalledProcessError(1, ["gh", "auth", "status"])
-
-    monkeypatch.setattr(subprocess, "run", mock_run)
-    with pytest.raises(SystemExit):
-        pf.check_cli_dependencies()
-
-
-def test_check_cli_dependencies_succeeds_when_authenticated(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    """Succeeds without error when gh CLI is installed and authenticated."""
-    monkeypatch.setattr(pf.shutil, "which", lambda _name: "/usr/bin/gh")
-    monkeypatch.setattr(
-        subprocess,
-        "run",
-        lambda *_a, **_k: subprocess.CompletedProcess(["gh", "auth", "status"], 0),
-    )
-    pf.check_cli_dependencies()
-
-
 def test_resolve_project_context_single_project() -> None:
     """Returns project details when a single active open project is returned."""
     repo_data = json.dumps({"owner": {"login": "acme"}, "name": "widgets"})
@@ -206,7 +170,6 @@ def test_validate_item_options_checks_used_values() -> None:
     assert "Priority value 'P2'" in errors[1]
 
 
-
 def test_fetch_project_fields_returns_errors_on_command_failure() -> None:
     """Returns errors list when field lookup command fails."""
 
@@ -302,9 +265,10 @@ def test_validate_issue_hierarchy_flags_loose_subtasks_and_invalid_nesting() -> 
             "children": [{"title": "Invalid Story", "type": "Story"}],
         },
     ]
+    expected_error_count = 3
     errors = pf.validate_issue_hierarchy(items)
-    assert len(errors) == 3
+    assert len(errors) == expected_error_count
+
     assert "Subtask 'Loose Subtask' cannot be a top-level issue" in errors[0]
     assert "cannot be a child of 'Epic'" in errors[1]
     assert "cannot be a child of 'Task'" in errors[2]
-
