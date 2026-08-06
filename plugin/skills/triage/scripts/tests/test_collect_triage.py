@@ -113,7 +113,7 @@ def test_main_prints_empty_survey_when_nothing_is_open(
     result = json.loads(capsys.readouterr().out)
     assert result == {
         "prs_to_review": [], "your_open_prs": [], "your_draft_prs": [],
-        "backlog_issues": [],
+        "backlog_issues": [], "assigned_to_others_count": 0, "fully_blocked_count": 0,
     }
 
 
@@ -270,7 +270,7 @@ def test_main_disambiguates_multiple_projects_by_repo_name(
     result = json.loads(capsys.readouterr().out)
     assert result == {
         "prs_to_review": [], "your_open_prs": [], "your_draft_prs": [],
-        "backlog_issues": [],
+        "backlog_issues": [], "assigned_to_others_count": 0, "fully_blocked_count": 0,
     }
 
 

@@ -259,14 +259,17 @@ def main() -> None:
         your_open_prs, your_draft_prs = _fetch_open_and_draft_prs(
             _run_cmd, owner, repo_name,
         )
+        backlog_data = fetch_backlog_issues(
+            _run_cmd, (owner, repo_name), project_owner, project_number, login,
+        )
 
         result = {
             "prs_to_review": _fetch_prs_to_review(_run_cmd, login),
             "your_open_prs": your_open_prs,
             "your_draft_prs": your_draft_prs,
-            "backlog_issues": fetch_backlog_issues(
-                _run_cmd, project_owner, project_number, login,
-            ),
+            "backlog_issues": backlog_data["backlog_issues"],
+            "assigned_to_others_count": backlog_data["assigned_to_others_count"],
+            "fully_blocked_count": backlog_data["fully_blocked_count"],
         }
     except (subprocess.CalledProcessError, json.JSONDecodeError, KeyError) as e:
         sys.stderr.write(f"Error: Failed to collect triage data. {e}\n")

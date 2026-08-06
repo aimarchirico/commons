@@ -1,14 +1,33 @@
 #!/usr/bin/env python3
 """Script for resolving issue target base branch from GitHub blockedBy."""
 
+import importlib.util
 import json
 import shutil
 import subprocess
 import sys
 from collections.abc import Callable
+from pathlib import Path
+from types import ModuleType
 from typing import Any
 
 MIN_ARG_COUNT = 2
+
+
+def _load_blocking_prs() -> ModuleType:
+    shared_dir = Path(__file__).resolve().parent.parent.parent.parent / "shared"
+    module_path = shared_dir / "blocking_prs.py"
+    spec = importlib.util.spec_from_file_location("blocking_prs", module_path)
+    if spec is None or spec.loader is None:
+        msg = f"Cannot load blocking_prs from {module_path}"
+        raise ImportError(msg)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+_blocking_prs = _load_blocking_prs()
+fetch_issue_dependencies = _blocking_prs.fetch_issue_dependencies
 
 
 def _run_cmd(args: list[str]) -> str:
@@ -47,56 +66,12 @@ def get_issue_base_branch(
         repo_data.get("defaultBranchRef", {}).get("name") or "main"
     )
 
-    query = """
-    query($owner: String!, $repo: String!, $number: Int!) {
-      repository(owner: $owner, name: $repo) {
-        issue(number: $number) {
-          blockedBy(first: 10) {
-            nodes {
-              number
-              state
-              title
-              timelineItems(
-                first: 20
-                itemTypes: [CONNECTED_EVENT]
-              ) {
-                nodes {
-                  ... on ConnectedEvent {
-                    subject {
-                      ... on PullRequest {
-                        number
-                        title
-                        headRefName
-                        state
-                        isDraft
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    """
-
     try:
-        api_output = run_cmd([
-            "gh", "api", "graphql",
-            "-f", f"query={query}",
-            "-f", f"owner={owner}",
-            "-f", f"repo={repo_name}",
-            "-F", f"number={issue_id}",
-        ])
-        api_data = json.loads(api_output)
-        issue_data = (
-            api_data.get("data", {}).get("repository", {}).get("issue") or {}
-        )
-        blocked_by_nodes = issue_data.get("blockedBy", {}).get("nodes", [])
+        deps = fetch_issue_dependencies(run_cmd, owner, repo_name, int(issue_id))
     except (
         subprocess.CalledProcessError,
         json.JSONDecodeError,
+        ValueError,
         KeyError,
         AttributeError,
     ):
@@ -110,27 +85,17 @@ def get_issue_base_branch(
     open_pr_candidates = []
     seen_branches = set()
 
-    for blocking_node in blocked_by_nodes:
-        blocking_number = blocking_node.get("number")
-        timeline = blocking_node.get("timelineItems", {}).get("nodes", [])
-
-        for item in timeline:
-            pr = item.get("subject")
-            if not isinstance(pr, dict):
-                continue
-
-            pr_state = pr.get("state")
-            branch_name = pr.get("headRefName")
-
-            if pr_state == "OPEN" and branch_name and branch_name not in seen_branches:
-                seen_branches.add(branch_name)
-                open_pr_candidates.append({
-                    "issue_number": blocking_number,
-                    "pr_number": pr.get("number"),
-                    "pr_title": pr.get("title"),
-                    "branch_name": branch_name,
-                    "is_draft": pr.get("isDraft", False),
-                })
+    for item in deps.get("blocked_by", []):
+        pr = item.get("open_pr")
+        if pr and pr["branch_name"] not in seen_branches:
+            seen_branches.add(pr["branch_name"])
+            open_pr_candidates.append({
+                "issue_number": item["number"],
+                "pr_number": pr["number"],
+                "pr_title": pr["title"],
+                "branch_name": pr["branch_name"],
+                "is_draft": pr["is_draft"],
+            })
 
     if not open_pr_candidates:
         return {

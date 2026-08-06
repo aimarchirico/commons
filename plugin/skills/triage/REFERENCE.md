@@ -5,8 +5,13 @@ Start the output with a summary header:
 ```markdown
 ### Triage Survey: `<owner>/<repo>`
 * **User**: `@<login>`
-* **Status**: <count> active item(s) needing attention (items are priority-ranked by actionability below)
+* **Status**: <count> active item(s) needing attention [(<assigned_to_others_count> issue(s) assigned to others, and <fully_blocked_count> blocked issue(s) hidden)]
 ```
+
+If `assigned_to_others_count` or `fully_blocked_count` are greater than 0,
+include them in parenthetical notes after `<count> active item(s) needing
+attention` (joining non-zero items cleanly with ", and "). If both are 0, omit
+the parenthetical note entirely.
 
 Followed by a divider (`---`), then render up to four tables, but only if
 their source list is not empty, in this order, each pre-sorted by
@@ -52,6 +57,6 @@ issue to check completeness against, rather than guessing.
 
 ## Backlog issues (from `backlog_issues`)
 
-| Item                         | Assignee     | Priority     | Blocking     | Suggestion                                             |
-| :--------------------------- | :----------- | :----------- | :----------- | :----------------------------------------------------- |
-| `[#<number>](<url>) <title>` | `<assignee>` | `<priority>` | `<blocking>` | Solve the issue with `/commons:solve --issue <number>` |
+| Item                         | Assignee     | Priority     | Blocked By     | Blocking     | Suggestion                                             |
+| :--------------------------- | :----------- | :----------- | :------------- | :----------- | :----------------------------------------------------- |
+| `[#<number>](<url>) <title>` | `<assignee>` | `<priority>` | `<blocked_by>` | `<blocking>` | Solve the issue with `/commons:solve --issue <number>` |
