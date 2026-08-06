@@ -19,7 +19,14 @@ Every table's Item column is `[#<number>](<url>) <title>`, linking only the numb
 ---
 
 # Category 1: Actionable
-Work that is currently blocked by you or requires your immediate input to move forward. Ordered from closest to production to furthest.
+Work that is currently blocked by you or requires your immediate input to move forward. Ordered by unblocking teammates first, then pipeline completion.
+
+## Review Requests
+These PRs are authored by others and are waiting to be approved.
+
+| Item | Review | Priority | Blocking | Suggestion |
+| :--- | :----- | :------- | :------- | :--------- |
+| `[#<number>](<url>) <title>` | `<review>` | `<priority>` | `<blocking>` | Review the PR with `/commons:review --pr <number>` |
 
 ## Merge Ready
 These are your approved PRs targeting the default branch and they are ready to merge.
@@ -35,13 +42,6 @@ These are your PRs with blockers to resolve before merging.
 | :--- | :----------------- | :-------------- | :------- | :------- | :--------- |
 | `[#<number>](<url>) <title>` | `<technical_blockers>` | `<review_blockers>` | `<priority>` | `<blocking>` | Resolve problems with `/commons:resolve --pr <number>` |
 
-
-## Review Requests
-These PRs are authored by others and are waiting to be approved.
-
-| Item | Review | Priority | Blocking | Suggestion |
-| :--- | :----- | :------- | :------- | :--------- |
-| `[#<number>](<url>) <title>` | `<review>` | `<priority>` | `<blocking>` | Review the PR with `/commons:review --pr <number>` |
 
 ## Draft PRs
 These are your PRs currently marked as Draft.
