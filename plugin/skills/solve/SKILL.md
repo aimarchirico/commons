@@ -40,8 +40,8 @@ argument-hint: "--issue <issue-id> [--draft] [--auto] [--skip-check]"
    ```
 
    If the script reports multiple candidate branches (because the issue is
-   blocked by multiple open PRs), prompt the user to choose which base branch
-   to stack on or use the default branch.
+   blocked by multiple open PRs), prompt the user to select their desired base
+   branch from the candidate PR branches or the repository default branch.
    This creates the branch off the up-to-date remote base branch in an isolated
    worktree, where `<worktree-path>` is `../<branch-name>` (a sibling of the
    repository root).
