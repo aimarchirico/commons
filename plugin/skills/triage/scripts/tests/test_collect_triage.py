@@ -39,7 +39,9 @@ def _install_gh(
         return _fake_completed(responses[_normalize(args)])
 
     monkeypatch.setattr(subprocess, "run", fake_run)
-    monkeypatch.setattr(ct.shutil, "which", lambda _name: "/usr/bin/gh")
+    monkeypatch.setattr(
+        ct.project_preflight.shutil, "which", lambda _name: "/usr/bin/gh",
+    )
 
 
 def _base_responses(
@@ -287,7 +289,7 @@ def test_main_exits_when_no_open_project_is_linked(
 
 def test_main_exits_when_gh_is_not_installed(monkeypatch: pytest.MonkeyPatch) -> None:
     """main() fails fast when the gh CLI isn't on PATH."""
-    monkeypatch.setattr(ct.shutil, "which", lambda _name: None)
+    monkeypatch.setattr(ct.project_preflight.shutil, "which", lambda _name: None)
 
     with pytest.raises(SystemExit):
         ct.main()
