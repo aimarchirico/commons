@@ -40,9 +40,12 @@ def _format_blocked_by(
     formatted = []
     for idx, b in enumerate(blocked_by_items):
         pr = b.get("open_pr")
-        num = str(pr["number"]) if pr else str(b["number"])
-        prefix = "PR #" if idx == 0 else "#"
-        formatted.append(f"{prefix}{num}")
+        item = pr if pr else b
+        num = str(item["number"])
+        url = item.get("url")
+        link = f"[#{num}]({url})" if url else f"#{num}"
+        prefix = "PR " if idx == 0 else ""
+        formatted.append(f"{prefix}{link}")
     return ", ".join(formatted)
 
 
