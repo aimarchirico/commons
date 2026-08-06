@@ -39,9 +39,15 @@ argument-hint: "[--draft] [--auto]"
 6. Present the proposed PR Title and Body, and wait for explicit user approval.
    Skip this step if the `--auto` flag is set, and proceed directly with the
    drafted title and body.
-7. Execute `gh pr create --title "<title>" --body "<body>"`, passing `--draft`
-   if `--draft` was set, and `--base <base-branch>` if `--base` was set (or
-   defaulting to the repo's default branch fetched via `gh repo view --json defaultBranchRef`).
+7. Create the pull request:
+
+   ```bash
+   gh pr create --title "<title>" --body "<body>"
+   ```
+
+   Pass `--draft` if the `--draft` flag was set, and `--base <base-branch>` if
+   `--base` was specified (otherwise defaulting to the repository default
+   branch resolved via `gh repo view --json defaultBranchRef`).
 
 ## Output
 
