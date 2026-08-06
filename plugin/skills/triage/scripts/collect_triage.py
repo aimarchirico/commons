@@ -15,6 +15,22 @@ from review_state import fetch_review_state
 
 SINGLE_MATCH = 1
 
+TECH_BLOCKER_RANK = {
+    "Conflicting and failing checks": 0,
+    "Failing checks": 1,
+    "Conflicting": 2,
+    "None": 3,
+}
+
+REV_BLOCKER_RANK = {
+    "Unresolved threads and comments": 0,
+    "Unresolved comments": 1,
+    "Unresolved threads": 2,
+    "None": 3,
+}
+
+PRIORITY_RANK = {"High": 0, "Medium": 1, "Low": 2, "Unset": 3}
+
 
 def _load_project_preflight() -> ModuleType:
     shared_dir = Path(__file__).resolve().parent.parent.parent.parent / "shared"
@@ -59,10 +75,13 @@ def _resolve_login(run_cmd: Callable[[list[str]], str]) -> str:
     return run_cmd(["gh", "api", "user", "--jq", ".login"])
 
 
-_PRS_TO_REVIEW_LABELS = {
-    True: "Awaiting your review",
-    False: "Not awaiting your review",
-}
+def _fetch_default_branch(run_cmd: Callable[[list[str]], str]) -> str:
+    try:
+        output = run_cmd(["gh", "repo", "view", "--json", "defaultBranchRef"])
+        data = json.loads(output)
+        return data.get("defaultBranchRef", {}).get("name", "main")
+    except Exception:
+        return "main"
 
 
 def _fetch_prs_to_review(
@@ -82,8 +101,7 @@ def _fetch_prs_to_review(
     )
     prs = json.loads(output)
 
-    awaiting = []
-    not_awaiting = []
+    items = []
     for pr in prs:
         author = pr.get("author") or {}
         if author.get("is_bot") or pr.get("reviewDecision") == "APPROVED":
@@ -93,72 +111,47 @@ def _fetch_prs_to_review(
             for r in pr.get("reviewRequests", [])
         }
         is_awaiting = login in requested_logins
-        entry = {
-            "number": pr["number"],
-            "title": pr["title"],
-            "url": pr["url"],
-            "state": _PRS_TO_REVIEW_LABELS[is_awaiting],
-        }
-        (awaiting if is_awaiting else not_awaiting).append(entry)
-
-    return awaiting + not_awaiting
-
-
-_YOUR_PR_BUCKET_ORDER = ["merge", "resolve_then_merge", "resolve", "self_review"]
-
-_PR_STATE_LABELS = {
-    "approved": "Approved",
-    "changes_requested": "Changes requested",
-    "commented": "Commented",
-    "no_reviews": "No reviews",
-}
-
-_THREAD_STATE_LABELS = {
-    "none": "None",
-    "resolved": "Resolved",
-    "unresolved": "Unresolved",
-}
-
-_CHECKS_STATE_LABELS = {
-    "none": "None",
-    "passing": "Passing",
-    "pending": "Pending",
-    "failing": "Failing",
-}
-
-_CONFLICTING_LABELS = {True: "Yes", False: "No"}
-
-
-def _bucket_for(
-    state: str,
-    threads: str,
-    comments: str,
-    *,
-    conflicting: bool,
-    checks: str,
-) -> str:
-    needs_resolve = (
-        threads == "unresolved"
-        or comments == "unresolved"
-        or conflicting
-        or checks == "failing"
-    )
-    if needs_resolve:
-        return "resolve_then_merge" if state == "approved" else "resolve"
-    return "merge" if state == "approved" else "self_review"
-
-
-def _suggestion_for(bucket: str, pr_number: int) -> str:
-    if bucket == "merge":
-        return "Merge the PR"
-    if bucket == "resolve_then_merge":
-        return (
-            f"Resolve problems with `/commons:resolve --pr {pr_number}`,"
-            " then merge the PR"
+        review_val = "Requested" if is_awaiting else "Not requested"
+        items.append(
+            {
+                "number": pr["number"],
+                "title": pr["title"],
+                "url": pr["url"],
+                "state": "Awaiting your review" if is_awaiting else "Not awaiting your review",
+                "review": review_val,
+                "priority": "Medium",
+                "blocking": "0 PRs, 0 issues",
+                "suggestion": f"Review the PR with `/commons:review --pr {pr['number']}`",
+            },
         )
-    if bucket == "resolve":
-        return f"Resolve problems with `/commons:resolve --pr {pr_number}`"
-    return f"Self-review the PR with `/commons:review --pr {pr_number}`"
+
+    items.sort(
+        key=lambda x: (
+            0 if x["review"] == "Requested" else 1,
+            PRIORITY_RANK.get(x["priority"], 3),
+        ),
+    )
+    return items
+
+
+def _compute_technical_blockers(conflicting: bool, checks: str) -> str:
+    if conflicting and checks == "failing":
+        return "Conflicting and failing checks"
+    if checks == "failing":
+        return "Failing checks"
+    if conflicting:
+        return "Conflicting"
+    return "None"
+
+
+def _compute_review_blockers(threads: str, comments: str) -> str:
+    if threads == "unresolved" and comments == "unresolved":
+        return "Unresolved threads and comments"
+    if comments == "unresolved":
+        return "Unresolved comments"
+    if threads == "unresolved":
+        return "Unresolved threads"
+    return "None"
 
 
 def _linked_issue_for(pr: dict[str, Any]) -> dict[str, Any] | None:
@@ -174,7 +167,8 @@ def _fetch_open_and_draft_prs(
     run_cmd: Callable[[list[str]], str],
     owner: str,
     repo_name: str,
-) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    default_branch: str,
+) -> dict[str, Any]:
     output = run_cmd(
         [
             "gh",
@@ -183,57 +177,128 @@ def _fetch_open_and_draft_prs(
             "--search",
             "is:open author:@me",
             "--json",
-            "number,title,url,isDraft,closingIssuesReferences",
+            "number,title,url,isDraft,closingIssuesReferences,headRefName,baseRefName",
         ],
     )
     prs = json.loads(output)
 
+    head_to_pr_num = {pr["headRefName"]: pr["number"] for pr in prs if "headRefName" in pr}
+
     your_open_prs = []
-    ranks = []
     your_draft_prs = []
+
+    merge_ready = []
+    merge_blockers = []
+    stacked_blockers = []
+    draft_prs = []
+    pending_approval = []
+    stacked_queue = []
+
     for pr in prs:
+        pr_number = pr["number"]
+        linked = _linked_issue_for(pr)
+
         if bool(pr.get("isDraft")):
-            your_draft_prs.append(
-                {
-                    "number": pr["number"],
-                    "title": pr["title"],
-                    "url": pr["url"],
-                    "linked_issue": _linked_issue_for(pr),
-                },
-            )
+            draft_entry = {
+                "number": pr_number,
+                "title": pr["title"],
+                "url": pr["url"],
+                "priority": "Medium",
+                "blocking": "0 PRs, 0 issues",
+                "linked_issue": linked,
+            }
+            your_draft_prs.append(draft_entry)
+            draft_prs.append(draft_entry)
             continue
 
         review_state = fetch_review_state(
             lambda query, **variables: _graphql(run_cmd, query, **variables),
             owner,
             repo_name,
-            pr["number"],
+            pr_number,
         )
-        bucket = _bucket_for(
-            review_state["state"],
+
+        tech_blockers = _compute_technical_blockers(
+            review_state["conflicting"],
+            review_state["checks"],
+        )
+        rev_blockers = _compute_review_blockers(
             review_state["threads"],
             review_state["comments"],
-            conflicting=review_state["conflicting"],
-            checks=review_state["checks"],
         )
 
-        your_open_prs.append(
-            {
-                "number": pr["number"],
-                "title": pr["title"],
-                "url": pr["url"],
-                "state": _PR_STATE_LABELS[review_state["state"]],
-                "threads": _THREAD_STATE_LABELS[review_state["threads"]],
-                "comments": _THREAD_STATE_LABELS[review_state["comments"]],
-                "conflicting": _CONFLICTING_LABELS[review_state["conflicting"]],
-                "checks": _CHECKS_STATE_LABELS[review_state["checks"]],
-                "suggestion": _suggestion_for(bucket, pr["number"]),
-            },
-        )
-        ranks.append(_YOUR_PR_BUCKET_ORDER.index(bucket))
+        base_branch = pr.get("baseRefName", default_branch)
+        is_default_target = base_branch == default_branch
+        stacked_on_num = head_to_pr_num.get(base_branch)
 
-    order = sorted(range(len(your_open_prs)), key=lambda i: ranks[i])
-    return [your_open_prs[i] for i in order], your_draft_prs
+        has_blockers = (tech_blockers != "None") or (rev_blockers != "None")
+        is_approved = review_state["state"] == "approved"
+
+        priority = "Medium"
+        blocking = "0 PRs, 0 issues"
+
+        base_entry = {
+            "number": pr_number,
+            "title": pr["title"],
+            "url": pr["url"],
+            "priority": priority,
+            "blocking": blocking,
+            "technical_blockers": tech_blockers,
+            "review_blockers": rev_blockers,
+            "state": review_state["state"].capitalize(),
+            "threads": review_state["threads"].capitalize(),
+            "comments": review_state["comments"].capitalize(),
+            "conflicting": "Yes" if review_state["conflicting"] else "No",
+            "checks": review_state["checks"].capitalize(),
+        }
+
+        if is_default_target:
+            if is_approved and not has_blockers:
+                base_entry["suggestion"] = "Merge the PR"
+                merge_ready.append(base_entry)
+            elif has_blockers:
+                base_entry["suggestion"] = f"Resolve problems with `/commons:resolve --pr {pr_number}`"
+                merge_blockers.append(base_entry)
+            else:
+                base_entry["suggestion"] = f"Self-review the PR with `/commons:review --pr {pr_number}`"
+                pending_approval.append(base_entry)
+        else:
+            base_entry["stacked_on"] = f"PR #{stacked_on_num}" if stacked_on_num else base_branch
+            if has_blockers:
+                base_entry["suggestion"] = f"Resolve problems with `/commons:resolve --pr {pr_number}`"
+                stacked_blockers.append(base_entry)
+            else:
+                base_entry["suggestion"] = f"Self-review the PR with `/commons:review --pr {pr_number}`"
+                stacked_queue.append(base_entry)
+
+        your_open_prs.append(base_entry)
+
+    def sort_blockers(item: dict[str, Any]) -> tuple[int, int, int]:
+        t_rank = TECH_BLOCKER_RANK.get(item["technical_blockers"], 3)
+        r_rank = REV_BLOCKER_RANK.get(item["review_blockers"], 3)
+        p_rank = PRIORITY_RANK.get(item["priority"], 3)
+        return (t_rank, r_rank, p_rank)
+
+    def sort_std(item: dict[str, Any]) -> int:
+        return PRIORITY_RANK.get(item["priority"], 3)
+
+    merge_ready.sort(key=sort_std)
+    merge_blockers.sort(key=sort_blockers)
+    stacked_blockers.sort(key=sort_blockers)
+    draft_prs.sort(key=sort_std)
+    pending_approval.sort(key=sort_std)
+    stacked_queue.sort(key=sort_std)
+
+    return {
+        "your_open_prs": your_open_prs,
+        "your_draft_prs": your_draft_prs,
+        "merge_ready": merge_ready,
+        "merge_blockers": merge_blockers,
+        "stacked_blockers": stacked_blockers,
+        "draft_prs": draft_prs,
+        "pending_approval": pending_approval,
+        "stacked_queue": stacked_queue,
+    }
 
 
 def main() -> None:
@@ -246,10 +311,13 @@ def main() -> None:
 
     try:
         login = _resolve_login(_run_cmd)
-        your_open_prs, your_draft_prs = _fetch_open_and_draft_prs(
+        default_branch = _fetch_default_branch(_run_cmd)
+
+        pr_data = _fetch_open_and_draft_prs(
             _run_cmd,
             owner,
             repo_name,
+            default_branch,
         )
         backlog_data = fetch_backlog_issues(
             _run_cmd,
@@ -258,11 +326,33 @@ def main() -> None:
             project_number,
             login,
         )
+        prs_to_review = _fetch_prs_to_review(_run_cmd, login)
+
+        categories = {
+            "action_required": {
+                "merge_ready": pr_data["merge_ready"],
+                "merge_blockers": pr_data["merge_blockers"],
+                "stacked_blockers": pr_data["stacked_blockers"],
+                "review_requests": prs_to_review,
+                "draft_prs": pr_data["draft_prs"],
+                "assigned_ready": backlog_data["assigned_ready"],
+                "assigned_stackable": backlog_data["assigned_stackable"],
+            },
+            "waiting": {
+                "pending_approval": pr_data["pending_approval"],
+                "stacked_queue": pr_data["stacked_queue"],
+            },
+            "unassigned": {
+                "available_ready": backlog_data["available_ready"],
+                "available_stackable": backlog_data["available_stackable"],
+            },
+        }
 
         result = {
-            "prs_to_review": _fetch_prs_to_review(_run_cmd, login),
-            "your_open_prs": your_open_prs,
-            "your_draft_prs": your_draft_prs,
+            "categories": categories,
+            "prs_to_review": prs_to_review,
+            "your_open_prs": pr_data["your_open_prs"],
+            "your_draft_prs": pr_data["your_draft_prs"],
             "backlog_issues": backlog_data["backlog_issues"],
             "assigned_to_others_count": backlog_data["assigned_to_others_count"],
             "fully_blocked_count": backlog_data["fully_blocked_count"],
@@ -276,3 +366,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

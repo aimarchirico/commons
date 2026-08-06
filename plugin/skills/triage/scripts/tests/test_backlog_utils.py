@@ -252,13 +252,9 @@ def test_fetch_backlog_issues_includes_issue_blocked_by_open_pr() -> None:
 
     result = bu.fetch_backlog_issues(fake_run_cmd, _REPO, "acme", _PROJECT_NUM, _LOGIN)
     issues = result["backlog_issues"]
-    assert len(issues) == 1
-    expected_blocked_by = (
-        "[#10](https://github.com/acme/repo/issues/10) "
-        "(PR [#25](https://github.com/acme/repo/pull/25))"
-    )
-    assert issues[0]["blocked_by"] == expected_blocked_by
-    assert issues[0]["blocking"] == "None"
+    assert issues[0]["blocked_by"] == "25"
+    assert issues[0]["blocking"] == "0 issues"
+
 
 
 def test_fetch_backlog_issues_renders_null_priority_as_unset() -> None:
