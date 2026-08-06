@@ -25,11 +25,15 @@ argument-hint: "--issue <issue-id> [--draft] [--auto] [--skip-check]"
 3. Execute `gh issue edit <issue-id> --add-assignee @me` to assign the issue
    to the current user.
 4. Determine `<branch-name>` following the naming rules in
-   `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md`, then execute
-   `git fetch origin` and `git worktree add -b <branch-name> <worktree-path>
-   origin/main` to create the branch off the up-to-date remote `main`, in
-   an isolated worktree, where `<worktree-path>` is `../<branch-name>` (a
-   sibling of the repository root).
+   `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md`. Determine `<base-branch>`
+   by executing `python3 "${CLAUDE_PLUGIN_ROOT}/skills/solve/scripts/get_issue_base_branch.py" <issue-id>`.
+   If the script reports multiple candidate branches (because the issue is
+   blocked by multiple open PRs), prompt the user to choose which base branch
+   to stack on or use the default branch.
+   Then execute `git fetch origin` and `git worktree add -b <branch-name>
+   <worktree-path> origin/<base-branch>` to create the branch off the up-to-date
+   remote base branch, in an isolated worktree, where `<worktree-path>` is
+   `../<branch-name>` (a sibling of the repository root).
 5. Delegate to the `implementation-planner` agent, passing the issue's title,
    body, type, and `<worktree-path>`, to draft an implementation plan.
 6. Present the drafted plan, and wait for explicit user approval. Skip this
@@ -41,8 +45,9 @@ argument-hint: "--issue <issue-id> [--draft] [--auto] [--skip-check]"
 8. Execute `git push -u origin <branch-name>` to push the commits to the remote
    repository.
 9. Invoke the `commons:pr` skill to open a pull request (its own title/body
-   approval is the final review). Pass the `--draft` and `--auto` flags
-   through if they were provided by the user.
+   approval is the final review). Pass `--base <base-branch>` (if `<base-branch>`
+   is set and differs from the repository's default branch), along with `--draft`
+   and `--auto` flags if they were provided by the user.
 10. Execute `git worktree remove <worktree-path>` to remove the isolated
     worktree; `<branch-name>` and its commits remain intact in the repository
     and on the remote.

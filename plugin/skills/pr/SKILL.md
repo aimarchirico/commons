@@ -8,10 +8,11 @@ argument-hint: "[--draft] [--auto]"
 
 ## Arguments
 
-| Flag      | Required | Description                                                |
-| :-------- | :------- | :--------------------------------------------------------- |
-| `--draft` | No       | Submit the pull request as a draft.                        |
-| `--auto`  | No       | Skip the approval step and create the drafted PR directly. |
+| Flag      | Required | Description                                                            |
+| :-------- | :------- | :--------------------------------------------------------------------- |
+| `--draft` | No       | Submit the pull request as a draft.                                    |
+| `--auto`  | No       | Skip the approval step and create the drafted PR directly.             |
+| `--base`  | No       | Target base branch for the PR (defaults to repo's default branch).     |
 
 ## Workflow
 
@@ -39,7 +40,8 @@ argument-hint: "[--draft] [--auto]"
    Skip this step if the `--auto` flag is set, and proceed directly with the
    drafted title and body.
 7. Execute `gh pr create --title "<title>" --body "<body>"`, passing `--draft`
-   if the `--draft` flag was provided.
+   if `--draft` was set, and `--base <base-branch>` if `--base` was set (or
+   defaulting to the repo's default branch fetched via `gh repo view --json defaultBranchRef`).
 
 ## Output
 
