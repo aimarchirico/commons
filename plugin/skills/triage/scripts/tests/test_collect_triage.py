@@ -105,21 +105,23 @@ def _review_state_response(
     return key, json.dumps({"data": {"repository": {"pullRequest": pr_data}}})
 
 
+def _assert_empty_survey(capsys: pytest.CaptureFixture[str]) -> None:
+    res = json.loads(capsys.readouterr().out)
+    assert not res["prs_to_review"]
+    assert not res["your_open_prs"]
+    assert not res["your_draft_prs"]
+    assert not res["backlog_issues"]
+    assert (res["assigned_to_others_count"], res["fully_blocked_count"]) == (0, 0)
+
+
 def test_main_prints_empty_survey_when_nothing_is_open(
     monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture[str],
 ) -> None:
     """With nothing open anywhere, main() reports four empty lists."""
     _install_gh(monkeypatch, _base_responses())
-
     ct.main()
-
-    result = json.loads(capsys.readouterr().out)
-    assert result["prs_to_review"] == []
-    assert result["your_open_prs"] == []
-    assert result["your_draft_prs"] == []
-    assert result["backlog_issues"] == []
-    assert (result["assigned_to_others_count"], result["fully_blocked_count"]) == (0, 0)
+    _assert_empty_survey(capsys)
 
 
 def _make_review_pr(
@@ -173,12 +175,13 @@ def _make_pr(
     draft: bool = False,
     refs: list[object] | None = None,
 ) -> dict[str, object]:
+    ref_list = refs or []
     return {
         "number": num,
         "title": title,
         "url": f"u{num}",
         "isDraft": draft,
-        "closingIssuesReferences": refs or [],
+        "closingIssuesReferences": ref_list,
     }
 
 
@@ -270,15 +273,8 @@ def test_main_disambiguates_multiple_projects_by_repo_name(
     ]
     response = json.dumps({"data": {"repository": {"projectsV2": {"nodes": nodes}}}})
     _install_gh(monkeypatch, _base_responses(project_query_response=response))
-
     ct.main()
-
-    result = json.loads(capsys.readouterr().out)
-    assert result["prs_to_review"] == []
-    assert result["your_open_prs"] == []
-    assert result["your_draft_prs"] == []
-    assert result["backlog_issues"] == []
-    assert (result["assigned_to_others_count"], result["fully_blocked_count"]) == (0, 0)
+    _assert_empty_survey(capsys)
 
 
 def test_main_exits_when_no_open_project_is_linked(
