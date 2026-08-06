@@ -130,7 +130,7 @@ def test_main_exits_when_gh_is_not_installed(
     replies_file = tmp_path / "replies.json"
     replies_file.write_text("{}")
     monkeypatch.setattr(sys, "argv", ["post_pr_replies", "42", str(replies_file)])
-    monkeypatch.setattr(ppr.project_preflight.shutil, "which", lambda _name: None)
+    monkeypatch.setattr(ppr.cli_utils.shutil, "which", lambda _name: None)
 
     with pytest.raises(SystemExit):
         ppr.main()
@@ -145,12 +145,12 @@ def test_main_exits_when_json_file_is_invalid(
     replies_file.write_text("not json")
     monkeypatch.setattr(sys, "argv", ["post_pr_replies", "42", str(replies_file)])
     monkeypatch.setattr(
-        ppr.project_preflight.shutil,
+        ppr.cli_utils.shutil,
         "which",
         lambda _name: "/usr/bin/gh",
     )
     monkeypatch.setattr(
-        ppr.project_preflight.subprocess,
+        ppr.cli_utils.subprocess,
         "run",
         lambda *_a, **_k: None,
     )
@@ -176,12 +176,12 @@ def test_main_posts_replies_and_deletes_the_file_on_success(
     )
     monkeypatch.setattr(sys, "argv", ["post_pr_replies", "42", str(replies_file)])
     monkeypatch.setattr(
-        ppr.project_preflight.shutil,
+        ppr.cli_utils.shutil,
         "which",
         lambda _name: "/usr/bin/gh",
     )
     monkeypatch.setattr(
-        ppr.project_preflight.subprocess,
+        ppr.cli_utils.subprocess,
         "run",
         lambda *_a, **_k: None,
     )
@@ -214,15 +214,16 @@ def test_main_exits_and_cleans_up_when_gh_command_fails(
     )
     monkeypatch.setattr(sys, "argv", ["post_pr_replies", "42", str(replies_file)])
     monkeypatch.setattr(
-        ppr.project_preflight.shutil,
+        ppr.cli_utils.shutil,
         "which",
         lambda _name: "/usr/bin/gh",
     )
     monkeypatch.setattr(
-        ppr.project_preflight.subprocess,
+        ppr.cli_utils.subprocess,
         "run",
         lambda *_a, **_k: None,
     )
+
 
     def fake_run_cmd(args: list[str], input_text: str | None = None) -> str:
         del input_text, args
