@@ -9,6 +9,7 @@ import pytest
 _REPO_CONTEXT = json.dumps({"owner": {"login": "acme"}, "name": "widgets"})
 _LOGIN = "octocat"
 
+
 _PROJECT_QUERY_RESPONSE = json.dumps({
     "data": {"repository": {"projectsV2": {"nodes": [
         {
@@ -73,7 +74,8 @@ def _review_state_response(
     number: int,
     review_state: str | None = None,
     thread_resolutions: list[bool] | None = None,
-    comment_bodies: list[str] | None = None,
+    mergeable: str = "MERGEABLE",
+    checks_state: str | None = None,
 ) -> tuple[tuple[str, ...], str]:
     key = _normalize([
         "gh", "api", "graphql", "-f", "owner=acme", "-f", "repo=widgets",
@@ -88,10 +90,11 @@ def _review_state_response(
             "reviewThreads": {
                 "nodes": [{"isResolved": r} for r in (thread_resolutions or [])],
             },
-            "comments": {
-                "nodes": [
-                    {"body": body_text, "createdAt": f"2024-01-01T00:00:{i:02d}Z"}
-                    for i, body_text in enumerate(comment_bodies or [])
+            "comments": {"nodes": []},
+            "mergeable": mergeable,
+            "commits": {
+                "nodes": [] if checks_state is None else [
+                    {"commit": {"statusCheckRollup": {"state": checks_state}}},
                 ],
             },
         }}},
@@ -102,13 +105,16 @@ def _review_state_response(
 def test_main_prints_empty_survey_when_nothing_is_open(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str],
 ) -> None:
-    """With nothing open anywhere, main() reports three empty lists."""
+    """With nothing open anywhere, main() reports four empty lists."""
     _install_gh(monkeypatch, _base_responses())
 
     ct.main()
 
     result = json.loads(capsys.readouterr().out)
-    assert result == {"prs_to_review": [], "your_prs": [], "backlog_issues": []}
+    assert result == {
+        "prs_to_review": [], "your_open_prs": [], "your_draft_prs": [],
+        "backlog_issues": [],
+    }
 
 
 def test_main_drops_bot_and_approved_prs_from_review_list(
@@ -147,10 +153,14 @@ def test_main_drops_bot_and_approved_prs_from_review_list(
     assert result["prs_to_review"][1]["state"] == "Not awaiting your review"
 
 
-def test_main_classifies_your_prs_and_includes_linked_issue_for_drafts(
+def test_main_classifies_your_prs_and_splits_out_drafts(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str],
 ) -> None:
-    """Your PRs sort merge, resolve-then-merge, resolve, self-review, then draft."""
+    """Non-draft PRs sort merge, resolve-then-merge, resolve, self-review.
+
+    Drafts land in your_draft_prs instead, with no review-state query made
+    for them (not actionable until they're out of draft).
+    """
     your_prs = json.dumps([
         {
             "number": 1, "title": "Draft", "url": "u1", "isDraft": True,
@@ -172,52 +182,58 @@ def test_main_classifies_your_prs_and_includes_linked_issue_for_drafts(
             "number": 5, "title": "Untouched", "url": "u5", "isDraft": False,
             "closingIssuesReferences": [],
         },
+        {
+            "number": 6, "title": "Approved but blocked", "url": "u6",
+            "isDraft": False, "closingIssuesReferences": [],
+        },
     ])
     responses = _base_responses(your_prs=your_prs)
-    key, body = _review_state_response(
-        number=2, review_state="APPROVED", thread_resolutions=[True],
-    )
-    responses[key] = body
-    key, body = _review_state_response(
-        number=3, review_state="APPROVED", thread_resolutions=[False],
-    )
-    responses[key] = body
-    key, body = _review_state_response(
-        number=4, review_state="CHANGES_REQUESTED", thread_resolutions=[False],
-    )
-    responses[key] = body
-    key, body = _review_state_response(number=5, review_state=None)
-    responses[key] = body
+    for number, review_state, thread_resolutions, mergeable, checks_state in (
+        (2, "APPROVED", [True], "MERGEABLE", None),
+        (3, "APPROVED", [False], "MERGEABLE", None),
+        (4, "CHANGES_REQUESTED", [False], "MERGEABLE", None),
+        (5, None, None, "MERGEABLE", None),
+        (6, "APPROVED", [True], "CONFLICTING", "FAILURE"),
+    ):
+        key, body = _review_state_response(
+            number=number, review_state=review_state,
+            thread_resolutions=thread_resolutions,
+            mergeable=mergeable, checks_state=checks_state,
+        )
+        responses[key] = body
     _install_gh(monkeypatch, responses)
 
     ct.main()
 
     result = json.loads(capsys.readouterr().out)
-    yours = result["your_prs"]
-    assert [pr["number"] for pr in yours] == [2, 3, 4, 5, 1]
+    yours = result["your_open_prs"]
+    assert [pr["number"] for pr in yours] == [2, 3, 6, 4, 5]
     assert [pr["suggestion"] for pr in yours] == [
         "Merge the PR",
-        (
-            "Resolve the unresolved review with `/commons:resolve --pr 3`, "
-            "then merge the PR"
-        ),
-        "Resolve the unresolved review with `/commons:resolve --pr 4`",
+        "Resolve problems with `/commons:resolve --pr 3`, then merge the PR",
+        "Resolve problems with `/commons:resolve --pr 6`, then merge the PR",
+        "Resolve problems with `/commons:resolve --pr 4`",
         "Self-review the PR with `/commons:review --pr 5`",
-        None,
     ]
     assert [pr["state"] for pr in yours] == [
-        "Approved", "Approved", "Changes requested", "None", "Not ready for review",
+        "Approved", "Approved", "Approved", "Changes requested", "None",
     ]
-    assert yours[4]["linked_issue"] == {"number": 42, "url": "issue-url"}
+    assert (yours[2]["conflicting"], yours[2]["checks"]) == ("Yes", "Failing")
+
+    drafts = result["your_draft_prs"]
+    assert drafts == [{
+        "number": 1, "title": "Draft", "url": "u1",
+        "linked_issue": {"number": 42, "url": "issue-url"},
+    }]
 
 
-def test_main_computes_real_review_state_for_approved_draft_prs(
+def test_main_draft_prs_without_linked_issue_report_null(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str],
 ) -> None:
-    """A draft PR is always not_ready regardless of any underlying review activity."""
+    """A draft with no closing issue reference reports linked_issue as null."""
     your_prs = json.dumps([
         {
-            "number": 5, "title": "Approved draft", "url": "u5", "isDraft": True,
+            "number": 5, "title": "Untouched draft", "url": "u5", "isDraft": True,
             "closingIssuesReferences": [],
         },
     ])
@@ -226,10 +242,9 @@ def test_main_computes_real_review_state_for_approved_draft_prs(
     ct.main()
 
     result = json.loads(capsys.readouterr().out)
-    yours = result["your_prs"]
-    assert yours[0]["suggestion"] is None
-    assert yours[0]["state"] == "Not ready for review"
-    assert yours[0]["linked_issue"] is None
+    assert result["your_draft_prs"] == [
+        {"number": 5, "title": "Untouched draft", "url": "u5", "linked_issue": None},
+    ]
 
 
 def test_main_disambiguates_multiple_projects_by_repo_name(
@@ -253,7 +268,10 @@ def test_main_disambiguates_multiple_projects_by_repo_name(
     ct.main()
 
     result = json.loads(capsys.readouterr().out)
-    assert result == {"prs_to_review": [], "your_prs": [], "backlog_issues": []}
+    assert result == {
+        "prs_to_review": [], "your_open_prs": [], "your_draft_prs": [],
+        "backlog_issues": [],
+    }
 
 
 def test_main_exits_when_no_open_project_is_linked(

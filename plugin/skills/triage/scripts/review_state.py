@@ -32,6 +32,10 @@ query($owner: String!, $repo: String!, $number: Int!) {
       allReviews: reviews(first: 100) { nodes { body createdAt } }
       reviewThreads(first: 100) { nodes { isResolved } }
       comments(first: 100) { nodes { body createdAt } }
+      mergeable
+      commits(last: 1) {
+        nodes { commit { statusCheckRollup { state } } }
+      }
     }
   }
 }
@@ -43,27 +47,32 @@ _REVIEW_STATE_MAP = {
     "COMMENTED": "commented",
 }
 
+_CHECKS_STATE_MAP = {
+    "SUCCESS": "passing",
+    "FAILURE": "failing",
+    "ERROR": "failing",
+    "PENDING": "pending",
+    "EXPECTED": "pending",
+}
+
 
 def fetch_review_state(
     graphql: Callable[..., dict[str, Any]],
     owner: str,
     repo_name: str,
     number: int,
-    *,
-    is_draft: bool,
-) -> dict[str, str]:
-    """Compute a pull request's ``state``, ``threads``, and ``comments``.
+) -> dict[str, Any]:
+    """Compute a pull request's real review and merge state.
 
     ``graphql`` must match ``graphql(query: str, **variables) -> dict``,
     returning the parsed GraphQL response, so callers can reuse their own
     ``gh api graphql`` wrapper.
 
-    Drafts short-circuit to ``not_ready``/``none``/``none`` without querying,
-    since a draft's review activity isn't actionable until it's marked ready.
+    Draft PRs can still carry comments, threads, conflicts, and failing
+    checks (GitHub allows commenting/reviewing drafts), so nothing here is
+    special-cased for drafts; callers decide what's actionable from
+    ``isDraft`` separately.
     """
-    if is_draft:
-        return {"state": "not_ready", "threads": "none", "comments": "none"}
-
     api_data = graphql(_REVIEW_STATE_QUERY, owner=owner, repo=repo_name, number=number)
     pr = api_data.get("data", {}).get("repository", {}).get("pullRequest") or {}
 
@@ -93,4 +102,16 @@ def fetch_review_state(
         else "resolved"
     )
 
-    return {"state": state, "threads": threads, "comments": comments}
+    conflicting = pr.get("mergeable") == "CONFLICTING"
+
+    commit_nodes = pr.get("commits", {}).get("nodes", [])
+    rollup = (
+        (commit_nodes[0]["commit"].get("statusCheckRollup") or {}).get("state")
+        if commit_nodes else None
+    )
+    checks = "none" if rollup is None else _CHECKS_STATE_MAP.get(rollup, "none")
+
+    return {
+        "state": state, "threads": threads, "comments": comments,
+        "conflicting": conflicting, "checks": checks,
+    }

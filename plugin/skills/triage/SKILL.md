@@ -16,5 +16,5 @@ description:
    ```
 
    and parse its JSON output.
-1. Render the three tables per
+1. Render the four tables per
    `${CLAUDE_PLUGIN_ROOT}/skills/triage/REFERENCE.md`.
