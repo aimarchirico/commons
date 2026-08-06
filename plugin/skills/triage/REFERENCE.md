@@ -18,7 +18,7 @@ Every table's Item column is `[#<number>](<url>) <title>`, linking only the numb
 
 ---
 
-# Category 1: Action Required
+# Category 1: Actionable
 Work that is currently blocked by you or requires your immediate input to move forward. Ordered from closest to production to furthest.
 
 ## Merge Ready
