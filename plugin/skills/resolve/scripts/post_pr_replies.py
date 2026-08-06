@@ -43,11 +43,17 @@ mutation($threadId: ID!) {
 def _resolve_review_threads(run_cmd: Callable[..., str], thread_ids: set[str]) -> None:
     for thread_id in sorted(thread_ids):
         sys.stdout.write(f"Resolving review thread {thread_id}...\n")
-        run_cmd([
-            "gh", "api", "graphql",
-            "-f", f"threadId={thread_id}",
-            "-f", f"query={_RESOLVE_THREAD_MUTATION}",
-        ])
+        run_cmd(
+            [
+                "gh",
+                "api",
+                "graphql",
+                "-f",
+                f"threadId={thread_id}",
+                "-f",
+                f"query={_RESOLVE_THREAD_MUTATION}",
+            ],
+        )
 
 
 def render_conversation_reply(summary: str) -> str:
@@ -79,8 +85,7 @@ def post_replies(
         comment_id = reply["comment_id"]
         sys.stdout.write(f"Replying to review comment {comment_id}...\n")
         endpoint = (
-            f"repos/{owner}/{repo_name}/pulls/{pr_number}/comments/"
-            f"{comment_id}/replies"
+            f"repos/{owner}/{repo_name}/pulls/{pr_number}/comments/{comment_id}/replies"
         )
         run_cmd(
             ["gh", "api", endpoint, "--input", "-"],

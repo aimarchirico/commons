@@ -23,7 +23,11 @@ MIN_ARG_COUNT = 2
 def run_cmd(args: list[str]) -> str:
     """Execute a shell command via subprocess and return stripped output."""
     result = subprocess.run(
-        args, capture_output=True, text=True, encoding="utf-8", check=True,
+        args,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        check=True,
     )
     return result.stdout.strip()
 
@@ -76,7 +80,9 @@ DepState = tuple[dict[str, str], list[tuple[str, list[str]]]]
 
 
 def record_dependency_state(
-    item: dict[str, Any], issue_id: str, dep_state: DepState,
+    item: dict[str, Any],
+    issue_id: str,
+    dep_state: DepState,
 ) -> None:
     """Record issue ID mappings and pending blocked-by dependencies."""
     id_map, pending_deps = dep_state
@@ -116,18 +122,20 @@ def create_issue_recursive(
             f"Creating child issue: '{title}' under parent {parent_id}...\n",
         )
         args = [
-            "gh", "sub-issue", "create",
-            "--title", title,
-            "--body", body,
-            "--parent", str(parent_id),
+            "gh",
+            "sub-issue",
+            "create",
+            "--title",
+            title,
+            "--body",
+            body,
+            "--parent",
+            str(parent_id),
         ]
 
     issue_url_raw = run_cmd(args)
     issue_url = next(
-        (
-            w for w in issue_url_raw.split()
-            if w.startswith(("http://", "https://"))
-        ),
+        (w for w in issue_url_raw.split() if w.startswith(("http://", "https://"))),
         issue_url_raw,
     )
     issue_id = issue_url.split("/")[-1]
@@ -141,19 +149,35 @@ def create_issue_recursive(
             sys.stdout.write(
                 f"Adding issue {issue_id} to project #{project_number}...\n",
             )
-            item_output = run_cmd([
-                "gh", "project", "item-add", str(project_number),
-                "--owner", owner, "--url", issue_url, "--format", "json",
-            ])
+            item_output = run_cmd(
+                [
+                    "gh",
+                    "project",
+                    "item-add",
+                    str(project_number),
+                    "--owner",
+                    owner,
+                    "--url",
+                    issue_url,
+                    "--format",
+                    "json",
+                ],
+            )
             item_data = json.loads(item_output)
             if item_id := item_data.get("id"):
                 set_project_field(
-                    run_cmd, item_id, project_id,
-                    ("Type", type_field_id, type_val), fields_data,
+                    run_cmd,
+                    item_id,
+                    project_id,
+                    ("Type", type_field_id, type_val),
+                    fields_data,
                 )
                 set_project_field(
-                    run_cmd, item_id, project_id,
-                    ("Priority", priority_field_id, priority_val), fields_data,
+                    run_cmd,
+                    item_id,
+                    project_id,
+                    ("Priority", priority_field_id, priority_val),
+                    fields_data,
                 )
         except (subprocess.CalledProcessError, json.JSONDecodeError, KeyError) as e:
             sys.stderr.write(
@@ -196,14 +220,19 @@ def wire_blocked_by(
             f"Marking issue {issue_id} as blocked by {', '.join(numbers)}...\n",
         )
         try:
-            run_cmd([
-                "gh", "issue", "edit", issue_id,
-                "--add-blocked-by", ",".join(numbers),
-            ])
-        except subprocess.CalledProcessError as e:
-            sys.stderr.write(
-                f"Warning: Failed to set blocked-by for issue {issue_id}. {e}\n",
+            run_cmd(
+                [
+                    "gh",
+                    "issue",
+                    "edit",
+                    issue_id,
+                    "--add-blocked-by",
+                    ",".join(numbers),
+                ],
             )
+        except subprocess.CalledProcessError as e:
+            msg = f"Warning: Failed to set blocked-by for issue {issue_id}. {e}\n"
+            sys.stderr.write(msg)
 
 
 def main() -> None:
@@ -236,21 +265,26 @@ def main() -> None:
         field_ids = (project_number, project_id, type_field_id, priority_field_id)
         error_info = (context_error, fields_errors)
         errors = validate_project_setup(
-            data.get("items", []), field_ids, fields_data, error_info,
+            data.get("items", []),
+            field_ids,
+            fields_data,
+            error_info,
         )
         fail_if_errors(errors)
 
         sys.stdout.write("Processing and creating issues...\n")
         project_info = (
-            project_number, project_id, type_field_id, priority_field_id, fields_data,
+            project_number,
+            project_id,
+            type_field_id,
+            priority_field_id,
+            fields_data,
         )
         id_map: dict[str, str] = {}
         pending_deps: list[tuple[str, list[str]]] = []
         dep_state: DepState = (id_map, pending_deps)
         for item in data.get("items", []):
-            create_issue_recursive(
-                item, None, owner or "", project_info, dep_state,
-            )
+            create_issue_recursive(item, None, owner or "", project_info, dep_state)
 
         if pending_deps:
             sys.stdout.write("Wiring blocked-by relationships...\n")
@@ -264,4 +298,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

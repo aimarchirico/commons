@@ -72,12 +72,19 @@ def resolve_project_context(
     }
     """
     try:
-        api_output = run_cmd([
-            "gh", "api", "graphql",
-            "-f", f"owner={owner}",
-            "-f", f"name={repo_name}",
-            "-f", f"query={query}",
-        ])
+        api_output = run_cmd(
+            [
+                "gh",
+                "api",
+                "graphql",
+                "-f",
+                f"owner={owner}",
+                "-f",
+                f"name={repo_name}",
+                "-f",
+                f"query={query}",
+            ],
+        )
         api_data = json.loads(api_output)
         repository = api_data.get("data", {}).get("repository", {})
         nodes = repository.get("projectsV2", {}).get("nodes", [])
@@ -97,13 +104,15 @@ def resolve_project_context(
             proj = matches[0]
             project_owner = str(proj.get("owner", {}).get("login", owner))
             return (
-                owner, repo_name, int(proj["number"]),
-                str(proj.get("id", "")), project_owner,
+                owner,
+                repo_name,
+                int(proj["number"]),
+                str(proj.get("id", "")),
+                project_owner,
             )
 
         project_list = "\n".join(
-            f"  - {p.get('title')} (number: {p['number']})"
-            for p in open_projects
+            f"  - {p.get('title')} (number: {p['number']})" for p in open_projects
         )
         msg = (
             f"Multiple active projects linked to '{owner}/{repo_name}', "
@@ -116,13 +125,18 @@ def resolve_project_context(
     proj = open_projects[0]
     project_owner = str(proj.get("owner", {}).get("login", owner))
     return (
-        owner, repo_name, int(proj["number"]),
-        str(proj.get("id", "")), project_owner,
+        owner,
+        repo_name,
+        int(proj["number"]),
+        str(proj.get("id", "")),
+        project_owner,
     )
 
 
 def fetch_project_fields(
-    run_cmd: Callable[..., str], owner: str, project_number: int,
+    run_cmd: Callable[..., str],
+    owner: str,
+    project_number: int,
 ) -> tuple[str | None, str | None, dict[str, Any], list[str]]:
     """Retrieve Type and Priority field IDs and metadata for a project."""
     type_field_id = None
@@ -131,10 +145,18 @@ def fetch_project_fields(
     errors = []
 
     try:
-        fields_output = run_cmd([
-            "gh", "project", "field-list", str(project_number),
-            "--owner", owner, "--format", "json",
-        ])
+        fields_output = run_cmd(
+            [
+                "gh",
+                "project",
+                "field-list",
+                str(project_number),
+                "--owner",
+                owner,
+                "--format",
+                "json",
+            ],
+        )
         fields_data = json.loads(fields_output)
         for field in fields_data.get("fields", []):
             if field.get("name") == "Type":

@@ -14,40 +14,53 @@ def _response(
     checks_state: str | None = None,
 ) -> dict[str, Any]:
     return {
-        "data": {"repository": {"pullRequest": {
-            "latestReview": {
-                "nodes": [] if review_state is None else [{"state": review_state}],
+        "data": {
+            "repository": {
+                "pullRequest": {
+                    "latestReview": {
+                        "nodes": []
+                        if review_state is None
+                        else [{"state": review_state}],
+                    },
+                    "allReviews": {"nodes": []},
+                    "reviewThreads": {
+                        "nodes": [{"isResolved": r} for r in thread_resolutions],
+                    },
+                    "comments": {
+                        "nodes": [
+                            {"body": body, "createdAt": f"2024-01-01T00:00:{i:02d}Z"}
+                            for i, body in enumerate(comment_bodies)
+                        ],
+                    },
+                    "mergeable": mergeable,
+                    "commits": {
+                        "nodes": []
+                        if checks_state is None
+                        else [
+                            {"commit": {"statusCheckRollup": {"state": checks_state}}},
+                        ],
+                    },
+                },
             },
-            "allReviews": {"nodes": []},
-            "reviewThreads": {
-                "nodes": [{"isResolved": r} for r in thread_resolutions],
-            },
-            "comments": {
-                "nodes": [
-                    {"body": body, "createdAt": f"2024-01-01T00:00:{i:02d}Z"}
-                    for i, body in enumerate(comment_bodies)
-                ],
-            },
-            "mergeable": mergeable,
-            "commits": {
-                "nodes": [] if checks_state is None else [
-                    {"commit": {"statusCheckRollup": {"state": checks_state}}},
-                ],
-            },
-        }}},
+        },
     }
 
 
 def test_maps_latest_review_state_and_resolves_threads() -> None:
     """The latest review's state and full thread resolution are reflected."""
     response = _response(
-        review_state="APPROVED", thread_resolutions=[True, True], comment_bodies=[],
+        review_state="APPROVED",
+        thread_resolutions=[True, True],
+        comment_bodies=[],
     )
     result = fetch_review_state(lambda *_a, **_kw: response, "acme", "widgets", 2)
 
     assert result == {
-        "state": "approved", "threads": "resolved", "comments": "none",
-        "conflicting": False, "checks": "none",
+        "state": "approved",
+        "threads": "resolved",
+        "comments": "none",
+        "conflicting": False,
+        "checks": "none",
     }
 
 
@@ -74,8 +87,11 @@ def test_latest_comment_starting_with_resolved_marks_comments_resolved() -> None
     result = fetch_review_state(lambda *_a, **_kw: response, "acme", "widgets", 4)
 
     assert result == {
-        "state": "no_reviews", "threads": "none", "comments": "resolved",
-        "conflicting": False, "checks": "none",
+        "state": "no_reviews",
+        "threads": "none",
+        "comments": "resolved",
+        "conflicting": False,
+        "checks": "none",
     }
 
 
@@ -106,7 +122,9 @@ def test_verdict_after_a_leading_header_is_still_recognized() -> None:
 def test_conflicting_mergeable_state_is_reported() -> None:
     """A CONFLICTING mergeable state sets conflicting to True."""
     response = _response(
-        review_state=None, thread_resolutions=[], comment_bodies=[],
+        review_state=None,
+        thread_resolutions=[],
+        comment_bodies=[],
         mergeable="CONFLICTING",
     )
     result = fetch_review_state(lambda *_a, **_kw: response, "acme", "widgets", 7)
@@ -117,7 +135,9 @@ def test_conflicting_mergeable_state_is_reported() -> None:
 def test_failing_check_rollup_is_reported() -> None:
     """A FAILURE status check rollup maps to a failing checks state."""
     response = _response(
-        review_state=None, thread_resolutions=[], comment_bodies=[],
+        review_state=None,
+        thread_resolutions=[],
+        comment_bodies=[],
         checks_state="FAILURE",
     )
     result = fetch_review_state(lambda *_a, **_kw: response, "acme", "widgets", 8)
@@ -140,12 +160,18 @@ def test_draft_review_activity_and_merge_state_are_still_computed_for_real() -> 
     caller derives from `isDraft` treats them specially, not this data.
     """
     response = _response(
-        review_state="COMMENTED", thread_resolutions=[False], comment_bodies=["wip"],
-        mergeable="CONFLICTING", checks_state="FAILURE",
+        review_state="COMMENTED",
+        thread_resolutions=[False],
+        comment_bodies=["wip"],
+        mergeable="CONFLICTING",
+        checks_state="FAILURE",
     )
     result = fetch_review_state(lambda *_a, **_kw: response, "acme", "widgets", 10)
 
     assert result == {
-        "state": "commented", "threads": "unresolved", "comments": "unresolved",
-        "conflicting": True, "checks": "failing",
+        "state": "commented",
+        "threads": "unresolved",
+        "comments": "unresolved",
+        "conflicting": True,
+        "checks": "failing",
     }

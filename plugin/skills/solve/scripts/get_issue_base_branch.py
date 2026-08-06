@@ -32,7 +32,11 @@ fetch_issue_dependencies = _blocking_prs.fetch_issue_dependencies
 
 def _run_cmd(args: list[str]) -> str:
     result = subprocess.run(
-        args, capture_output=True, text=True, encoding="utf-8", check=True,
+        args,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        check=True,
     )
     return result.stdout.strip()
 
@@ -46,7 +50,8 @@ def _check_dependencies() -> None:
 
 
 def get_issue_base_branch(
-    run_cmd: Callable[[list[str]], str], issue_id: str,
+    run_cmd: Callable[[list[str]], str],
+    issue_id: str,
 ) -> dict[str, Any]:
     """Determine base branch candidates for a given issue ID.
 
@@ -62,9 +67,7 @@ def get_issue_base_branch(
     repo_data = json.loads(repo_output)
     owner = repo_data["owner"]["login"]
     repo_name = repo_data["name"]
-    default_branch = (
-        repo_data.get("defaultBranchRef", {}).get("name") or "main"
-    )
+    default_branch = repo_data.get("defaultBranchRef", {}).get("name") or "main"
 
     try:
         deps = fetch_issue_dependencies(run_cmd, owner, repo_name, int(issue_id))
@@ -89,13 +92,15 @@ def get_issue_base_branch(
         pr = item.get("open_pr")
         if pr and pr["branch_name"] not in seen_branches:
             seen_branches.add(pr["branch_name"])
-            open_pr_candidates.append({
-                "issue_number": item["number"],
-                "pr_number": pr["number"],
-                "pr_title": pr["title"],
-                "branch_name": pr["branch_name"],
-                "is_draft": pr["is_draft"],
-            })
+            open_pr_candidates.append(
+                {
+                    "issue_number": item["number"],
+                    "pr_number": pr["number"],
+                    "pr_title": pr["title"],
+                    "branch_name": pr["branch_name"],
+                    "is_draft": pr["is_draft"],
+                },
+            )
 
     if not open_pr_candidates:
         return {

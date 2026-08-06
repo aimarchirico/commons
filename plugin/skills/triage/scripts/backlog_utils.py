@@ -29,7 +29,9 @@ fetch_issue_dependencies = _blocking_prs.fetch_issue_dependencies
 
 
 def _format_blocked_by(
-    blocked_by_items: list[dict[str, Any]], owner: str, repo_name: str,
+    blocked_by_items: list[dict[str, Any]],
+    owner: str,
+    repo_name: str,
 ) -> str:
     if not blocked_by_items:
         return "None"
@@ -41,7 +43,8 @@ def _format_blocked_by(
         if pr:
             pr_num = pr["number"]
             pr_url = pr.get(
-                "url", f"https://github.com/{owner}/{repo_name}/pull/{pr_num}",
+                "url",
+                f"https://github.com/{owner}/{repo_name}/pull/{pr_num}",
             )
             formatted.append(f"[#{num}]({url}) (PR [#{pr_num}]({pr_url}))")
         else:
@@ -50,7 +53,9 @@ def _format_blocked_by(
 
 
 def _format_blocking(
-    blocking_items: list[dict[str, Any]], owner: str, repo_name: str,
+    blocking_items: list[dict[str, Any]],
+    owner: str,
+    repo_name: str,
 ) -> str:
     if not blocking_items:
         return "None"
@@ -77,10 +82,20 @@ def fetch_backlog_issues(
     and `fully_blocked_count`.
     """
     owner, repo_name = repo
-    item_output = run_cmd([
-        "gh", "project", "item-list", str(project_number),
-        "--owner", project_owner, "--format", "json", "--limit", "200",
-    ])
+    item_output = run_cmd(
+        [
+            "gh",
+            "project",
+            "item-list",
+            str(project_number),
+            "--owner",
+            project_owner,
+            "--format",
+            "json",
+            "--limit",
+            "200",
+        ],
+    )
     items = json.loads(item_output).get("items", [])
 
     entries: list[dict[str, Any]] = []
@@ -116,20 +131,24 @@ def fetch_backlog_issues(
             continue
 
         priority = item.get("priority")
-        entries.append({
-            "number": number,
-            "title": content.get("title"),
-            "url": content.get("url"),
-            "assignee": "You" if is_mine else "Unassigned",
-            "priority": priority or "Unset",
-            "blocked_by": _format_blocked_by(blocked_by_items, owner, repo_name),
-            "blocking": _format_blocking(blocking_items, owner, repo_name),
-        })
-        ranks.append((
-            not is_mine,
-            PRIORITY_RANK.get(priority, len(PRIORITY_RANK)),
-            -len(blocking_items),
-        ))
+        entries.append(
+            {
+                "number": number,
+                "title": content.get("title"),
+                "url": content.get("url"),
+                "assignee": "You" if is_mine else "Unassigned",
+                "priority": priority or "Unset",
+                "blocked_by": _format_blocked_by(blocked_by_items, owner, repo_name),
+                "blocking": _format_blocking(blocking_items, owner, repo_name),
+            },
+        )
+        ranks.append(
+            (
+                not is_mine,
+                PRIORITY_RANK.get(priority, len(PRIORITY_RANK)),
+                -len(blocking_items),
+            ),
+        )
 
     order = sorted(range(len(entries)), key=lambda i: ranks[i])
     return {

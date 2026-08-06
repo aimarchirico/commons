@@ -61,6 +61,7 @@ def build_review(findings: list[dict[str, Any]]) -> dict[str, Any]:
     verdict, then may submit a real review on the user's behalf, since the
     user can't approve or request changes on their own PR).
     """
+
     def _is_resolvable(finding: dict[str, Any]) -> bool:
         return bool(finding.get("file")) and finding.get("line") is not None
 
@@ -118,9 +119,11 @@ def post_review(
     payload = {"event": "COMMENT", "body": body, "comments": comments}
     run_cmd(
         [
-            "gh", "api",
+            "gh",
+            "api",
             f"repos/{owner}/{repo_name}/pulls/{pr_number}/reviews",
-            "--input", "-",
+            "--input",
+            "-",
         ],
         input_text=json.dumps(payload),
     )

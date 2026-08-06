@@ -62,7 +62,9 @@ def get_project_context(
 
 
 def get_project_fields(
-    run_cmd: Callable[..., str], owner: str, project_number: int | None,
+    run_cmd: Callable[..., str],
+    owner: str,
+    project_number: int | None,
 ) -> tuple[str | None, str | None, dict[str, Any], list[str]]:
     """Retrieve Type and Priority field IDs and metadata for a project."""
     if not project_number:
@@ -108,7 +110,9 @@ def validate_project_setup(
     types_used, priorities_used = _collect_issue_type_priority_values(items)
 
     def check_options(
-        field_name: str, field_id: str | None, values: set[str],
+        field_name: str,
+        field_id: str | None,
+        values: set[str],
     ) -> None:
         if field_id is None:
             return
@@ -153,10 +157,18 @@ def set_project_field(
 
     if option_id:
         sys.stdout.write(f"Setting project item {field_name} to '{val}'...\n")
-        run_cmd([
-            "gh", "project", "item-edit",
-            "--id", item_id,
-            "--project-id", project_id,
-            "--field-id", field_id,
-            "--single-select-option-id", option_id,
-        ])
+        run_cmd(
+            [
+                "gh",
+                "project",
+                "item-edit",
+                "--id",
+                item_id,
+                "--project-id",
+                project_id,
+                "--field-id",
+                field_id,
+                "--single-select-option-id",
+                option_id,
+            ],
+        )

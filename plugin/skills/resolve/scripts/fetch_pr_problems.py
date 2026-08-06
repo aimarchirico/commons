@@ -33,7 +33,11 @@ MIN_ARG_COUNT = 2
 
 def _run_cmd(args: list[str]) -> str:
     result = subprocess.run(
-        args, capture_output=True, text=True, encoding="utf-8", check=True,
+        args,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        check=True,
     )
     return result.stdout.strip()
 
@@ -52,12 +56,20 @@ def _fetch_conflicting(run_cmd: Callable[[list[str]], str], pr_number: str) -> b
 
 
 def _fetch_failing_checks(
-    run_cmd: Callable[[list[str]], str], pr_number: str,
+    run_cmd: Callable[[list[str]], str],
+    pr_number: str,
 ) -> list[dict[str, str]]:
     try:
-        output = run_cmd([
-            "gh", "pr", "checks", pr_number, "--json", "name,bucket,link",
-        ])
+        output = run_cmd(
+            [
+                "gh",
+                "pr",
+                "checks",
+                pr_number,
+                "--json",
+                "name,bucket,link",
+            ],
+        )
     except subprocess.CalledProcessError:
         return []
     checks = json.loads(output) if output else []
@@ -69,7 +81,8 @@ def _fetch_failing_checks(
 
 
 def fetch_pr_problems(
-    run_cmd: Callable[[list[str]], str], pr_number: str,
+    run_cmd: Callable[[list[str]], str],
+    pr_number: str,
 ) -> dict[str, Any]:
     """Fetch everything blocking a PR from being merged.
 
@@ -108,13 +121,21 @@ def fetch_pr_problems(
       }
     }
     """
-    api_output = run_cmd([
-        "gh", "api", "graphql",
-        "-f", f"owner={owner}",
-        "-f", f"repo={repo_name}",
-        "-F", f"number={pr_number}",
-        "-f", f"query={query}",
-    ])
+    api_output = run_cmd(
+        [
+            "gh",
+            "api",
+            "graphql",
+            "-f",
+            f"owner={owner}",
+            "-f",
+            f"repo={repo_name}",
+            "-F",
+            f"number={pr_number}",
+            "-f",
+            f"query={query}",
+        ],
+    )
     api_data = json.loads(api_output)
     pr = api_data.get("data", {}).get("repository", {}).get("pullRequest") or {}
 

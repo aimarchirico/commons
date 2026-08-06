@@ -34,13 +34,19 @@ run_project_preflight = project_preflight.run_project_preflight
 
 def _run_cmd(args: list[str]) -> str:
     result = subprocess.run(
-        args, capture_output=True, text=True, encoding="utf-8", check=True,
+        args,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        check=True,
     )
     return result.stdout.strip()
 
 
 def _graphql(
-    run_cmd: Callable[[list[str]], str], query: str, **variables: str | int,
+    run_cmd: Callable[[list[str]], str],
+    query: str,
+    **variables: str | int,
 ) -> dict[str, Any]:
     args = ["gh", "api", "graphql"]
     for key, value in variables.items():
@@ -60,13 +66,20 @@ _PRS_TO_REVIEW_LABELS = {
 
 
 def _fetch_prs_to_review(
-    run_cmd: Callable[[list[str]], str], login: str,
+    run_cmd: Callable[[list[str]], str],
+    login: str,
 ) -> list[dict[str, Any]]:
-    output = run_cmd([
-        "gh", "pr", "list",
-        "--search", "is:open -author:@me draft:false",
-        "--json", "number,title,url,author,reviewRequests,reviewDecision",
-    ])
+    output = run_cmd(
+        [
+            "gh",
+            "pr",
+            "list",
+            "--search",
+            "is:open -author:@me draft:false",
+            "--json",
+            "number,title,url,author,reviewRequests,reviewDecision",
+        ],
+    )
     prs = json.loads(output)
 
     awaiting = []
@@ -101,22 +114,34 @@ _PR_STATE_LABELS = {
 }
 
 _THREAD_STATE_LABELS = {
-    "none": "None", "resolved": "Resolved", "unresolved": "Unresolved",
+    "none": "None",
+    "resolved": "Resolved",
+    "unresolved": "Unresolved",
 }
 
 _CHECKS_STATE_LABELS = {
-    "none": "None", "passing": "Passing", "pending": "Pending", "failing": "Failing",
+    "none": "None",
+    "passing": "Passing",
+    "pending": "Pending",
+    "failing": "Failing",
 }
 
 _CONFLICTING_LABELS = {True: "Yes", False: "No"}
 
 
 def _bucket_for(
-    state: str, threads: str, comments: str, *, conflicting: bool, checks: str,
+    state: str,
+    threads: str,
+    comments: str,
+    *,
+    conflicting: bool,
+    checks: str,
 ) -> str:
     needs_resolve = (
-        threads == "unresolved" or comments == "unresolved"
-        or conflicting or checks == "failing"
+        threads == "unresolved"
+        or comments == "unresolved"
+        or conflicting
+        or checks == "failing"
     )
     if needs_resolve:
         return "resolve_then_merge" if state == "approved" else "resolve"
@@ -146,13 +171,21 @@ def _linked_issue_for(pr: dict[str, Any]) -> dict[str, Any] | None:
 
 
 def _fetch_open_and_draft_prs(
-    run_cmd: Callable[[list[str]], str], owner: str, repo_name: str,
+    run_cmd: Callable[[list[str]], str],
+    owner: str,
+    repo_name: str,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
-    output = run_cmd([
-        "gh", "pr", "list",
-        "--search", "is:open author:@me",
-        "--json", "number,title,url,isDraft,closingIssuesReferences",
-    ])
+    output = run_cmd(
+        [
+            "gh",
+            "pr",
+            "list",
+            "--search",
+            "is:open author:@me",
+            "--json",
+            "number,title,url,isDraft,closingIssuesReferences",
+        ],
+    )
     prs = json.loads(output)
 
     your_open_prs = []
@@ -160,34 +193,43 @@ def _fetch_open_and_draft_prs(
     your_draft_prs = []
     for pr in prs:
         if bool(pr.get("isDraft")):
-            your_draft_prs.append({
-                "number": pr["number"],
-                "title": pr["title"],
-                "url": pr["url"],
-                "linked_issue": _linked_issue_for(pr),
-            })
+            your_draft_prs.append(
+                {
+                    "number": pr["number"],
+                    "title": pr["title"],
+                    "url": pr["url"],
+                    "linked_issue": _linked_issue_for(pr),
+                },
+            )
             continue
 
         review_state = fetch_review_state(
             lambda query, **variables: _graphql(run_cmd, query, **variables),
-            owner, repo_name, pr["number"],
+            owner,
+            repo_name,
+            pr["number"],
         )
         bucket = _bucket_for(
-            review_state["state"], review_state["threads"], review_state["comments"],
-            conflicting=review_state["conflicting"], checks=review_state["checks"],
+            review_state["state"],
+            review_state["threads"],
+            review_state["comments"],
+            conflicting=review_state["conflicting"],
+            checks=review_state["checks"],
         )
 
-        your_open_prs.append({
-            "number": pr["number"],
-            "title": pr["title"],
-            "url": pr["url"],
-            "state": _PR_STATE_LABELS[review_state["state"]],
-            "threads": _THREAD_STATE_LABELS[review_state["threads"]],
-            "comments": _THREAD_STATE_LABELS[review_state["comments"]],
-            "conflicting": _CONFLICTING_LABELS[review_state["conflicting"]],
-            "checks": _CHECKS_STATE_LABELS[review_state["checks"]],
-            "suggestion": _suggestion_for(bucket, pr["number"]),
-        })
+        your_open_prs.append(
+            {
+                "number": pr["number"],
+                "title": pr["title"],
+                "url": pr["url"],
+                "state": _PR_STATE_LABELS[review_state["state"]],
+                "threads": _THREAD_STATE_LABELS[review_state["threads"]],
+                "comments": _THREAD_STATE_LABELS[review_state["comments"]],
+                "conflicting": _CONFLICTING_LABELS[review_state["conflicting"]],
+                "checks": _CHECKS_STATE_LABELS[review_state["checks"]],
+                "suggestion": _suggestion_for(bucket, pr["number"]),
+            },
+        )
         ranks.append(_YOUR_PR_BUCKET_ORDER.index(bucket))
 
     order = sorted(range(len(your_open_prs)), key=lambda i: ranks[i])
@@ -205,10 +247,16 @@ def main() -> None:
     try:
         login = _resolve_login(_run_cmd)
         your_open_prs, your_draft_prs = _fetch_open_and_draft_prs(
-            _run_cmd, owner, repo_name,
+            _run_cmd,
+            owner,
+            repo_name,
         )
         backlog_data = fetch_backlog_issues(
-            _run_cmd, (owner, repo_name), project_owner, project_number, login,
+            _run_cmd,
+            (owner, repo_name),
+            project_owner,
+            project_number,
+            login,
         )
 
         result = {

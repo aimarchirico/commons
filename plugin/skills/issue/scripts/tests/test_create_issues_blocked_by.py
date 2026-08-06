@@ -14,6 +14,7 @@ def test_create_issue_recursive_records_id_and_pending_deps(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """An item's "id" is mapped to its issue number; blocked_by is queued."""
+
     def fake_run_cmd(_args: list[str]) -> str:
         return "https://github.com/acme/widgets/issues/101"
 
@@ -23,7 +24,10 @@ def test_create_issue_recursive_records_id_and_pending_deps(
 
     ci.create_issue_recursive(
         {"title": "Fix bug", "id": "fix", "blocked_by": ["migration"]},
-        None, "acme", _NO_PROJECT_INFO, (id_map, pending_deps),
+        None,
+        "acme",
+        _NO_PROJECT_INFO,
+        (id_map, pending_deps),
     )
 
     assert id_map == {"fix": "101"}
@@ -43,9 +47,16 @@ def test_wire_blocked_by_resolves_ids_and_edits_the_issue() -> None:
 
     ci.wire_blocked_by(fake_run_cmd, id_map, pending_deps)
 
-    assert calls == [[
-        "gh", "issue", "edit", "101", "--add-blocked-by", "100,99",
-    ]]
+    assert calls == [
+        [
+            "gh",
+            "issue",
+            "edit",
+            "101",
+            "--add-blocked-by",
+            "100,99",
+        ],
+    ]
 
 
 def test_wire_blocked_by_warns_and_skips_unresolved_ids(
@@ -68,6 +79,7 @@ def test_wire_blocked_by_warns_when_gh_edit_fails(
     capsys: pytest.CaptureFixture[str],
 ) -> None:
     """A failed gh issue edit is reported as a warning, not an exception."""
+
     def fake_run_cmd(_args: list[str]) -> str:
         raise subprocess.CalledProcessError(1, ["gh"])
 
@@ -83,20 +95,36 @@ def test_main_wires_blocked_by_across_sibling_issues(
 ) -> None:
     """main() resolves blocked_by ids to real issue numbers after creation."""
     issues_file = tmp_path / "issues.json"
-    issues_file.write_text(json.dumps({"items": [
-        {"title": "Migration", "id": "migration", "type": "Task", "priority": "P1"},
-        {
-            "title": "Endpoint", "id": "endpoint", "type": "Task", "priority": "P1",
-            "blocked_by": ["migration"],
-        },
-    ]}))
+    issues_file.write_text(
+        json.dumps(
+            {
+                "items": [
+                    {
+                        "title": "Migration",
+                        "id": "migration",
+                        "type": "Task",
+                        "priority": "P1",
+                    },
+                    {
+                        "title": "Endpoint",
+                        "id": "endpoint",
+                        "type": "Task",
+                        "priority": "P1",
+                        "blocked_by": ["migration"],
+                    },
+                ],
+            },
+        ),
+    )
     monkeypatch.setattr(sys, "argv", ["create_issues", str(issues_file)])
 
     _install_gh(monkeypatch, {})
-    urls = iter([
-        "https://github.com/acme/widgets/issues/101",
-        "https://github.com/acme/widgets/issues/102",
-    ])
+    urls = iter(
+        [
+            "https://github.com/acme/widgets/issues/101",
+            "https://github.com/acme/widgets/issues/102",
+        ],
+    )
     calls: list[list[str]] = []
     base_run_cmd = ci.run_cmd
 

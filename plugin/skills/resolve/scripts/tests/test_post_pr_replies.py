@@ -20,7 +20,8 @@ def test_post_replies_replies_to_each_thread_then_the_conversation() -> None:
         return _REPO_OUTPUT if args[:3] == ["gh", "repo", "view"] else "{}"
 
     ppr.post_replies(
-        fake_run_cmd, "42",
+        fake_run_cmd,
+        "42",
         [
             {"comment_id": 1, "thread_id": "T_1", "body": "fixed"},
             {"comment_id": 2, "thread_id": "T_2", "body": "done"},
@@ -37,8 +38,7 @@ def test_post_replies_replies_to_each_thread_then_the_conversation() -> None:
     assert conversation_call[0][2] == "repos/acme/widgets/issues/42/comments"
     assert json.loads(conversation_call[1] or "") == {
         "body": (
-            "## Resolution summary\n\n"
-            "Resolved. Addressed the null-check feedback."
+            "## Resolution summary\n\nResolved. Addressed the null-check feedback."
         ),
     }
 
@@ -53,7 +53,8 @@ def test_post_replies_resolves_each_unique_thread_once() -> None:
         return _REPO_OUTPUT if args[:3] == ["gh", "repo", "view"] else "{}"
 
     ppr.post_replies(
-        fake_run_cmd, "42",
+        fake_run_cmd,
+        "42",
         [
             {"comment_id": 1, "thread_id": "T_1", "body": "fixed"},
             {"comment_id": 2, "thread_id": "T_1", "body": "also fixed"},
@@ -96,11 +97,15 @@ def test_request_re_reviews_requests_from_all_reviewers_except_the_user() -> Non
         del input_text
         calls.append(args)
         if args[:3] == ["gh", "pr", "view"]:
-            return json.dumps({"reviews": [
-                {"author": {"login": "alice"}},
-                {"author": {"login": "bob"}},
-                {"author": {"login": "alice"}},
-            ]})
+            return json.dumps(
+                {
+                    "reviews": [
+                        {"author": {"login": "alice"}},
+                        {"author": {"login": "bob"}},
+                        {"author": {"login": "alice"}},
+                    ],
+                },
+            )
         return "bob"
 
     ppr.request_re_reviews(fake_run_cmd, "42")
@@ -118,7 +123,8 @@ def test_main_exits_when_args_missing(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_main_exits_when_gh_is_not_installed(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
 ) -> None:
     """main() fails fast when the gh CLI isn't on PATH."""
     replies_file = tmp_path / "replies.json"
@@ -131,7 +137,8 @@ def test_main_exits_when_gh_is_not_installed(
 
 
 def test_main_exits_when_json_file_is_invalid(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
 ) -> None:
     """main() exits cleanly when the replies file isn't valid JSON."""
     replies_file = tmp_path / "replies.json"
@@ -150,9 +157,14 @@ def test_main_posts_replies_and_deletes_the_file_on_success(
 ) -> None:
     """main() posts replies, prints a confirmation, and cleans up the file."""
     replies_file = tmp_path / "replies.json"
-    replies_file.write_text(json.dumps({
-        "thread_replies": [], "conversation_summary": "",
-    }))
+    replies_file.write_text(
+        json.dumps(
+            {
+                "thread_replies": [],
+                "conversation_summary": "",
+            },
+        ),
+    )
     monkeypatch.setattr(sys, "argv", ["post_pr_replies", "42", str(replies_file)])
     monkeypatch.setattr(ppr.shutil, "which", lambda _name: "/usr/bin/gh")
 
@@ -169,13 +181,19 @@ def test_main_posts_replies_and_deletes_the_file_on_success(
 
 
 def test_main_exits_and_cleans_up_when_gh_command_fails(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
 ) -> None:
     """main() exits and still deletes the file when the gh call fails."""
     replies_file = tmp_path / "replies.json"
-    replies_file.write_text(json.dumps({
-        "thread_replies": [], "conversation_summary": "",
-    }))
+    replies_file.write_text(
+        json.dumps(
+            {
+                "thread_replies": [],
+                "conversation_summary": "",
+            },
+        ),
+    )
     monkeypatch.setattr(sys, "argv", ["post_pr_replies", "42", str(replies_file)])
     monkeypatch.setattr(ppr.shutil, "which", lambda _name: "/usr/bin/gh")
 

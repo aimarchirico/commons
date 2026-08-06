@@ -83,18 +83,22 @@ def fetch_issue_dependencies(
         ]
     """
     args = [
-        "gh", "api", "graphql",
-        "-f", f"query={BLOCKING_PRS_QUERY}",
-        "-f", f"owner={owner}",
-        "-f", f"repo={repo_name}",
-        "-F", f"number={number}",
+        "gh",
+        "api",
+        "graphql",
+        "-f",
+        f"query={BLOCKING_PRS_QUERY}",
+        "-f",
+        f"owner={owner}",
+        "-f",
+        f"repo={repo_name}",
+        "-F",
+        f"number={number}",
     ]
     try:
         output = run_cmd(args)
         data = json.loads(output)
-        issue_data = (
-            data.get("data", {}).get("repository", {}).get("issue") or {}
-        )
+        issue_data = data.get("data", {}).get("repository", {}).get("issue") or {}
     except (json.JSONDecodeError, KeyError, AttributeError):
         return {"blocked_by": [], "blocking": []}
 
@@ -122,12 +126,14 @@ def fetch_issue_dependencies(
                     }
                     break
 
-        blocked_by_list.append({
-            "number": node.get("number"),
-            "url": node.get("url"),
-            "title": node.get("title"),
-            "open_pr": open_pr,
-        })
+        blocked_by_list.append(
+            {
+                "number": node.get("number"),
+                "url": node.get("url"),
+                "title": node.get("title"),
+                "open_pr": open_pr,
+            },
+        )
 
     blocking_list = [
         {
