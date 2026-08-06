@@ -134,11 +134,7 @@ def test_main_prints_type_to_stdout(
 ) -> None:
     """main() prints the resolved Type to stdout on success."""
     monkeypatch.setattr(sys, "argv", ["get_issue_type", "42"])
-    monkeypatch.setattr(
-        git.project_preflight.shutil,
-        "which",
-        lambda _name: "/usr/bin/gh",
-    )
+    monkeypatch.setattr(git.project_preflight, "check_cli_dependencies", lambda: None)
 
     def fake_run_cmd(args: list[str]) -> str:
         return _mock_cmd_handler(args, "Story")
@@ -156,11 +152,7 @@ def test_main_warns_to_stderr_when_no_type_found(
 ) -> None:
     """main() warns on stderr, without raising, when no Type field is found."""
     monkeypatch.setattr(sys, "argv", ["get_issue_type", "42"])
-    monkeypatch.setattr(
-        git.project_preflight.shutil,
-        "which",
-        lambda _name: "/usr/bin/gh",
-    )
+    monkeypatch.setattr(git.project_preflight, "check_cli_dependencies", lambda: None)
 
     def fake_run_cmd(args: list[str]) -> str:
         return _mock_cmd_handler(args, None)
