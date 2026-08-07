@@ -118,7 +118,10 @@ def fetch_backlog_issues(
 
         priority = item.get("priority") or "Unset"
         blocking_count = len(blocking_items)
-        blocking_str = f"{blocking_count} issue{'s' if blocking_count != 1 else ''}" if blocking_count else NO_BLOCKERS
+        suffix = "s" if blocking_count != 1 else ""
+        blocking_str = (
+            f"{blocking_count} issue{suffix}" if blocking_count else NO_BLOCKERS
+        )
 
         entry = {
             "number": number,

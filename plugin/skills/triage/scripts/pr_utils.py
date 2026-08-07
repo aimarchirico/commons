@@ -306,3 +306,94 @@ def fetch_open_and_draft_prs(
         "pending_approval": sub_cats["pending_approval"],
         "stacked_queue": sub_cats["stacked_queue"],
     }
+
+
+def _downstream_issues(
+    closing_nums: set[int],
+    issue_to_downstream: dict[int, list[dict[str, Any]]],
+) -> dict[int, dict[str, Any]]:
+    """Collect all open issues downstream of a PR's closing issues."""
+    result: dict[int, dict[str, Any]] = {}
+    for cnum in closing_nums:
+        for ds in issue_to_downstream.get(cnum, []):
+            ds_num = ds.get("number")
+            if ds_num is not None:
+                result[ds_num] = ds
+    return result
+
+
+def _blocking_prs_for(
+    pr_number: int,
+    downstream: dict[int, dict[str, Any]],
+    issue_to_closing_prs: dict[int, list[int]],
+) -> set[int]:
+    """Find other open PRs that close any issue downstream of this PR."""
+    result: set[int] = set()
+    for ds_num in downstream:
+        for other_pr in issue_to_closing_prs.get(ds_num, []):
+            if other_pr != pr_number:
+                result.add(other_pr)
+    return result
+
+
+def _covered_issue_nums(
+    blocking_pr_nums: set[int],
+    pr_entries: list[dict[str, Any]],
+) -> set[int]:
+    """Collect issues already covered by a set of blocking PRs."""
+    covered: set[int] = set()
+    for bpr_num in blocking_pr_nums:
+        for bpr in pr_entries:
+            if bpr["number"] == bpr_num:
+                for ci in bpr.get("_closing_issues", []):
+                    covered.add(ci["number"])
+    return covered
+
+
+def _format_blocking(pr_count: int, issue_count: int) -> str:
+    """Format a 'blocking' string, omitting zero parts; 'None' if both zero."""
+    parts = []
+    if pr_count:
+        parts.append(f"{pr_count} PR{'s' if pr_count != 1 else ''}")
+    if issue_count:
+        parts.append(f"{issue_count} issue{'s' if issue_count != 1 else ''}")
+    return ", ".join(parts) if parts else "None"
+
+
+def apply_pr_blocking(
+    pr_entries: list[dict[str, Any]],
+    backlog_issues: list[dict[str, Any]],
+) -> None:
+    """Populate the 'blocking' field on each PR entry in-place.
+
+    For a PR that closes issues C1, C2, ...:
+    - downstream  = union of open issues blocked by any Ci (from backlog data)
+    - blocking PRs = other open PRs that close any downstream issue
+    - issue count  = downstream issues not already closed by a blocking PR
+
+    Sets 'blocking' to "None" if both counts are zero.
+    """
+    issue_to_downstream: dict[int, list[dict[str, Any]]] = {
+        issue["number"]: issue.get("_blocking_items", [])
+        for issue in backlog_issues
+        if issue.get("number") is not None
+    }
+
+    issue_to_closing_prs: dict[int, list[int]] = {}
+    for pr in pr_entries:
+        for ci in pr.get("_closing_issues", []):
+            issue_to_closing_prs.setdefault(ci["number"], []).append(pr["number"])
+
+    for pr in pr_entries:
+        closing_nums = {ci["number"] for ci in pr.get("_closing_issues", [])}
+        if not closing_nums:
+            pr["blocking"] = "None"
+            continue
+
+        downstream = _downstream_issues(closing_nums, issue_to_downstream)
+        blocking_pr_nums = _blocking_prs_for(
+            pr["number"], downstream, issue_to_closing_prs
+        )
+        covered = _covered_issue_nums(blocking_pr_nums, pr_entries)
+        uncovered = sum(1 for n in downstream if n not in covered)
+        pr["blocking"] = _format_blocking(len(blocking_pr_nums), uncovered)
