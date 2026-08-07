@@ -294,7 +294,7 @@ def test_format_blocked_by_multiple_prs() -> None:
     pr26 = {"number": 26, "url": "https://github.com/acme/repo/pull/26"}
     items = [{"number": 10, "open_pr": pr25}, {"number": 11, "open_pr": pr26}]
     assert (
-        bu._format_blocked_by(items)  # noqa: SLF001
+        bu._format_blocked_by(items)
         == "PR [#25](https://github.com/acme/repo/pull/25), [#26](https://github.com/acme/repo/pull/26)"
     )
 
