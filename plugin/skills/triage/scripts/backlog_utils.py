@@ -124,6 +124,7 @@ def fetch_backlog_issues(
             "number": number,
             "title": content.get("title"),
             "url": content.get("url"),
+            "item": f"[#{number}]({content.get('url')}) {content.get('title')}",
             "assignee": ASSIGNEE_YOU if is_mine else ASSIGNEE_UNASSIGNED,
             "priority": priority,
             "blocked_by": _format_blocked_by(blocked_by_items),
