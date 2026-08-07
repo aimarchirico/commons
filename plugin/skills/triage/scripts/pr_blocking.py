@@ -60,8 +60,10 @@ def apply_pr_blocking(
 
     For a PR that closes issues C1, C2, ...:
     - downstream  = union of open issues blocked by any Ci (from backlog data)
-    - blocking PRs = other open PRs that close any downstream issue
-    - issue count  = downstream issues not already closed by a blocking PR
+    - blocked_backlog = backlog issues that list this PR in their blocked_by items
+    - all_blocked = downstream ∪ blocked_backlog
+    - blocking PRs = other open PRs that close any all_blocked issue
+    - issue count  = all_blocked issues not already closed by a blocking PR
 
     Sets 'blocking' to "None" if both counts are zero.
     """
@@ -76,6 +78,15 @@ def apply_pr_blocking(
         for ci in pr.get("_closing_issues", []):
             issue_to_closing_prs.setdefault(ci["number"], []).append(pr["number"])
 
+    pr_to_blocked_backlog: dict[int, set[int]] = {}
+    for issue in backlog_issues:
+        for blocker in issue.get("_blocked_by_items", []):
+            open_pr = blocker.get("open_pr")
+            if open_pr is not None:
+                pr_num = open_pr.get("number")
+                if pr_num is not None:
+                    pr_to_blocked_backlog.setdefault(pr_num, set()).add(issue["number"])
+
     for pr in pr_entries:
         closing_nums = {ci["number"] for ci in pr.get("_closing_issues", [])}
         if not closing_nums:
@@ -83,9 +94,11 @@ def apply_pr_blocking(
             continue
 
         downstream = _downstream_issues(closing_nums, issue_to_downstream)
+        blocked_backlog = pr_to_blocked_backlog.get(pr["number"], set())
+        all_blocked = set(downstream.keys()) | blocked_backlog
         blocking_pr_nums = _blocking_prs_for(
-            pr["number"], downstream, issue_to_closing_prs,
+            pr["number"], {n: {} for n in all_blocked}, issue_to_closing_prs,
         )
         covered = _covered_issue_nums(blocking_pr_nums, pr_entries)
-        uncovered = sum(1 for n in downstream if n not in covered)
+        uncovered = sum(1 for n in all_blocked if n not in covered)
         pr["blocking"] = _format_blocking(len(blocking_pr_nums), uncovered)
