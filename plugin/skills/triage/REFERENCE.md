@@ -3,11 +3,12 @@
 Start the output with a summary header:
 
 ```markdown
-### Triage Survey: `<owner>/<repo>`
+**Triage Survey**: `<owner>/<repo>`
+
 * **User**: `@<login>`
 * **Status**: <count> active item/items needing attention
-  [(<assigned_to_others_count> issue/issues assigned to others, and
-  <fully_blocked_count> blocked issue/issues hidden)]
+  (<assigned_to_others_count> issue/issues assigned to others, and
+  <fully_blocked_count> blocked issue/issues hidden)
 ```
 
 Use "item" when `<count>` is 1, "items" otherwise. Apply the same singular/plural
