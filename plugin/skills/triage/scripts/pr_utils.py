@@ -146,7 +146,7 @@ def _classify_open_pr(
     pr: dict[str, Any],
     review_state: dict[str, Any],
     default_branch: str,
-    head_to_pr_num: dict[str, int],
+    head_to_pr_info: dict[str, dict[str, Any]],
 ) -> tuple[str, dict[str, Any]]:
     pr_number = pr["number"]
 
@@ -161,7 +161,7 @@ def _classify_open_pr(
 
     base_branch = pr.get("baseRefName", default_branch)
     is_default_target = base_branch == default_branch
-    stacked_on_num = head_to_pr_num.get(base_branch)
+    stacked_on_pr = head_to_pr_info.get(base_branch)
 
     has_blockers = (tech_blockers != TECHNICAL_BLOCKERS["NONE"]) or (
         rev_blockers != REVIEW_BLOCKERS["NONE"]
@@ -197,9 +197,15 @@ def _classify_open_pr(
         )
         return "pending_approval", base_entry
 
-    base_entry["stacked_on"] = (
-        f"PR #{stacked_on_num}" if stacked_on_num else base_branch
-    )
+    if stacked_on_pr:
+        num = stacked_on_pr["number"]
+        url = stacked_on_pr.get("url")
+        link = f"[#{num}]({url})" if url else f"#{num}"
+        stacked_on_str = f"PR {link}"
+    else:
+        stacked_on_str = base_branch
+
+    base_entry["stacked_on"] = stacked_on_str
     base_entry["suggestion"] = (
         f"Self-review the PR with `/commons:review --pr {pr_number}`"
     )
@@ -227,8 +233,10 @@ def fetch_open_and_draft_prs(
     )
     prs = json.loads(output)
 
-    head_to_pr_num = {
-        pr["headRefName"]: pr["number"] for pr in prs if "headRefName" in pr
+    head_to_pr_info = {
+        pr["headRefName"]: {"number": pr["number"], "url": pr.get("url")}
+        for pr in prs
+        if "headRefName" in pr
     }
 
     your_open_prs = []
@@ -269,7 +277,7 @@ def fetch_open_and_draft_prs(
             pr,
             review_state,
             default_branch,
-            head_to_pr_num,
+            head_to_pr_info,
         )
         sub_cats[cat_key].append(entry)
         your_open_prs.append(entry)

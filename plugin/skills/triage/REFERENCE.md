@@ -111,7 +111,7 @@ been merged yet.
 
 | Item | Stacked on | Priority | Blocking | Suggestion |
 | :--- | :--------- | :------- | :------- | :--------- |
-| `[#<number>](<url>) <title>` | `PR #<stacked_on>` | `<priority>` | `<blocking>` | Self-review the PR with `/commons:review --pr <number>` |
+| `[#<number>](<url>) <title>` | `<stacked_on>` | `<priority>` | `<blocking>` | Self-review the PR with `/commons:review --pr <number>` |
 
 ---
 
