@@ -168,7 +168,7 @@ def _classify_open_pr(
         "url": pr["url"],
         "item": f"[#{pr_number}]({pr['url']}) {pr['title']}",
         "priority": "Medium",
-        "blocking": "0 PRs, 0 issues",
+        "blocking": "None",
         "technical_blockers": tech_blockers,
         "review_blockers": rev_blockers,
         "state": review_state["state"].capitalize(),
@@ -207,6 +207,16 @@ def _classify_open_pr(
     return "stacked_queue", base_entry
 
 
+def _sort_blockers(item: dict[str, Any]) -> tuple[int, int, int]:
+    t_rank = TECH_BLOCKER_RANK.get(item["technical_blockers"], 3)
+    r_rank = REV_BLOCKER_RANK.get(item["review_blockers"], 3)
+    p_rank = PRIORITY_RANK.get(item["priority"], 3)
+    return (t_rank, r_rank, p_rank)
+
+def _sort_std(item: dict[str, Any]) -> int:
+    return PRIORITY_RANK.get(item["priority"], 3)
+
+
 def fetch_open_and_draft_prs(
     run_cmd: Callable[[list[str]], str],
     graphql_fn: Callable[..., dict[str, Any]],
@@ -230,7 +240,6 @@ def fetch_open_and_draft_prs(
 
     your_open_prs = []
     your_draft_prs = []
-
     sub_cats: dict[str, list[dict[str, Any]]] = {
         "merge_ready": [],
         "merge_blockers": [],
@@ -244,19 +253,23 @@ def fetch_open_and_draft_prs(
         linked = linked_issue_for(pr)
 
         if bool(pr.get("isDraft")):
+            closing = [
+                {"number": r["number"], "url": r.get("url", "")}
+                for r in pr.get("closingIssuesReferences") or []
+            ]
             draft_entry = {
                 "number": pr_number,
                 "title": pr["title"],
                 "url": pr["url"],
                 "item": f"[#{pr_number}]({pr['url']}) {pr['title']}",
                 "priority": "Medium",
-                "blocking": "0 PRs, 0 issues",
+                "blocking": "None",
                 "linked_issue": linked,
+                "_closing_issues": closing,
             }
             your_draft_prs.append(draft_entry)
             sub_cats["draft_prs"].append(draft_entry)
             continue
-
         review_state = fetch_review_state(
             graphql_fn,
             owner,
@@ -269,30 +282,17 @@ def fetch_open_and_draft_prs(
             default_branch,
             head_to_pr_info,
         )
+        entry["_closing_issues"] = [
+            {"number": r["number"], "url": r.get("url", "")}
+            for r in pr.get("closingIssuesReferences") or []
+        ]
         sub_cats[cat_key].append(entry)
         your_open_prs.append(entry)
-
-    def sort_blockers(item: dict[str, Any]) -> tuple[int, int, int]:
-        t_rank = TECH_BLOCKER_RANK.get(item["technical_blockers"], 3)
-        r_rank = REV_BLOCKER_RANK.get(item["review_blockers"], 3)
-        p_rank = PRIORITY_RANK.get(item["priority"], 3)
-        return (t_rank, r_rank, p_rank)
-
-    def sort_std(item: dict[str, Any]) -> int:
-        return PRIORITY_RANK.get(item["priority"], 3)
-
-    sub_cats["merge_ready"].sort(key=sort_std)
-    sub_cats["merge_blockers"].sort(key=sort_blockers)
-    sub_cats["draft_prs"].sort(key=sort_std)
-    sub_cats["pending_approval"].sort(key=sort_std)
-    sub_cats["stacked_queue"].sort(key=sort_std)
-
+    for cat in ("merge_ready", "draft_prs", "pending_approval", "stacked_queue"):
+        sub_cats[cat].sort(key=_sort_std)
+    sub_cats["merge_blockers"].sort(key=_sort_blockers)
     return {
         "your_open_prs": your_open_prs,
         "your_draft_prs": your_draft_prs,
-        "merge_ready": sub_cats["merge_ready"],
-        "merge_blockers": sub_cats["merge_blockers"],
-        "draft_prs": sub_cats["draft_prs"],
-        "pending_approval": sub_cats["pending_approval"],
-        "stacked_queue": sub_cats["stacked_queue"],
+        **{k: sub_cats[k] for k in sub_cats},
     }

@@ -11,7 +11,12 @@ from types import ModuleType
 from typing import Any
 
 from backlog_utils import fetch_backlog_issues
-from pr_utils import fetch_default_branch, fetch_open_and_draft_prs, fetch_prs_to_review
+from pr_blocking import apply_pr_blocking
+from pr_utils import (
+    fetch_default_branch,
+    fetch_open_and_draft_prs,
+    fetch_prs_to_review,
+)
 
 
 def _load_project_preflight() -> ModuleType:
@@ -84,6 +89,9 @@ def main() -> None:
             login,
         )
         prs_to_review = fetch_prs_to_review(_run_cmd, login)
+
+        all_your_prs = pr_data["your_open_prs"] + pr_data["your_draft_prs"]
+        apply_pr_blocking(all_your_prs, backlog_data["backlog_issues"])
 
         categories = {
             "action_required": {

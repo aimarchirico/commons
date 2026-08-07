@@ -5,13 +5,16 @@ Start the output with a summary header:
 ```markdown
 ### Triage Survey: `<owner>/<repo>`
 * **User**: `@<login>`
-* **Status**: <count> active item(s) needing attention
-  [(<assigned_to_others_count> issue(s) assigned to others, and
-  <fully_blocked_count> blocked issue(s) hidden)]
+* **Status**: <count> active item/items needing attention
+  [(<assigned_to_others_count> issue/issues assigned to others, and
+  <fully_blocked_count> blocked issue/issues hidden)]
 ```
 
+Use "item" when `<count>` is 1, "items" otherwise. Apply the same singular/plural
+rule to "issue/issues" in the parenthetical note.
+
 If `assigned_to_others_count` or `fully_blocked_count` are greater than 0,
-include them in parenthetical notes after `<count> active item(s) needing
+include them in parenthetical notes after `<count> active item/items needing
 attention` (joining non-zero items cleanly with ", and "). If both are 0, omit
 the parenthetical note entirely.
 

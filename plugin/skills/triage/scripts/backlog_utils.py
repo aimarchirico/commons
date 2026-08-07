@@ -49,6 +49,11 @@ def _format_blocked_by(
     return ", ".join(formatted)
 
 
+def _format_blocking_issues(count: int) -> str:
+    suffix = "s" if count != 1 else ""
+    return f"{count} issue{suffix}"
+
+
 def fetch_backlog_issues(
     run_cmd: Callable[[list[str]], str],
     repo: tuple[str, str],
@@ -118,7 +123,7 @@ def fetch_backlog_issues(
 
         priority = item.get("priority") or "Unset"
         blocking_count = len(blocking_items)
-        blocking_str = f"{blocking_count} issues"
+        blocking_str = _format_blocking_issues(blocking_count)
 
         entry = {
             "number": number,
@@ -130,6 +135,7 @@ def fetch_backlog_issues(
             "blocked_by": _format_blocked_by(blocked_by_items),
             "blocking": blocking_str,
             "blocking_count": blocking_count,
+            "_blocking_items": blocking_items,
             "suggestion": f"Solve issue with `/commons:solve --issue {number}`",
         }
         entries.append(entry)
