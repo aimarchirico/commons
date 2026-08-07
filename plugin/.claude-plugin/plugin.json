@@ -1,6 +1,6 @@
 {
   "name": "commons",
-  "description": "Development lifecycle skills: commit, docs, issue, pr, resolve, ship, solve",
+  "description": "Development lifecycle and code review skills for issues, PRs, implementation, and project management",
   "author": {
     "name": "aimarchirico"
   }
