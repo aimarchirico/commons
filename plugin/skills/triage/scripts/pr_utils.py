@@ -168,7 +168,7 @@ def _classify_open_pr(
         "url": pr["url"],
         "item": f"[#{pr_number}]({pr['url']}) {pr['title']}",
         "priority": "Medium",
-        "blocking": "0 PRs, 0 issues",
+        "blocking": "None",
         "technical_blockers": tech_blockers,
         "review_blockers": rev_blockers,
         "state": review_state["state"].capitalize(),
@@ -244,14 +244,19 @@ def fetch_open_and_draft_prs(
         linked = linked_issue_for(pr)
 
         if bool(pr.get("isDraft")):
+            closing = [
+                {"number": r["number"], "url": r.get("url", "")}
+                for r in pr.get("closingIssuesReferences") or []
+            ]
             draft_entry = {
                 "number": pr_number,
                 "title": pr["title"],
                 "url": pr["url"],
                 "item": f"[#{pr_number}]({pr['url']}) {pr['title']}",
                 "priority": "Medium",
-                "blocking": "0 PRs, 0 issues",
+                "blocking": "None",
                 "linked_issue": linked,
+                "_closing_issues": closing,
             }
             your_draft_prs.append(draft_entry)
             sub_cats["draft_prs"].append(draft_entry)
@@ -269,6 +274,11 @@ def fetch_open_and_draft_prs(
             default_branch,
             head_to_pr_info,
         )
+        # Attach closing issues for post-processing in collect_triage.py
+        entry["_closing_issues"] = [
+            {"number": r["number"], "url": r.get("url", "")}
+            for r in pr.get("closingIssuesReferences") or []
+        ]
         sub_cats[cat_key].append(entry)
         your_open_prs.append(entry)
 

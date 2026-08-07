@@ -57,6 +57,80 @@ def _resolve_login(run_cmd: Callable[[list[str]], str]) -> str:
     return run_cmd(["gh", "api", "user", "--jq", ".login"])
 
 
+def _format_blocking(pr_count: int, issue_count: int) -> str:
+    """Format a 'blocking' string, omitting zero parts; 'None' if both zero."""
+    parts = []
+    if pr_count:
+        parts.append(f"{pr_count} PR{'s' if pr_count != 1 else ''}")
+    if issue_count:
+        parts.append(f"{issue_count} issue{'s' if issue_count != 1 else ''}")
+    return ", ".join(parts) if parts else "None"
+
+
+def _compute_pr_blocking(
+    pr_entries: list[dict[str, Any]],
+    backlog_issues: list[dict[str, Any]],
+) -> None:
+    """Populate the 'blocking' field on each PR entry in-place.
+
+    For a PR that closes issues C1, C2, ...:
+    - downstream_issues = union of open issues blocked by any Ci
+    - blocking_prs      = other open PRs (from pr_entries) that close any
+                          issue in downstream_issues
+    - final issue count = downstream_issues NOT already closed by a blocking PR
+
+    Sets blocking to "None" if both counts are zero.
+    """
+    # issue_number -> list of downstream blocking issue dicts
+    issue_to_downstream: dict[int, list[dict[str, Any]]] = {}
+    for issue in backlog_issues:
+        num = issue.get("number")
+        if num is not None:
+            issue_to_downstream[num] = issue.get("_blocking_items", [])
+
+    # issue_number -> list of PR numbers (from your open PRs) that close it
+    issue_to_closing_prs: dict[int, list[int]] = {}
+    for pr in pr_entries:
+        for ci in pr.get("_closing_issues", []):
+            ci_num = ci["number"]
+            issue_to_closing_prs.setdefault(ci_num, []).append(pr["number"])
+
+    for pr in pr_entries:
+        closing_nums = {ci["number"] for ci in pr.get("_closing_issues", [])}
+        if not closing_nums:
+            pr["blocking"] = "None"
+            continue
+
+        # All downstream issues blocked by any of this PR's closing issues
+        downstream: dict[int, dict[str, Any]] = {}
+        for cnum in closing_nums:
+            for ds in issue_to_downstream.get(cnum, []):
+                ds_num = ds.get("number")
+                if ds_num is not None:
+                    downstream[ds_num] = ds
+
+        # Other PRs that close any downstream issue
+        blocking_pr_nums: set[int] = set()
+        for ds_num in downstream:
+            for other_pr in issue_to_closing_prs.get(ds_num, []):
+                if other_pr != pr["number"]:
+                    blocking_pr_nums.add(other_pr)
+
+        # Issues already covered by a blocking PR don't count toward issue total
+        covered_by_pr: set[int] = set()
+        for bpr_num in blocking_pr_nums:
+            for bpr in pr_entries:
+                if bpr["number"] == bpr_num:
+                    for ci in bpr.get("_closing_issues", []):
+                        covered_by_pr.add(ci["number"])
+
+        uncovered_issues = sum(
+            1 for ds_num in downstream if ds_num not in covered_by_pr
+        )
+
+        pr["blocking"] = _format_blocking(len(blocking_pr_nums), uncovered_issues)
+
+
 def main() -> None:
     """Main entry point for printing the triage survey as JSON."""
     preflight = run_project_preflight(_run_cmd, require_fields=False)
@@ -84,6 +158,10 @@ def main() -> None:
             login,
         )
         prs_to_review = fetch_prs_to_review(_run_cmd, login)
+
+        # Compute accurate blocking counts for all your PRs using backlog deps
+        all_your_prs = pr_data["your_open_prs"] + pr_data["your_draft_prs"]
+        _compute_pr_blocking(all_your_prs, backlog_data["backlog_issues"])
 
         categories = {
             "action_required": {

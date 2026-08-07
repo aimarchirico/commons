@@ -118,7 +118,7 @@ def fetch_backlog_issues(
 
         priority = item.get("priority") or "Unset"
         blocking_count = len(blocking_items)
-        blocking_str = f"{blocking_count} issues"
+        blocking_str = f"{blocking_count} issue{'s' if blocking_count != 1 else ''}" if blocking_count else NO_BLOCKERS
 
         entry = {
             "number": number,
@@ -130,6 +130,7 @@ def fetch_backlog_issues(
             "blocked_by": _format_blocked_by(blocked_by_items),
             "blocking": blocking_str,
             "blocking_count": blocking_count,
+            "_blocking_items": blocking_items,
             "suggestion": f"Solve issue with `/commons:solve --issue {number}`",
         }
         entries.append(entry)
