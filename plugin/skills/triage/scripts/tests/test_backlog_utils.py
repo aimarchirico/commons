@@ -192,7 +192,28 @@ def test_fetch_backlog_issues_excludes_issues_with_open_blocker_without_pr() -> 
 
 
 def test_fetch_backlog_issues_includes_issue_blocked_by_open_pr() -> None:
-    """An issue blocked by an open issue that has an open PR is included."""
+    """Multiple blocking issues with PRs format as PR [#n](url), [#m](url)."""
+
+    def blocking_issue_node(num: int, pr_num: int) -> dict:
+        return {
+            "number": num,
+            "state": "OPEN",
+            "url": f"https://github.com/acme/repo/issues/{num}",
+            "timelineItems": {
+                "nodes": [
+                    {
+                        "willCloseTarget": True,
+                        "source": {
+                            "number": pr_num,
+                            "state": "OPEN",
+                            "headRefName": f"pr-{pr_num}",
+                            "url": f"https://github.com/acme/repo/pull/{pr_num}",
+                        },
+                    },
+                ],
+            },
+        }
+
     project_items = json.dumps(
         {
             "items": [
@@ -219,24 +240,8 @@ def test_fetch_backlog_issues_includes_issue_blocked_by_open_pr() -> None:
                     "issue": {
                         "blockedBy": {
                             "nodes": [
-                                {
-                                    "number": 10,
-                                    "state": "OPEN",
-                                    "url": "https://github.com/acme/repo/issues/10",
-                                    "timelineItems": {
-                                        "nodes": [
-                                            {
-                                                "willCloseTarget": True,
-                                                "source": {
-                                                    "number": 25,
-                                                    "state": "OPEN",
-                                                    "headRefName": "feature/auth-api",
-                                                    "url": "https://github.com/acme/repo/pull/25",
-                                                },
-                                            },
-                                        ],
-                                    },
-                                },
+                                blocking_issue_node(10, 25),
+                                blocking_issue_node(11, 26),
                             ],
                         },
                         "blocking": {"nodes": []},
@@ -253,7 +258,10 @@ def test_fetch_backlog_issues_includes_issue_blocked_by_open_pr() -> None:
 
     result = bu.fetch_backlog_issues(fake_run_cmd, _REPO, "acme", _PROJECT_NUM, _LOGIN)
     issues = result["backlog_issues"]
-    assert issues[0]["blocked_by"] == "PR [#25](https://github.com/acme/repo/pull/25)"
+    assert (
+        issues[0]["blocked_by"]
+        == "PR [#25](https://github.com/acme/repo/pull/25), [#26](https://github.com/acme/repo/pull/26)"
+    )
     assert issues[0]["blocking"] == "0 issues"
 
 
@@ -286,15 +294,4 @@ def test_fetch_backlog_issues_renders_null_priority_as_unset() -> None:
     result = bu.fetch_backlog_issues(fake_run_cmd, _REPO, "acme", _PROJECT_NUM, _LOGIN)
     issues = result["backlog_issues"]
     assert issues[0]["priority"] == "Unset"
-
-
-def test_format_blocked_by_multiple_prs() -> None:
-    """Multiple blocking PRs are formatted as PR [#n](url), [#m](url)."""
-    pr25 = {"number": 25, "url": "https://github.com/acme/repo/pull/25"}
-    pr26 = {"number": 26, "url": "https://github.com/acme/repo/pull/26"}
-    items = [{"number": 10, "open_pr": pr25}, {"number": 11, "open_pr": pr26}]
-    assert (
-        bu._format_blocked_by(items)
-        == "PR [#25](https://github.com/acme/repo/pull/25), [#26](https://github.com/acme/repo/pull/26)"
-    )
 
