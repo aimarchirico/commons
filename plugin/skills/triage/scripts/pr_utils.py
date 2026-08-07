@@ -207,6 +207,16 @@ def _classify_open_pr(
     return "stacked_queue", base_entry
 
 
+def _sort_blockers(item: dict[str, Any]) -> tuple[int, int, int]:
+    t_rank = TECH_BLOCKER_RANK.get(item["technical_blockers"], 3)
+    r_rank = REV_BLOCKER_RANK.get(item["review_blockers"], 3)
+    p_rank = PRIORITY_RANK.get(item["priority"], 3)
+    return (t_rank, r_rank, p_rank)
+
+def _sort_std(item: dict[str, Any]) -> int:
+    return PRIORITY_RANK.get(item["priority"], 3)
+
+
 def fetch_open_and_draft_prs(
     run_cmd: Callable[[list[str]], str],
     graphql_fn: Callable[..., dict[str, Any]],
@@ -230,7 +240,6 @@ def fetch_open_and_draft_prs(
 
     your_open_prs = []
     your_draft_prs = []
-
     sub_cats: dict[str, list[dict[str, Any]]] = {
         "merge_ready": [],
         "merge_blockers": [],
@@ -261,7 +270,6 @@ def fetch_open_and_draft_prs(
             your_draft_prs.append(draft_entry)
             sub_cats["draft_prs"].append(draft_entry)
             continue
-
         review_state = fetch_review_state(
             graphql_fn,
             owner,
@@ -274,126 +282,17 @@ def fetch_open_and_draft_prs(
             default_branch,
             head_to_pr_info,
         )
-        # Attach closing issues for post-processing in collect_triage.py
         entry["_closing_issues"] = [
             {"number": r["number"], "url": r.get("url", "")}
             for r in pr.get("closingIssuesReferences") or []
         ]
         sub_cats[cat_key].append(entry)
         your_open_prs.append(entry)
-
-    def sort_blockers(item: dict[str, Any]) -> tuple[int, int, int]:
-        t_rank = TECH_BLOCKER_RANK.get(item["technical_blockers"], 3)
-        r_rank = REV_BLOCKER_RANK.get(item["review_blockers"], 3)
-        p_rank = PRIORITY_RANK.get(item["priority"], 3)
-        return (t_rank, r_rank, p_rank)
-
-    def sort_std(item: dict[str, Any]) -> int:
-        return PRIORITY_RANK.get(item["priority"], 3)
-
-    sub_cats["merge_ready"].sort(key=sort_std)
-    sub_cats["merge_blockers"].sort(key=sort_blockers)
-    sub_cats["draft_prs"].sort(key=sort_std)
-    sub_cats["pending_approval"].sort(key=sort_std)
-    sub_cats["stacked_queue"].sort(key=sort_std)
-
+    for cat in ("merge_ready", "draft_prs", "pending_approval", "stacked_queue"):
+        sub_cats[cat].sort(key=_sort_std)
+    sub_cats["merge_blockers"].sort(key=_sort_blockers)
     return {
         "your_open_prs": your_open_prs,
         "your_draft_prs": your_draft_prs,
-        "merge_ready": sub_cats["merge_ready"],
-        "merge_blockers": sub_cats["merge_blockers"],
-        "draft_prs": sub_cats["draft_prs"],
-        "pending_approval": sub_cats["pending_approval"],
-        "stacked_queue": sub_cats["stacked_queue"],
+        **{k: sub_cats[k] for k in sub_cats},
     }
-
-
-def _downstream_issues(
-    closing_nums: set[int],
-    issue_to_downstream: dict[int, list[dict[str, Any]]],
-) -> dict[int, dict[str, Any]]:
-    """Collect all open issues downstream of a PR's closing issues."""
-    result: dict[int, dict[str, Any]] = {}
-    for cnum in closing_nums:
-        for ds in issue_to_downstream.get(cnum, []):
-            ds_num = ds.get("number")
-            if ds_num is not None:
-                result[ds_num] = ds
-    return result
-
-
-def _blocking_prs_for(
-    pr_number: int,
-    downstream: dict[int, dict[str, Any]],
-    issue_to_closing_prs: dict[int, list[int]],
-) -> set[int]:
-    """Find other open PRs that close any issue downstream of this PR."""
-    result: set[int] = set()
-    for ds_num in downstream:
-        for other_pr in issue_to_closing_prs.get(ds_num, []):
-            if other_pr != pr_number:
-                result.add(other_pr)
-    return result
-
-
-def _covered_issue_nums(
-    blocking_pr_nums: set[int],
-    pr_entries: list[dict[str, Any]],
-) -> set[int]:
-    """Collect issues already covered by a set of blocking PRs."""
-    covered: set[int] = set()
-    for bpr_num in blocking_pr_nums:
-        for bpr in pr_entries:
-            if bpr["number"] == bpr_num:
-                for ci in bpr.get("_closing_issues", []):
-                    covered.add(ci["number"])
-    return covered
-
-
-def _format_blocking(pr_count: int, issue_count: int) -> str:
-    """Format a 'blocking' string, omitting zero parts; 'None' if both zero."""
-    parts = []
-    if pr_count:
-        parts.append(f"{pr_count} PR{'s' if pr_count != 1 else ''}")
-    if issue_count:
-        parts.append(f"{issue_count} issue{'s' if issue_count != 1 else ''}")
-    return ", ".join(parts) if parts else "None"
-
-
-def apply_pr_blocking(
-    pr_entries: list[dict[str, Any]],
-    backlog_issues: list[dict[str, Any]],
-) -> None:
-    """Populate the 'blocking' field on each PR entry in-place.
-
-    For a PR that closes issues C1, C2, ...:
-    - downstream  = union of open issues blocked by any Ci (from backlog data)
-    - blocking PRs = other open PRs that close any downstream issue
-    - issue count  = downstream issues not already closed by a blocking PR
-
-    Sets 'blocking' to "None" if both counts are zero.
-    """
-    issue_to_downstream: dict[int, list[dict[str, Any]]] = {
-        issue["number"]: issue.get("_blocking_items", [])
-        for issue in backlog_issues
-        if issue.get("number") is not None
-    }
-
-    issue_to_closing_prs: dict[int, list[int]] = {}
-    for pr in pr_entries:
-        for ci in pr.get("_closing_issues", []):
-            issue_to_closing_prs.setdefault(ci["number"], []).append(pr["number"])
-
-    for pr in pr_entries:
-        closing_nums = {ci["number"] for ci in pr.get("_closing_issues", [])}
-        if not closing_nums:
-            pr["blocking"] = "None"
-            continue
-
-        downstream = _downstream_issues(closing_nums, issue_to_downstream)
-        blocking_pr_nums = _blocking_prs_for(
-            pr["number"], downstream, issue_to_closing_prs,
-        )
-        covered = _covered_issue_nums(blocking_pr_nums, pr_entries)
-        uncovered = sum(1 for n in downstream if n not in covered)
-        pr["blocking"] = _format_blocking(len(blocking_pr_nums), uncovered)

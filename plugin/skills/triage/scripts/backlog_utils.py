@@ -50,9 +50,6 @@ def _format_blocked_by(
 
 
 def _format_blocking_issues(count: int) -> str:
-    """Format a blocking issue count as a string, or 'None' if zero."""
-    if not count:
-        return NO_BLOCKERS
     suffix = "s" if count != 1 else ""
     return f"{count} issue{suffix}"
 
