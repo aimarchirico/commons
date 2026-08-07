@@ -61,7 +61,7 @@ def apply_pr_blocking(
     For a PR that closes issues C1, C2, ...:
     - downstream  = union of open issues blocked by any Ci (from backlog data)
     - blocked_backlog = backlog issues that list this PR in their blocked_by items
-    - all_blocked = downstream ∪ blocked_backlog
+    - all_blocked = downstream U blocked_backlog
     - blocking PRs = other open PRs that close any all_blocked issue
     - issue count  = all_blocked issues not already closed by a blocking PR
 
