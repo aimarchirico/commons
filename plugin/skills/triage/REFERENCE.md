@@ -24,7 +24,7 @@ sub-tables, omitting empty categories or tables. Every table column (including
 
 ---
 
-## Category 1: Actionable
+## Actionable Items
 
 Work that is currently blocked by you or requires your immediate input to move
 forward. Ordered by unblocking teammates first, then pipeline completion.
@@ -94,7 +94,7 @@ These are issues assigned to you, blocked by an issue that has an open PR.
 
 ---
 
-## Category 2: Waiting
+## Pending PRs
 
 Work you own but cannot advance until reviewers finish their tasks.
 
@@ -117,7 +117,7 @@ been merged yet.
 
 ---
 
-## Category 3: Unassigned
+## Unassigned Issues
 
 The open pool of available issues ready to be claimed and started.
 
