@@ -1,9 +1,9 @@
 ---
 name: resolve
 description:
-  Orchestrate the development lifecycle starting from an existing pull
-  request's review feedback. Use when the user asks to resolve or address
-  feedback on an existing pull request.
+  Orchestrate the development lifecycle to resolve an existing pull request's blockers; 
+  review feedback, merge conflicts, or failing CI checks. Use when the user asks to
+  resolve or address feedback, conflicts, or failing checks on a pull request.
 argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
 ---
 

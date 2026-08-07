@@ -38,12 +38,14 @@ def _format_blocked_by(
         return NO_BLOCKERS
 
     formatted = []
-    for b in blocked_by_items:
+    for idx, b in enumerate(blocked_by_items):
         pr = b.get("open_pr")
-        if pr:
-            formatted.append(str(pr["number"]))
-        else:
-            formatted.append(str(b["number"]))
+        item = pr or b
+        num = str(item["number"])
+        url = item.get("url")
+        link = f"[#{num}]({url})" if url else f"#{num}"
+        prefix = "PR " if idx == 0 else ""
+        formatted.append(f"{prefix}{link}")
     return ", ".join(formatted)
 
 
@@ -122,6 +124,7 @@ def fetch_backlog_issues(
             "number": number,
             "title": content.get("title"),
             "url": content.get("url"),
+            "item": f"[#{number}]({content.get('url')}) {content.get('title')}",
             "assignee": ASSIGNEE_YOU if is_mine else ASSIGNEE_UNASSIGNED,
             "priority": priority,
             "blocked_by": _format_blocked_by(blocked_by_items),

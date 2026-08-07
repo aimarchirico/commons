@@ -16,9 +16,8 @@ attention` (joining non-zero items cleanly with ", and "). If both are 0, omit
 the parenthetical note entirely.
 
 Followed by a divider (`---`), then render up to three categories and their
-sub-tables, omitting empty categories or tables. Every table's Item column is
-`[#<number>](<url>) <title>`, linking only the number. Every other column is
-rendered verbatim from the field of the same name.
+sub-tables, omitting empty categories or tables. Every table column (including
+`<item>`) is rendered verbatim from the field of the same name.
 
 ---
 
@@ -33,7 +32,7 @@ These PRs are authored by others and are waiting to be approved.
 
 | Item | Review | Priority | Blocking | Suggestion |
 | :--- | :----- | :------- | :------- | :--------- |
-| `[#<number>](<url>) <title>` | `<review>` | `<priority>` | `<blocking>` | Review the PR with `/commons:review --pr <number>` |
+| `<item>` | `<review>` | `<priority>` | `<blocking>` | Review the PR with `/commons:review --pr <number>` |
 
 ### Merge Ready
 
@@ -41,7 +40,7 @@ These are your approved PRs targeting the default branch and they are ready to m
 
 | Item | Priority | Blocking | Suggestion |
 | :--- | :------- | :------- | :--------- |
-| `[#<number>](<url>) <title>` | `<priority>` | `<blocking>` | Merge the PR |
+| `<item>` | `<priority>` | `<blocking>` | Merge the PR |
 
 ### Merge Blockers
 
@@ -49,7 +48,7 @@ These are your PRs with blockers to resolve before merging.
 
 | Item | Technical Blockers | Review Blockers | Priority | Blocking | Suggestion |
 | :--- | :----------------- | :-------------- | :------- | :------- | :--------- |
-| `[#<number>](<url>) <title>` | `<technical_blockers>` | `<review_blockers>` | `<priority>` | `<blocking>` | Resolve problems with `/commons:resolve --pr <number>` |
+| `<item>` | `<technical_blockers>` | `<review_blockers>` | `<priority>` | `<blocking>` | Resolve problems with `/commons:resolve --pr <number>` |
 
 ### Draft PRs
 
@@ -57,7 +56,7 @@ These are your PRs currently marked as Draft.
 
 | Item | Priority | Blocking | Suggestion |
 | :--- | :------- | :------- | :--------- |
-| `[#<number>](<url>) <title>` | `<priority>` | `<blocking>` | `<suggestion>` |
+| `<item>` | `<priority>` | `<blocking>` | `<suggestion>` |
 
 `draft_prs` entries compute `<suggestion>` per row. If the entry has a non-null
 `linked_issue`, fetch that issue's title and body, plus the PR's description and
@@ -80,7 +79,7 @@ These are issues assigned to you and not blocked by anything.
 
 | Item | Priority | Blocking | Suggestion |
 | :--- | :------- | :------- | :--------- |
-| `[#<number>](<url>) <title>` | `<priority>` | `<blocking>` | Solve issue with `/commons:solve --issue <number>` |
+| `<item>` | `<priority>` | `<blocking>` | Solve issue with `/commons:solve --issue <number>` |
 
 ### Assigned Stackable
 
@@ -88,7 +87,7 @@ These are issues assigned to you, blocked by an issue that has an open PR.
 
 | Item | Blocked by | Priority | Blocking | Suggestion |
 | :--- | :--------- | :------- | :------- | :--------- |
-| `[#<number>](<url>) <title>` | `PR #<blocked_by>` | `<priority>` | `<blocking>` | Solve issue with `/commons:solve --issue <number>` |
+| `<item>` | `<blocked_by>` | `<priority>` | `<blocking>` | Solve issue with `/commons:solve --issue <number>` |
 
 ---
 
@@ -102,7 +101,7 @@ These are your PRs targeting the default branch, but they are waiting to be appr
 
 | Item | Priority | Blocking | Suggestion |
 | :--- | :------- | :------- | :--------- |
-| `[#<number>](<url>) <title>` | `<priority>` | `<blocking>` | Self-review the PR with `/commons:review --pr <number>` |
+| `<item>` | `<priority>` | `<blocking>` | Self-review the PR with `/commons:review --pr <number>` |
 
 ### Stacked Queue
 
@@ -111,7 +110,7 @@ been merged yet.
 
 | Item | Stacked on | Priority | Blocking | Suggestion |
 | :--- | :--------- | :------- | :------- | :--------- |
-| `[#<number>](<url>) <title>` | `PR #<stacked_on>` | `<priority>` | `<blocking>` | Self-review the PR with `/commons:review --pr <number>` |
+| `<item>` | `<stacked_on>` | `<priority>` | `<blocking>` | Self-review the PR with `/commons:review --pr <number>` |
 
 ---
 
@@ -125,7 +124,7 @@ These are unassigned issues not blocked by anything.
 
 | Item | Priority | Blocking | Suggestion |
 | :--- | :------- | :------- | :--------- |
-| `[#<number>](<url>) <title>` | `<priority>` | `<blocking>` | Solve issue with `/commons:solve --issue <number>` |
+| `<item>` | `<priority>` | `<blocking>` | Solve issue with `/commons:solve --issue <number>` |
 
 ### Available Stackable
 
@@ -133,4 +132,4 @@ These are unassigned issues blocked by an issue that has an open PR.
 
 | Item | Blocked by | Priority | Blocking | Suggestion |
 | :--- | :--------- | :------- | :------- | :--------- |
-| `[#<number>](<url>) <title>` | `PR #<blocked_by>` | `<priority>` | `<blocking>` | Solve issue with `/commons:solve --issue <number>` |
+| `<item>` | `<blocked_by>` | `<priority>` | `<blocking>` | Solve issue with `/commons:solve --issue <number>` |
