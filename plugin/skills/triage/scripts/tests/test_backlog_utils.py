@@ -290,10 +290,9 @@ def test_fetch_backlog_issues_renders_null_priority_as_unset() -> None:
 
 def test_format_blocked_by_multiple_prs() -> None:
     """Multiple blocking PRs are formatted as PR [#n](url), [#m](url)."""
-    items = [
-        {"number": 10, "open_pr": {"number": 25, "url": "https://github.com/acme/repo/pull/25"}},
-        {"number": 11, "open_pr": {"number": 26, "url": "https://github.com/acme/repo/pull/26"}},
-    ]
+    pr25 = {"number": 25, "url": "https://github.com/acme/repo/pull/25"}
+    pr26 = {"number": 26, "url": "https://github.com/acme/repo/pull/26"}
+    items = [{"number": 10, "open_pr": pr25}, {"number": 11, "open_pr": pr26}]
     assert (
         bu._format_blocked_by(items)  # noqa: SLF001
         == "PR [#25](https://github.com/acme/repo/pull/25), [#26](https://github.com/acme/repo/pull/26)"

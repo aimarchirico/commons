@@ -63,18 +63,11 @@ def fetch_prs_to_review(
     login: str,
 ) -> list[dict[str, Any]]:
     """Fetch open PRs authored by others waiting for review."""
-    output = run_cmd(
-        [
-            "gh",
-            "pr",
-            "list",
-            "--search",
-            "is:open -author:@me draft:false",
-            "--json",
-            "number,title,url,author,reviewRequests,reviewDecision",
-        ],
-    )
-    prs = json.loads(output)
+    args = [
+        "gh", "pr", "list", "--search", "is:open -author:@me draft:false",
+        "--json", "number,title,url,author,reviewRequests,reviewDecision",
+    ]
+    prs = json.loads(run_cmd(args))
 
     items = []
     for pr in prs:
@@ -222,18 +215,11 @@ def fetch_open_and_draft_prs(
     default_branch: str,
 ) -> dict[str, Any]:
     """Fetch, classify, and sort user's open and draft PRs."""
-    output = run_cmd(
-        [
-            "gh",
-            "pr",
-            "list",
-            "--search",
-            "is:open author:@me",
-            "--json",
-            "number,title,url,isDraft,closingIssuesReferences,headRefName,baseRefName",
-        ],
-    )
-    prs = json.loads(output)
+    args = [
+        "gh", "pr", "list", "--search", "is:open author:@me",
+        "--json", "number,title,url,isDraft,closingIssuesReferences,headRefName,baseRefName",
+    ]
+    prs = json.loads(run_cmd(args))
 
     head_to_pr_info = {
         pr["headRefName"]: {"number": pr["number"], "url": pr.get("url")}
