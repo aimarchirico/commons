@@ -235,12 +235,12 @@ def test_main_classifies_your_prs_and_splits_out_drafts(
     ct.main()
 
     result = json.loads(capsys.readouterr().out)
-    cats = result["categories"]["action_required"]
+    cats = result["categories"]["actionable_items"]
     assert [pr["number"] for pr in cats["merge_ready"]] == [2]
     assert [pr["number"] for pr in cats["merge_blockers"]] == [3, 4, 6]
 
     assert [
-        pr["number"] for pr in result["categories"]["waiting"]["pending_approval"]
+        pr["number"] for pr in result["categories"]["pending_prs"]["pending_approval"]
     ] == [5]
 
     assert result["your_draft_prs"][0]["number"] == 1

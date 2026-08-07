@@ -94,7 +94,7 @@ def main() -> None:
         apply_pr_blocking(all_your_prs, backlog_data["backlog_issues"])
 
         categories = {
-            "action_required": {
+            "actionable_items": {
                 "review_requests": prs_to_review,
                 "merge_ready": pr_data["merge_ready"],
                 "merge_blockers": pr_data["merge_blockers"],
@@ -102,11 +102,11 @@ def main() -> None:
                 "assigned_ready": backlog_data["assigned_ready"],
                 "assigned_stackable": backlog_data["assigned_stackable"],
             },
-            "waiting": {
+            "pending_prs": {
                 "pending_approval": pr_data["pending_approval"],
                 "stacked_queue": pr_data["stacked_queue"],
             },
-            "unassigned": {
+            "unassigned_issues": {
                 "available_ready": backlog_data["available_ready"],
                 "available_stackable": backlog_data["available_stackable"],
             },
