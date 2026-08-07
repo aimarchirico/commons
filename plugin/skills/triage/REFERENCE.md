@@ -108,8 +108,7 @@ These are your PRs targeting the default branch, but they are waiting to be appr
 
 ### Stacked Queue
 
-These are your PRs targeting another branch, but their base branch has not
-been merged yet.
+These are your PRs targeting a branch that still has an open PR.
 
 | Item | Stacked on | Priority | Blocking | Suggestion |
 | :--- | :--------- | :------- | :------- | :--------- |
