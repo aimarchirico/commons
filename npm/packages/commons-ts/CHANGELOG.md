@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.4.4](https://github.com/aimarchirico/commons/compare/commons-ts-v3.4.3...commons-ts-v3.4.4) (2026-08-07)
+
+
+### Bug Fixes
+
+* **eslint-base.ts:** allow additional config file extensions for ESLint ([0f2f544](https://github.com/aimarchirico/commons/commit/0f2f5445c7a3582df40d617836e02d9bf502d702))
+* **eslint-base.ts:** allow additional config file extensions for ESLint ([d72207c](https://github.com/aimarchirico/commons/commit/d72207ca6f762b2dd6dc9fe82aa9e118c739d0fb))
+
 ## [3.4.3](https://github.com/aimarchirico/commons/compare/commons-ts-v3.4.2...commons-ts-v3.4.3) (2026-08-02)
 
 
