@@ -392,7 +392,7 @@ def apply_pr_blocking(
 
         downstream = _downstream_issues(closing_nums, issue_to_downstream)
         blocking_pr_nums = _blocking_prs_for(
-            pr["number"], downstream, issue_to_closing_prs
+            pr["number"], downstream, issue_to_closing_prs,
         )
         covered = _covered_issue_nums(blocking_pr_nums, pr_entries)
         uncovered = sum(1 for n in downstream if n not in covered)

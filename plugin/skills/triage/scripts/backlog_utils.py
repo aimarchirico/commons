@@ -49,6 +49,14 @@ def _format_blocked_by(
     return ", ".join(formatted)
 
 
+def _format_blocking_issues(count: int) -> str:
+    """Format a blocking issue count as a string, or 'None' if zero."""
+    if not count:
+        return NO_BLOCKERS
+    suffix = "s" if count != 1 else ""
+    return f"{count} issue{suffix}"
+
+
 def fetch_backlog_issues(
     run_cmd: Callable[[list[str]], str],
     repo: tuple[str, str],
@@ -118,10 +126,7 @@ def fetch_backlog_issues(
 
         priority = item.get("priority") or "Unset"
         blocking_count = len(blocking_items)
-        suffix = "s" if blocking_count != 1 else ""
-        blocking_str = (
-            f"{blocking_count} issue{suffix}" if blocking_count else NO_BLOCKERS
-        )
+        blocking_str = _format_blocking_issues(blocking_count)
 
         entry = {
             "number": number,
