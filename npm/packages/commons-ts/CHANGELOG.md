@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.4.5](https://github.com/aimarchirico/commons/compare/commons-ts-v3.4.4...commons-ts-v3.4.5) (2026-08-07)
+
+
+### Bug Fixes
+
+* **comments.ts:** add ObjectExpression to eligible JSDoc visitors ([0959bd0](https://github.com/aimarchirico/commons/commit/0959bd0800ef35c6d69aa95d0e0f0637822b30fa))
+* **comments.ts:** add ObjectExpression to eligible JSDoc visitors ([1a8a1d2](https://github.com/aimarchirico/commons/commit/1a8a1d2ca76c65525d2bd9fa27057bf08c9758e8))
+* **default-export-shape.ts:** reorder allowed export shapes for clarity ([c1c4963](https://github.com/aimarchirico/commons/commit/c1c4963a2af85cabe0625f1670c294949e00a981))
+
 ## [3.4.4](https://github.com/aimarchirico/commons/compare/commons-ts-v3.4.3...commons-ts-v3.4.4) (2026-08-07)
 
 
