@@ -98,7 +98,7 @@ export default defineConfig([
     },
   },
   {
-    files: ['**/*.config.ts'],
+    files: ['**/*.config.{ts,mts,cts,js,mjs,cjs}'],
     rules: {
       'import/no-default-export': 'off',
       'commons/default-export-shape': ['error'],
