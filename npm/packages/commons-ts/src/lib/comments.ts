@@ -28,6 +28,7 @@ export const DOC_ELIGIBLE_VISITORS = [
   'TSAbstractMethodDefinition',
   'TSAbstractPropertyDefinition',
   'ExportDefaultDeclaration > CallExpression',
+  'ExportDefaultDeclaration > ObjectExpression',
 ] as const;
 
 /**

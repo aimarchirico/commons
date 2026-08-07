@@ -1,9 +1,9 @@
 import type {Rule} from 'eslint';
 
 const ALLOWED_EXPORT_SHAPES = new Set([
-  'CallExpression',
   'FunctionDeclaration',
   'ClassDeclaration',
+  'CallExpression',
   'ObjectExpression',
 ]);
 
