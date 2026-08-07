@@ -217,7 +217,8 @@ def fetch_open_and_draft_prs(
     """Fetch, classify, and sort user's open and draft PRs."""
     args = [
         "gh", "pr", "list", "--search", "is:open author:@me",
-        "--json", "number,title,url,isDraft,closingIssuesReferences,headRefName,baseRefName",
+        "--json",
+        "number,title,url,isDraft,closingIssuesReferences,headRefName,baseRefName",
     ]
     prs = json.loads(run_cmd(args))
 
