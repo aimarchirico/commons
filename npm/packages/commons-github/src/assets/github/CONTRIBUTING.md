@@ -42,87 +42,154 @@ judgment rather than dogma.
 
 ---
 
+## Architecture
+
+We structure the repository as a monorepo of independently buildable units.
+
+Within a module, we follow
+[Vertical Slice Architecture](https://deviq.com/architecture/vertical-slice-architecture/):
+draw boundaries by feature rather than technical layer, let each slice organize its own internals, and, if it exposes anything, do so only through a narrow public contract. Anything crossing a slice boundary goes through that contract, never around it; shared code never depends on a slice.
+
+---
+
+## Planning
+
+We adapt the Planning and System Design phases of the
+[Atlassian SDLC](https://www.atlassian.com/agile/software-development/sdlc)
+for `docs/plan/`.
+
+### 1. docs/plan/PRD.md
+
+We adapt the
+[Atlassian PRD](https://www.atlassian.com/agile/product-management/requirements) template. Written once, during the initial planning pass. A snapshot of the product
+idea at that time; unlike the files under `docs/`, it is not maintained as
+scope evolves afterward.
+
+- **Objective**: Context on the project and what it aims to achieve.
+- **Success Metrics**: The metrics used to judge success.
+- **Assumptions**: The premises the plan is built on, distinct from what's
+  deliberately excluded.
+- **Milestones**: Roadmap and project timeline.
+- **Requirements**: A prioritized list of features.
+- **Out of Scope**: Features explicitly excluded or delayed.
+
+### 2. docs/plan/requirements/
+
+Actionable requirements. Each states the problem: what is needed, not how
+it gets built.
+
+- **index.md**: Index table of number, title, priority, and link.
+- **NNNN-slug.md**: One per requirement, zero-padded and sequenced:
+    - **Functional Behaviors**: The specific behaviors the requirement covers.
+    - **Non-Functional Criteria**: Operating constraints such as performance,
+      security, or reliability.
+
+### 3. docs/plan/research/
+
+Domain investigations and technical benchmarks gathered before locking in a
+decision.
+
+- **index.md**: Index table of number, title, focus area, and link.
+- **NNNN-slug.md**: One per investigation, zero-padded and sequenced:
+    - **Context**: The uncertainty driving the investigation.
+    - **Findings**: Results from framework or approach comparisons.
+    - **Takeaway**: The recommendation.
+
+### 4. docs/plan/decisions/
+
+We follow the [Nygard ADR](https://adr.github.io/)
+format for all technical choices.
+
+- **index.md**: Index table of number, title, status, and link.
+- **NNNN-slug.md**: One per decision, zero-padded and sequenced:
+    - **Status**: `Proposed` / `Accepted` / `Rejected` / `Superseded`.
+    - **Context**: The architectural question and research findings.
+    - **Decision**: What was chosen.
+    - **Consequences**: Rationale, implications, and anything still open.
+
+### 5. docs/plan/specifications/
+
+Technical blueprints. Each states how to solve one or more requirements: the
+solution, not the problem. Detailed enough to derive an initial issue
+backlog.
+
+- **index.md**: Index table of number, title, one-line objective, and link.
+- **NNNN-slug.md**: One per specification, zero-padded and sequenced:
+    - **Requirement**: The requirement(s) it fulfills.
+    - **Objective**: What this specification achieves and why it matters.
+    - **Scope**: The technical scope, endpoints or workstreams covered.
+    - **Acceptance Criteria**: The measurable signal it's done.
+
+---
+
 ## Documentation
 
 We adapt the
 [Google documentation guide](https://google.github.io/styleguide/docguide/) and
 split documentation by audience:
 
-- **`README.md` and `docs/`** (System-level): Features, how components connect,
-  what infrastructure they run on, external dependencies. Nothing
+- **README.md and docs/** (System-level): Project overview, how components
+  connect, what infrastructure they run on, external dependencies. Nothing
   implementation-specific.
 - **Module READMEs** (Implementation-level): Everything a developer needs to
   work on that part.
 
-### 1. README.md
+### 1. README files
 
-The primary entry point and high-level overview of the project.
+We follow the
+[Standard Readme](https://github.com/RichardLitt/standard-readme)
+specification for README files.
 
-- **Introduction**: Clear, concise statement of the project's purpose. What
-  problem does it solve? Who is the target audience?
-- **Demo**: Visual evidence of the project in action. Placeholders for
-  screenshots, GIFs, or links to live staging/production environments.
-- **Features**: High-level bullet points of the core functionality and value
-  propositions.
-- **Getting Started**: Link to sub-directory READMEs for detailed technical
-  setup.
-- **Documentation**: A directory map for the extended documentation located in
-  the `docs/` folder.
-- **Workflow**: Link to contribution guidelines in `CONTRIBUTING.md`.
+- **Title**: The name, followed by a description of what it does.
+- **Install**: Prerequisites, environment variables, and installation steps.
+- **Usage**: Available runtime commands and interaction flows.
+- **Development** (Modules only): Tech stack, directory tree, and code
+  quality.
+- **Deployment** (Modules only): CI/CD pipelines, deployment targets, and
+  hosting details.
+- **Contributing**: A link to the contributing guidelines in
+  `CONTRIBUTING.md`.
+- **License**: A link to the legal license governing use.
 
 ### 2. docs/ARCHITECTURE.md
 
-System-level source of truth. Contains only what spans the whole system; nothing
-implementation-specific.
+We follow the
+[matklad ARCHITECTURE.md](https://matklad.github.io/2021/02/06/ARCHITECTURE.md.html)
+approach. High-level system structure documentation.
 
-- **Data Flow**: Mermaid diagram showing communication between services.
-- **Infrastructure Overview**: Table of layers, technologies, and hosting
-  locations.
-- **Project Structure**: Top-level directory tree explaining the purpose of each
-  folder.
+- **Bird's Eye View**: High-level system diagram, infrastructure overview, and
+  external boundaries.
+- **Code Map**: Top-level directory tree, domain boundaries, and
+  architectural invariants.
+- **Cross-Cutting Concerns**: System-wide patterns and shared mechanics.
 
 ### 3. docs/API.md (if applicable)
 
-Technical reference for internal and external interfaces. Applies only if the
-project exposes an API surface.
+We follow the [OpenAPI](https://swagger.io/specification/) specification.
+Technical reference for external interfaces. Applies only if the project
+exposes an API surface.
 
-- **Authentication**: Detailed security protocol. Instructions for obtaining and
-  rotating credentials.
-- **Endpoints**: Summary of API resources. Link to interactive documentation if
-  applicable.
-- **Data Models**: Schema definitions or descriptions of core domain entities
-  and their relationships.
+- **Version**: The current API version number, containing subsections for
+  servers and available authorizations.
+- **[Tags]**: Dedicated sections for each resource category, detailing each
+  endpoint with parameters, request body, and responses.
+- **Schemas**: Tabular definitions of request objects and response objects.
 
 ### 4. docs/DESIGN.md (if applicable)
 
-Standards for UI, UX, and visual identity. Applies only if the project has a
+We follow the
+[Google DESIGN.md](https://github.com/google-labs-code/design.md) specification. Standards for UI, UX, and visual identity. Applies only if the project has a
 UI.
 
-- **Design System**: Definitions for the color palette, typography, spacing
-  scales, and component library usage.
-- **User Flows**: Logical maps or descriptions of the most critical user
-  journeys through the application.
-- **Assets**: Markdown illustrations, screenshots, or other visual assets used
-  in the design system.
-
-### 5. [module]/README.md
-
-Technical documentation specific to a project subsystem. All
-implementation-level detail lives here. Prefer
-[Vertical Slice Architecture](https://deviq.com/architecture/vertical-slice-architecture/):
-draw boundaries by feature rather than technical layer, let each slice organize
-its own internals, and expose it only through a narrow public contract. Anything
-crossing a slice boundary goes through that contract, never around it; shared
-code never depends on a slice.
-
-- **Tech Stack**: Versioned list of major languages, frameworks, and libraries.
-- **Folder Structure**: Directory layout and module boundary rules.
-- **Environment Variables**: List of required keys and `.env.example` reference.
-- **Local Development**: Installation steps, runtime requirements and available
-  commands.
-- **Code Quality**: Language-specific tooling, configurations, and style
-  guides.
-- **Deployment**: CI/CD pipelines, deployment targets and hosting details.
+- **Frontmatter**: Machine-readable YAML design tokens.
+- **Overview**: Brand summary, core visual style, and key user flows.
+- **Colors**: Color palette definitions.
+- **Typography**: Font families and sizing scales.
+- **Layout**: Spacing and structural rules.
+- **Elevation**: Guidelines for depth and shadows.
+- **Shapes**: Rounded corners and geometric styles.
+- **Components**: Definitions and diagrams for specific UI elements.
+- **Do's and Don'ts**: Best practices for usage.
 
 ---
 
@@ -263,7 +330,7 @@ specification.
 ## Pull Requests
 
 We adapt the
-[Gitmore PR Template](https://gitmore.io/blog/pull-request-template).
+[Gitmore PR](https://gitmore.io/blog/pull-request-template) template. 
 
 ### PR Title
 
