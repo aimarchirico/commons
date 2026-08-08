@@ -48,7 +48,10 @@ We structure the repository as a monorepo of independently buildable units.
 
 Within a module, we follow
 [Vertical Slice Architecture](https://deviq.com/architecture/vertical-slice-architecture/):
-draw boundaries by feature rather than technical layer, let each slice organize its own internals, and, if it exposes anything, do so only through a narrow public contract. Anything crossing a slice boundary goes through that contract, never around it; shared code never depends on a slice.
+draw boundaries by feature rather than technical layer, let each slice
+organize its own internals, and, if it exposes anything, do so only through a
+narrow public contract. Anything crossing a slice boundary goes through that
+contract, never around it; shared code never depends on a slice.
 
 ---
 
@@ -108,8 +111,9 @@ exposes an API surface.
 ### 4. docs/DESIGN.md (if applicable)
 
 We follow the
-[Google DESIGN.md](https://github.com/google-labs-code/design.md) specification. Standards for UI, UX, and visual identity. Applies only if the project has a
-UI.
+[Google DESIGN.md](https://github.com/google-labs-code/design.md)
+specification. Standards for UI, UX, and visual identity. Applies only if the
+project has a UI.
 
 - **Frontmatter**: Machine-readable YAML design tokens.
 - **Overview**: Brand summary, core visual style, and key user flows.
@@ -260,7 +264,7 @@ specification.
 ## Pull Requests
 
 We adapt the
-[Gitmore PR](https://gitmore.io/blog/pull-request-template) template. 
+[Gitmore PR](https://gitmore.io/blog/pull-request-template) template.
 
 ### PR Title
 
