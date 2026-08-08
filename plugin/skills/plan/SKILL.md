@@ -36,44 +36,44 @@ argument-hint: "[--auto]"
 
 ### Phase 1: Planning
 
-2. Identify the product concept from the user's prompt or context, asking
+1. Identify the product concept from the user's prompt or context, asking
    for anything unclear. Draft `docs/plan/PRD.md` per
    `${CLAUDE_PLUGIN_ROOT}/skills/plan/REFERENCE.md`.
-3. Extract actionable requirements (from the PRD, or from the user's prompt
+2. Extract actionable requirements (from the PRD, or from the user's prompt
    directly when adding new requirements) and draft
    `docs/plan/requirements/index.md` and the individual
    `docs/plan/requirements/NNNN-slug.md` files per
    `${CLAUDE_PLUGIN_ROOT}/skills/plan/REFERENCE.md`.
-4. Present the Phase 1 files for approval, and wait for explicit user
+3. Present the Phase 1 files for approval, and wait for explicit user
    approval. Skip this step if the `--auto` flag is set, and proceed
    directly with the drafted files.
 
 ### Phase 2: System Design
 
-5. For research on external systems, third-party integrations, or other
+1. For research on external systems, third-party integrations, or other
    technical unknowns feeding into the design, delegate per-system lookups
    to parallel `general-purpose` agents when substantial, so raw fetched
    documentation stays out of the main conversation and only distilled
    findings return. Log findings in `docs/plan/research/`, per
    `${CLAUDE_PLUGIN_ROOT}/skills/plan/REFERENCE.md`.
-6. Record architectural choices in `docs/plan/decisions/`, per
+2. Record architectural choices in `docs/plan/decisions/`, per
    `${CLAUDE_PLUGIN_ROOT}/skills/plan/REFERENCE.md`.
-7. Invoke the `commons:docs` skill, passing `--auto` through if it was
+3. Invoke the `commons:docs` skill, passing `--auto` through if it was
    provided, to draft the applicable system-level documentation directly in
    its final location (its own approval step surfaces normally unless
    `--auto` is set).
-8. Draft `docs/plan/specifications/index.md` and the individual
+4. Draft `docs/plan/specifications/index.md` and the individual
    `docs/plan/specifications/NNNN-slug.md` files per
    `${CLAUDE_PLUGIN_ROOT}/skills/plan/REFERENCE.md`, each
    referencing the requirement(s) it fulfills.
-9. Present the `research/`, `decisions/`, and `specifications/` files for
+5. Present the `research/`, `decisions/`, and `specifications/` files for
    approval, and wait for explicit user approval. Skip this step if the
    `--auto` flag is set, and proceed directly with the drafted files.
-10. Write the approved files under `docs/plan/`.
+6. Write the approved files under `docs/plan/`.
 
 ### Handoff
 
-11. Ask the user whether to derive the initial issue backlog from
+1. Ask the user whether to derive the initial issue backlog from
     `docs/plan/specifications/` now. If so, invoke the `commons:issue`
     skill scoped to that content, passing `--auto` through if it was
     provided.

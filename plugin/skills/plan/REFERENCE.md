@@ -11,7 +11,7 @@ scope evolves afterward.
 
 - **Objective**: Context on the project and what it aims to achieve.
 - **Success Metrics**: The metrics used to judge success.
-- **Assumptions**: The premises the plan is built on. 
+- **Assumptions**: The premises the plan is built on.
 - **Milestones**: Roadmap and project timeline.
 - **Requirements**: A prioritized list of features.
 - **Out of Scope**: Features explicitly excluded or delayed.
@@ -23,8 +23,8 @@ it gets built.
 
 - **index.md**: Index table of number, title, priority, and link.
 - **NNNN-slug.md**: One per requirement, zero-padded and sequenced:
-    - **Functional Behaviors**: The specific behaviors the requirement covers.
-    - **Non-Functional Criteria**: Operating constraints such as performance,
+  - **Functional Behaviors**: The specific behaviors the requirement covers.
+  - **Non-Functional Criteria**: Operating constraints such as performance,
       security, or reliability.
 
 ## 3. docs/plan/research/
@@ -34,9 +34,9 @@ decision.
 
 - **index.md**: Index table of number, title, focus area, and link.
 - **NNNN-slug.md**: One per investigation, zero-padded and sequenced:
-    - **Context**: The uncertainty driving the investigation.
-    - **Findings**: Results from framework or approach comparisons.
-    - **Takeaway**: The recommendation.
+  - **Context**: The uncertainty driving the investigation.
+  - **Findings**: Results from framework or approach comparisons.
+  - **Takeaway**: The recommendation.
 
 ## 4. docs/plan/decisions/
 
@@ -44,10 +44,10 @@ Architecture decision records, one per technical choice.
 
 - **index.md**: Index table of number, title, status, and link.
 - **NNNN-slug.md**: One per decision, zero-padded and sequenced:
-    - **Status**: `Proposed` / `Accepted` / `Rejected` / `Superseded`.
-    - **Context**: The architectural question and research findings.
-    - **Decision**: What was chosen.
-    - **Consequences**: Rationale, implications, and anything still open.
+  - **Status**: `Proposed` / `Accepted` / `Rejected` / `Superseded`.
+  - **Context**: The architectural question and research findings.
+  - **Decision**: What was chosen.
+  - **Consequences**: Rationale, implications, and anything still open.
 
 ## 5. docs/plan/specifications/
 
@@ -57,7 +57,7 @@ backlog.
 
 - **index.md**: Index table of number, title, one-line objective, and link.
 - **NNNN-slug.md**: One per specification, zero-padded and sequenced:
-    - **Requirement**: The requirement(s) it fulfills.
-    - **Objective**: What this specification achieves and why it matters.
-    - **Scope**: The technical scope, endpoints or workstreams covered.
-    - **Acceptance Criteria**: The measurable signal it's done.
+  - **Requirement**: The requirement(s) it fulfills.
+  - **Objective**: What this specification achieves and why it matters.
+  - **Scope**: The technical scope, endpoints or workstreams covered.
+  - **Acceptance Criteria**: The measurable signal it's done.
