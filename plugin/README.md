@@ -34,12 +34,12 @@ plugin/
 │   ├── commit/SKILL.md          # create logical, atomic commits
 │   ├── docs/SKILL.md            # update project documentation
 │   ├── issue/SKILL.md           # create hierarchical issues
+│   ├── plan/SKILL.md            # draft planning & system design artifacts for a project
 │   ├── pr/SKILL.md              # create a standardized pull request
 │   ├── resolve/SKILL.md         # orchestrate the lifecycle from PR review feedback
 │   ├── review/SKILL.md          # review a pull request via parallel reviewer agents
 │   ├── ship/SKILL.md            # chain issue creation and solving into a single flow
 │   ├── solve/SKILL.md           # orchestrate the lifecycle from an existing issue
-│   ├── spec/SKILL.md            # draft requirements/architecture/decisions for a new project
 │   └── triage/SKILL.md          # survey open PRs and Backlog issues, read-only
 └── agents/
     ├── compliance-reviewer.md    # reviews a diff against CONTRIBUTING.md (read-only)
@@ -59,7 +59,8 @@ rather than on each other, except for:
 - `review` delegating to `logic-reviewer`, `performance-reviewer`,
   `security-reviewer`, and `compliance-reviewer`.
 - `ship` delegating to the `issue`, `solve`, `review`, and `resolve` skills.
-- `spec` delegating to parallel `general-purpose` agents for external research.
+- `plan` delegating to parallel `general-purpose` agents for external research,
+  and to the `docs` and `issue` skills.
 
 Complex skills pair their `SKILL.md` prompt with deterministic Python scripts
 (`skills/*/scripts/`) for GitHub API operations, state tracking, and git

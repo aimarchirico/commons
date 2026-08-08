@@ -106,8 +106,8 @@ graph TD
 
 ```mermaid
 graph TD
-    start_proj["Brand-New Project"] --> spec["/commons:spec<br/>Draft Initial Project Specs"]
-    spec --> issue["/commons:issue<br/>Create Issue Hierarchy"]
+    start_proj["Brand-New Project"] --> plan["/commons:plan<br/>Draft Planning & Design Artifacts"]
+    plan --> issue["/commons:issue<br/>Create Issue Hierarchy"]
 
     survey["Survey Work"] --> triage["/commons:triage<br/>Survey PRs & Backlog"]
     triage -->|New Task/Story| issue
