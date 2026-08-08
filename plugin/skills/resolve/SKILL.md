@@ -44,7 +44,7 @@ argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
    empty), execute `git worktree remove <worktree-path>` to clean up the
    isolated worktree, then report to the user:
 
-   > Nothing to resolve — the PR has no unresolved threads, comments,
+   > Nothing to resolve: the PR has no unresolved threads, comments,
    > conflicts, or failing checks.
 
    Stop. Do not proceed to subsequent steps.

@@ -1,19 +1,37 @@
 # Python
 
-Shared Python tooling, distributed as installable packages rather than copied
-config files.
+Shared Python tooling, distributed as installable packages rather than
+copied config files.
 
-## Tech Stack
+## Install
 
-- **Python** 3.13
-- **uv** (workspace: `pyproject.toml` here is a virtual root with
-  `[tool.uv.workspace]`, listing member packages)
-- **ruff** 0.14+ (lint + format)
-- **ty** 0.0.60+ (type checking)
-- **coverage** 7.6+ (test coverage enforcement)
-- **hatchling** (build backend)
+Requires Python 3.13 and [Task](https://taskfile.dev).
 
-## Folder Structure
+There is no PyPI-compatible registry available, so packages here are not
+published anywhere and Release Please is not involved. Consumers pin
+directly to `main` as a git dependency, e.g.:
+
+```sh
+uv add "git+https://github.com/aimarchirico/commons@main#subdirectory=python/commons-python"
+```
+
+## Usage
+
+Run from the repository root:
+
+- `task python:check`: check all Python packages.
+- `task python:fix`: auto-fix all Python packages.
+
+## Development
+
+### Tech Stack
+
+Python 3.13 · uv (workspace: `pyproject.toml` here is a virtual root with
+`[tool.uv.workspace]`, listing member packages) · ruff 0.14+ (lint + format)
+· ty 0.0.60+ (type checking) · coverage 7.6+ (test coverage enforcement) ·
+hatchling (build backend).
+
+### Folder Structure
 
 ```text
 python/
@@ -41,48 +59,36 @@ Only `commons-python` exists today; adding a package means adding it to
 `importlib.resources.files("commons_python.assets")` resolves reliably
 whether the package is installed from a wheel, sdist, or editable install.
 
-## Local Development
-
-Requires Python 3.13 and [Task](https://taskfile.dev). Run from the
-repository root:
-
-- `task python:check`: check all Python packages.
-- `task python:fix`: auto-fix all Python packages.
-
-## Code Quality
+### Code Quality
 
 - **Linting**: ruff with bundled `assets/ruff.toml` (`commons-python ruff
-  <args>`), selecting `ALL` rules with `CPY001` ignored repository-wide, plus
-  scoped per-file ignores: `S101` for tests, and `S603`/`EXE001` for CLI entry
-  points and skill scripts.
-- **Types**: ty with bundled `assets/ty.toml` (`commons-python ty <args>`).
-- **Documentation**: every public module, function, class, and method needs a
-  Google-style docstring, enforced via ruff's `D` (`pydocstyle`) rule group
-  configured with `convention = "google"`. Non-public declarations (prefixed
-  with `_`) do not carry docstrings.
-- **Comments**: only docstrings documenting a public declaration are allowed
-  (`commons-python commons check`), mirroring the owner-aware doc-comment
-  enforcement across the repository: whatever is required to have a doc
-  comment is also the only thing allowed to have one. Line comments (`# ...`),
-  orphaned docstrings, and docstrings on non-public declarations are rejected,
-  so explanation stays attached to what it describes.
-- **Line length**: native Python check enforcing a 300-line-per-file maximum
-  (`commons-python commons check`), skipping `.venv/`, `__pycache__/`, `.git/`,
-  `build/`, `dist/`, `node_modules/`, `.pnpm/`, `.task/`, `.ruff_cache/`, and
-  `*.egg-info/`.
-- **Testing & Coverage** — pytest and pytest-cov with bundled `assets/coverage.toml`,
-  enforcing an 80% minimum (`fail_under = 80`) with branch coverage on
-  (`commons-python pytest <args>`).
+  <args>`), selecting `ALL` rules with `CPY001` ignored repository-wide,
+  plus scoped per-file ignores: `S101` for tests, and `S603`/`EXE001` for
+  CLI entry points and skill scripts.
+- **Types**: ty with bundled `assets/ty.toml` (`commons-python ty
+  <args>`).
+- **Documentation**: every public module, function, class, and method
+  needs a Google-style docstring, enforced via ruff's `D` (`pydocstyle`)
+  rule group configured with `convention = "google"`. Non-public
+  declarations (prefixed with `_`) do not carry docstrings.
+- **Comments**: only docstrings documenting a public declaration are
+  allowed (`commons-python commons check`): whatever is required to have a
+  doc comment is also the only thing allowed to have one. Line comments
+  (`# ...`), orphaned docstrings, and docstrings on non-public
+  declarations are rejected, so explanation stays attached to what it
+  describes.
+- **Line length**: native Python check enforcing a 300-line-per-file
+  maximum (`commons-python commons check`), skipping `.venv/`,
+  `__pycache__/`, `.git/`, `build/`, `dist/`, `node_modules/`, `.pnpm/`,
+  `.task/`, `.ruff_cache/`, and `*.egg-info/`.
+- **Testing & Coverage**: pytest and pytest-cov with bundled
+  `assets/coverage.toml`, enforcing an 80% minimum (`fail_under = 80`)
+  with branch coverage on (`commons-python pytest <args>`).
 
-## Deployment
+## Contributing
 
-Unlike `maven/` and `npm/`, GitHub Packages has no PyPI-compatible registry,
-so packages here are not published anywhere and Release Please is not
-involved. Consumers pin directly to `main` as a git dependency, e.g.:
+See [CONTRIBUTING.md](../.github/CONTRIBUTING.md).
 
-```sh
-uv add "git+https://github.com/aimarchirico/commons@main#subdirectory=python/commons-python"
-```
+## License
 
-`plugin/` in this repo is the reference consumer.
-</content>
+[MIT](../LICENSE)

@@ -78,8 +78,8 @@ specification for README files.
 - **Usage**: Available runtime commands and interaction flows.
 - **Development** (Modules only): Tech stack, directory tree, and code
   quality.
-- **Deployment** (Modules only): CI/CD pipelines, deployment targets, and
-  hosting details.
+- **Deployment** (Modules only, if applicable): CI/CD pipelines, deployment
+  targets, and hosting details.
 - **Contributing**: A link to the contributing guidelines in
   `CONTRIBUTING.md`.
 - **License**: A link to the legal license governing use.

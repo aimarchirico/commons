@@ -1,8 +1,23 @@
 # commons-github
 
-GitHub repository provisioning and documentation-materializer CLI, published as
-`@aimarchirico/commons-github`. Requires `gh` 2.40+ on `PATH` (the GitHub CLI
-Go binary — the `gh` package on npm is an unrelated project).
+GitHub repository provisioning and documentation-materializer CLI, published
+as `@aimarchirico/commons-github`. Requires `gh` 2.40+ on `PATH` (the GitHub
+CLI Go binary, not the unrelated `gh` package on npm).
+
+## Install
+
+```bash
+pnpm add @aimarchirico/commons-github
+```
+
+Every command takes no arguments, reads its inputs from `process.env`, fails
+fast naming every missing variable at once, and is idempotent: a second run
+makes no destructive change and reports each resource as already present.
+The target repository is always derived from the working directory. See
+[`../../README.md#usage`](../../README.md#usage) for how this fits into the
+wider provisioning flow.
+
+## Usage
 
 Run via the consuming repository's lockfile, not a floating version:
 
@@ -10,57 +25,50 @@ Run via the consuming repository's lockfile, not a floating version:
 pnpm exec commons-github sync-variables
 ```
 
-Every command takes no arguments, reads its inputs from `process.env`, fails
-fast naming every missing variable at once, and is idempotent — a second run
-makes no destructive change and reports each resource as already present. The
-target repository is always derived from the working directory. See
-[`docs/ARCHITECTURE.md`](../../../docs/ARCHITECTURE.md#data-flow) for how this
-fits into the wider provisioning flow.
+### `create-project`
 
-## `create-project`
+Copies the public `aimarchirico/Commons Template` project and links it to
+the repository, deriving the title from the repo name (`my-repo` → `My
+Repo`). No env vars. Re-running finds and links an existing unlinked project
+instead of duplicating it.
 
-Copies the public `aimarchirico/Commons Template` project and links it to the
-repository, deriving the title from the repo name (`my-repo` → `My Repo`). No
-env vars. Re-running finds and links an existing unlinked project instead of
-duplicating it.
+### `create-environments`
 
-## `create-environments`
-
-| Key                   | Required | Purpose                                      |
-| :-------------------- | :------- | :------------------------------------------- |
-| `GITHUB_ENVIRONMENTS` | Yes      | Environment names, comma or space separated. |
+| Key                     | Required  | Purpose                                           |
+| :---------------------- | :-------- | :------------------------------------------------ |
+| `GITHUB_ENVIRONMENTS`   | Yes       | Environment names, comma or space separated.      |
 
 Creates each environment, skipping any that already exist.
 
-## `sync-variables`
+### `sync-variables`
 
-| Key                            | Required | Purpose                                              |
-| :----------------------------- | :------- | :--------------------------------------------------- |
-| `GITHUB_VARIABLES`             | No       | Names of repository-level variables to push.         |
-| `GITHUB_ENVIRONMENT_VARIABLES` | No       | Environment-scoped names, `env=NAME,NAME;env2=NAME`. |
+| Key                              | Required  | Purpose                                                    |
+| :------------------------------- | :-------- | :--------------------------------------------------------- |
+| `GITHUB_VARIABLES`               | No        | Names of repository-level variables to push.               |
+| `GITHUB_ENVIRONMENT_VARIABLES`   | No        | Environment-scoped names, `env=NAME,NAME;env2=NAME`.       |
 
 Both name *other* env vars whose values get pushed. Reads current values
 first and reports created/updated/already-correct; never removes a variable
 the caller didn't mention.
 
-## `set-secrets`
+### `set-secrets`
 
-| Key                          | Required | Purpose                                              |
-| :--------------------------- | :------- | :--------------------------------------------------- |
-| `GITHUB_SECRETS`             | No       | Names of repository-level secrets to push.           |
-| `GITHUB_ENVIRONMENT_SECRETS` | No       | Environment-scoped names, `env=NAME,NAME;env2=NAME`. |
+| Key                             | Required  | Purpose                                                    |
+| :------------------------------ | :-------- | :--------------------------------------------------------- |
+| `GITHUB_SECRETS`                | No        | Names of repository-level secrets to push.                 |
+| `GITHUB_ENVIRONMENT_SECRETS`    | No        | Environment-scoped names, `env=NAME,NAME;env2=NAME`.       |
 
 Same naming convention as `sync-variables`. Secrets can't be read back, so
 each write is reported as "written" rather than "unchanged."
 
-## `materialize-templates`
+### `materialize-templates`
 
 Copies `CONTRIBUTING.md`, the issue/PR templates, and the sub-issue cascade
 workflows (`assign-sub-issues`, `close-sub-issues`) into the working
 directory's `.github/`, overwriting anything already there. The cascade
 workflows call back into this repo's shared actions
-(`aimarchirico/commons/.github/actions/...@main`) rather than vendoring them.
-No env vars.
+(`aimarchirico/commons/.github/actions/...@main`) rather than vendoring
+them. No env vars.
 
 ## Development
 
@@ -71,5 +79,17 @@ pnpm --filter @aimarchirico/commons-github fix      # auto-fix lint
 ```
 
 Vitest enforces an 80% coverage floor on `services/`; `bin/` entrypoints are
-excluded. Released by Release Please and published to the GitHub Packages npm
+excluded.
+
+## Deployment
+
+Released by Release Please and published to the GitHub Packages npm
 registry when a release touches this package's path.
+
+## Contributing
+
+See [CONTRIBUTING.md](../../../.github/CONTRIBUTING.md).
+
+## License
+
+[MIT](../../../LICENSE)
