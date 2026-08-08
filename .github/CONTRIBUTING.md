@@ -42,87 +42,84 @@ judgment rather than dogma.
 
 ---
 
+## Architecture
+
+We structure the repository as a monorepo of independently buildable units.
+
+Within a module, we follow
+[Vertical Slice Architecture](https://deviq.com/architecture/vertical-slice-architecture/):
+draw boundaries by feature rather than technical layer, let each slice organize its own internals, and, if it exposes anything, do so only through a narrow public contract. Anything crossing a slice boundary goes through that contract, never around it; shared code never depends on a slice.
+
+---
+
 ## Documentation
 
 We adapt the
 [Google documentation guide](https://google.github.io/styleguide/docguide/) and
 split documentation by audience:
 
-- **`README.md` and `docs/`** (System-level): Features, how components connect,
-  what infrastructure they run on, external dependencies. Nothing
+- **README.md and docs/** (System-level): Project overview, how components
+  connect, what infrastructure they run on, external dependencies. Nothing
   implementation-specific.
 - **Module READMEs** (Implementation-level): Everything a developer needs to
   work on that part.
 
-### 1. README.md
+### 1. README files
 
-The primary entry point and high-level overview of the project.
+We follow the
+[Standard Readme](https://github.com/RichardLitt/standard-readme)
+specification for README files.
 
-- **Introduction**: Clear, concise statement of the project's purpose. What
-  problem does it solve? Who is the target audience?
-- **Demo**: Visual evidence of the project in action. Placeholders for
-  screenshots, GIFs, or links to live staging/production environments.
-- **Features**: High-level bullet points of the core functionality and value
-  propositions.
-- **Getting Started**: Link to sub-directory READMEs for detailed technical
-  setup.
-- **Documentation**: A directory map for the extended documentation located in
-  the `docs/` folder.
-- **Workflow**: Link to contribution guidelines in `CONTRIBUTING.md`.
+- **Title**: The name, followed by a description of what it does.
+- **Install**: Prerequisites, environment variables, and installation steps.
+- **Usage**: Available runtime commands and interaction flows.
+- **Development** (Modules only): Tech stack, directory tree, and code
+  quality.
+- **Deployment** (Modules only): CI/CD pipelines, deployment targets, and
+  hosting details.
+- **Contributing**: A link to the contributing guidelines in
+  `CONTRIBUTING.md`.
+- **License**: A link to the legal license governing use.
 
 ### 2. docs/ARCHITECTURE.md
 
-System-level source of truth. Contains only what spans the whole system; nothing
-implementation-specific.
+We follow the
+[matklad ARCHITECTURE.md](https://matklad.github.io/2021/02/06/ARCHITECTURE.md.html)
+approach. High-level system structure documentation.
 
-- **Data Flow**: Mermaid diagram showing communication between services.
-- **Infrastructure Overview**: Table of layers, technologies, and hosting
-  locations.
-- **Project Structure**: Top-level directory tree explaining the purpose of each
-  folder.
+- **Bird's Eye View**: High-level system diagram, infrastructure overview, and
+  external boundaries.
+- **Code Map**: Top-level directory tree, domain boundaries, and
+  architectural invariants.
+- **Cross-Cutting Concerns**: System-wide patterns and shared mechanics.
 
 ### 3. docs/API.md (if applicable)
 
-Technical reference for internal and external interfaces. Applies only if the
-project exposes an API surface.
+We follow the [OpenAPI](https://swagger.io/specification/) specification.
+Technical reference for external interfaces. Applies only if the project
+exposes an API surface.
 
-- **Authentication**: Detailed security protocol. Instructions for obtaining and
-  rotating credentials.
-- **Endpoints**: Summary of API resources. Link to interactive documentation if
-  applicable.
-- **Data Models**: Schema definitions or descriptions of core domain entities
-  and their relationships.
+- **Version**: The current API version number, containing subsections for
+  servers and available authorizations.
+- **[Tags]**: Dedicated sections for each resource category, detailing each
+  endpoint with parameters, request body, and responses.
+- **Schemas**: Tabular definitions of request objects and response objects.
 
 ### 4. docs/DESIGN.md (if applicable)
 
-Standards for UI, UX, and visual identity. Applies only if the project has a
+We follow the
+[Google DESIGN.md](https://github.com/google-labs-code/design.md) specification. Standards for UI, UX, and visual identity. Applies only if the project has a
 UI.
 
-- **Design System**: Definitions for the color palette, typography, spacing
-  scales, and component library usage.
-- **User Flows**: Logical maps or descriptions of the most critical user
-  journeys through the application.
-- **Assets**: Markdown illustrations, screenshots, or other visual assets used
-  in the design system.
-
-### 5. [module]/README.md
-
-Technical documentation specific to a project subsystem. All
-implementation-level detail lives here. Prefer
-[Vertical Slice Architecture](https://deviq.com/architecture/vertical-slice-architecture/):
-draw boundaries by feature rather than technical layer, let each slice organize
-its own internals, and expose it only through a narrow public contract. Anything
-crossing a slice boundary goes through that contract, never around it; shared
-code never depends on a slice.
-
-- **Tech Stack**: Versioned list of major languages, frameworks, and libraries.
-- **Folder Structure**: Directory layout and module boundary rules.
-- **Environment Variables**: List of required keys and `.env.example` reference.
-- **Local Development**: Installation steps, runtime requirements and available
-  commands.
-- **Code Quality**: Language-specific tooling, configurations, and style
-  guides.
-- **Deployment**: CI/CD pipelines, deployment targets and hosting details.
+- **Frontmatter**: Machine-readable YAML design tokens.
+- **Overview**: Brand summary, core visual style, and key user flows.
+- **Colors**: Color palette definitions.
+- **Typography**: Font families and sizing scales.
+- **Layout**: Spacing and structural rules.
+- **Elevation**: Guidelines for depth and shadows.
+- **Shapes**: Rounded corners and geometric styles.
+- **Components**: Definitions and diagrams for specific UI elements.
+- **Do's and Don'ts**: Best practices for usage.
 
 ---
 
@@ -263,7 +260,7 @@ specification.
 ## Pull Requests
 
 We adapt the
-[Gitmore PR Template](https://gitmore.io/blog/pull-request-template).
+[Gitmore PR](https://gitmore.io/blog/pull-request-template) template. 
 
 ### PR Title
 
