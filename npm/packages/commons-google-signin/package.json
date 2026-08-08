@@ -33,7 +33,7 @@
     "expo": "*",
     "jsdom": "^26.0.0",
     "react": "*",
-    "react-dom": "19.2.7",
+    "react-dom": "19.2.8",
     "react-native": "*",
     "typescript": "^6.0.3",
     "vitest": "^3.2.4",
