@@ -32,12 +32,12 @@
   "dependencies": {
     "@aimarchirico/commons-project": "workspace:^",
     "@aimarchirico/commons-ts": "workspace:^",
-    "eslint-config-expo": "~57.0.0"
+    "eslint-config-expo": "~57.0.1"
   },
   "devDependencies": {
     "@types/node": "^26.0.1",
     "@vitest/coverage-v8": "^3.2.4",
-    "eas-cli": "^21.3.0",
+    "eas-cli": "^21.6.0",
     "eslint": "^9.39.2",
     "expo": "*",
     "react": "*",
@@ -45,7 +45,7 @@
     "vitest": "^3.2.4"
   },
   "peerDependencies": {
-    "eas-cli": "^21.3.0",
+    "eas-cli": "^21.6.0",
     "eslint": "^9.39.2",
     "expo": "*",
     "react": "*",
