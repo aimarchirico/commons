@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.6.0](https://github.com/aimarchirico/commons/compare/commons-expo-v4.5.2...commons-expo-v4.6.0) (2026-08-09)
+
+
+### Features
+
+* **commons-github:** standardize documentation format guidance in CONTRIBUTING.md ([88c4462](https://github.com/aimarchirico/commons/commit/88c44624ab924b10708958faeba74f80f697b777))
+
 ## [4.5.2](https://github.com/aimarchirico/commons/compare/commons-expo-v4.5.1...commons-expo-v4.5.2) (2026-08-03)
 
 

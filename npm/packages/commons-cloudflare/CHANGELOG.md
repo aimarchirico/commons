@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.7.0](https://github.com/aimarchirico/commons/compare/commons-cloudflare-v3.6.2...commons-cloudflare-v3.7.0) (2026-08-09)
+
+
+### Features
+
+* **commons-github:** standardize documentation format guidance in CONTRIBUTING.md ([88c4462](https://github.com/aimarchirico/commons/commit/88c44624ab924b10708958faeba74f80f697b777))
+
 ## [3.6.2](https://github.com/aimarchirico/commons/compare/commons-cloudflare-v3.6.1...commons-cloudflare-v3.6.2) (2026-08-03)
 
 
