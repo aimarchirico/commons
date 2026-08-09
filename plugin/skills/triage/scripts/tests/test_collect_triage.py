@@ -9,7 +9,7 @@ from collect_triage_helpers import (
     _base_responses,
     _install_gh,
     _make_pr,
-    _review_state_response,
+    _review_states_response,
 )
 
 
@@ -88,22 +88,20 @@ def test_main_classifies_your_prs_and_splits_out_drafts(
         ],
     )
     responses = _base_responses(your_prs=your_prs)
-    states = (
-        (2, "APPROVED", [True], "MERGEABLE", None),
-        (3, "APPROVED", [False], "MERGEABLE", None),
-        (4, "CHANGES_REQUESTED", [False], "MERGEABLE", None),
-        (5, None, None, "MERGEABLE", None),
-        (6, "APPROVED", [True], "CONFLICTING", "FAILURE"),
-    )
-    for num, state, threads, mergeable, checks in states:
-        k, b = _review_state_response(
-            number=num,
-            review_state=state,
-            thread_resolutions=threads,
-            mergeable=mergeable,
-            checks_state=checks,
-        )
-        responses[k] = b
+    specs = {
+        2: {"review_state": "APPROVED", "thread_resolutions": [True]},
+        3: {"review_state": "APPROVED", "thread_resolutions": [False]},
+        4: {"review_state": "CHANGES_REQUESTED", "thread_resolutions": [False]},
+        5: {},
+        6: {
+            "review_state": "APPROVED",
+            "thread_resolutions": [True],
+            "mergeable": "CONFLICTING",
+            "checks_state": "FAILURE",
+        },
+    }
+    k, b = _review_states_response(specs)
+    responses[k] = b
     _install_gh(monkeypatch, responses)
 
     ct.main()

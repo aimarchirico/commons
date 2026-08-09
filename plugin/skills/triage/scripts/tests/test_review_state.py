@@ -3,6 +3,7 @@
 from typing import Any
 
 from review_state import fetch_review_state
+from review_state_fixtures import pr_state_fields
 
 
 def _response(
@@ -13,37 +14,14 @@ def _response(
     mergeable: str = "MERGEABLE",
     checks_state: str | None = None,
 ) -> dict[str, Any]:
-    return {
-        "data": {
-            "repository": {
-                "pullRequest": {
-                    "latestReview": {
-                        "nodes": []
-                        if review_state is None
-                        else [{"state": review_state}],
-                    },
-                    "allReviews": {"nodes": []},
-                    "reviewThreads": {
-                        "nodes": [{"isResolved": r} for r in thread_resolutions],
-                    },
-                    "comments": {
-                        "nodes": [
-                            {"body": body, "createdAt": f"2024-01-01T00:00:{i:02d}Z"}
-                            for i, body in enumerate(comment_bodies)
-                        ],
-                    },
-                    "mergeable": mergeable,
-                    "commits": {
-                        "nodes": []
-                        if checks_state is None
-                        else [
-                            {"commit": {"statusCheckRollup": {"state": checks_state}}},
-                        ],
-                    },
-                },
-            },
-        },
-    }
+    fields = pr_state_fields(
+        review_state=review_state,
+        thread_resolutions=thread_resolutions,
+        comment_bodies=comment_bodies,
+        mergeable=mergeable,
+        checks_state=checks_state,
+    )
+    return {"data": {"repository": {"pullRequest": fields}}}
 
 
 def test_maps_latest_review_state_and_resolves_threads() -> None:

@@ -13,7 +13,7 @@ from typing import Any
 from backlog_utils import fetch_backlog_issues, fetch_in_progress_issues
 from pr_blocking import apply_pr_blocking
 from pr_utils import (
-    fetch_default_branch,
+    fetch_all_open_prs,
     fetch_open_and_draft_prs,
     fetch_prs_to_review,
 )
@@ -69,17 +69,18 @@ def main() -> None:
     repo_name = preflight["repo_name"]
     project_number = preflight["project_number"]
     project_owner = preflight["project_owner"]
+    default_branch = preflight["default_branch"]
 
     try:
         login = _resolve_login(_run_cmd)
-        default_branch = fetch_default_branch(_run_cmd)
+        all_open_prs = fetch_all_open_prs(_run_cmd)
 
         pr_data = fetch_open_and_draft_prs(
-            _run_cmd,
+            all_open_prs,
             lambda query, **variables: _graphql(_run_cmd, query, **variables),
-            owner,
-            repo_name,
+            (owner, repo_name),
             default_branch,
+            login,
         )
         backlog_data = fetch_backlog_issues(
             _run_cmd,
@@ -88,7 +89,7 @@ def main() -> None:
             project_number,
             login,
         )
-        prs_to_review = fetch_prs_to_review(_run_cmd, login)
+        prs_to_review = fetch_prs_to_review(all_open_prs, login)
 
         all_your_prs = pr_data["your_open_prs"] + pr_data["your_draft_prs"]
         apply_pr_blocking(all_your_prs, backlog_data["backlog_issues"])

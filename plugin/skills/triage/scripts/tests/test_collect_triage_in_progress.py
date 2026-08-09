@@ -7,31 +7,10 @@ import pytest
 from collect_triage_helpers import (
     _base_responses,
     _install_gh,
+    _issues_deps_response,
     _make_pr,
-    _normalize,
-    _review_state_response,
+    _review_states_response,
 )
-
-
-def _deps_key(number: int) -> tuple[str, ...]:
-    return _normalize(
-        (
-            "gh", "api", "graphql", "-f", "query=placeholder",
-            "-f", "owner=acme", "-f", "repo=widgets", "-F", f"number={number}",
-        ),
-    )
-
-
-def _empty_deps_response() -> str:
-    return json.dumps(
-        {
-            "data": {
-                "repository": {
-                    "issue": {"blockedBy": {"nodes": []}, "blocking": {"nodes": []}},
-                },
-            },
-        },
-    )
 
 
 def _make_in_progress_item(
@@ -68,10 +47,10 @@ def test_main_lists_in_progress_issues_without_an_open_pr(
         [_make_pr(num=1, title="Closes 7", refs=[{"number": 7, "url": "issue-url"}])],
     )
     responses = _base_responses(your_prs=your_prs, in_progress_items=in_progress_items)
-    k, b = _review_state_response(number=1, review_state=None, mergeable="MERGEABLE")
+    k, b = _review_states_response({1: {}})
     responses[k] = b
-    responses[_deps_key(7)] = _empty_deps_response()
-    responses[_deps_key(8)] = _empty_deps_response()
+    k, b = _issues_deps_response({7: {}, 8: {}})
+    responses[k] = b
     _install_gh(monkeypatch, responses)
 
     ct.main()

@@ -24,10 +24,7 @@ _pr_feedback = _load_pr_feedback()
 comments_since_checkpoint = _pr_feedback.comments_since_checkpoint
 unresolved_threads = _pr_feedback.unresolved_threads
 
-_REVIEW_STATE_QUERY = """
-query($owner: String!, $repo: String!, $number: Int!) {
-  repository(owner: $owner, name: $repo) {
-    pullRequest(number: $number) {
+_PR_STATE_FIELDS = """
       latestReview: reviews(last: 1) { nodes { state } }
       allReviews: reviews(first: 100) { nodes { body createdAt } }
       reviewThreads(first: 100) { nodes { isResolved } }
@@ -36,9 +33,16 @@ query($owner: String!, $repo: String!, $number: Int!) {
       commits(last: 1) {
         nodes { commit { statusCheckRollup { state } } }
       }
-    }
-  }
-}
+"""
+
+_REVIEW_STATE_QUERY = f"""
+query($owner: String!, $repo: String!, $number: Int!) {{
+  repository(owner: $owner, name: $repo) {{
+    pullRequest(number: $number) {{
+      {_PR_STATE_FIELDS}
+    }}
+  }}
+}}
 """
 
 NO_REVIEWS = "no_reviews"
@@ -61,26 +65,7 @@ _CHECKS_STATE_MAP = {
 }
 
 
-def fetch_review_state(
-    graphql: Callable[..., dict[str, Any]],
-    owner: str,
-    repo_name: str,
-    number: int,
-) -> dict[str, Any]:
-    """Compute a pull request's real review and merge state.
-
-    ``graphql`` must match ``graphql(query: str, **variables) -> dict``,
-    returning the parsed GraphQL response, so callers can reuse their own
-    ``gh api graphql`` wrapper.
-
-    Draft PRs can still carry comments, threads, conflicts, and failing
-    checks (GitHub allows commenting/reviewing drafts), so nothing here is
-    special-cased for drafts; callers decide what's actionable from
-    ``isDraft`` separately.
-    """
-    api_data = graphql(_REVIEW_STATE_QUERY, owner=owner, repo=repo_name, number=number)
-    pr = api_data.get("data", {}).get("repository", {}).get("pullRequest") or {}
-
+def _parse_pr_state(pr: dict[str, Any]) -> dict[str, Any]:
     latest_review_nodes = pr.get("latestReview", {}).get("nodes", [])
     state = (
         NO_REVIEWS
@@ -130,3 +115,55 @@ def fetch_review_state(
         "conflicting": conflicting,
         "checks": checks,
     }
+
+
+def fetch_review_state(
+    graphql: Callable[..., dict[str, Any]],
+    owner: str,
+    repo_name: str,
+    number: int,
+) -> dict[str, Any]:
+    """Compute a pull request's real review and merge state.
+
+    ``graphql`` must match ``graphql(query: str, **variables) -> dict``,
+    returning the parsed GraphQL response, so callers can reuse their own
+    ``gh api graphql`` wrapper.
+
+    Draft PRs can still carry comments, threads, conflicts, and failing
+    checks (GitHub allows commenting/reviewing drafts), so nothing here is
+    special-cased for drafts; callers decide what's actionable from
+    ``isDraft`` separately.
+    """
+    api_data = graphql(_REVIEW_STATE_QUERY, owner=owner, repo=repo_name, number=number)
+    pr = api_data.get("data", {}).get("repository", {}).get("pullRequest") or {}
+    return _parse_pr_state(pr)
+
+
+def fetch_review_states(
+    graphql: Callable[..., dict[str, Any]],
+    owner: str,
+    repo_name: str,
+    numbers: list[int],
+) -> dict[int, dict[str, Any]]:
+    """Batch-fetch review state for multiple PRs in a single GraphQL request.
+
+    Uses one aliased field per PR number so N PRs cost one round-trip instead
+    of N. Returns a dict keyed by PR number, each value shaped like
+    `fetch_review_state`'s return value.
+    """
+    if not numbers:
+        return {}
+
+    aliased_fields = "\n".join(
+        f"pr{n}: pullRequest(number: {n}) {{ {_PR_STATE_FIELDS} }}" for n in numbers
+    )
+    query = f"""
+query($owner: String!, $repo: String!) {{
+  repository(owner: $owner, name: $repo) {{
+    {aliased_fields}
+  }}
+}}
+"""
+    api_data = graphql(query, owner=owner, repo=repo_name)
+    repo_data = api_data.get("data", {}).get("repository") or {}
+    return {n: _parse_pr_state(repo_data.get(f"pr{n}") or {}) for n in numbers}

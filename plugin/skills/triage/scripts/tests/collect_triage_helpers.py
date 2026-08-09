@@ -1,22 +1,42 @@
 """Shared gh-mocking fixtures for collect_triage.py tests."""
 
 import json
+import re
 import subprocess
 from collections.abc import Sequence
+from typing import Any
 
 import collect_triage as ct
 import pytest
 
-REPO_CONTEXT = json.dumps({"owner": {"login": "acme"}, "name": "widgets"})
+REPO_CONTEXT = json.dumps(
+    {
+        "owner": {"login": "acme"},
+        "name": "widgets",
+        "defaultBranchRef": {"name": "main"},
+    },
+)
 LOGIN = "octocat"
 node_def = {"number": 9, "title": "Widgets", "closed": False}
 PROJECT_QUERY_RESPONSE = json.dumps(
     {"data": {"repository": {"projectsV2": {"nodes": [node_def]}}}},
 )
+PR_LIST_FIELDS = (
+    "number,title,url,author,reviewRequests,reviewDecision,isDraft,"
+    "closingIssuesReferences,headRefName,baseRefName"
+)
+
+_ALIAS_RE = re.compile(r"\b((?:i|pr)\d+):")
 
 
 def _normalize(args: Sequence[str]) -> tuple[str, ...]:
-    return tuple("query=<Q>" if a.startswith("query=") else a for a in args)
+    def norm(a: str) -> str:
+        if not a.startswith("query="):
+            return a
+        aliases = sorted(set(_ALIAS_RE.findall(a)))
+        return f"query=<{','.join(aliases)}>" if aliases else "query=<Q>"
+
+    return tuple(norm(a) for a in args)
 
 
 def _fake_completed(stdout: str) -> subprocess.CompletedProcess[str]:
@@ -51,18 +71,10 @@ def _base_responses(
     in_progress_items: str = '{"items": []}',
     project_query_response: str = PROJECT_QUERY_RESPONSE,
 ) -> dict[tuple[str, ...], str]:
-    q_str = "gh|api|graphql|-f|owner=acme|-f|name=widgets|-f|query=placeholder"
-    q_args = q_str.split("|")
-    pr_rev_str = (
-        "gh|pr|list|--search|is:open -author:@me draft:false|"
-        "--json|number,title,url,author,reviewRequests,reviewDecision"
-    )
-    pr_rev_args = pr_rev_str.split("|")
-    pr_me_str = (
-        "gh|pr|list|--search|is:open author:@me|"
-        "--json|number,title,url,isDraft,closingIssuesReferences,headRefName,baseRefName"
-    )
-    pr_me_args = pr_me_str.split("|")
+    q_args = "gh|api|graphql|-f|owner=acme|-f|name=widgets|-f|query=placeholder"
+    q_args = q_args.split("|")
+    pr_list_args = ["gh", "pr", "list", "--search", "is:open", "--json", PR_LIST_FIELDS]
+    combined_prs = json.loads(your_prs) + json.loads(prs_to_review)
     item_str = (
         "gh|project|item-list|9|--owner|acme|--format|json|--limit|200|"
         "--query|status:Todo is:issue"
@@ -74,48 +86,67 @@ def _base_responses(
     )
     in_progress_args = in_progress_str.split("|")
     return {
-        ("gh", "repo", "view", "--json", "owner,name"): REPO_CONTEXT,
-        ("gh", "repo", "view", "--json", "defaultBranchRef"): json.dumps(
-            {"defaultBranchRef": {"name": "main"}},
-        ),
+        ("gh", "repo", "view", "--json", "owner,name,defaultBranchRef"): REPO_CONTEXT,
         _normalize(q_args): project_query_response,
         ("gh", "api", "user", "--jq", ".login"): LOGIN,
-        tuple(pr_rev_args): prs_to_review,
-        tuple(pr_me_args): your_prs,
+        tuple(pr_list_args): json.dumps(combined_prs),
         tuple(item_args): project_items,
         tuple(in_progress_args): in_progress_items,
     }
 
 
-def _review_state_response(
-    *,
-    number: int,
-    review_state: str | None = None,
-    thread_resolutions: list[bool] | None = None,
-    mergeable: str = "MERGEABLE",
-    checks_state: str | None = None,
+def _review_states_response(
+    specs: dict[int, dict[str, Any]],
 ) -> tuple[tuple[str, ...], str]:
+    aliases_text = " ".join(f"pr{n}:" for n in specs)
     key = _normalize(
-        f"gh|api|graphql|-f|owner=acme|-f|repo=widgets|-F|number={number}|-f|query=placeholder".split(
-            "|",
+        (
+            "gh", "api", "graphql", "-f", "owner=acme", "-f", "repo=widgets",
+            "-f", f"query={aliases_text}",
         ),
     )
-    rev = [] if review_state is None else [{"state": review_state}]
-    thr = [{"isResolved": r} for r in (thread_resolutions or [])]
-    chk = (
-        []
-        if checks_state is None
-        else [{"commit": {"statusCheckRollup": {"state": checks_state}}}]
+    repo_data = {}
+    for n, spec in specs.items():
+        review_state = spec.get("review_state")
+        thread_resolutions = spec.get("thread_resolutions") or []
+        mergeable = spec.get("mergeable", "MERGEABLE")
+        checks_state = spec.get("checks_state")
+        rev = [] if review_state is None else [{"state": review_state}]
+        thr = [{"isResolved": r} for r in thread_resolutions]
+        chk = (
+            []
+            if checks_state is None
+            else [{"commit": {"statusCheckRollup": {"state": checks_state}}}]
+        )
+        repo_data[f"pr{n}"] = {
+            "latestReview": {"nodes": rev},
+            "allReviews": {"nodes": []},
+            "reviewThreads": {"nodes": thr},
+            "comments": {"nodes": []},
+            "mergeable": mergeable,
+            "commits": {"nodes": chk},
+        }
+    return key, json.dumps({"data": {"repository": repo_data}})
+
+
+def _issues_deps_response(
+    deps_by_number: dict[int, dict[str, Any]],
+) -> tuple[tuple[str, ...], str]:
+    aliases_text = " ".join(f"i{n}:" for n in deps_by_number)
+    key = _normalize(
+        (
+            "gh", "api", "graphql", "-f", f"query={aliases_text}",
+            "-f", "owner=acme", "-f", "repo=widgets",
+        ),
     )
-    pr_data = {
-        "latestReview": {"nodes": rev},
-        "allReviews": {"nodes": []},
-        "reviewThreads": {"nodes": thr},
-        "comments": {"nodes": []},
-        "mergeable": mergeable,
-        "commits": {"nodes": chk},
+    repo_data = {
+        f"i{n}": {
+            "blockedBy": {"nodes": deps.get("blocked_by_nodes", [])},
+            "blocking": {"nodes": deps.get("blocking_nodes", [])},
+        }
+        for n, deps in deps_by_number.items()
     }
-    return key, json.dumps({"data": {"repository": {"pullRequest": pr_data}}})
+    return key, json.dumps({"data": {"repository": repo_data}})
 
 
 def _assert_empty_survey(capsys: pytest.CaptureFixture[str]) -> None:
@@ -146,4 +177,7 @@ def _make_pr(
         "closingIssuesReferences": ref_list,
         "headRefName": head,
         "baseRefName": base,
+        "author": {"login": LOGIN, "is_bot": False},
+        "reviewRequests": [],
+        "reviewDecision": "",
     }
