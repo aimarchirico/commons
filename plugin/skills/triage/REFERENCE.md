@@ -12,7 +12,6 @@ Start the output with a summary header:
 ```
 
 `<active_count>` is rendered verbatim from the script's `active_count` field.
-Do not recompute it by counting rendered rows.
 
 Use "item" when `<active_count>` is 1, "items" otherwise. Apply the same
 singular/plural rule to "issue/issues" in the parenthetical note.
