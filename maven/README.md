@@ -69,54 +69,21 @@ maven/
 
 ### Code Quality
 
-- **Formatting**: ktfmt, applied through the convention plugin and run via
-  `task maven:fix` (`ktfmtFormat`).
-- **Static analysis**: detekt, applied through the convention plugin and
-  run as part of `task maven:check` (`detekt`). The plugin layers its own
-  configuration onto detekt's defaults, so consuming builds need no detekt
-  configuration of their own.
-- **Test coverage**: JaCoCo enforces 80% line coverage and 80% branch
-  coverage per module, applied through the convention plugin and run as
-  part of `task maven:check` (`jacocoTestCoverageVerification`). The
-  threshold is a whole-build ratio, not a per-class one, so a handful of
-  thin, hard-to-test classes (a `@ConfigurationProperties` holder, a
-  Spring `@AutoConfiguration`) don't force pointless tests as long as the
-  module's tested code carries the average. `commons-convention` cannot
-  apply its own convention plugin (it's the `kotlin-dsl` project that
-  defines it), so it wires JaCoCo by hand in its own `build.gradle.kts`
-  and is checked separately via `task maven:check`
-  (`gradlew -p commons-convention check`), since `includeBuild` never
-  attaches it to the root build's `check` task graph.
-- **Documentation**: every public class, function, and property needs a
-  KDoc block, test sources included. Overridden and protected members are
-  exempt, so an implementation never has to repeat its supertype. Nested
-  and inner declarations count too, since they are public by default in
-  Kotlin. Any KDoc present is also checked against the actual signature
-  (`OutdatedDocumentation`), so a stale `@param` is caught even on members
-  that were never required to be documented.
-- **Comments**: only KDoc blocks documenting a public declaration are
-  allowed (`commons/PublicKDocOnly`), mirroring the documentation rule
-  above exactly: whatever is required to have a KDoc block is also the
-  only thing allowed to have one. Line comments, block comments, a KDoc
-  block that documents nothing, and a KDoc block on a non-public
-  declaration are all rejected, wherever they appear, on their own line or
-  trailing code. The rule reads lexer tokens rather than text, so
-  delimiters inside string literals are never mistaken for comments. A
-  directive comment such as `// x-release-please-version` or
-  `// suppressed: <reason>` is recognised by content, so it stays legal
-  wherever it's written.
-- **Suppression discipline**: every `@Suppress` annotation must be
-  preceded by a `// suppressed: <reason>` comment of at least 10
-  characters (`commons/SuppressRequiresReason`), mirroring this
-  repository's TypeScript convention of requiring a reason on suppressing
-  comments.
-- **Conventions**: file naming and length rules, enforced by the same
-  detekt rule set as documentation and comments (`commons/FileNaming`,
-  `commons/FileLength`). Kotlin files under `src/main` must be
-  PascalCase-named and stay under 300 lines.
-- **Architecture**: module-dependency rules for the api/impl/core layout,
-  enforced at Gradle configuration time by the
-  `no.chirico.commons.convention.architecture` plugin.
+- **Formatting**: ktfmt formatting applied via
+  `no.chirico.commons.convention.kotlin` plugin (`task maven:fix`).
+- **Static Analysis**: detekt with custom rules for documentation and file
+  limits (`task maven:check`).
+- **Documentation & Comments**: KDoc required for public members
+  (`OutdatedDocumentation`); line comments and non-public KDoc disallowed
+  (`commons/PublicKDocOnly`).
+- **Suppression Discipline**: `// suppressed: <reason>` comment of at least
+  10 characters required for `@Suppress` (`commons/SuppressRequiresReason`).
+- **Conventions**: PascalCase naming (`commons/FileNaming`) and 300-line
+  per-file limit under `src/main` (`commons/FileLength`).
+- **Testing & Coverage**: JaCoCo enforcing 80% line and branch coverage per
+  module (`jacocoTestCoverageVerification`).
+- **Architecture**: ArchUnit module-dependency rules enforced at Gradle
+  configuration time (`no.chirico.commons.convention.architecture`).
 
 ## Deployment
 

@@ -139,45 +139,17 @@ and `tsc`; the runtime helpers the provisioning commands share live in
 
 ### Code Quality
 
-- **Linting**: ESLint 9 flat config; every package extends the shared
-  config from `commons-ts`.
-- **Documentation**: every exported top-level function, class, interface,
-  type alias, enum, and `const`/`let`/`var`, plus every public member of
-  an exported class, needs a JSDoc block (`jsdoc/require-jsdoc`,
-  configured with `contexts` to reach the TypeScript-only constructs
-  beyond what its `require` option covers). Any JSDoc block present is
-  checked for correctness: matching `@param`/`@returns` tags, valid type
-  syntax, and known tag names (`jsdoc/check-param-names`,
-  `jsdoc/check-tag-names`, `jsdoc/check-types`, `jsdoc/require-param`,
-  `jsdoc/require-returns`, `jsdoc/valid-types`).
-- **Comments**: only JSDoc blocks documenting one of the declarations
-  above are allowed (`commons/public-jsdoc-only`). Line and block
-  comments are rejected wherever they appear, on their own line or
-  trailing code, so explanation stays attached to what it describes; a
-  JSDoc block that documents nothing, or that sits on a
-  non-exported/non-public declaration, is rejected the same way. This
-  mirrors `jsdoc/require-jsdoc` exactly: whatever is required to have a
-  doc comment is also the only thing allowed to have one. Tooling
-  directives such as `eslint-disable` and `@ts-expect-error` remain
-  legal, because the tools that read them recognise only the plain forms.
-- **Suppression discipline**: `eslint-disable` comments must state why
-  (`@eslint-community/eslint-comments/require-description`), may not
-  disable more than the rules actually violated
-  (`@eslint-community/eslint-comments/no-unlimited-disable`), and are
-  flagged once they stop suppressing anything
-  (`@eslint-community/eslint-comments/no-unused-disable`).
-  `@ts-expect-error` requires a description of at least 10 characters
-  (`@typescript-eslint/ban-ts-comment`, `minimumDescriptionLength: 10`);
-  `@ts-ignore` and `@ts-nocheck` are banned outright, since they silence
-  errors without requiring the compiler to confirm one exists; `@ts-check`
-  is allowed.
-- **Types**: `tsc` against the shared `tsconfig.json`.
-- **Testing**: Vitest, with an 80% line/function/branch/statement coverage
-  floor enforced by `commons-ts`'s shared `./vitest-base` config
-  (`vitest run`, part of every package's `check` script). `bin/`
-  entrypoints and declarative config/asset re-exports are excluded from
-  the threshold; the coverage bar applies to `services/`/`lib/` logic.
-- **Caching**: Turborepo caches `check` runs (`turbo.json`).
+- **Linting**: ESLint 9 flat config extending `@aimarchirico/commons-ts`.
+- **Types**: `tsc` against shared `tsconfig.json`.
+- **Documentation & Comments**: JSDoc required for all public exports; line
+  comments and non-exported JSDoc disallowed (`commons/public-jsdoc-only`).
+- **Suppression Discipline**: Descriptions required for suppressions
+  (`eslint-disable`, `@ts-expect-error`); `@ts-ignore` and `@ts-nocheck`
+  banned.
+- **Testing & Coverage**: Vitest with an 80% coverage floor on logic
+  (`./vitest-base`).
+- **Caching**: Turborepo caches pipeline execution for `check` tasks
+  (`turbo.json`).
 
 ## Deployment
 

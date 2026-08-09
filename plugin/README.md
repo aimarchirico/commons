@@ -30,7 +30,7 @@ rather than on each other, except for:
   `security-reviewer`, and `compliance-reviewer`.
 - `ship` delegating to the `issue`, `solve`, `review`, and `resolve` skills.
 - `plan` delegating to parallel `general-purpose` agents for external
-  research, and to the `docs` and `issue` skills.
+  research, and to the `docs`, `commit`, `pr`, and `issue` skills.
 
 Agent skills delegate task execution to specialized subagents or
 deterministic Python scripts, which execute GitHub GraphQL/REST operations
@@ -57,22 +57,25 @@ through merge:
 ```mermaid
 graph TD
     start_proj["Brand-New Project"] --> plan["/commons:plan<br/>Draft Planning & Design Artifacts"]
-    plan -.->|delegates| docs["/commons:docs<br/>Update Documentation"]
-    plan --> issue["/commons:issue<br/>Create Issue Hierarchy"]
+    plan -.->|invokes, in order| docs["/commons:docs<br/>Update Documentation"]
+    plan -.->|invokes, in order| commit["/commons:commit<br/>Create Atomic Commits"]
+    plan -->|invokes| pr["/commons:pr<br/>Create Pull Request"]
+    plan -.->|invokes, optional| issue["/commons:issue<br/>Create Issue Hierarchy"]
 
     survey["Survey Work"] --> triage["/commons:triage<br/>Survey PRs & Backlog"]
-    triage -->|New Task/Story| issue
-    triage -->|Existing Issue| solve["/commons:solve<br/>Implement Issue Fix"]
+    triage -->|suggests: New Task/Story| issue
+    triage -->|suggests: Existing Issue| solve["/commons:solve<br/>Implement Issue Fix"]
     issue --> solve
 
-    solve -.->|worktree-runner| commit["/commons:commit<br/>Create Atomic Commits"]
-    commit -.-> docs
-    docs -.-> check["/commons:check<br/>Verify CI Gates"]
-    solve -->|invokes| pr["/commons:pr<br/>Create Pull Request"]
+    solve -.->|delegates| runner["worktree-runner<br/>(implements the plan)"]
+    runner -.->|invokes, in order| commit
+    runner -.->|invokes, in order| docs
+    runner -.->|invokes, in order| check["/commons:check<br/>Verify CI Gates"]
+    solve -->|invokes| pr
     pr --> review["/commons:review<br/>Parallel Code Review"]
 
     review -->|Changes Requested| resolve["/commons:resolve<br/>Address Feedback & Re-review"]
-    resolve -.->|worktree-runner| commit
+    resolve -.->|delegates| runner
     resolve --> review
 
     review -->|Approved| merge["Merge PR"]
@@ -157,11 +160,10 @@ feedback across `triage` and `resolve`:
 
 ### Code Quality
 
-Markdown is linted with the shared `markdownlint` config via `task
-docs:check` (and auto-fixed with `task docs:fix`) from the repository root.
-Python scripts (`skills/*/scripts/`) are checked with `task plugin:check`
-(and fixed with `task plugin:fix`), which run ruff, ty, and the line-length
-convention.
+- **Markdown**: Linted with shared `markdownlint` config via `task docs:check`
+  (auto-fixed with `task docs:fix`).
+- **Python Scripts**: Checked with `task plugin:check` (auto-fixed with `task
+  plugin:fix`), running ruff, ty, and line-length checks.
 
 ## Deployment
 

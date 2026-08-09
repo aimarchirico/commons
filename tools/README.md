@@ -63,13 +63,12 @@ tools/
 
 ### Code Quality
 
-- **Markdown**: `markdownlint-cli2` configured in `.markdownlint-cli2.yaml`.
-- **Commits**: `commitlint` with the Conventional Commits ruleset
-  configured in `.commitlintrc.yaml` (extending
-  `@commitlint/config-conventional`), enforced by the `.husky/commit-msg`
-  hook.
-- **Tool configs**: ESLint flat config defined in `eslint.config.ts` for
-  validating TS, JSON, YAML, and TOML tool files.
+- **Markdown**: `markdownlint-cli2` configured in `.markdownlint-cli2.yaml`
+  (`task docs:check`).
+- **Commits**: `commitlint` extending `@commitlint/config-conventional` via
+  `.commitlintrc.yaml` (`task commit:check`).
+- **Tool configs**: ESLint 9 flat config defined in `eslint.config.ts` for
+  TS, JSON, YAML, and TOML tool files (`task config:check`).
 
 ## Deployment
 

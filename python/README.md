@@ -61,29 +61,14 @@ whether the package is installed from a wheel, sdist, or editable install.
 
 ### Code Quality
 
-- **Linting**: ruff with bundled `assets/ruff.toml` (`commons-python ruff
-  <args>`), selecting `ALL` rules with `CPY001` ignored repository-wide,
-  plus scoped per-file ignores: `S101` for tests, and `S603`/`EXE001` for
-  CLI entry points and skill scripts.
-- **Types**: ty with bundled `assets/ty.toml` (`commons-python ty
-  <args>`).
-- **Documentation**: every public module, function, class, and method
-  needs a Google-style docstring, enforced via ruff's `D` (`pydocstyle`)
-  rule group configured with `convention = "google"`. Non-public
-  declarations (prefixed with `_`) do not carry docstrings.
-- **Comments**: only docstrings documenting a public declaration are
-  allowed (`commons-python commons check`): whatever is required to have a
-  doc comment is also the only thing allowed to have one. Line comments
-  (`# ...`), orphaned docstrings, and docstrings on non-public
-  declarations are rejected, so explanation stays attached to what it
-  describes.
-- **Line length**: native Python check enforcing a 300-line-per-file
-  maximum (`commons-python commons check`), skipping `.venv/`,
-  `__pycache__/`, `.git/`, `build/`, `dist/`, `node_modules/`, `.pnpm/`,
-  `.task/`, `.ruff_cache/`, and `*.egg-info/`.
-- **Testing & Coverage**: pytest and pytest-cov with bundled
-  `assets/coverage.toml`, enforcing an 80% minimum (`fail_under = 80`)
-  with branch coverage on (`commons-python pytest <args>`).
+- **Linting**: ruff with bundled `assets/ruff.toml` (`commons-python ruff`).
+- **Types**: ty with bundled `assets/ty.toml` (`commons-python ty`).
+- **Documentation & Comments**: Google-style docstrings for public
+  declarations; line comments and comments on internal declarations
+  disallowed (`commons-python commons check`).
+- **File Length**: 300-line maximum per file (`commons-python commons check`).
+- **Testing & Coverage**: pytest and pytest-cov enforcing an 80% coverage
+  threshold (`commons-python pytest`).
 
 ## Contributing
 
