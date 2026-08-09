@@ -10,14 +10,7 @@ _PROJECT_NUM = 9
 
 
 def _empty_deps_graphql() -> str:
-    res = {
-        "data": {
-            "repository": {
-                "issue": {"blockedBy": {"nodes": []}, "blocking": {"nodes": []}},
-            },
-        },
-    }
-    return json.dumps(res)
+    return json.dumps({"data": {"repository": {}}})
 
 
 def test_fetch_backlog_issues_filters_by_type_status_and_assignee() -> None:
@@ -110,8 +103,8 @@ def test_fetch_backlog_issues_filters_by_type_status_and_assignee() -> None:
     assert result["fully_blocked_count"] == 0
 
 
-def test_fetch_backlog_issues_excludes_issues_with_open_blocker_without_pr() -> None:
-    """An issue with an open blocker lacking an open PR is dropped entirely."""
+def test_fetch_backlog_issues_batches_dependency_lookups_in_one_call() -> None:
+    """All Todo candidates' dependencies are fetched in a single GraphQL request."""
     project_items = json.dumps(
         {
             "items": [
@@ -142,12 +135,11 @@ def test_fetch_backlog_issues_excludes_issues_with_open_blocker_without_pr() -> 
             ],
         },
     )
-
-    blocked_deps_graphql = json.dumps(
+    combined_deps_graphql = json.dumps(
         {
             "data": {
                 "repository": {
-                    "issue": {
+                    "i1": {
                         "blockedBy": {
                             "nodes": [
                                 {
@@ -166,17 +158,18 @@ def test_fetch_backlog_issues_excludes_issues_with_open_blocker_without_pr() -> 
                         },
                         "blocking": {"nodes": []},
                     },
+                    "i2": {"blockedBy": {"nodes": []}, "blocking": {"nodes": []}},
                 },
             },
         },
     )
+    calls: list[list[str]] = []
 
     def fake_run_cmd(args: list[str]) -> str:
+        calls.append(args)
         if args[:3] == ["gh", "project", "item-list"]:
             return project_items
-        if "-F" in args and "number=1" in args:
-            return blocked_deps_graphql
-        return _empty_deps_graphql()
+        return combined_deps_graphql
 
     result = bu.fetch_backlog_issues(
         fake_run_cmd,
@@ -185,6 +178,11 @@ def test_fetch_backlog_issues_excludes_issues_with_open_blocker_without_pr() -> 
         _PROJECT_NUM,
         _LOGIN,
     )
+
+    graphql_calls = [c for c in calls if c[:3] == ["gh", "api", "graphql"]]
+    assert len(graphql_calls) == 1
+    assert "i1: issue(number: 1)" in graphql_calls[0][4]
+    assert "i2: issue(number: 2)" in graphql_calls[0][4]
 
     issues = result["backlog_issues"]
     assert [issue["number"] for issue in issues] == [2]
@@ -237,7 +235,7 @@ def test_fetch_backlog_issues_includes_issue_blocked_by_open_pr() -> None:
         {
             "data": {
                 "repository": {
-                    "issue": {
+                    "i1": {
                         "blockedBy": {
                             "nodes": [
                                 blocking_issue_node(10, 25),
@@ -294,4 +292,3 @@ def test_fetch_backlog_issues_renders_null_priority_as_unset() -> None:
     result = bu.fetch_backlog_issues(fake_run_cmd, _REPO, "acme", _PROJECT_NUM, _LOGIN)
     issues = result["backlog_issues"]
     assert issues[0]["priority"] == "Unset"
-

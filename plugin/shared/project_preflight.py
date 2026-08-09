@@ -36,13 +36,15 @@ def check_cli_dependencies() -> None:
 
 def resolve_project_context(
     run_cmd: Callable[..., str],
-) -> tuple[str, str, int, str, str]:
-    """Fetch repo owner/name and resolve linked active GitHub Project (v2)."""
+) -> tuple[str, str, int, str, str, str]:
+    """Fetch repo owner/name/default branch and resolve the linked Project (v2)."""
     try:
-        repo_output = run_cmd(["gh", "repo", "view", "--json", "owner,name"])
-        repo_data = json.loads(repo_output)
+        fields = "owner,name,defaultBranchRef"
+        repo_data = json.loads(run_cmd(["gh", "repo", "view", "--json", fields]))
         owner = str(repo_data["owner"]["login"])
         repo_name = str(repo_data["name"])
+        branch_ref = repo_data.get("defaultBranchRef") or {}
+        default_branch = str(branch_ref.get("name") or "main")
     except (
         subprocess.CalledProcessError,
         json.JSONDecodeError,
@@ -84,19 +86,22 @@ def resolve_project_context(
         msg = "No active project linked to this repository."
         raise ProjectPreflightError(msg)
 
+    def as_context(proj: dict[str, Any]) -> tuple[str, str, int, str, str, str]:
+        project_owner = str(proj.get("owner", {}).get("login", owner))
+        return (
+            owner,
+            repo_name,
+            int(proj["number"]),
+            str(proj.get("id", "")),
+            project_owner,
+            default_branch,
+        )
+
     if len(open_projects) > SINGLE_MATCH:
         expected_title = _title_case_repo_name(repo_name)
         matches = [p for p in open_projects if p.get("title") == expected_title]
         if len(matches) == SINGLE_MATCH:
-            proj = matches[0]
-            project_owner = str(proj.get("owner", {}).get("login", owner))
-            return (
-                owner,
-                repo_name,
-                int(proj["number"]),
-                str(proj.get("id", "")),
-                project_owner,
-            )
+            return as_context(matches[0])
 
         project_list = "\n".join(
             f"  - {p.get('title')} (number: {p['number']})" for p in open_projects
@@ -109,9 +114,7 @@ def resolve_project_context(
         )
         raise ProjectPreflightError(msg)
 
-    proj = open_projects[0]
-    project_owner = str(proj.get("owner", {}).get("login", owner))
-    return owner, repo_name, int(proj["number"]), str(proj.get("id", "")), project_owner
+    return as_context(open_projects[0])
 
 
 def fetch_project_fields(
@@ -266,7 +269,7 @@ def run_project_preflight(
         sys.stderr.write(f"Error: {e}\n")
         sys.exit(1)
 
-    owner, repo_name, project_number, project_id, project_owner = ctx
+    owner, repo_name, project_number, project_id, project_owner, default_branch = ctx
     t_id, p_id, fields_data = None, None, {}
 
     if require_fields:
@@ -290,6 +293,7 @@ def run_project_preflight(
         "project_number": project_number,
         "project_id": project_id,
         "project_owner": project_owner,
+        "default_branch": default_branch,
         "type_field_id": t_id,
         "priority_field_id": p_id,
         "fields_data": fields_data,

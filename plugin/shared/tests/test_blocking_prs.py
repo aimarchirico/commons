@@ -2,7 +2,7 @@
 
 import json
 
-from shared.blocking_prs import fetch_issue_dependencies
+from shared.blocking_prs import fetch_issue_dependencies, fetch_issues_dependencies
 
 
 def test_fetch_issue_dependencies_parses_open_blockers_and_prs() -> None:
@@ -103,3 +103,54 @@ def test_fetch_issue_dependencies_parses_open_blockers_and_prs() -> None:
 
     assert len(res["blocking"]) == 1
     assert res["blocking"][0]["number"] == expected_blocking_1
+
+
+def test_fetch_issues_dependencies_batches_multiple_numbers_in_one_call() -> None:
+    """Aliases each issue number in a single request and keys results by number."""
+    api_response = json.dumps(
+        {
+            "data": {
+                "repository": {
+                    "i7": {
+                        "blockedBy": {"nodes": []},
+                        "blocking": {
+                            "nodes": [
+                                {
+                                    "number": 12,
+                                    "url": "u12",
+                                    "state": "OPEN",
+                                    "title": "Downstream",
+                                },
+                            ],
+                        },
+                    },
+                    "i8": {"blockedBy": {"nodes": []}, "blocking": {"nodes": []}},
+                },
+            },
+        },
+    )
+    calls: list[list[str]] = []
+
+    def mock_run_cmd(args: list[str]) -> str:
+        calls.append(args)
+        return api_response
+
+    res = fetch_issues_dependencies(mock_run_cmd, "owner", "repo", [7, 8])
+
+    assert len(calls) == 1
+    assert "i7: issue(number: 7)" in calls[0][4]
+    assert "i8: issue(number: 8)" in calls[0][4]
+    assert [b["number"] for b in res[7]["blocking"]] == [12]
+    assert res[8] == {"blocked_by": [], "blocking": []}
+
+
+def test_fetch_issues_dependencies_returns_empty_dict_for_no_numbers() -> None:
+    """Skips the API call entirely when there's nothing to fetch."""
+    calls: list[list[str]] = []
+
+    def mock_run_cmd(args: list[str]) -> str:
+        calls.append(args)
+        return "{}"
+
+    assert fetch_issues_dependencies(mock_run_cmd, "owner", "repo", []) == {}
+    assert calls == []

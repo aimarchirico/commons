@@ -4,10 +4,7 @@ import json
 from collections.abc import Callable
 from typing import Any
 
-BLOCKING_PRS_QUERY = """
-query($owner: String!, $repo: String!, $number: Int!) {
-  repository(owner: $owner, name: $repo) {
-    issue(number: $number) {
+_ISSUE_DEPENDENCY_FIELDS = """
       blockedBy(first: 10) {
         nodes {
           number
@@ -44,10 +41,69 @@ query($owner: String!, $repo: String!, $number: Int!) {
           title
         }
       }
-    }
-  }
-}
 """
+
+BLOCKING_PRS_QUERY = f"""
+query($owner: String!, $repo: String!, $number: Int!) {{
+  repository(owner: $owner, name: $repo) {{
+    issue(number: $number) {{
+      {_ISSUE_DEPENDENCY_FIELDS}
+    }}
+  }}
+}}
+"""
+
+
+def _parse_issue_dependencies(issue_data: dict[str, Any]) -> dict[str, Any]:
+    blocked_by_nodes = issue_data.get("blockedBy", {}).get("nodes", [])
+    blocking_nodes = issue_data.get("blocking", {}).get("nodes", [])
+
+    blocked_by_list = []
+    for node in blocked_by_nodes:
+        if node.get("state") != "OPEN":
+            continue
+
+        open_pr = None
+        timeline = node.get("timelineItems", {}).get("nodes", [])
+        for item in timeline:
+            if not item.get("willCloseTarget"):
+                continue
+            pr = item.get("source")
+            if isinstance(pr, dict) and pr.get("state") == "OPEN":
+                head_ref = pr.get("headRefName")
+                if head_ref:
+                    open_pr = {
+                        "number": pr.get("number"),
+                        "url": pr.get("url"),
+                        "title": pr.get("title"),
+                        "branch_name": head_ref,
+                        "is_draft": bool(pr.get("isDraft", False)),
+                    }
+                    break
+
+        blocked_by_list.append(
+            {
+                "number": node.get("number"),
+                "url": node.get("url"),
+                "title": node.get("title"),
+                "open_pr": open_pr,
+            },
+        )
+
+    blocking_list = [
+        {
+            "number": node.get("number"),
+            "url": node.get("url"),
+            "title": node.get("title"),
+        }
+        for node in blocking_nodes
+        if node.get("state") == "OPEN"
+    ]
+
+    return {
+        "blocked_by": blocked_by_list,
+        "blocking": blocking_list,
+    }
 
 
 def fetch_issue_dependencies(
@@ -103,52 +159,52 @@ def fetch_issue_dependencies(
     except (json.JSONDecodeError, KeyError, AttributeError):
         return {"blocked_by": [], "blocking": []}
 
-    blocked_by_nodes = issue_data.get("blockedBy", {}).get("nodes", [])
-    blocking_nodes = issue_data.get("blocking", {}).get("nodes", [])
+    return _parse_issue_dependencies(issue_data)
 
-    blocked_by_list = []
-    for node in blocked_by_nodes:
-        if node.get("state") != "OPEN":
-            continue
 
-        open_pr = None
-        timeline = node.get("timelineItems", {}).get("nodes", [])
-        for item in timeline:
-            if not item.get("willCloseTarget"):
-                continue
-            pr = item.get("source")
-            if isinstance(pr, dict) and pr.get("state") == "OPEN":
-                head_ref = pr.get("headRefName")
-                if head_ref:
-                    open_pr = {
-                        "number": pr.get("number"),
-                        "url": pr.get("url"),
-                        "title": pr.get("title"),
-                        "branch_name": head_ref,
-                        "is_draft": bool(pr.get("isDraft", False)),
-                    }
-                    break
+def fetch_issues_dependencies(
+    run_cmd: Callable[[list[str]], str],
+    owner: str,
+    repo_name: str,
+    numbers: list[int],
+) -> dict[int, dict[str, Any]]:
+    """Batch-fetch dependencies for multiple issues in a single GraphQL request.
 
-        blocked_by_list.append(
-            {
-                "number": node.get("number"),
-                "url": node.get("url"),
-                "title": node.get("title"),
-                "open_pr": open_pr,
-            },
-        )
+    Uses one aliased field per issue number so N issues cost one round-trip
+    instead of N. Returns a dict keyed by issue number, each value shaped like
+    `fetch_issue_dependencies`'s return value.
+    """
+    if not numbers:
+        return {}
 
-    blocking_list = [
-        {
-            "number": node.get("number"),
-            "url": node.get("url"),
-            "title": node.get("title"),
-        }
-        for node in blocking_nodes
-        if node.get("state") == "OPEN"
+    aliased_fields = "\n".join(
+        f"i{n}: issue(number: {n}) {{ {_ISSUE_DEPENDENCY_FIELDS} }}" for n in numbers
+    )
+    query = f"""
+query($owner: String!, $repo: String!) {{
+  repository(owner: $owner, name: $repo) {{
+    {aliased_fields}
+  }}
+}}
+"""
+    args = [
+        "gh",
+        "api",
+        "graphql",
+        "-f",
+        f"query={query}",
+        "-f",
+        f"owner={owner}",
+        "-f",
+        f"repo={repo_name}",
     ]
+    try:
+        output = run_cmd(args)
+        data = json.loads(output)
+        repo_data = data.get("data", {}).get("repository") or {}
+    except (json.JSONDecodeError, KeyError, AttributeError):
+        return {n: {"blocked_by": [], "blocking": []} for n in numbers}
 
     return {
-        "blocked_by": blocked_by_list,
-        "blocking": blocking_list,
+        n: _parse_issue_dependencies(repo_data.get(f"i{n}") or {}) for n in numbers
     }

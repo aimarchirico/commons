@@ -2,12 +2,11 @@
 """Helper for fetching, classifying, and sorting pull requests for triage."""
 
 import json
-import subprocess
 from collections.abc import Callable
 from typing import Any
 
 from backlog_utils import PRIORITY_RANK
-from review_state import fetch_review_state
+from review_state import fetch_review_states
 
 TECHNICAL_BLOCKERS = {
     "BOTH": "Conflicting and failing checks",
@@ -48,31 +47,34 @@ REV_BLOCKER_RANK = {
 }
 
 
-def fetch_default_branch(run_cmd: Callable[[list[str]], str]) -> str:
-    """Query GitHub repository default branch name."""
-    try:
-        output = run_cmd(["gh", "repo", "view", "--json", "defaultBranchRef"])
-        data = json.loads(output)
-        return data.get("defaultBranchRef", {}).get("name", "main")
-    except (subprocess.CalledProcessError, json.JSONDecodeError, KeyError):
-        return "main"
+def fetch_all_open_prs(run_cmd: Callable[[list[str]], str]) -> list[dict[str, Any]]:
+    """Fetch every open PR in the repo in one call; callers split by author.
+
+    Combines what used to be two separate `gh pr list` searches (yours vs.
+    others') into one, since both only differ by a client-side author check.
+    """
+    fields = (
+        "number,title,url,author,reviewRequests,reviewDecision,isDraft,"
+        "closingIssuesReferences,headRefName,baseRefName"
+    )
+    args = ["gh", "pr", "list", "--search", "is:open", "--json", fields]
+    return list(json.loads(run_cmd(args)))
 
 
 def fetch_prs_to_review(
-    run_cmd: Callable[[list[str]], str],
+    prs: list[dict[str, Any]],
     login: str,
 ) -> list[dict[str, Any]]:
-    """Fetch open PRs authored by others waiting for review."""
-    args = [
-        "gh", "pr", "list", "--search", "is:open -author:@me draft:false",
-        "--json", "number,title,url,author,reviewRequests,reviewDecision",
-    ]
-    prs = json.loads(run_cmd(args))
-
+    """Filter open PRs authored by others, excluding drafts, waiting for review."""
     items = []
     for pr in prs:
         author = pr.get("author") or {}
-        if author.get("is_bot") or pr.get("reviewDecision") == "APPROVED":
+        if (
+            author.get("login") == login
+            or bool(pr.get("isDraft"))
+            or author.get("is_bot")
+            or pr.get("reviewDecision") == "APPROVED"
+        ):
             continue
         requested_logins = {
             (r.get("login") or (r.get("requestedReviewer") or {}).get("login"))
@@ -218,25 +220,26 @@ def _sort_std(item: dict[str, Any]) -> int:
 
 
 def fetch_open_and_draft_prs(
-    run_cmd: Callable[[list[str]], str],
+    prs: list[dict[str, Any]],
     graphql_fn: Callable[..., dict[str, Any]],
-    owner: str,
-    repo_name: str,
+    repo: tuple[str, str],
     default_branch: str,
+    login: str,
 ) -> dict[str, Any]:
-    """Fetch, classify, and sort user's open and draft PRs."""
-    fields = "number,title,url,isDraft,closingIssuesReferences,headRefName,baseRefName"
-    args = [
-        "gh", "pr", "list", "--search", "is:open author:@me",
-        "--json", fields,
-    ]
-    prs = json.loads(run_cmd(args))
+    """Classify and sort the caller's own open and draft PRs."""
+    owner, repo_name = repo
+    your_prs = [pr for pr in prs if (pr.get("author") or {}).get("login") == login]
 
     head_to_pr_info = {
         pr["headRefName"]: {"number": pr["number"], "url": pr.get("url")}
-        for pr in prs
+        for pr in your_prs
         if "headRefName" in pr
     }
+
+    non_draft_numbers = [
+        pr["number"] for pr in your_prs if not bool(pr.get("isDraft"))
+    ]
+    review_states = fetch_review_states(graphql_fn, owner, repo_name, non_draft_numbers)
 
     your_open_prs = []
     your_draft_prs = []
@@ -248,7 +251,7 @@ def fetch_open_and_draft_prs(
         "stacked_queue": [],
     }
 
-    for pr in prs:
+    for pr in your_prs:
         pr_number = pr["number"]
         linked = linked_issue_for(pr)
 
@@ -270,12 +273,7 @@ def fetch_open_and_draft_prs(
             your_draft_prs.append(draft_entry)
             sub_cats["draft_prs"].append(draft_entry)
             continue
-        review_state = fetch_review_state(
-            graphql_fn,
-            owner,
-            repo_name,
-            pr_number,
-        )
+        review_state = review_states[pr_number]
         cat_key, entry = _classify_open_pr(
             pr,
             review_state,

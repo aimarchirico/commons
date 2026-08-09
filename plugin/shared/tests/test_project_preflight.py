@@ -18,7 +18,31 @@ def test_resolve_project_context_single_project() -> None:
         return repo_data if args[:4] == ["gh", "repo", "view", "--json"] else api_data
 
     ctx = pf.resolve_project_context(mock_run_cmd)
-    assert ctx == ("acme", "widgets", 9, "P1", "acme")
+    assert ctx == ("acme", "widgets", 9, "P1", "acme", "main")
+
+
+def test_resolve_project_context_parses_default_branch_from_repo_view() -> None:
+    """The single gh repo view call also yields the repo's default branch."""
+    repo_data = json.dumps(
+        {
+            "owner": {"login": "acme"},
+            "name": "widgets",
+            "defaultBranchRef": {"name": "develop"},
+        },
+    )
+    node = {"id": "P1", "number": 9, "title": "Widgets", "closed": False}
+    api_data = json.dumps({"data": {"repository": {"projectsV2": {"nodes": [node]}}}})
+    calls: list[list[str]] = []
+
+    def mock_run_cmd(args: list[str]) -> str:
+        calls.append(args)
+        return repo_data if args[:4] == ["gh", "repo", "view", "--json"] else api_data
+
+    ctx = pf.resolve_project_context(mock_run_cmd)
+    assert ctx[-1] == "develop"
+    repo_view_calls = [c for c in calls if c[:3] == ["gh", "repo", "view"]]
+    assert len(repo_view_calls) == 1
+    assert repo_view_calls[0][4] == "owner,name,defaultBranchRef"
 
 
 def test_resolve_project_context_disambiguates_multiple_projects() -> None:
