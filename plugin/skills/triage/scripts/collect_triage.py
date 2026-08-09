@@ -130,7 +130,12 @@ def main() -> None:
             },
         }
 
+        active_count = sum(
+            len(items) for category in categories.values() for items in category.values()
+        )
+
         result = {
+            "active_count": active_count,
             "categories": categories,
             "prs_to_review": prs_to_review,
             "your_open_prs": pr_data["your_open_prs"],
