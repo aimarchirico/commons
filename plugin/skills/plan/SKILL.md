@@ -4,15 +4,16 @@ description:
   Draft a project's planning and system design artifacts under docs/plan/.
   Use when the user asks to plan, design, or scope a project, or to add a
   new requirement to an already-planned one.
-argument-hint: "[--draft] [--auto]"
+argument-hint: "[--draft] [--auto] [--skip-check]"
 ---
 
 ## Arguments
 
-| Flag      | Required | Description                                                                                       |
-| :-------- | :------- | :------------------------------------------------------------------------------------------------ |
-| `--draft` | No       | Create the resulting pull request as a draft.                                                     |
-| `--auto`  | No       | Skip approval steps and the `pr` skill's own approval prompt, running the full flow autonomously. |
+| Flag           | Required | Description                                                                                       |
+| :------------- | :------- | :------------------------------------------------------------------------------------------------ |
+| `--draft`      | No       | Create the resulting pull request as a draft.                                                     |
+| `--auto`       | No       | Skip approval steps in this skill and the `commit`/`pr` skills' own approval prompts, running the full flow autonomously. |
+| `--skip-check` | No       | Skip the `commons:check` verification step before pushing.                                        |
 
 ## Workflow
 
@@ -74,7 +75,12 @@ argument-hint: "[--draft] [--auto]"
 
 ### Handoff
 
-1. Determine `<branch-name>` following the naming rules in
+1. Ask the user whether to commit, push, and open a pull request for the
+   drafted files now, or leave them uncommitted for later. Skip this
+   question if the `--auto` flag is set, and proceed directly with the rest
+   of this phase. If the user declines, stop here: the files remain written
+   under `docs/plan/` but uncommitted.
+2. Determine `<branch-name>` following the naming rules in
    `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md` (type `chore`, since
    there is no issue to key off yet; derive the description from the PRD's
    project name, or from the scoped requirement(s) when adding to an
@@ -88,10 +94,15 @@ argument-hint: "[--draft] [--auto]"
    git checkout -b <branch-name> origin/<base-branch>
    ```
 
-2. Invoke the `commons:commit` skill, passing `--auto` through if it was
+3. Invoke the `commons:commit` skill, passing `--auto` through if it was
    provided, to commit the files written under `docs/plan/` (and any files
    written by `commons:docs`) as logical units.
-3. Push commits and open the pull request:
+4. Unless `--skip-check` was set, invoke the `commons:check` skill. If it
+   fails, fix the reported failures, commit the fix via `commons:commit`
+   (passing `--auto` through if it was provided), and run `commons:check`
+   once more. If it still fails after that one retry, stop retrying, and
+   report the failure to the user instead of fabricating a pass.
+5. Push commits and open the pull request:
 
    ```bash
    git push -u origin <branch-name>
@@ -101,7 +112,7 @@ argument-hint: "[--draft] [--auto]"
    title/body approval is the final review), passing `--base <base-branch>`
    if it differs from the default branch, along with `--draft` and
    `--auto` flags if provided by the user.
-4. Ask the user whether to derive the initial issue backlog from
+6. Ask the user whether to derive the initial issue backlog from
    `docs/plan/specifications/` now. If so, invoke the `commons:issue`
    skill scoped to that content, passing `--auto` through if it was
    provided.
