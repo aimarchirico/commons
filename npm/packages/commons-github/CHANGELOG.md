@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.8.1](https://github.com/aimarchirico/commons/compare/commons-github-v1.8.0...commons-github-v1.8.1) (2026-08-09)
+
+
+### Bug Fixes
+
+* **commons-github:** remove issue template links and fix pr template link in contributing ([3bfb392](https://github.com/aimarchirico/commons/commit/3bfb392186b500fe22c71a8c3ba4e54a4b4399b6))
+* **commons-github:** remove issue template links and fix pr template link in contributing ([966d115](https://github.com/aimarchirico/commons/commit/966d1156912b0cab2f80023b768b3850afea8125))
+
 ## [1.8.0](https://github.com/aimarchirico/commons/compare/commons-github-v1.7.0...commons-github-v1.8.0) (2026-08-09)
 
 
