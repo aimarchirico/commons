@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/aimarchirico/commons/compare/commons-project-v1.3.1...commons-project-v1.4.0) (2026-08-09)
+
+
+### Features
+
+* **commons-github:** standardize documentation format guidance in CONTRIBUTING.md ([88c4462](https://github.com/aimarchirico/commons/commit/88c44624ab924b10708958faeba74f80f697b777))
+
 ## [1.3.1](https://github.com/aimarchirico/commons/compare/commons-project-v1.3.0...commons-project-v1.3.1) (2026-08-03)
 
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.8.0](https://github.com/aimarchirico/commons/compare/commons-github-v1.7.0...commons-github-v1.8.0) (2026-08-09)
+
+
+### Features
+
+* **commons-github:** adopt named specs for README, ARCHITECTURE, API, and DESIGN docs ([528fc96](https://github.com/aimarchirico/commons/commit/528fc96ac12ffd6cea7a974276833e9c52b44d3a))
+* **commons-github:** standardize documentation format guidance in CONTRIBUTING.md ([88c4462](https://github.com/aimarchirico/commons/commit/88c44624ab924b10708958faeba74f80f697b777))
+
 ## [1.7.0](https://github.com/aimarchirico/commons/compare/commons-github-v1.6.0...commons-github-v1.7.0) (2026-08-05)
 
 
