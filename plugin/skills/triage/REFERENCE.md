@@ -21,8 +21,8 @@ include them in parenthetical notes after `<count> active item/items needing
 attention` (joining non-zero items cleanly with ", and "). If both are 0, omit
 the parenthetical note entirely.
 
-Followed by a divider (`---`), then render up to three categories, 
-their descriptions, their tables, and each table's description, 
+Followed by a divider (`---`), then render up to three categories,
+their descriptions, their tables, and each table's description,
 omitting empty categories or tables. Every table column (including
 `<item>`) is rendered verbatim from the field of the same name.
 
