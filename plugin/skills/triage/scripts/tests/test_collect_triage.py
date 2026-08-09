@@ -48,6 +48,7 @@ def _base_responses(
     prs_to_review: str = "[]",
     your_prs: str = "[]",
     project_items: str = '{"items": []}',
+    in_progress_items: str = '{"items": []}',
     project_query_response: str = _PROJECT_QUERY_RESPONSE,
 ) -> dict[tuple[str, ...], str]:
     q_str = "gh|api|graphql|-f|owner=acme|-f|name=widgets|-f|query=placeholder"
@@ -62,8 +63,16 @@ def _base_responses(
         "--json|number,title,url,isDraft,closingIssuesReferences,headRefName,baseRefName"
     )
     pr_me_args = pr_me_str.split("|")
-    item_str = "gh|project|item-list|9|--owner|acme|--format|json|--limit|200"
+    item_str = (
+        "gh|project|item-list|9|--owner|acme|--format|json|--limit|200|"
+        "--query|status:Todo is:issue"
+    )
     item_args = item_str.split("|")
+    in_progress_args = [
+        "gh", "project", "item-list", "9", "--owner", "acme",
+        "--format", "json", "--limit", "200",
+        "--query", 'status:"In Progress" is:issue assignee:@me',
+    ]
     return {
         ("gh", "repo", "view", "--json", "owner,name"): _REPO_CONTEXT,
         ("gh", "repo", "view", "--json", "defaultBranchRef"): json.dumps(
@@ -74,6 +83,7 @@ def _base_responses(
         tuple(pr_rev_args): prs_to_review,
         tuple(pr_me_args): your_prs,
         tuple(item_args): project_items,
+        tuple(in_progress_args): in_progress_items,
     }
 
 
@@ -289,6 +299,66 @@ def test_main_exits_when_no_open_project_is_linked(
 
     with pytest.raises(SystemExit):
         ct.main()
+
+
+def _deps_key(number: int) -> tuple[str, ...]:
+    return _normalize(
+        (
+            "gh", "api", "graphql", "-f", "query=placeholder",
+            "-f", "owner=acme", "-f", "repo=widgets", "-F", f"number={number}",
+        ),
+    )
+
+
+def _empty_deps_response() -> str:
+    return json.dumps(
+        {
+            "data": {
+                "repository": {
+                    "issue": {"blockedBy": {"nodes": []}, "blocking": {"nodes": []}},
+                },
+            },
+        },
+    )
+
+
+def _make_in_progress_item(*, number: int, priority: str = "Medium") -> dict[str, object]:
+    return {
+        "type": "Task",
+        "priority": priority,
+        "content": {
+            "type": "Issue",
+            "number": number,
+            "title": f"In progress {number}",
+            "url": f"https://github.com/acme/widgets/issues/{number}",
+        },
+    }
+
+
+def test_main_lists_in_progress_issues_without_an_open_pr(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """In Progress issues assigned to you surface unless a PR already closes them."""
+    in_progress_items = json.dumps(
+        {"items": [_make_in_progress_item(number=7), _make_in_progress_item(number=8)]},
+    )
+    your_prs = json.dumps(
+        [_make_pr(num=1, title="Closes 7", refs=[{"number": 7, "url": "issue-url"}])],
+    )
+    responses = _base_responses(your_prs=your_prs, in_progress_items=in_progress_items)
+    k, b = _review_state_response(number=1, review_state=None, mergeable="MERGEABLE")
+    responses[k] = b
+    responses[_deps_key(7)] = _empty_deps_response()
+    responses[_deps_key(8)] = _empty_deps_response()
+    _install_gh(monkeypatch, responses)
+
+    ct.main()
+
+    result = json.loads(capsys.readouterr().out)
+    in_progress = result["categories"]["actionable_items"]["in_progress"]
+    assert [issue["number"] for issue in in_progress] == [8]
+    assert in_progress[0]["suggestion"] == "Continue implementing or open PR"
 
 
 def test_main_exits_when_gh_is_not_installed(monkeypatch: pytest.MonkeyPatch) -> None:

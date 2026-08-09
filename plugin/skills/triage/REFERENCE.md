@@ -77,6 +77,14 @@ for, rendering Suggestion as "Continue implementing" or "Mark ready for
 review". If `linked_issue` is null, say plainly that there is no linked issue
 to check completeness against.
 
+### In Progress
+
+These are issues assigned to you marked In Progress with no open PR yet.
+
+| Item | Priority | Blocking | Suggestion |
+| :--- | :------- | :------- | :--------- |
+| `<item>` | `<priority>` | `<blocking>` | Continue implementing or open PR |
+
 ### Assigned Ready
 
 These are issues assigned to you and not blocked by anything.

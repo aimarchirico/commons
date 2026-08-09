@@ -10,7 +10,7 @@ from pathlib import Path
 from types import ModuleType
 from typing import Any
 
-from backlog_utils import fetch_backlog_issues
+from backlog_utils import fetch_backlog_issues, fetch_in_progress_issues
 from pr_blocking import apply_pr_blocking
 from pr_utils import (
     fetch_default_branch,
@@ -93,12 +93,29 @@ def main() -> None:
         all_your_prs = pr_data["your_open_prs"] + pr_data["your_draft_prs"]
         apply_pr_blocking(all_your_prs, backlog_data["backlog_issues"])
 
+        linked_issue_numbers = {
+            closing["number"]
+            for pr in all_your_prs
+            for closing in pr.get("_closing_issues", [])
+        }
+        in_progress_issues = [
+            issue
+            for issue in fetch_in_progress_issues(
+                _run_cmd,
+                (owner, repo_name),
+                project_owner,
+                project_number,
+            )
+            if issue["number"] not in linked_issue_numbers
+        ]
+
         categories = {
             "actionable_items": {
                 "review_requests": prs_to_review,
                 "merge_ready": pr_data["merge_ready"],
                 "merge_blockers": pr_data["merge_blockers"],
                 "draft_prs": pr_data["draft_prs"],
+                "in_progress": in_progress_issues,
                 "assigned_ready": backlog_data["assigned_ready"],
                 "assigned_stackable": backlog_data["assigned_stackable"],
             },

@@ -181,3 +181,68 @@ def fetch_backlog_issues(
         "assigned_to_others_count": assigned_to_others_count,
         "fully_blocked_count": fully_blocked_count,
     }
+
+
+def fetch_in_progress_issues(
+    run_cmd: Callable[[list[str]], str],
+    repo: tuple[str, str],
+    project_owner: str,
+    project_number: int,
+) -> list[dict[str, Any]]:
+    """Fetch In Progress issues assigned to the caller, sorted by priority.
+
+    Each entry's `blocking` count mirrors `fetch_backlog_issues`' format.
+    Callers are responsible for excluding issues already covered by an open PR.
+    """
+    owner, repo_name = repo
+    item_output = run_cmd(
+        [
+            "gh",
+            "project",
+            "item-list",
+            str(project_number),
+            "--owner",
+            project_owner,
+            "--format",
+            "json",
+            "--limit",
+            "200",
+            "--query",
+            'status:"In Progress" is:issue assignee:@me',
+        ],
+    )
+    items = json.loads(item_output).get("items", [])
+
+    entries: list[dict[str, Any]] = []
+    for item in items:
+        content = item.get("content") or {}
+        if (
+            content.get("type") != "Issue"
+            or item.get("type") not in SOLVABLE_ISSUE_TYPES
+        ):
+            continue
+
+        number = content.get("number")
+        if number is None:
+            continue
+
+        deps = fetch_issue_dependencies(run_cmd, owner, repo_name, number)
+        blocking_count = len(deps.get("blocking", []))
+
+        entries.append(
+            {
+                "number": number,
+                "title": content.get("title"),
+                "url": content.get("url"),
+                "item": f"[#{number}]({content.get('url')}) {content.get('title')}",
+                "priority": item.get("priority") or "Unset",
+                "blocking": _format_blocking_issues(blocking_count),
+                "blocking_count": blocking_count,
+                "suggestion": "Continue implementing or open PR",
+            },
+        )
+
+    entries.sort(
+        key=lambda i: (PRIORITY_RANK.get(i["priority"], 3), -i["blocking_count"]),
+    )
+    return entries
