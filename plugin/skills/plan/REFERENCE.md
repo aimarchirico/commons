@@ -15,6 +15,7 @@ scope evolves afterward.
 - **Milestones**: Roadmap and project timeline.
 - **Requirements**: A prioritized list of features.
 - **Out of Scope**: Features explicitly excluded or delayed.
+- **Open Questions**: Unresolved decisions or risks needing follow-up.
 
 ## 2. docs/plan/requirements/
 
