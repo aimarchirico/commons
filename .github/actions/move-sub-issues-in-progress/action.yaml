@@ -1,0 +1,127 @@
+name: Move Sub-Issues In Progress
+description: >-
+  Cascade the project board's "In Progress" status to every nested sub-issue
+  of the issue(s) a pull request links
+inputs:
+  token:
+    description: >-
+      Token with Projects read/write access used to move sub-issues on the
+      board (github.token lacks the "project" scope)
+    required: true
+  project-owner:
+    description: Login of the project's owner
+    required: false
+    default: ${{ github.repository_owner }}
+  project-number:
+    description: Number of the project containing the Status field
+    required: false
+    default: '9'
+runs:
+  using: composite
+  steps:
+    - name: Move Sub-Issues In Progress
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ inputs.token }}
+        script: |
+          const projectOwner = "${{ inputs.project-owner }}";
+          const projectNumber = Number("${{ inputs.project-number }}");
+
+          const { repository } = await github.graphql(
+            `query($owner: String!, $repo: String!, $pr: Int!) {
+              repository(owner: $owner, name: $repo) {
+                pullRequest(number: $pr) {
+                  closingIssuesReferences(first: 50) {
+                    nodes { number }
+                  }
+                }
+              }
+            }`,
+            { owner: context.repo.owner, repo: context.repo.repo, pr: context.payload.pull_request.number }
+          );
+
+          const linkedIssues = repository.pullRequest.closingIssuesReferences.nodes.map((n) => n.number);
+          if (!linkedIssues.length) {
+            core.info("No linked issues found; nothing to cascade.");
+            return;
+          }
+
+          const { repositoryOwner } = await github.graphql(
+            `query($owner: String!, $number: Int!) {
+              repositoryOwner(login: $owner) {
+                ... on ProjectV2Owner {
+                  projectV2(number: $number) {
+                    id
+                    field(name: "Status") {
+                      ... on ProjectV2SingleSelectField {
+                        id
+                        options { id name }
+                      }
+                    }
+                  }
+                }
+              }
+            }`,
+            { owner: projectOwner, number: projectNumber }
+          );
+
+          const project = repositoryOwner.projectV2;
+          const statusField = project.field;
+          const inProgress = statusField.options.find((o) => o.name === "In Progress");
+          if (!inProgress) {
+            core.setFailed('No "In Progress" option found on the Status field.');
+            return;
+          }
+
+          // BFS to collect every nested sub-issue of each linked issue
+          const queue = [...linkedIssues];
+          const subIssues = [];
+          while (queue.length) {
+            const issue_number = queue.shift();
+            const children = await github.paginate(
+              "GET /repos/{owner}/{repo}/issues/{issue_number}/sub_issues",
+              { ...context.repo, issue_number, per_page: 100 }
+            );
+            for (const sub of children) {
+              subIssues.push(sub.number);
+              queue.push(sub.number);
+            }
+          }
+
+          for (const issue_number of subIssues) {
+            const { repository } = await github.graphql(
+              `query($owner: String!, $repo: String!, $issue: Int!) {
+                repository(owner: $owner, name: $repo) {
+                  issue(number: $issue) {
+                    projectItems(first: 10) {
+                      nodes { id project { number } }
+                    }
+                  }
+                }
+              }`,
+              { owner: context.repo.owner, repo: context.repo.repo, issue: issue_number }
+            );
+
+            const item = repository.issue.projectItems.nodes.find(
+              (n) => n.project.number === projectNumber
+            );
+            if (!item) {
+              core.info(`Sub-issue #${issue_number} is not on the board; skipping.`);
+              continue;
+            }
+
+            await github.graphql(
+              `mutation($project: ID!, $item: ID!, $field: ID!, $option: String!) {
+                updateProjectV2ItemFieldValue(input: {
+                  projectId: $project,
+                  itemId: $item,
+                  fieldId: $field,
+                  value: { singleSelectOptionId: $option }
+                }) {
+                  projectV2Item { id }
+                }
+              }`,
+              { project: project.id, item: item.id, field: statusField.id, option: inProgress.id }
+            );
+            core.info(`Moved sub-issue #${issue_number} to In Progress`);
+          }
