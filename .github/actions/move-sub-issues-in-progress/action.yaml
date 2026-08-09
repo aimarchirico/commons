@@ -14,8 +14,7 @@ inputs:
     default: ${{ github.repository_owner }}
   project-number:
     description: Number of the project containing the Status field
-    required: false
-    default: '9'
+    required: true
 runs:
   using: composite
   steps:

@@ -36,3 +36,4 @@ jobs:
       - uses: ./.github/actions/move-sub-issues-in-progress
         with:
           token: ${{ secrets.PROJECT_TOKEN }}
+          project-number: '9'
