@@ -11,11 +11,11 @@ Start the output with a summary header:
   <fully_blocked_count> blocked issue/issues hidden)
 ```
 
-`<active_count>` is rendered verbatim from the script's `active_count` field — do not
-recompute it by counting rendered rows.
+`<active_count>` is rendered verbatim from the script's `active_count` field —
+do not recompute it by counting rendered rows.
 
-Use "item" when `<active_count>` is 1, "items" otherwise. Apply the same singular/plural
-rule to "issue/issues" in the parenthetical note.
+Use "item" when `<active_count>` is 1, "items" otherwise. Apply the same
+singular/plural rule to "issue/issues" in the parenthetical note.
 
 If `assigned_to_others_count` or `fully_blocked_count` are greater than 0,
 include them in parenthetical notes after `<count> active item/items needing

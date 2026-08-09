@@ -131,7 +131,9 @@ def main() -> None:
         }
 
         active_count = sum(
-            len(items) for category in categories.values() for items in category.values()
+            len(items)
+            for category in categories.values()
+            for items in category.values()
         )
 
         result = {
