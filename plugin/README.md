@@ -30,7 +30,7 @@ rather than on each other, except for:
   `security-reviewer`, and `compliance-reviewer`.
 - `ship` delegating to the `issue`, `solve`, `review`, and `resolve` skills.
 - `plan` delegating to parallel `general-purpose` agents for external
-  research, and to the `docs`, `commit`, `pr`, and `issue` skills.
+  research, and to the `docs`, `commit`, `check`, `pr`, and `issue` skills.
 
 Agent skills delegate task execution to specialized subagents or
 deterministic Python scripts, which execute GitHub GraphQL/REST operations
@@ -58,8 +58,9 @@ through merge:
 graph TD
     start_proj["Brand-New Project"] --> plan["/commons:plan<br/>Draft Planning & Design Artifacts"]
     plan -.->|invokes, in order| docs["/commons:docs<br/>Update Documentation"]
-    plan -.->|invokes, in order| commit["/commons:commit<br/>Create Atomic Commits"]
-    plan -->|invokes| pr["/commons:pr<br/>Create Pull Request"]
+    plan -.->|invokes, optional, in order| commit["/commons:commit<br/>Create Atomic Commits"]
+    commit -.->|invokes, in order| check["/commons:check<br/>Verify CI Gates"]
+    check -.->|invokes, in order| pr["/commons:pr<br/>Create Pull Request"]
     plan -.->|invokes, optional| issue["/commons:issue<br/>Create Issue Hierarchy"]
 
     survey["Survey Work"] --> triage["/commons:triage<br/>Survey PRs & Backlog"]

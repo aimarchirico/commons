@@ -9,11 +9,11 @@ argument-hint: "[--draft] [--auto] [--skip-check]"
 
 ## Arguments
 
-| Flag           | Required | Description                                                                                       |
-| :------------- | :------- | :------------------------------------------------------------------------------------------------ |
-| `--draft`      | No       | Create the resulting pull request as a draft.                                                     |
-| `--auto`       | No       | Skip approval steps in this skill and the `commit`/`pr` skills' own approval prompts, running the full flow autonomously. |
-| `--skip-check` | No       | Skip the `commons:check` verification step before pushing.                                        |
+| Flag           | Required | Description                                                                           |
+| :------------- | :------- | :------------------------------------------------------------------------------------ |
+| `--draft`      | No       | Create the resulting pull request as a draft.                                         |
+| `--auto`       | No       | Skip approval steps in this skill and the `commit`/`pr` skills' own approval prompts. |
+| `--skip-check` | No       | Skip the `commons:check` verification step before pushing.                            |
 
 ## Workflow
 
