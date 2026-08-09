@@ -137,13 +137,13 @@ for issues.
 
 Each issue type has has a provided template.
 
-| Type                                             | Purpose                   |
-| :----------------------------------------------- | :------------------------ |
-| [`Epic`](.github/ISSUE_TEMPLATE/epic.yaml)       | A high-level initiative   |
-| [`Story`](.github/ISSUE_TEMPLATE/story.yaml)     | A user-facing feature     |
-| [`Task`](.github/ISSUE_TEMPLATE/task.yaml)       | A technical piece of work |
-| [`Bug`](.github/ISSUE_TEMPLATE/bug.yaml)         | A problem                 |
-| [`Subtask`](.github/ISSUE_TEMPLATE/subtask.yaml) | A granular piece of work  |
+| Type      | Purpose                   |
+| :-------- | :------------------------ |
+| `Epic`    | A high-level initiative   |
+| `Story`   | A user-facing feature     |
+| `Task`    | A technical piece of work |
+| `Bug`     | A problem                 |
+| `Subtask` | A granular piece of work  |
 
 ### Hierarchy
 
@@ -272,4 +272,4 @@ PR titles follow the commit summary style. See [Commits](#commits) for details.
 
 ### Description
 
-Use the provided [template](.github/PULL_REQUEST_TEMPLATE.md).
+Use the provided [template](PULL_REQUEST_TEMPLATE.md).
