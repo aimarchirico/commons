@@ -81,6 +81,8 @@ def fetch_backlog_issues(
             "json",
             "--limit",
             "200",
+            "--query",
+            "status:Todo is:issue",
         ],
     )
     items = json.loads(item_output).get("items", [])
