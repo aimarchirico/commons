@@ -12,22 +12,23 @@ and report.
 Either:
 
 - An issue's title, body, and type, and a worktree path (from `solve`).
-- A PR number, its branch, and a worktree path (from `resolve`), fetch the
-  feedback yourself via `gh pr view --json comments` and
-  `gh api repos/{owner}/{repo}/pulls/<pr-number>/comments`.
+- Pre-fetched review feedback, conflicting hunks (if any), failing-check logs
+  (if any), and a worktree path (from `resolve`). Do not fetch anything
+  yourself; `resolve` has already gathered it.
 
 ## Workflow
 
 1. Read enough of the codebase in the given worktree to see how the
    requirement maps onto it.
-2. Break it into an ordered list of concrete changes shaped by
+1. Break it into an ordered list of concrete changes shaped by
    `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md#principles`. Implementation
-   steps for an issue (root cause first for a Bug), or one fix per piece of
+   steps for an issue (root cause first for a bug), or one fix per piece of
    feedback for a PR (shared fixes where feedback overlaps).
-3. Flag anything ambiguous rather than guessing.
+1. Flag anything ambiguous rather than guessing.
 
 ## Output
 
 An ordered plan for a human reviewer: each change, what it touches, why. For
-PR feedback, also map each piece of feedback to the fix addressing it, so the
-reply step later doesn't need to re-fetch anything.
+`resolve`, also map every item (review comment, conflict, or check failure)
+to the fix addressing it, so the reply step later doesn't need to re-fetch
+anything.

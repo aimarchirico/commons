@@ -4,14 +4,15 @@ description:
   Draft a project's planning and system design artifacts under docs/plan/.
   Use when the user asks to plan, design, or scope a project, or to add a
   new requirement to an already-planned one.
-argument-hint: "[--auto]"
+argument-hint: "[--draft] [--auto]"
 ---
 
 ## Arguments
 
-| Flag     | Required | Description                                           |
-| :------- | :------- | :---------------------------------------------------- |
-| `--auto` | No       | Skip approval steps and write drafted files directly. |
+| Flag      | Required | Description                                                                                       |
+| :-------- | :------- | :------------------------------------------------------------------------------------------------ |
+| `--draft` | No       | Create the resulting pull request as a draft.                                                     |
+| `--auto`  | No       | Skip approval steps and the `pr` skill's own approval prompt, running the full flow autonomously. |
 
 ## Workflow
 
@@ -39,12 +40,12 @@ argument-hint: "[--auto]"
 1. Identify the product concept from the user's prompt or context, asking
    for anything unclear. Draft `docs/plan/PRD.md` per
    `${CLAUDE_PLUGIN_ROOT}/skills/plan/REFERENCE.md`.
-2. Extract actionable requirements (from the PRD, or from the user's prompt
+1. Extract actionable requirements (from the PRD, or from the user's prompt
    directly when adding new requirements) and draft
    `docs/plan/requirements/index.md` and the individual
    `docs/plan/requirements/NNNN-slug.md` files per
    `${CLAUDE_PLUGIN_ROOT}/skills/plan/REFERENCE.md`.
-3. Present the Phase 1 files for approval, and wait for explicit user
+1. Present the Phase 1 files for approval, and wait for explicit user
    approval. Skip this step if the `--auto` flag is set, and proceed
    directly with the drafted files.
 
@@ -56,24 +57,57 @@ argument-hint: "[--auto]"
    documentation stays out of the main conversation and only distilled
    findings return. Log findings in `docs/plan/research/`, per
    `${CLAUDE_PLUGIN_ROOT}/skills/plan/REFERENCE.md`.
-2. Record architectural choices in `docs/plan/decisions/`, per
+1. Record architectural choices in `docs/plan/decisions/`, per
    `${CLAUDE_PLUGIN_ROOT}/skills/plan/REFERENCE.md`.
-3. Invoke the `commons:docs` skill, passing `--auto` through if it was
+1. Invoke the `commons:docs` skill, passing `--auto` through if it was
    provided, to draft the applicable system-level documentation directly in
    its final location (its own approval step surfaces normally unless
    `--auto` is set).
-4. Draft `docs/plan/specifications/index.md` and the individual
+1. Draft `docs/plan/specifications/index.md` and the individual
    `docs/plan/specifications/NNNN-slug.md` files per
    `${CLAUDE_PLUGIN_ROOT}/skills/plan/REFERENCE.md`, each
    referencing the requirement(s) it fulfills.
-5. Present the `research/`, `decisions/`, and `specifications/` files for
+1. Present the `research/`, `decisions/`, and `specifications/` files for
    approval, and wait for explicit user approval. Skip this step if the
    `--auto` flag is set, and proceed directly with the drafted files.
-6. Write the approved files under `docs/plan/`.
+1. Write the approved files under `docs/plan/`.
 
 ### Handoff
 
-1. Ask the user whether to derive the initial issue backlog from
-    `docs/plan/specifications/` now. If so, invoke the `commons:issue`
-    skill scoped to that content, passing `--auto` through if it was
-    provided.
+1. Determine `<branch-name>` following the naming rules in
+   `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md` (type `chore`, since
+   there is no issue to key off yet; derive the description from the PRD's
+   project name, or from the scoped requirement(s) when adding to an
+   already-planned project), and resolve `<base-branch>` (the repository's
+   default branch). Skip this step if already on a branch this skill
+   created in an earlier, resumed run for the same plan; otherwise create
+   and check out the branch:
+
+   ```bash
+   git fetch origin
+   git checkout -b <branch-name> origin/<base-branch>
+   ```
+
+2. Invoke the `commons:commit` skill, passing `--auto` through if it was
+   provided, to commit the files written under `docs/plan/` (and any files
+   written by `commons:docs`) as logical units.
+3. Push commits and open the pull request:
+
+   ```bash
+   git push -u origin <branch-name>
+   ```
+
+   Next, invoke the `commons:pr` skill to open a pull request (its own
+   title/body approval is the final review), passing `--base <base-branch>`
+   if it differs from the default branch, along with `--draft` and
+   `--auto` flags if provided by the user.
+4. Ask the user whether to derive the initial issue backlog from
+   `docs/plan/specifications/` now. If so, invoke the `commons:issue`
+   skill scoped to that content, passing `--auto` through if it was
+   provided.
+
+## Output
+
+The pull request number and URL reported by `commons:pr`, plus the issue(s)
+created by `commons:issue` if that step ran, so a caller that invoked this
+skill can act on both.
