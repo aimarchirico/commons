@@ -6,13 +6,15 @@ Start the output with a summary header:
 **Triage Survey**: `<owner>/<repo>`
 
 * **User**: `@<login>`
-* **Status**: <count> active item/items needing attention
+* **Status**: <active_count> active item/items needing attention
   (<assigned_to_others_count> issue/issues assigned to others, and
   <fully_blocked_count> blocked issue/issues hidden)
 ```
 
-Use "item" when `<count>` is 1, "items" otherwise. Apply the same singular/plural
-rule to "issue/issues" in the parenthetical note.
+`<active_count>` is rendered verbatim from the script's `active_count` field.
+
+Use "item" when `<active_count>` is 1, "items" otherwise. Apply the same
+singular/plural rule to "issue/issues" in the parenthetical note.
 
 If `assigned_to_others_count` or `fully_blocked_count` are greater than 0,
 include them in parenthetical notes after `<count> active item/items needing

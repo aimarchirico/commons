@@ -156,6 +156,7 @@ def _assert_empty_survey(capsys: pytest.CaptureFixture[str]) -> None:
     assert not res["your_draft_prs"]
     assert not res["backlog_issues"]
     assert "categories" in res
+    assert res["active_count"] == 0
     assert (res["assigned_to_others_count"], res["fully_blocked_count"]) == (0, 0)
 
 
