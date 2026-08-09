@@ -1,16 +1,19 @@
 # GitHub Actions
 
-This directory contains shared, reusable GitHub Actions meant to be utilized
-across Chirico services for CI/CD.
+Shared, reusable GitHub Actions meant to be utilized across projects for
+CI/CD.
 
-## Tech Stack
+## Install
 
-- **GitHub Actions**: YAML-based workflows and composite actions.
-- **Shell / Bash**: Underlying scripts for task execution.
+No installation step: reference an action directly from a workflow via
+`uses: aimarchirico/commons/.github/actions/<name>@main` (or a pinned release
+tag). Each action's `inputs` and required secrets are declared in its own
+`action.yaml`; dependencies vary per action, so check that file before
+wiring one in.
 
-## Folder Structure
+## Usage
 
-Each directory represents a standalone reusable action:
+Each directory is a standalone reusable action:
 
 - `android-release/`: Builds and releases an Android application.
 - `assign-sub-issues/`: Cascades newly-added assignees to nested sub-issues.
@@ -22,28 +25,29 @@ Each directory represents a standalone reusable action:
 - `self-review-signal/`: Submits a real review matching a posted verdict comment.
 - `vps-deploy/`: Deploys applications to a VPS.
 
-## Environment Variables
+## Development
 
-Dependencies on environment variables or secrets (e.g., `GITHUB_TOKEN`,
-deployment keys) vary per action. Refer to the `action.yaml` within each
-subdirectory for specific `inputs` and required secrets.
-
-## Local Development
-
-Actions are primarily executed in the GitHub CI environment. For local testing,
-you can use tools like [act](https://github.com/nektos/act).
-
-To modify an action, edit the corresponding `action.yaml` file and its associated
-scripts within its directory.
-
-## Code Quality
-
-All YAML files and shell scripts are verified by the repository's root CI
-workflows. Ensure that YAML files follow standard formatting and shell scripts
-are documented.
+- **Tech stack**: GitHub Actions YAML-based workflows and composite actions,
+  with shell/Bash scripts for task execution.
+- **Local testing**: actions run primarily in the GitHub CI environment; for
+  local testing, use a tool like [act](https://github.com/nektos/act).
+- **Editing**: modify the corresponding `action.yaml` and its associated
+  scripts within its directory.
+- **Code quality**: all YAML files and shell scripts are verified by the
+  repository's root CI workflows. YAML files follow standard formatting and
+  shell scripts are documented.
 
 ## Deployment
 
 Changes to these actions take effect once merged into the `main` branch.
-Downstream repositories utilizing these actions will pick up the updates based
-on the branch or version tag they target (e.g., `@main` or specific release tags).
+Downstream repositories utilizing these actions pick up the updates based on
+the branch or version tag they target (e.g., `@main` or a specific release
+tag).
+
+## Contributing
+
+See [CONTRIBUTING.md](../../.github/CONTRIBUTING.md).
+
+## License
+
+[MIT](../../LICENSE)
