@@ -116,7 +116,8 @@ specification. Standards for UI, UX, and visual identity. Applies only if the
 project has a UI.
 
 - **Frontmatter**: Machine-readable YAML design tokens.
-- **Overview**: Brand summary, core visual style, and key user flows.
+- **Overview**: Brand summary, core visual style, key user flows (modeled with
+  Mermaid diagrams), and wireframes (layout schematics or embedded mockups).
 - **Colors**: Color palette definitions.
 - **Typography**: Font families and sizing scales.
 - **Layout**: Spacing and structural rules.
