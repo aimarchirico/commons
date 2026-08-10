@@ -23,12 +23,13 @@ argument-hint: "[--auto]"
    required logical child issues to completely represent the hierarchy of
    work. Ensure each issue is assigned its type and priority in their
    respective fields based on the definitions in
-   `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md`. Also identify any sibling
-   issues that must be done in a specific order (e.g. one issue's
-   implementation depends on another's), and record those as blocked-by
-   relationships using the `id`/`blocked_by` fields below. Do not use
-   blocked-by for parent/child pairs; that relationship is already expressed
-   by nesting.
+   `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md`. Also identify any issues
+   that must be done in a specific order (e.g. one issue's implementation
+   depends on another's), and record those as blocked-by relationships using
+   the `id`/`blocked_by` fields below. `blocked_by` can reference any other
+   item being created in the batch, regardless of its type or position in
+   the hierarchy. Do not use blocked-by for parent/child pairs; that
+   relationship is already expressed by nesting.
 3. Show the drafted hierarchy and wait for user approval. Skip this step if
    the `--auto` flag is set, and proceed directly with the drafted
    hierarchy.
