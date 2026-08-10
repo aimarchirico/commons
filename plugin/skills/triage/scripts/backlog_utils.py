@@ -107,9 +107,9 @@ def _build_backlog_entries(
         blocked_by_items = deps.get("blocked_by", [])
         blocking_items = deps.get("blocking", [])
 
-        if any(b.get("open_pr") is None for b in blocked_by_items):
-            fully_blocked_count += 1
-            continue
+        is_fully_blocked = any(
+            b.get("open_pr") is None for b in blocked_by_items
+        )
 
         blocking_count = len(blocking_items)
         entry = {
@@ -127,6 +127,10 @@ def _build_backlog_entries(
             "suggestion": f"Solve issue with `/commons:solve --issue {number}`",
         }
         entries.append(entry)
+
+        if is_fully_blocked:
+            fully_blocked_count += 1
+            continue
 
         is_blocked = bool(blocked_by_items)
         if is_mine:
@@ -150,8 +154,12 @@ def fetch_backlog_issues(
 ) -> dict[str, Any]:
     """Fetch Todo backlog issues assigned to or unassigned for `login`.
 
-    Issues blocked by an open issue that lacks an open PR are excluded.
-    Issues blocked only by open issues with attached open PRs are included.
+    Issues blocked by an open issue that lacks an open PR are still included
+    in `backlog_issues` (so their `_blocked_by_items` remain visible for
+    PR-blocking bookkeeping, e.g. `apply_pr_blocking`), but are excluded from
+    the four display buckets and counted in `fully_blocked_count` instead.
+    Issues blocked only by open issues with attached open PRs are included
+    in the display buckets.
     Returns a dict with `backlog_issues`, categorized sub-lists,
     `assigned_to_others_count`, and `fully_blocked_count`.
     """
