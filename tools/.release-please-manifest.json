@@ -6,7 +6,7 @@
   "npm/packages/commons-cloudflare": "3.7.0",
   "npm/packages/commons-expo": "4.6.0",
   "npm/packages/commons-firebase-client": "3.4.1",
-  "npm/packages/commons-github": "1.8.1",
+  "npm/packages/commons-github": "2.0.0",
   "npm/packages/commons-google-signin": "4.3.1",
   "npm/packages/commons-openapi": "2.6.1",
   "npm/packages/commons-project": "1.4.0",
