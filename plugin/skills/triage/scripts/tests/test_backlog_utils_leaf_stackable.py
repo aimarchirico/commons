@@ -136,7 +136,7 @@ def test_fetch_backlog_issues_excludes_non_leaf_issues() -> None:
                     "i1": {
                         "blockedBy": {"nodes": []},
                         "blocking": {"nodes": []},
-                        "subIssuesSummary": {"total": 2},
+                        "subIssuesSummary": {"total": 2, "completed": 0},
                     },
                 },
             },
@@ -152,6 +152,33 @@ def test_fetch_backlog_issues_excludes_non_leaf_issues() -> None:
 
     assert result["leaf_issues"] == []
     assert result["fully_blocked_count"] == 0
+
+
+def test_fetch_backlog_issues_includes_parent_when_all_subissues_closed() -> None:
+    """A Story whose Subtasks are all closed is treated as a leaf again."""
+    project_items = _single_item_project(1)
+    deps_graphql = json.dumps(
+        {
+            "data": {
+                "repository": {
+                    "i1": {
+                        "blockedBy": {"nodes": []},
+                        "blocking": {"nodes": []},
+                        "subIssuesSummary": {"total": 2, "completed": 2},
+                    },
+                },
+            },
+        },
+    )
+
+    def fake_run_cmd(args: list[str]) -> str:
+        if args[:3] == ["gh", "project", "item-list"]:
+            return project_items
+        return deps_graphql
+
+    result = bu.fetch_backlog_issues(fake_run_cmd, _REPO, "acme", _PROJECT_NUM, _LOGIN)
+
+    assert [i["number"] for i in result["leaf_issues"]] == [1]
 
 
 def test_fetch_backlog_issues_annotates_blocker_inherited_via_parent() -> None:
