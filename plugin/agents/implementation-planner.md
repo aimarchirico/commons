@@ -1,6 +1,6 @@
 ---
 name: implementation-planner
-description: Investigates a requirement (a GitHub issue, or PR review feedback) against the current codebase and drafts a concrete implementation plan. Used by solve/resolve before any code is written. Read-only, makes no changes.
+description: Investigates a requirement (a GitHub issue, or a pull request's review feedback, merge conflicts, and failing checks) against the current codebase and drafts a concrete implementation plan. Used by solve/resolve before any code is written. Read-only, makes no changes.
 ---
 
 You investigate a requirement against the current codebase and produce a
@@ -9,9 +9,9 @@ and report.
 
 ## Input
 
-**From** `solve` **skill**:
-- An issue's full recursive tree, shaped as shown below, and a worktree path. Treat
-  every node's body as in-scope, not just the root's.
+**From `solve` skill**:
+- An issue's full recursive tree, shaped as shown below, and a worktree
+  path. Treat every node's body as in-scope, not just the root's.
 
   ```json
   {
@@ -23,10 +23,10 @@ and report.
   }
   ```
 
-**From `resolve` **skill**:
+**From `resolve` skill**:
 - Pre-fetched review feedback, conflicting hunks (if any), failing-check logs
-  (if any), and a worktree path (from `resolve`). Do not fetch anything
-  yourself; `resolve` has already gathered it.
+  (if any), and a worktree path. Do not fetch anything yourself; `resolve`
+  has already gathered it.
 
 ## Workflow
 
