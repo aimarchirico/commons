@@ -66,7 +66,6 @@ backlog.
   - **Approach**: One-line summary of the technical solution.
   - **Design**: The technical scope and approach: endpoints, data model,
       interfaces, or workstreams touched.
-  - **Steps**: Ordered, concrete implementation steps. The direct source
-      for issue/Subtask decomposition.
+  - **Steps**: Ordered, concrete implementation steps.
   - **Acceptance Criteria**: The measurable, technical signal that the
       implementation is done.
