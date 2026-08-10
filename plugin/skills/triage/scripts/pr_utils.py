@@ -128,14 +128,12 @@ def compute_review_blockers(threads: str, comments: str) -> str:
     return REVIEW_BLOCKERS["NONE"]
 
 
-def linked_issue_for(pr: dict[str, Any]) -> dict[str, Any] | None:
-    """Extract first linked closing issue from PR payload."""
-    linked_issues = pr.get("closingIssuesReferences") or []
-    return (
-        {"number": linked_issues[0]["number"], "url": linked_issues[0]["url"]}
-        if linked_issues
-        else None
-    )
+def linked_issues_for(pr: dict[str, Any]) -> list[dict[str, Any]]:
+    """Extract all linked closing issues from PR payload."""
+    return [
+        {"number": issue["number"], "url": issue["url"]}
+        for issue in pr.get("closingIssuesReferences") or []
+    ]
 
 
 def _classify_open_pr(
@@ -253,7 +251,6 @@ def fetch_open_and_draft_prs(
 
     for pr in your_prs:
         pr_number = pr["number"]
-        linked = linked_issue_for(pr)
 
         if bool(pr.get("isDraft")):
             closing = [
@@ -267,7 +264,7 @@ def fetch_open_and_draft_prs(
                 "item": f"[#{pr_number}]({pr['url']}) {pr['title']}",
                 "priority": "Medium",
                 "blocking": "None",
-                "linked_issue": linked,
+                "linked_issues": linked_issues_for(pr),
                 "_closing_issues": closing,
             }
             your_draft_prs.append(draft_entry)

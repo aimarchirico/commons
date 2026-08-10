@@ -68,20 +68,21 @@ These are your PRs currently marked as Draft.
 | :--- | :------- | :------- | :--------- |
 | `<item>` | `<priority>` | `<blocking>` | `<suggestion>` |
 
-`draft_prs` entries compute `<suggestion>` per row. If the entry has a non-null
-`linked_issue`, fetch that issue's title and body, plus the PR's description and
-diff:
+`draft_prs` entries compute `<suggestion>` per row. If the entry's
+`linked_issues` is non-empty, fetch each one's full recursive tree, plus the
+PR's description and diff:
 
 ```bash
-gh issue view <issue-number> --json title,body
+python3 "${CLAUDE_PLUGIN_ROOT}/skills/triage/scripts/get_issue_tree.py" <issue-number>
 gh pr view <pr-number> --json body
 gh pr diff <pr-number>
 ```
 
-Judge whether the implementation looks complete against what the issue asks
-for, rendering Suggestion as "Continue implementing" or "Mark ready for
-review". If `linked_issue` is null, say plainly that there is no linked issue
-to check completeness against.
+Judge whether the implementation looks complete against the combined scope of
+the parent and any descendant sub-issues, since a closing issue may itself be
+a Task/Story/Bug whose real scope lives in its Subtasks, rendering Suggestion
+as "Continue implementing" or "Mark ready for review". If `linked_issues` is
+empty, say plainly there is no linked issue to check completeness against.
 
 ### In Progress
 
