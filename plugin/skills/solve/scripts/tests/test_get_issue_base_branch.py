@@ -85,6 +85,63 @@ def test_get_issue_base_branch_single_pr() -> None:
     assert res["candidates"][0]["pr_number"] == _EXPECTED_PR_NUMBER
 
 
+def test_get_issue_base_branch_blocker_on_descendant_subtask() -> None:
+    """Uses a blocking PR's branch when the dependency is on a descendant
+    Subtask rather than the target issue itself.
+    """
+    subtask_blocked_by = {
+        "number": 10,
+        "state": "OPEN",
+        "title": "Blocker",
+        "timelineItems": {
+            "nodes": [
+                {
+                    "willCloseTarget": True,
+                    "source": {
+                        "number": _EXPECTED_PR_NUMBER,
+                        "title": "Fix blocker",
+                        "headRefName": "feature/blocker-fix",
+                        "state": "OPEN",
+                        "isDraft": False,
+                    },
+                },
+            ],
+        },
+    }
+    api_response = json.dumps(
+        {
+            "data": {
+                "repository": {
+                    "issue": {
+                        "number": 42,
+                        "blockedBy": {"nodes": []},
+                        "blocking": {"nodes": []},
+                        "subIssues": {
+                            "nodes": [
+                                {
+                                    "number": 43,
+                                    "blockedBy": {"nodes": [subtask_blocked_by]},
+                                    "blocking": {"nodes": []},
+                                },
+                            ],
+                        },
+                    },
+                },
+            },
+        },
+    )
+
+    def fake_run_cmd(args: list[str]) -> str:
+        if args[:3] == ["gh", "repo", "view"]:
+            return _REPO_OUTPUT
+        return api_response
+
+    res = gibb.get_issue_base_branch(fake_run_cmd, "42")
+    assert res["status"] == "single"
+    assert res["base_branch"] == "feature/blocker-fix"
+    assert res["candidates"][0]["issue_number"] == 10
+
+
 def test_get_issue_base_branch_multiple_prs() -> None:
     """Returns status='multiple' when issue is blocked by multiple open PRs."""
     blocking_nodes = [
