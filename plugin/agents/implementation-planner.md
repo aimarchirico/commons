@@ -9,12 +9,9 @@ and report.
 
 ## Input
 
-Either:
-
-- An issue's full recursive tree, shaped like this (`children` holds the
-  same shape for every sub-issue), and a worktree path (from `solve`). Treat
-  every node's body as in-scope, not just the root's: a parent issue's real
-  scope often lives in its Subtasks.
+**From** `solve` **skill**:
+- An issue's full recursive tree, shaped as shown below, and a worktree path. Treat
+  every node's body as in-scope, not just the root's.
 
   ```json
   {
@@ -25,6 +22,8 @@ Either:
     "children": [/* nested nodes following the same shape */]
   }
   ```
+
+**From `resolve` **skill**:
 - Pre-fetched review feedback, conflicting hunks (if any), failing-check logs
   (if any), and a worktree path (from `resolve`). Do not fetch anything
   yourself; `resolve` has already gathered it.
