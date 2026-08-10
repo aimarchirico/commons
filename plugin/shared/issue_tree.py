@@ -20,7 +20,7 @@ def _load_blocking_prs() -> ModuleType:
 
 
 _blocking_prs = _load_blocking_prs()
-_ANCESTOR_MAX_DEPTH = _blocking_prs._ANCESTOR_MAX_DEPTH
+_ANCESTOR_MAX_DEPTH = _blocking_prs.ANCESTOR_MAX_DEPTH
 
 _TYPE_FIELD = """
       projectItems(first: 5) {

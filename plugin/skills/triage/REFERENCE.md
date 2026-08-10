@@ -73,7 +73,7 @@ These are your PRs currently marked as Draft.
 PR's description and diff:
 
 ```bash
-python3 "${CLAUDE_PLUGIN_ROOT}/skills/triage/scripts/get_issue_tree.py" <issue-number>
+python3 "${CLAUDE_PLUGIN_ROOT}/skills/triage/scripts/fetch_issue_tree.py" <issue-number>
 gh pr view <pr-number> --json body
 gh pr diff <pr-number>
 ```

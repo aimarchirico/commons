@@ -26,7 +26,7 @@ def _load_module(name: str) -> ModuleType:
 
 
 _issue_tree = _load_module("issue_tree")
-fetch_issue_tree = _issue_tree.fetch_issue_tree
+_fetch_issue_tree = _issue_tree.fetch_issue_tree
 
 project_preflight = _load_module("project_preflight")
 check_cli_dependencies = project_preflight.check_cli_dependencies
@@ -52,7 +52,7 @@ def get_issue_tree(
     repo_data = json.loads(repo_output)
     owner = repo_data["owner"]["login"]
     repo_name = repo_data["name"]
-    return fetch_issue_tree(run_cmd, owner, repo_name, int(issue_id))
+    return _fetch_issue_tree(run_cmd, owner, repo_name, int(issue_id))
 
 
 def main() -> None:

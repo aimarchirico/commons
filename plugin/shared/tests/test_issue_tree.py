@@ -71,6 +71,9 @@ def test_fetch_issue_tree_recurses_one_level_of_children() -> None:
     assert tree["children"][1]["body"] == "Body B"
 
 
+_GRANDCHILD_NUMBER = 3
+
+
 def test_fetch_issue_tree_recurses_two_levels_hitting_the_depth_bound() -> None:
     """Grandchildren (Epic -> Story -> Subtask depth) are still captured."""
     root = _issue(
@@ -98,7 +101,7 @@ def test_fetch_issue_tree_recurses_two_levels_hitting_the_depth_bound() -> None:
     tree = fetch_issue_tree(mock_run_cmd, "owner", "repo", 1)
 
     grandchild = tree["children"][0]["children"][0]
-    assert grandchild["number"] == 3
+    assert grandchild["number"] == _GRANDCHILD_NUMBER
     assert grandchild["title"] == "Subtask"
 
 
