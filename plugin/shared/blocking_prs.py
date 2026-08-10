@@ -211,7 +211,7 @@ def fetch_issue_dependencies(
     every ancestor's own direct blockers (a block on a containing Story or
     Epic blocks everything beneath it). Sibling edges are not folded away.
 
-    `blocking` is the issue's own direct outbound edges only - ancestor
+    `blocking` is the issue's own direct outbound edges only, since ancestor
     propagation on the `blocked_by` side above already covers descendants.
 
     Returns a dict with `blocked_by` (open blocker dicts: `number`, `url`,
