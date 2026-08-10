@@ -16,6 +16,5 @@ Step-by-step instructions to verify this works.
 
 ## Related Issues
 
-Link related issues. If this PR resolves an issue that has children (e.g. a
-Story's Subtasks), close every one of them explicitly (`Closes #<number>`
-per issue) - closing is never cascaded automatically.
+Link related issues. If this PR resolves an issue that has sub-issues, close
+every one of them explicitly.

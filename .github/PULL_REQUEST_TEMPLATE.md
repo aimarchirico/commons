@@ -16,4 +16,5 @@ Step-by-step instructions to verify this works.
 
 ## Related Issues
 
-Link related issues. If this PR resolves an issue that has sub-issues, close every one of them explicitly.
+Link related issues. If this PR resolves an issue that has sub-issues, close
+every one of them explicitly.
