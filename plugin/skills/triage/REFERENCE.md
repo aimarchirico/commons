@@ -1,5 +1,8 @@
 # Triage Reference
 
+See `GLOSSARY.md` for the terms used throughout this document (leaf issue,
+container issue, via parent, stackable, fully blocked).
+
 Start the output with a summary header:
 
 ```markdown
@@ -21,17 +24,14 @@ include them in parenthetical notes after `<count> active item/items needing
 attention` (joining non-zero items cleanly with ", and "). If both are 0, omit
 the parenthetical note entirely.
 
-Only leaf issues (no sub-issues of their own) are ever listed as `<item>`, as they represents atomic units of work. A leaf's blockers include its own `blocked_by`
-plus any blocker on its ancestors, each rendered as
+Only leaf issues are ever listed as `<item>`. A leaf's blockers include its
+own `blocked_by` plus any blocker on its ancestors, each rendered as
 `PR #<n>`/`Issue #<n>`, with `(via parent)` appended when inherited from an
 ancestor rather than set directly on the leaf.
 
-`fully_blocked_count` covers leaves blocked by more than one open PR, or by
-any open issue that lacks an attached open PR: stacking only works against
-one unambiguous base branch, so anything short of that doesn't qualify. They remain tracked (so PRs
-closing one of their blockers still get credited in `<blocking>`), but are
-hidden from the Actionable Items and Unassigned Issues tables below because
-they are not yet stackable.
+`fully_blocked_count` counts fully-blocked leaves. They remain tracked (so
+PRs closing one of their blockers still get credited in `<blocking>`), but
+are hidden from the Actionable Items and Unassigned Issues tables below.
 
 Followed by a divider (`---`), then render up to three categories,
 their descriptions, their tables, and each table's description,
@@ -110,8 +110,7 @@ These are issues assigned to you and not blocked by anything.
 
 ### Assigned Stackable
 
-These are issues assigned to you, all of whose blockers resolve to the same
-single open PR.
+These are stackable issues assigned to you.
 
 | Item | Blocked by | Priority | Blocking | Suggestion |
 | :--- | :--------- | :------- | :------- | :--------- |
@@ -155,8 +154,7 @@ These are unassigned issues not blocked by anything.
 
 ### Available Stackable
 
-These are unassigned issues, all of whose blockers resolve to the same
-single open PR.
+These are stackable, unassigned issues.
 
 | Item | Blocked by | Priority | Blocking | Suggestion |
 | :--- | :--------- | :------- | :------- | :--------- |
