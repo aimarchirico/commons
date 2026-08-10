@@ -11,15 +11,13 @@ classification, referenced by
   triage row; a block placed directly on it still reaches all its leaf
   descendants (see "via parent").
 - **Blocked by**: What an item still needs resolved before it unblocks.
-  Shown on issue rows only (PR rows use "blocking" instead). The underlying
+  The underlying
   relationship is always issue-to-issue: GitHub's `blocked_by` field only
-  ever names other Issues, never PRs. For a leaf issue this is the union of
+  ever names other issues, never PRs. For a leaf issue this is the union of
   the issues named by its own `blocked_by` field and any issue named by an
   ancestor's own `blocked_by` field (see "via parent"). Each blocking issue
-  is rendered as `PR #<n>` if it already has an attached open PR (a
-  shorthand for "that issue's open branch is here"), or as `Issue #<n>` if
-  it doesn't yet. The PR itself is never the blocker, only what the
-  blocking issue's resolution currently looks like.
+  is rendered as `PR #<n>` if it already has an attached open PR, or as `Issue #<n>` if
+  it doesn't yet.
 - **Via parent**: Marks a blocker inherited from an ancestor's own
   `blocked_by` rather than set directly on the issue itself. Rendered as
   `(via parent)` after the blocker reference.
@@ -28,7 +26,7 @@ classification, referenced by
   it's the direct, non-transitive count of open issues that issue's own
   `blocking` relationship names, rendered as `N issue(s)`. On a PR row it's
   the count of open issues the PR's closed issues directly block, with
-  other open PRs that also close one of those issues credited instead of
+  other open PRs that also close one of those blocked issues credited instead of
   double-counted, rendered as `N PR(s), N issue(s)`.
 - **Stackable**: An issue is stackable when every one of its blockers
   resolves to the same single open PR, one unambiguous base branch to
