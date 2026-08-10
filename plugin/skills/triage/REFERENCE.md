@@ -21,18 +21,14 @@ include them in parenthetical notes after `<count> active item/items needing
 attention` (joining non-zero items cleanly with ", and "). If both are 0, omit
 the parenthetical note entirely.
 
-Only leaf issues (no children of their own) are ever listed as `<item>`: a
-Story with open Subtasks isn't itself an actionable row, since it isn't the
-thing that gets its own PR. A leaf's blockers include its own `blocked_by`
-plus any blocker on its ancestors (a block directly on the containing Story
-or Epic blocks every leaf beneath it too), each rendered as
+Only leaf issues (no sub-issues of their own) are ever listed as `<item>`, as they represents atomic units of work. A leaf's blockers include its own `blocked_by`
+plus any blocker on its ancestors, each rendered as
 `PR #<n>`/`Issue #<n>`, with `(via parent)` appended when inherited from an
 ancestor rather than set directly on the leaf.
 
 `fully_blocked_count` covers leaves blocked by more than one open PR, or by
-any open issue that lacks an attached open PR — stacking only works against
-one unambiguous base branch, so anything short of "every blocker resolves to
-the same single open PR" doesn't qualify. They remain tracked (so PRs
+any open issue that lacks an attached open PR: stacking only works against
+one unambiguous base branch, so anything short of that doesn't qualify. They remain tracked (so PRs
 closing one of their blockers still get credited in `<blocking>`), but are
 hidden from the Actionable Items and Unassigned Issues tables below because
 they are not yet stackable.
