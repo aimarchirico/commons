@@ -115,11 +115,9 @@ argument-hint: "[--draft] [--auto] [--skip-check]"
 6. Ask the user whether to derive the initial issue backlog from
    `docs/plan/specifications/` now. If so, invoke the `commons:issue`
    skill, instructing it to make each resulting issue self-contained:
-   inline the relevant Scope, Acceptance Criteria, and concrete steps from
-   each specification directly into the issue bodies (one `Subtask` per
-   step) rather than referencing the specification file, so the issues
-   stand on their own once created. Pass `--auto` through if it was
-   provided.
+   include all the relevant information and concrete steps for all
+   specifications so the issues stand on their own once created. Pass
+   `--auto` through if it was provided.
 
 ## Output
 
