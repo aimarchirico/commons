@@ -24,9 +24,13 @@ it gets built.
 
 - **index.md**: Index table of number, title, priority, and link.
 - **NNNN-slug.md**: One per requirement, zero-padded and sequenced:
-  - **Functional Behaviors**: The specific behaviors the requirement covers.
-  - **Non-Functional Criteria**: Operating constraints such as performance,
-      security, or reliability.
+  - **Motivation**: Why this requirement matters, tied to the PRD's
+      Objective and Success Metrics.
+  - **Behavior**: The specific behaviors the requirement covers.
+  - **Constraints**: Operating constraints such as performance, security,
+      or reliability.
+  - **Acceptance Criteria**: The product-level, solution-agnostic signal
+      that the requirement is satisfied.
 
 ## 3. docs/plan/research/
 
@@ -52,13 +56,17 @@ Architecture decision records, one per technical choice.
 
 ## 5. docs/plan/specifications/
 
-Technical blueprints. Each states how to solve one or more requirements: the
-solution, not the problem. Detailed enough to derive an initial issue
-backlog.
+Technical blueprints. Each states how to solve, in whole or in part, one or
+more requirements: the solution, not the problem. Detailed enough to derive
+an initial issue backlog.
 
-- **index.md**: Index table of number, title, one-line objective, and link.
+- **index.md**: Index table of number, title, one-line approach, and link.
 - **NNNN-slug.md**: One per specification, zero-padded and sequenced:
-  - **Requirement**: The requirement(s) it fulfills.
-  - **Objective**: What this specification achieves and why it matters.
-  - **Scope**: The technical scope, endpoints or workstreams covered.
-  - **Acceptance Criteria**: The measurable signal it's done.
+  - **Requirement**: The requirement(s) it addresses, and how much of each
+      (in full or in part).
+  - **Approach**: One-line summary of the technical solution.
+  - **Design**: The technical scope and approach: endpoints, data model,
+      interfaces, or workstreams touched.
+  - **Steps**: Ordered, concrete implementation steps.
+  - **Acceptance Criteria**: The measurable, technical signal that the
+      implementation is done.

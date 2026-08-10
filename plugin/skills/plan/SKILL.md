@@ -114,8 +114,10 @@ argument-hint: "[--draft] [--auto] [--skip-check]"
    `--auto` flags if provided by the user.
 6. Ask the user whether to derive the initial issue backlog from
    `docs/plan/specifications/` now. If so, invoke the `commons:issue`
-   skill scoped to that content, passing `--auto` through if it was
-   provided.
+   skill, instructing it to make each resulting issue self-contained:
+   include all the relevant information and concrete steps for all
+   specifications so the issues stand on their own once created. Pass
+   `--auto` through if it was provided.
 
 ## Output
 
