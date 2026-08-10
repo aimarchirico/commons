@@ -72,6 +72,7 @@ _BLOCKING_FIELD = """
 """
 
 _ANCESTOR_MAX_DEPTH = _max_type_depth(_load_project_preflight().ALLOWED_CHILD_TYPES)
+ANCESTOR_MAX_DEPTH = _ANCESTOR_MAX_DEPTH
 
 
 def _ancestor_fields(depth: int) -> str:

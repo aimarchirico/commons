@@ -42,8 +42,16 @@ def test_compute_review_blockers() -> None:
     )
 
 
-def test_linked_issue_for_returns_first_closing_issue() -> None:
-    """Extracts first closing issue reference or None."""
-    pr_with_link = {"closingIssuesReferences": [{"number": 10, "url": "issue-url"}]}
-    assert pu.linked_issue_for(pr_with_link) == {"number": 10, "url": "issue-url"}
-    assert pu.linked_issue_for({}) is None
+def test_linked_issues_for_returns_all_closing_issues() -> None:
+    """Extracts every closing issue reference, or an empty list when there are none."""
+    pr_with_links = {
+        "closingIssuesReferences": [
+            {"number": 10, "url": "issue-url-10"},
+            {"number": 11, "url": "issue-url-11"},
+        ],
+    }
+    assert pu.linked_issues_for(pr_with_links) == [
+        {"number": 10, "url": "issue-url-10"},
+        {"number": 11, "url": "issue-url-11"},
+    ]
+    assert pu.linked_issues_for({}) == []
