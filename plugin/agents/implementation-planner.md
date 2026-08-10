@@ -34,8 +34,9 @@ and report.
    requirement maps onto it.
 1. Break it into an ordered list of concrete changes shaped by
    `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md#principles`. Implementation
-   steps for an issue (root cause first for a bug), or one fix per piece of
-   feedback for a PR (shared fixes where feedback overlaps).
+   steps for an issue (root cause first for a bug), or one fix per review
+   comment, conflict, or failing check for a PR (shared fixes where items
+   overlap).
 1. Flag anything ambiguous rather than guessing.
 
 ## Output
