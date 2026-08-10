@@ -93,7 +93,7 @@ These are issues assigned to you marked In Progress with no open PR yet.
 
 ### Assigned Ready
 
-These are issues assigned to you and not blocked by anything.
+These are issues with status Todo assigned to you and not blocked by anything.
 
 | Item | Priority | Blocking | Suggestion |
 | :--- | :------- | :------- | :--------- |
@@ -101,7 +101,7 @@ These are issues assigned to you and not blocked by anything.
 
 ### Assigned Stackable
 
-These are stackable issues assigned to you.
+These are stackable issues with status Todo assigned to you.
 
 | Item | Blocked by | Priority | Blocking | Suggestion |
 | :--- | :--------- | :------- | :------- | :--------- |
@@ -137,7 +137,7 @@ The open pool of available issues ready to be claimed and started.
 
 ### Available Ready
 
-These are unassigned issues not blocked by anything.
+These are unassigned issues with status Todo not blocked by anything.
 
 | Item | Priority | Blocking | Suggestion |
 | :--- | :------- | :------- | :--------- |
@@ -145,7 +145,7 @@ These are unassigned issues not blocked by anything.
 
 ### Available Stackable
 
-These are stackable, unassigned issues.
+These are stackable, unassigned issues with status Todo.
 
 | Item | Blocked by | Priority | Blocking | Suggestion |
 | :--- | :--------- | :------- | :------- | :--------- |
