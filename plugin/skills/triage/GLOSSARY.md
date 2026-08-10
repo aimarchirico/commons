@@ -4,12 +4,13 @@ Background concepts behind the triage skill's issue-dependency
 classification, referenced by
 `${CLAUDE_PLUGIN_ROOT}/skills/triage/REFERENCE.md`.
 
-- **Leaf issue**: An issue with no sub-issues of its own. Represents the
+- **Leaf issue**: An issue with no open sub-issues of its own (a parent
+  whose sub-issues are all closed counts as a leaf). Represents the
   smallest unit of work. Only leaves are ever listed as `<item>` in triage
   tables.
-- **Parent issue**: An issue with sub-issues. Never listed as its own
-  triage row; a block placed directly on it still reaches all its leaf
-  descendants (see "via parent").
+- **Parent issue**: An issue with at least one open sub-issue. Never
+  listed as its own triage row; a block placed directly on it still
+  reaches all its leaf descendants (see "via parent").
 - **Blocked by**: What an item still needs resolved before it unblocks.
   The underlying relationship is always issue-to-issue: GitHub's
   `blocked_by` field only ever names other issues, never PRs. For a leaf

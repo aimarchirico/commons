@@ -7,7 +7,7 @@ from pathlib import Path
 from types import ModuleType
 from typing import Any
 
-_EMPTY_DEPS = {"blocked_by": [], "blocking": [], "has_children": False}
+_EMPTY_DEPS = {"blocked_by": [], "blocking": [], "has_open_children": False}
 
 
 def _load_project_preflight() -> ModuleType:
@@ -90,6 +90,7 @@ _ISSUE_FIELDS = f"""
       number
       subIssuesSummary {{
         total
+        completed
       }}
       {_BLOCKED_BY_FIELD}
       {_BLOCKING_FIELD}
@@ -188,14 +189,14 @@ def _effective_blocked_by(issue_data: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def _parse_issue_dependencies(issue_data: dict[str, Any]) -> dict[str, Any]:
+    summary = issue_data.get("subIssuesSummary") or {}
+    open_children = summary.get("total", 0) - summary.get("completed", 0)
     return {
         "blocked_by": _effective_blocked_by(issue_data),
         "blocking": _parse_blocking_nodes(
             issue_data.get("blocking", {}).get("nodes", []),
         ),
-        "has_children": bool(
-            (issue_data.get("subIssuesSummary") or {}).get("total"),
-        ),
+        "has_open_children": open_children > 0,
     }
 
 
@@ -216,7 +217,9 @@ def fetch_issue_dependencies(
 
     Returns a dict with `blocked_by` (open blocker dicts: `number`, `url`,
     `title`, `via_parent`, `open_pr`), `blocking` (open downstream issue
-    dicts: `number`, `url`, `title`), and `has_children` (bool).
+    dicts: `number`, `url`, `title`), and `has_open_children` (bool,
+    reflecting only open sub-issues; a parent whose sub-issues are all
+    closed has `has_open_children: False`).
     """
     args = [
         "gh",
