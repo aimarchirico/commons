@@ -12,9 +12,10 @@ classification, referenced by
   descendants (see "via parent").
 - **Blocked by**: What an item still needs resolved before it unblocks.
   Shown on issue rows only (PR rows use "blocking" instead). For a leaf
-  issue this includes its own `blocked_by` relationship plus any blocker on
-  its ancestors (see "via parent"). Rendered as `PR #<n>` when the blocker
-  has an attached open PR, or `Issue #<n>` otherwise.
+  issue this is the union of the issues named by its own `blocked_by` field
+  and any issue named by an ancestor's own `blocked_by` field (see "via
+  parent"). Rendered as `PR #<n>` when the blocker has an attached open PR,
+  or `Issue #<n>` otherwise.
 - **Via parent**: Marks a blocker inherited from an ancestor's own
   `blocked_by` rather than set directly on the issue itself. Rendered as
   `(via parent)` after the blocker reference.
