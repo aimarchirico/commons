@@ -41,11 +41,15 @@ def _issue(
     blocked_by: list[dict] | None = None,
     blocking: list[dict] | None = None,
     parent: dict | None = None,
-    children: int = 0,
+    open_children: int = 0,
+    closed_children: int = 0,
 ) -> dict:
     node = {
         "number": number,
-        "subIssuesSummary": {"total": children},
+        "subIssuesSummary": {
+            "total": open_children + closed_children,
+            "completed": closed_children,
+        },
         "blockedBy": {"nodes": blocked_by or []},
         "blocking": {"nodes": blocking or []},
     }
@@ -83,7 +87,7 @@ def test_fetch_issue_dependencies_parses_open_blockers_and_prs() -> None:
     }
     assert res["blocked_by"][1]["open_pr"] is None
     assert [b["number"] for b in res["blocking"]] == [12]
-    assert res["has_children"] is False
+    assert res["has_open_children"] is False
 
 
 def test_fetch_issue_dependencies_ignores_mentions_that_wont_close() -> None:
@@ -100,9 +104,9 @@ def test_fetch_issue_dependencies_ignores_mentions_that_wont_close() -> None:
     assert res["blocked_by"][0]["open_pr"] is None
 
 
-def test_fetch_issue_dependencies_reports_has_children() -> None:
-    """A non-zero subIssuesSummary total marks the issue as not a leaf."""
-    root = _issue(100, children=2)
+def test_fetch_issue_dependencies_reports_has_open_children() -> None:
+    """A non-zero count of open sub-issues marks the issue as not a leaf."""
+    root = _issue(100, open_children=2)
     api_response = json.dumps({"data": {"repository": {"issue": root}}})
 
     def mock_run_cmd(_args: list[str]) -> str:
@@ -110,7 +114,20 @@ def test_fetch_issue_dependencies_reports_has_children() -> None:
 
     res = fetch_issue_dependencies(mock_run_cmd, "owner", "repo", 100)
 
-    assert res["has_children"] is True
+    assert res["has_open_children"] is True
+
+
+def test_fetch_issue_dependencies_treats_all_closed_children_as_leaf() -> None:
+    """An issue whose sub-issues are all closed is treated as a leaf."""
+    root = _issue(101, open_children=0, closed_children=2)
+    api_response = json.dumps({"data": {"repository": {"issue": root}}})
+
+    def mock_run_cmd(_args: list[str]) -> str:
+        return api_response
+
+    res = fetch_issue_dependencies(mock_run_cmd, "owner", "repo", 101)
+
+    assert res["has_open_children"] is False
 
 
 def test_fetch_issue_dependencies_includes_ancestors_own_blockers() -> None:
@@ -214,7 +231,7 @@ def test_fetch_issues_dependencies_batches_multiple_numbers_in_one_call() -> Non
     assert "i7: issue(number: 7)" in calls[0][4]
     assert "i8: issue(number: 8)" in calls[0][4]
     assert [b["number"] for b in res[7]["blocking"]] == [12]
-    assert res[8] == {"blocked_by": [], "blocking": [], "has_children": False}
+    assert res[8] == {"blocked_by": [], "blocking": [], "has_open_children": False}
 
 
 def test_fetch_issues_dependencies_returns_empty_dict_for_no_numbers() -> None:

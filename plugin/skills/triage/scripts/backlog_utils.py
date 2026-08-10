@@ -13,7 +13,7 @@ PRIORITY_RANK = {"High": 0, "Medium": 1, "Low": 2, "Unset": 3}
 ASSIGNEE_YOU = "You"
 ASSIGNEE_UNASSIGNED = "Unassigned"
 NO_BLOCKERS = "None"
-_EMPTY_DEPS = {"blocked_by": [], "blocking": [], "has_children": False}
+_EMPTY_DEPS = {"blocked_by": [], "blocking": [], "has_open_children": False}
 
 
 def _load_blocking_prs() -> ModuleType:
@@ -55,7 +55,7 @@ def _format_blocking_issues(count: int) -> str:
 
 
 def _is_leaf(deps: dict[str, Any]) -> bool:
-    return not deps.get("has_children")
+    return not deps.get("has_open_children")
 
 
 def _stackable_on(blocked_by_items: list[dict[str, Any]]) -> bool:
