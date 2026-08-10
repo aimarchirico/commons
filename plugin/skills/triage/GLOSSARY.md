@@ -8,19 +8,23 @@ Terms used throughout `REFERENCE.md`.
 - **Parent issue**: An issue with sub-issues. Never listed as its own
   triage row; a block placed directly on it still reaches all its leaf
   descendants (see "via parent").
-- **Blocked by**: An issue's own `blocked_by` relationship, plus - for a
-  leaf - any blocker on its ancestors (see "via parent"). Rendered as
-  `PR #<n>` when the blocker has an attached open PR, or `Issue #<n>`
-  otherwise.
+- **Blocked by**: What an item still needs resolved before it unblocks.
+  Shown on issue rows only (PR rows use "blocking" instead). For a leaf
+  issue this includes its own `blocked_by` relationship plus any blocker on
+  its ancestors (see "via parent"). Rendered as `PR #<n>` when the blocker
+  has an attached open PR, or `Issue #<n>` otherwise.
 - **Via parent**: Marks a blocker inherited from an ancestor's own
   `blocked_by` rather than set directly on the issue itself. Rendered as
   `(via parent)` after the blocker reference.
-- **Blocking**: The direct, non-transitive count of open issues an issue's
-  own `blocking` relationship names. Rendered as `N issue(s)` on issue
-  rows. On PR rows it also credits other open PRs that close a blocked
-  issue instead of double-counting it, rendered as `N PR(s), N issue(s)`.
+- **Blocking**: What an item's resolution would unblock. Shown on both
+  issue rows and PR rows, computed differently for each. On an issue row
+  it's the direct, non-transitive count of open issues that issue's own
+  `blocking` relationship names, rendered as `N issue(s)`. On a PR row it's
+  the count of open issues the PR's closed issues directly block, with
+  other open PRs that also close one of those issues credited instead of
+  double-counted, rendered as `N PR(s), N issue(s)`.
 - **Stackable**: An issue is stackable when every one of its blockers
-  resolves to the same single open PR; one unambiguous base branch to
+  resolves to the same single open PR, one unambiguous base branch to
   build on top of.
 - **Fully blocked**: An issue with at least one blocker that isn't
   stackable (a blocker has no open PR yet, or blockers resolve to more than

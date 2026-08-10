@@ -1,8 +1,7 @@
 # Triage Reference
 
-See `${CLAUDE_PLUGIN_ROOT}/skills/triage/GLOSSARY.md` for the terms used
-throughout this document (leaf issue, parent issue, blocked by, via
-parent, blocking, stackable, fully blocked).
+See `${CLAUDE_PLUGIN_ROOT}/skills/triage/GLOSSARY.md` for definitions of
+the terms this document uses.
 
 Start the output with a summary header:
 
@@ -24,12 +23,6 @@ If `assigned_to_others_count` or `fully_blocked_count` are greater than 0,
 include them in parenthetical notes after `<count> active item/items needing
 attention` (joining non-zero items cleanly with ", and "). If both are 0, omit
 the parenthetical note entirely.
-
-Only leaf issues are ever listed as `<item>`.
-
-`fully_blocked_count` counts fully blocked leaves. They remain tracked (so
-PRs closing one of their blockers still get credited in `<blocking>`), but
-are hidden from the Actionable Items and Unassigned Issues tables below.
 
 Followed by a divider (`---`), then render up to three categories,
 their descriptions, their tables, and each table's description,
