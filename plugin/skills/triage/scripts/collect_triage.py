@@ -10,7 +10,11 @@ from pathlib import Path
 from types import ModuleType
 from typing import Any
 
-from backlog_utils import fetch_backlog_issues, fetch_in_progress_issues
+from backlog_utils import (
+    fetch_backlog_issues,
+    fetch_in_progress_issues,
+    fetch_issues_dependencies,
+)
 from pr_blocking import apply_pr_blocking
 from pr_utils import (
     fetch_all_open_prs,
@@ -92,7 +96,16 @@ def main() -> None:
         prs_to_review = fetch_prs_to_review(all_open_prs, login)
 
         all_your_prs = pr_data["your_open_prs"] + pr_data["your_draft_prs"]
-        apply_pr_blocking(all_your_prs, backlog_data["leaf_issues"])
+        closing_numbers = {
+            ci["number"] for pr in all_your_prs for ci in pr.get("_closing_issues", [])
+        }
+        closing_issue_deps = fetch_issues_dependencies(
+            _run_cmd,
+            owner,
+            repo_name,
+            sorted(closing_numbers),
+        )
+        apply_pr_blocking(all_your_prs, closing_issue_deps)
 
         linked_issue_numbers = {
             closing["number"]

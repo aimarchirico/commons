@@ -131,8 +131,6 @@ def _build_backlog_entries(
             "blocked_by": _format_blocked_by(blocked_by_items),
             "blocking": _format_blocking_issues(blocking_count),
             "blocking_count": blocking_count,
-            "_blocked_by_items": blocked_by_items,
-            "_blocking_items": blocking_items,
             "suggestion": f"Solve issue with `/commons:solve --issue {number}`",
         }
         entries.append(entry)
@@ -161,8 +159,8 @@ def fetch_backlog_issues(
     Only leaf issues (no children of their own) are considered, since those
     are the ones that get their own PR. An issue is stackable only if every
     blocker resolves to the same single open PR; anything else stays in
-    `leaf_issues` for bookkeeping (e.g. `apply_pr_blocking`) but is
-    excluded from the display buckets and counted in `fully_blocked_count`.
+    `leaf_issues` but is excluded from the display buckets and counted in
+    `fully_blocked_count`.
     """
     owner, repo_name = repo
     item_output = run_cmd(

@@ -8,6 +8,7 @@ from collect_triage_helpers import (
     _assert_empty_survey,
     _base_responses,
     _install_gh,
+    _issues_deps_response,
     _make_pr,
     _review_states_response,
 )
@@ -116,6 +117,42 @@ def test_main_classifies_your_prs_and_splits_out_drafts(
     ] == [5]
 
     assert result["your_draft_prs"][0]["number"] == 1
+
+
+def test_main_credits_a_pr_with_unblocking_via_the_closed_issues_own_blocking_edge(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """A PR's blocking count is read from what the issue it closes directly blocks."""
+    your_prs = json.dumps(
+        [_make_pr(num=1, title="Closes 10", refs=[{"number": 10, "url": "issue-url"}])],
+    )
+    responses = _base_responses(your_prs=your_prs)
+    k, b = _review_states_response({1: {}})
+    responses[k] = b
+    k, b = _issues_deps_response(
+        {
+            10: {
+                "blocking_nodes": [
+                    {
+                        "number": 42,
+                        "url": "https://github.com/acme/widgets/issues/42",
+                        "state": "OPEN",
+                        "title": "Downstream",
+                    },
+                ],
+            },
+        },
+    )
+    responses[k] = b
+    _install_gh(monkeypatch, responses)
+
+    ct.main()
+
+    result = json.loads(capsys.readouterr().out)
+    pending = result["categories"]["pending_prs"]["pending_approval"]
+    assert [pr["number"] for pr in pending] == [1]
+    assert pending[0]["blocking"] == "1 issue"
 
 
 def test_main_draft_prs_without_linked_issue_report_null(
