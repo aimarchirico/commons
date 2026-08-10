@@ -1,7 +1,7 @@
 # Triage Reference
 
-See `${CLAUDE_PLUGIN_ROOT}/skills/triage/GLOSSARY.md` for definitions of
-the terms this document uses.
+See `${CLAUDE_PLUGIN_ROOT}/skills/triage/GLOSSARY.md` for background on the
+issue-dependency concepts this data is classified by.
 
 Start the output with a summary header:
 
