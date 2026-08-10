@@ -1,5 +1,8 @@
 # Triage Reference
 
+See `${CLAUDE_PLUGIN_ROOT}/skills/triage/GLOSSARY.md` for background on the
+issue-dependency concepts this data is classified by.
+
 Start the output with a summary header:
 
 ```markdown
@@ -20,12 +23,6 @@ If `assigned_to_others_count` or `fully_blocked_count` are greater than 0,
 include them in parenthetical notes after `<count> active item/items needing
 attention` (joining non-zero items cleanly with ", and "). If both are 0, omit
 the parenthetical note entirely.
-
-`fully_blocked_count` covers issues blocked by at least one open issue that
-lacks an attached open PR. They remain tracked (so PRs closing one of their
-blockers still get credited in `<blocking>`), but are hidden from the
-Actionable Items and Unassigned Issues tables below because they are not yet
-stackable.
 
 Followed by a divider (`---`), then render up to three categories,
 their descriptions, their tables, and each table's description,
@@ -104,7 +101,7 @@ These are issues assigned to you and not blocked by anything.
 
 ### Assigned Stackable
 
-These are issues assigned to you, blocked by an issue that has an open PR.
+These are stackable issues assigned to you.
 
 | Item | Blocked by | Priority | Blocking | Suggestion |
 | :--- | :--------- | :------- | :------- | :--------- |
@@ -148,7 +145,7 @@ These are unassigned issues not blocked by anything.
 
 ### Available Stackable
 
-These are unassigned issues blocked by an issue that has an open PR.
+These are stackable, unassigned issues.
 
 | Item | Blocked by | Priority | Blocking | Suggestion |
 | :--- | :--------- | :------- | :------- | :--------- |

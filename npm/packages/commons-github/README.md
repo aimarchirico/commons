@@ -63,12 +63,8 @@ each write is reported as "written" rather than "unchanged."
 
 ### `materialize-templates`
 
-Copies `CONTRIBUTING.md`, the issue/PR templates, and the sub-issue cascade
-workflows (`assign-sub-issues`, `close-sub-issues`) into the working
-directory's `.github/`, overwriting anything already there. The cascade
-workflows call back into this repo's shared actions
-(`aimarchirico/commons/.github/actions/...@main`) rather than vendoring
-them. No env vars.
+Copies `CONTRIBUTING.md` and the issue/PR templates into the working
+directory's `.github/`, overwriting anything already there. No env vars.
 
 ## Development
 

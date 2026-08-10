@@ -3,25 +3,15 @@
 from pr_blocking import apply_pr_blocking
 
 
-def test_apply_pr_blocking_credits_pr_closing_a_blocker_of_a_fully_blocked_issue() -> (
-    None
-):
-    """A PR closing a blocker of a fully-blocked issue is credited.
+def test_apply_pr_blocking_credits_pr_via_closed_issues_own_blocking_edge() -> None:
+    """A PR is credited with unblocking whatever the issue it closes blocks.
 
-    The PR must be credited with blocking that issue, even though the issue
-    itself is excluded from the display buckets because another blocker
-    still has no open PR (this reproduces the bios repo #159/#219-#225 bug).
+    This is read directly from the closed issue's own `blocking` edge,
+    fetched regardless of whether that issue is itself a leaf.
     """
-    backlog_issues = [
-        {
-            "number": 1,
-            "_blocked_by_items": [
-                {"number": 10, "open_pr": {"number": 25}},
-                {"number": 11, "open_pr": None},
-            ],
-            "_blocking_items": [],
-        },
-    ]
+    closing_issue_deps = {
+        10: {"blocking": [{"number": 1}]},
+    }
     pr_entries = [
         {
             "number": 25,
@@ -29,6 +19,21 @@ def test_apply_pr_blocking_credits_pr_closing_a_blocker_of_a_fully_blocked_issue
         },
     ]
 
-    apply_pr_blocking(pr_entries, backlog_issues)
+    apply_pr_blocking(pr_entries, closing_issue_deps)
 
     assert pr_entries[0]["blocking"] == "1 issue"
+
+
+def test_apply_pr_blocking_credits_another_pr_instead_of_double_counting() -> None:
+    """When another open PR also closes the blocked issue, credit that PR."""
+    closing_issue_deps = {
+        10: {"blocking": [{"number": 1}]},
+    }
+    pr_entries = [
+        {"number": 25, "_closing_issues": [{"number": 10}]},
+        {"number": 26, "_closing_issues": [{"number": 1}]},
+    ]
+
+    apply_pr_blocking(pr_entries, closing_issue_deps)
+
+    assert pr_entries[0]["blocking"] == "1 PR"

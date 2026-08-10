@@ -12,7 +12,7 @@ _PROJECT_NUM = 9
 def test_fetch_backlog_issues_fully_blocked_issue_keeps_all_blocked_by_items() -> None:
     """A fully-blocked issue keeps all its blockers intact.
 
-    A mix of PR-backed and PR-less blockers stays in backlog_issues, but is
+    A mix of PR-backed and PR-less blockers stays in leaf_issues, but is
     hidden from buckets.
     """
 
@@ -83,12 +83,12 @@ def test_fetch_backlog_issues_fully_blocked_issue_keeps_all_blocked_by_items() -
 
     result = bu.fetch_backlog_issues(fake_run_cmd, _REPO, "acme", _PROJECT_NUM, _LOGIN)
 
-    issues = result["backlog_issues"]
+    issues = result["leaf_issues"]
     assert [issue["number"] for issue in issues] == [1]
-    blocked_by_items = issues[0]["_blocked_by_items"]
-    assert {b["number"] for b in blocked_by_items} == {10, 11}
-    assert any(b.get("open_pr") is not None for b in blocked_by_items)
-    assert any(b.get("open_pr") is None for b in blocked_by_items)
+    assert issues[0]["blocked_by"] == (
+        "PR [#25](https://github.com/acme/repo/pull/25), Issue [#11]"
+        "(https://github.com/acme/repo/issues/11)"
+    )
 
     for bucket in (
         "assigned_ready",

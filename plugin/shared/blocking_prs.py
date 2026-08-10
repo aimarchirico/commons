@@ -1,10 +1,35 @@
 """Shared utility for fetching issue dependencies and attached open PRs."""
 
+import importlib.util
 import json
 from collections.abc import Callable
+from pathlib import Path
+from types import ModuleType
 from typing import Any
 
-_ISSUE_DEPENDENCY_FIELDS = """
+_EMPTY_DEPS = {"blocked_by": [], "blocking": [], "has_children": False}
+
+
+def _load_project_preflight() -> ModuleType:
+    module_path = Path(__file__).resolve().parent / "project_preflight.py"
+    spec = importlib.util.spec_from_file_location("project_preflight", module_path)
+    if spec is None or spec.loader is None:
+        msg = f"Cannot load project_preflight from {module_path}"
+        raise ImportError(msg)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def _max_type_depth(child_types: dict[str, set[str]]) -> int:
+    def depth(type_name: str) -> int:
+        children = (depth(c) for c in child_types.get(type_name, set()))
+        return 1 + max(children, default=-1)
+
+    return max(depth(t) for t in child_types)
+
+
+_BLOCKED_BY_FIELD = """
       blockedBy(first: 10) {
         nodes {
           number
@@ -33,6 +58,9 @@ _ISSUE_DEPENDENCY_FIELDS = """
           }
         }
       }
+"""
+
+_BLOCKING_FIELD = """
       blocking(first: 10) {
         nodes {
           number
@@ -43,23 +71,49 @@ _ISSUE_DEPENDENCY_FIELDS = """
       }
 """
 
+_ANCESTOR_MAX_DEPTH = _max_type_depth(_load_project_preflight().ALLOWED_CHILD_TYPES)
+
+
+def _ancestor_fields(depth: int) -> str:
+    if depth <= 0:
+        return ""
+    return f"""
+      parent {{
+        number
+        {_BLOCKED_BY_FIELD}
+        {_ancestor_fields(depth - 1)}
+      }}
+"""
+
+
+_ISSUE_FIELDS = f"""
+      number
+      subIssuesSummary {{
+        total
+      }}
+      {_BLOCKED_BY_FIELD}
+      {_BLOCKING_FIELD}
+      {_ancestor_fields(_ANCESTOR_MAX_DEPTH)}
+"""
+
 BLOCKING_PRS_QUERY = f"""
 query($owner: String!, $repo: String!, $number: Int!) {{
   repository(owner: $owner, name: $repo) {{
     issue(number: $number) {{
-      {_ISSUE_DEPENDENCY_FIELDS}
+      {_ISSUE_FIELDS}
     }}
   }}
 }}
 """
 
 
-def _parse_issue_dependencies(issue_data: dict[str, Any]) -> dict[str, Any]:
-    blocked_by_nodes = issue_data.get("blockedBy", {}).get("nodes", [])
-    blocking_nodes = issue_data.get("blocking", {}).get("nodes", [])
-
-    blocked_by_list = []
-    for node in blocked_by_nodes:
+def _parse_blocked_by_nodes(
+    nodes: list[dict[str, Any]],
+    *,
+    via_parent: bool,
+) -> list[dict[str, Any]]:
+    result = []
+    for node in nodes:
         if node.get("state") != "OPEN":
             continue
 
@@ -81,28 +135,67 @@ def _parse_issue_dependencies(issue_data: dict[str, Any]) -> dict[str, Any]:
                     }
                     break
 
-        blocked_by_list.append(
+        result.append(
             {
                 "number": node.get("number"),
                 "url": node.get("url"),
                 "title": node.get("title"),
                 "open_pr": open_pr,
+                "via_parent": via_parent,
             },
         )
+    return result
 
-    blocking_list = [
+
+def _parse_blocking_nodes(nodes: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [
         {
             "number": node.get("number"),
             "url": node.get("url"),
             "title": node.get("title"),
         }
-        for node in blocking_nodes
+        for node in nodes
         if node.get("state") == "OPEN"
     ]
 
+
+def _dedupe_by_number(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    seen: set[int] = set()
+    deduped = []
+    for item in items:
+        number = item["number"]
+        if number in seen:
+            continue
+        seen.add(number)
+        deduped.append(item)
+    return deduped
+
+
+def _effective_blocked_by(issue_data: dict[str, Any]) -> list[dict[str, Any]]:
+    own_nodes = issue_data.get("blockedBy", {}).get("nodes", [])
+    result = _parse_blocked_by_nodes(own_nodes, via_parent=False)
+
+    node = issue_data
+    while True:
+        parent = node.get("parent")
+        if not parent:
+            break
+        parent_nodes = parent.get("blockedBy", {}).get("nodes", [])
+        result.extend(_parse_blocked_by_nodes(parent_nodes, via_parent=True))
+        node = parent
+
+    return _dedupe_by_number(result)
+
+
+def _parse_issue_dependencies(issue_data: dict[str, Any]) -> dict[str, Any]:
     return {
-        "blocked_by": blocked_by_list,
-        "blocking": blocking_list,
+        "blocked_by": _effective_blocked_by(issue_data),
+        "blocking": _parse_blocking_nodes(
+            issue_data.get("blocking", {}).get("nodes", []),
+        ),
+        "has_children": bool(
+            (issue_data.get("subIssuesSummary") or {}).get("total"),
+        ),
     }
 
 
@@ -112,32 +205,18 @@ def fetch_issue_dependencies(
     repo_name: str,
     number: int,
 ) -> dict[str, Any]:
-    """Fetch issue blockedBy and blocking relationships with attached open PR details.
+    """Fetch an issue's dependencies plus attached open PR details.
 
-    Returns a dict containing:
-    - blocked_by: list of open blocking issues:
-        [
-            {
-                "number": int,
-                "url": str,
-                "title": str,
-                "open_pr": {
-                    "number": int,
-                    "url": str,
-                    "title": str,
-                    "branch_name": str,
-                    "is_draft": bool,
-                } | None
-            }
-        ]
-    - blocking: list of open downstream issues:
-        [
-            {
-                "number": int,
-                "url": str,
-                "title": str,
-            }
-        ]
+    `blocked_by` includes the issue's own blockers and, tagged `via_parent`,
+    every ancestor's own direct blockers (a block on a containing Story or
+    Epic blocks everything beneath it). Sibling edges are not folded away.
+
+    `blocking` is the issue's own direct outbound edges only, since ancestor
+    propagation on the `blocked_by` side above already covers descendants.
+
+    Returns a dict with `blocked_by` (open blocker dicts: `number`, `url`,
+    `title`, `via_parent`, `open_pr`), `blocking` (open downstream issue
+    dicts: `number`, `url`, `title`), and `has_children` (bool).
     """
     args = [
         "gh",
@@ -157,7 +236,7 @@ def fetch_issue_dependencies(
         data = json.loads(output)
         issue_data = data.get("data", {}).get("repository", {}).get("issue") or {}
     except (json.JSONDecodeError, KeyError, AttributeError):
-        return {"blocked_by": [], "blocking": []}
+        return dict(_EMPTY_DEPS)
 
     return _parse_issue_dependencies(issue_data)
 
@@ -178,7 +257,7 @@ def fetch_issues_dependencies(
         return {}
 
     aliased_fields = "\n".join(
-        f"i{n}: issue(number: {n}) {{ {_ISSUE_DEPENDENCY_FIELDS} }}" for n in numbers
+        f"i{n}: issue(number: {n}) {{ {_ISSUE_FIELDS} }}" for n in numbers
     )
     query = f"""
 query($owner: String!, $repo: String!) {{
@@ -203,7 +282,7 @@ query($owner: String!, $repo: String!) {{
         data = json.loads(output)
         repo_data = data.get("data", {}).get("repository") or {}
     except (json.JSONDecodeError, KeyError, AttributeError):
-        return {n: {"blocked_by": [], "blocking": []} for n in numbers}
+        return {n: dict(_EMPTY_DEPS) for n in numbers}
 
     return {
         n: _parse_issue_dependencies(repo_data.get(f"i{n}") or {}) for n in numbers

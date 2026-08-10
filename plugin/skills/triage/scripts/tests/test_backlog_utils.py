@@ -95,7 +95,7 @@ def test_fetch_backlog_issues_filters_by_type_status_and_assignee() -> None:
         _LOGIN,
     )
 
-    issues = result["backlog_issues"]
+    issues = result["leaf_issues"]
     assert [issue["number"] for issue in issues] == [1, 2]
     assert issues[0]["assignee"] == "You"
     assert issues[1]["assignee"] == "Unassigned"
@@ -178,7 +178,7 @@ def test_fetch_backlog_issues_batches_dependency_lookups_in_one_call() -> None:
     assert "i1: issue(number: 1)" in graphql_calls[0][4]
     assert "i2: issue(number: 2)" in graphql_calls[0][4]
 
-    issues = result["backlog_issues"]
+    issues = result["leaf_issues"]
     assert sorted(issue["number"] for issue in issues) == [1, 2]
     assert result["fully_blocked_count"] == 1
     for bucket in (
@@ -188,80 +188,6 @@ def test_fetch_backlog_issues_batches_dependency_lookups_in_one_call() -> None:
         "available_stackable",
     ):
         assert 1 not in {i["number"] for i in result[bucket]}
-
-
-def test_fetch_backlog_issues_includes_issue_blocked_by_open_pr() -> None:
-    """Multiple blocking issues with PRs format as PR [#n](url), [#m](url)."""
-
-    def blocking_issue_node(num: int, pr_num: int) -> dict:
-        return {
-            "number": num,
-            "state": "OPEN",
-            "url": f"https://github.com/acme/repo/issues/{num}",
-            "timelineItems": {
-                "nodes": [
-                    {
-                        "willCloseTarget": True,
-                        "source": {
-                            "number": pr_num,
-                            "state": "OPEN",
-                            "headRefName": f"pr-{pr_num}",
-                            "url": f"https://github.com/acme/repo/pull/{pr_num}",
-                        },
-                    },
-                ],
-            },
-        }
-
-    project_items = json.dumps(
-        {
-            "items": [
-                {
-                    "status": "Todo",
-                    "type": "Task",
-                    "assignees": ["octocat"],
-                    "priority": "High",
-                    "content": {
-                        "type": "Issue",
-                        "number": 1,
-                        "title": "Mine",
-                        "url": "https://github.com/acme/repo/issues/1",
-                    },
-                },
-            ],
-        },
-    )
-
-    pr_blocked_graphql = json.dumps(
-        {
-            "data": {
-                "repository": {
-                    "i1": {
-                        "blockedBy": {
-                            "nodes": [
-                                blocking_issue_node(10, 25),
-                                blocking_issue_node(11, 26),
-                            ],
-                        },
-                        "blocking": {"nodes": []},
-                    },
-                },
-            },
-        },
-    )
-
-    def fake_run_cmd(args: list[str]) -> str:
-        if args[:3] == ["gh", "project", "item-list"]:
-            return project_items
-        return pr_blocked_graphql
-
-    result = bu.fetch_backlog_issues(fake_run_cmd, _REPO, "acme", _PROJECT_NUM, _LOGIN)
-    issues = result["backlog_issues"]
-    assert (
-        issues[0]["blocked_by"]
-        == "PR [#25](https://github.com/acme/repo/pull/25), [#26](https://github.com/acme/repo/pull/26)"
-    )
-    assert issues[0]["blocking"] == "0 issues"
 
 
 def test_fetch_backlog_issues_renders_null_priority_as_unset() -> None:
@@ -291,5 +217,5 @@ def test_fetch_backlog_issues_renders_null_priority_as_unset() -> None:
         return _empty_deps_graphql()
 
     result = bu.fetch_backlog_issues(fake_run_cmd, _REPO, "acme", _PROJECT_NUM, _LOGIN)
-    issues = result["backlog_issues"]
+    issues = result["leaf_issues"]
     assert issues[0]["priority"] == "Unset"

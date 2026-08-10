@@ -1,29 +1,16 @@
 #!/usr/bin/env python3
-"""Helpers for computing PR blocking counts from backlog dependency data."""
+"""Helpers for computing PR blocking counts from closed-issue dependency data."""
 
 from typing import Any
 
 
-def _downstream_issues(
-    closing_nums: set[int],
-    issue_to_downstream: dict[int, list[dict[str, Any]]],
-) -> dict[int, dict[str, Any]]:
-    result: dict[int, dict[str, Any]] = {}
-    for cnum in closing_nums:
-        for ds in issue_to_downstream.get(cnum, []):
-            ds_num = ds.get("number")
-            if ds_num is not None:
-                result[ds_num] = ds
-    return result
-
-
 def _blocking_prs_for(
     pr_number: int,
-    downstream: dict[int, dict[str, Any]],
+    all_blocked: set[int],
     issue_to_closing_prs: dict[int, list[int]],
 ) -> set[int]:
     result: set[int] = set()
-    for ds_num in downstream:
+    for ds_num in all_blocked:
         for other_pr in issue_to_closing_prs.get(ds_num, []):
             if other_pr != pr_number:
                 result.add(other_pr)
@@ -54,42 +41,25 @@ def _format_blocking(pr_count: int, issue_count: int) -> str:
 
 def apply_pr_blocking(
     pr_entries: list[dict[str, Any]],
-    backlog_issues: list[dict[str, Any]],
+    closing_issue_deps: dict[int, dict[str, Any]],
 ) -> None:
     """Populate the 'blocking' field on each PR entry in-place.
 
     For a PR that closes issues C1, C2, ...:
-    - downstream  = union of open issues blocked by any Ci (from backlog data)
-    - blocked_backlog = backlog issues that list this PR in their blocked_by items
-    - all_blocked = downstream U blocked_backlog
-    - blocking PRs = other open PRs that close any all_blocked issue
-    - issue count  = all_blocked issues not already closed by a blocking PR
+    - all_blocked = union of each Ci's own direct `blocking` edges
+    - blocking PRs = other open PRs that also close any all_blocked issue
+    - issue count = all_blocked issues not already closed by a blocking PR
 
     Sets 'blocking' to "None" if both counts are zero.
 
-    `backlog_issues` may include fully-blocked entries that are hidden from
-    the display buckets but still carry `_blocked_by_items`/`_blocking_items`
-    needed here.
+    `closing_issue_deps` must be keyed by every issue number any pr_entries
+    PR closes, fetched fresh regardless of whether that issue is itself a
+    leaf, since a closed parent issue's own `blocking` edges count too.
     """
-    issue_to_downstream: dict[int, list[dict[str, Any]]] = {
-        issue["number"]: issue.get("_blocking_items", [])
-        for issue in backlog_issues
-        if issue.get("number") is not None
-    }
-
     issue_to_closing_prs: dict[int, list[int]] = {}
     for pr in pr_entries:
         for ci in pr.get("_closing_issues", []):
             issue_to_closing_prs.setdefault(ci["number"], []).append(pr["number"])
-
-    pr_to_blocked_backlog: dict[int, set[int]] = {}
-    for issue in backlog_issues:
-        for blocker in issue.get("_blocked_by_items", []):
-            open_pr = blocker.get("open_pr")
-            if open_pr is not None:
-                pr_num = open_pr.get("number")
-                if pr_num is not None:
-                    pr_to_blocked_backlog.setdefault(pr_num, set()).add(issue["number"])
 
     for pr in pr_entries:
         closing_nums = {ci["number"] for ci in pr.get("_closing_issues", [])}
@@ -97,11 +67,13 @@ def apply_pr_blocking(
             pr["blocking"] = "None"
             continue
 
-        downstream = _downstream_issues(closing_nums, issue_to_downstream)
-        blocked_backlog = pr_to_blocked_backlog.get(pr["number"], set())
-        all_blocked = set(downstream.keys()) | blocked_backlog
+        all_blocked: set[int] = set()
+        for cnum in closing_nums:
+            deps = closing_issue_deps.get(cnum) or {}
+            all_blocked.update(b["number"] for b in deps.get("blocking", []))
+
         blocking_pr_nums = _blocking_prs_for(
-            pr["number"], {n: {} for n in all_blocked}, issue_to_closing_prs,
+            pr["number"], all_blocked, issue_to_closing_prs,
         )
         covered = _covered_issue_nums(blocking_pr_nums, pr_entries)
         uncovered = sum(1 for n in all_blocked if n not in covered)

@@ -17,6 +17,7 @@ _REPO_OUTPUT = json.dumps(
 _EXPECTED_CANDIDATES_SINGLE = 1
 _EXPECTED_CANDIDATES_MULTIPLE = 2
 _EXPECTED_PR_NUMBER = 15
+_EXPECTED_BLOCKER_ISSUE_NUMBER = 10
 
 
 def _api_response(nodes: list[dict]) -> str:
@@ -83,6 +84,59 @@ def test_get_issue_base_branch_single_pr() -> None:
     assert res["base_branch"] == "feature/blocker-fix"
     assert len(res["candidates"]) == _EXPECTED_CANDIDATES_SINGLE
     assert res["candidates"][0]["pr_number"] == _EXPECTED_PR_NUMBER
+
+
+def test_get_issue_base_branch_blocker_on_parent() -> None:
+    """Uses a blocking PR's branch when the dependency is on the parent Story.
+
+    A block directly on the parent reaches the Subtask being solved too.
+    """
+    parent_blocked_by = {
+        "number": 10,
+        "state": "OPEN",
+        "title": "Blocker",
+        "timelineItems": {
+            "nodes": [
+                {
+                    "willCloseTarget": True,
+                    "source": {
+                        "number": _EXPECTED_PR_NUMBER,
+                        "title": "Fix blocker",
+                        "headRefName": "feature/blocker-fix",
+                        "state": "OPEN",
+                        "isDraft": False,
+                    },
+                },
+            ],
+        },
+    }
+    api_response = json.dumps(
+        {
+            "data": {
+                "repository": {
+                    "issue": {
+                        "number": 43,
+                        "blockedBy": {"nodes": []},
+                        "blocking": {"nodes": []},
+                        "parent": {
+                            "number": 42,
+                            "blockedBy": {"nodes": [parent_blocked_by]},
+                        },
+                    },
+                },
+            },
+        },
+    )
+
+    def fake_run_cmd(args: list[str]) -> str:
+        if args[:3] == ["gh", "repo", "view"]:
+            return _REPO_OUTPUT
+        return api_response
+
+    res = gibb.get_issue_base_branch(fake_run_cmd, "43")
+    assert res["status"] == "single"
+    assert res["base_branch"] == "feature/blocker-fix"
+    assert res["candidates"][0]["issue_number"] == _EXPECTED_BLOCKER_ISSUE_NUMBER
 
 
 def test_get_issue_base_branch_multiple_prs() -> None:
