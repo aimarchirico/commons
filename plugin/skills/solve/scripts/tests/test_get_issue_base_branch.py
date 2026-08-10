@@ -2,6 +2,8 @@
 
 import json
 import sys
+from collections.abc import Callable
+from typing import Any
 
 import get_issue_base_branch as gibb
 import pytest
@@ -20,31 +22,80 @@ _EXPECTED_PR_NUMBER = 15
 _EXPECTED_BLOCKER_ISSUE_NUMBER = 10
 
 
-def _api_response(nodes: list[dict]) -> str:
-    return json.dumps(
-        {
-            "data": {
-                "repository": {
-                    "issue": {
-                        "blockedBy": {
-                            "nodes": nodes,
-                        },
+def _tree_response(number: int, children: list[dict] | None = None) -> str:
+    node: dict[str, Any] = {
+        "number": number,
+        "title": f"Issue {number}",
+        "body": "Body",
+        "projectItems": {"nodes": []},
+        "subIssues": {"nodes": children or []},
+    }
+    return json.dumps({"data": {"repository": {"issue": node}}})
+
+
+def _deps_response(entries: dict[int, dict[str, Any]]) -> str:
+    repo: dict[str, Any] = {}
+    for number, issue_data in entries.items():
+        repo[f"i{number}"] = {
+            "number": number,
+            "blockedBy": {"nodes": issue_data.get("blocked_by_nodes", [])},
+            "blocking": {"nodes": []},
+            "subIssuesSummary": {"total": len(issue_data.get("children", []))},
+            **({"parent": issue_data["parent"]} if "parent" in issue_data else {}),
+        }
+    return json.dumps({"data": {"repository": repo}})
+
+
+def _blocker_node(*, issue_number: int, pr_number: int, branch: str) -> dict:
+    return {
+        "number": issue_number,
+        "state": "OPEN",
+        "title": "Blocker",
+        "timelineItems": {
+            "nodes": [
+                {
+                    "willCloseTarget": True,
+                    "source": {
+                        "number": pr_number,
+                        "title": "Fix blocker",
+                        "headRefName": branch,
+                        "state": "OPEN",
+                        "isDraft": False,
                     },
                 },
-            },
+            ],
         },
-    )
+    }
+
+
+def _leaf_child(number: int) -> dict:
+    return {
+        "number": number,
+        "title": f"Issue {number}",
+        "body": "",
+        "projectItems": {"nodes": []},
+        "subIssues": {"nodes": []},
+    }
+
+
+def _sequenced_run_cmd(*responses: str) -> Callable[[list[str]], str]:
+    calls = iter(responses)
+
+    def _run(_args: list[str]) -> str:
+        return next(calls)
+
+    return _run
 
 
 def test_get_issue_base_branch_default() -> None:
     """Returns default branch when there are no blocking issues with open PRs."""
+    run_cmd = _sequenced_run_cmd(
+        _REPO_OUTPUT,
+        _tree_response(42),
+        _deps_response({42: {}}),
+    )
 
-    def fake_run_cmd(args: list[str]) -> str:
-        if args[:3] == ["gh", "repo", "view"]:
-            return _REPO_OUTPUT
-        return _api_response([])
-
-    res = gibb.get_issue_base_branch(fake_run_cmd, "42")
+    res = gibb.get_issue_base_branch(run_cmd, "42")
     assert res["status"] == "default"
     assert res["base_branch"] == "main"
     assert res["candidates"] == []
@@ -53,33 +104,19 @@ def test_get_issue_base_branch_default() -> None:
 def test_get_issue_base_branch_single_pr() -> None:
     """Returns single candidate branch when issue is blocked by 1 open PR."""
     blocking_nodes = [
-        {
-            "number": 10,
-            "state": "OPEN",
-            "title": "Blocker",
-            "timelineItems": {
-                "nodes": [
-                    {
-                        "willCloseTarget": True,
-                        "source": {
-                            "number": _EXPECTED_PR_NUMBER,
-                            "title": "Fix blocker",
-                            "headRefName": "feature/blocker-fix",
-                            "state": "OPEN",
-                            "isDraft": False,
-                        },
-                    },
-                ],
-            },
-        },
+        _blocker_node(
+            issue_number=10,
+            pr_number=_EXPECTED_PR_NUMBER,
+            branch="feature/blocker-fix",
+        ),
     ]
+    run_cmd = _sequenced_run_cmd(
+        _REPO_OUTPUT,
+        _tree_response(42),
+        _deps_response({42: {"blocked_by_nodes": blocking_nodes}}),
+    )
 
-    def fake_run_cmd(args: list[str]) -> str:
-        if args[:3] == ["gh", "repo", "view"]:
-            return _REPO_OUTPUT
-        return _api_response(blocking_nodes)
-
-    res = gibb.get_issue_base_branch(fake_run_cmd, "42")
+    res = gibb.get_issue_base_branch(run_cmd, "42")
     assert res["status"] == "single"
     assert res["base_branch"] == "feature/blocker-fix"
     assert len(res["candidates"]) == _EXPECTED_CANDIDATES_SINGLE
@@ -91,49 +128,56 @@ def test_get_issue_base_branch_blocker_on_parent() -> None:
 
     A block directly on the parent reaches the Subtask being solved too.
     """
-    parent_blocked_by = {
-        "number": 10,
-        "state": "OPEN",
-        "title": "Blocker",
-        "timelineItems": {
-            "nodes": [
-                {
-                    "willCloseTarget": True,
-                    "source": {
-                        "number": _EXPECTED_PR_NUMBER,
-                        "title": "Fix blocker",
-                        "headRefName": "feature/blocker-fix",
-                        "state": "OPEN",
-                        "isDraft": False,
-                    },
-                },
-            ],
-        },
-    }
-    api_response = json.dumps(
-        {
-            "data": {
-                "repository": {
-                    "issue": {
-                        "number": 43,
-                        "blockedBy": {"nodes": []},
-                        "blocking": {"nodes": []},
-                        "parent": {
-                            "number": 42,
-                            "blockedBy": {"nodes": [parent_blocked_by]},
-                        },
+    parent_blocked_by = _blocker_node(
+        issue_number=10,
+        pr_number=_EXPECTED_PR_NUMBER,
+        branch="feature/blocker-fix",
+    )
+    run_cmd = _sequenced_run_cmd(
+        _REPO_OUTPUT,
+        _tree_response(43),
+        _deps_response(
+            {
+                43: {
+                    "parent": {
+                        "number": 42,
+                        "blockedBy": {"nodes": [parent_blocked_by]},
                     },
                 },
             },
-        },
+        ),
     )
 
-    def fake_run_cmd(args: list[str]) -> str:
-        if args[:3] == ["gh", "repo", "view"]:
-            return _REPO_OUTPUT
-        return api_response
+    res = gibb.get_issue_base_branch(run_cmd, "43")
+    assert res["status"] == "single"
+    assert res["base_branch"] == "feature/blocker-fix"
+    assert res["candidates"][0]["issue_number"] == _EXPECTED_BLOCKER_ISSUE_NUMBER
 
-    res = gibb.get_issue_base_branch(fake_run_cmd, "43")
+
+def test_get_issue_base_branch_blocker_on_child() -> None:
+    """Uses a blocking PR's branch when only a descendant sub-issue is blocked.
+
+    Solving a parent issue means solving its whole tree, so a blocker on a
+    child alone must still surface here even though the parent itself is
+    unblocked.
+    """
+    child_blocked_by = _blocker_node(
+        issue_number=10,
+        pr_number=_EXPECTED_PR_NUMBER,
+        branch="feature/blocker-fix",
+    )
+    run_cmd = _sequenced_run_cmd(
+        _REPO_OUTPUT,
+        _tree_response(42, children=[_leaf_child(44)]),
+        _deps_response(
+            {
+                42: {},
+                44: {"blocked_by_nodes": [child_blocked_by]},
+            },
+        ),
+    )
+
+    res = gibb.get_issue_base_branch(run_cmd, "42")
     assert res["status"] == "single"
     assert res["base_branch"] == "feature/blocker-fix"
     assert res["candidates"][0]["issue_number"] == _EXPECTED_BLOCKER_ISSUE_NUMBER
@@ -142,52 +186,16 @@ def test_get_issue_base_branch_blocker_on_parent() -> None:
 def test_get_issue_base_branch_multiple_prs() -> None:
     """Returns status='multiple' when issue is blocked by multiple open PRs."""
     blocking_nodes = [
-        {
-            "number": 10,
-            "state": "OPEN",
-            "title": "Blocker 1",
-            "timelineItems": {
-                "nodes": [
-                    {
-                        "willCloseTarget": True,
-                        "source": {
-                            "number": 15,
-                            "title": "Fix blocker 1",
-                            "headRefName": "feature/blocker-1",
-                            "state": "OPEN",
-                            "isDraft": False,
-                        },
-                    },
-                ],
-            },
-        },
-        {
-            "number": 11,
-            "state": "OPEN",
-            "title": "Blocker 2",
-            "timelineItems": {
-                "nodes": [
-                    {
-                        "willCloseTarget": True,
-                        "source": {
-                            "number": 16,
-                            "title": "Fix blocker 2",
-                            "headRefName": "feature/blocker-2",
-                            "state": "OPEN",
-                            "isDraft": False,
-                        },
-                    },
-                ],
-            },
-        },
+        _blocker_node(issue_number=10, pr_number=15, branch="feature/blocker-1"),
+        _blocker_node(issue_number=11, pr_number=16, branch="feature/blocker-2"),
     ]
+    run_cmd = _sequenced_run_cmd(
+        _REPO_OUTPUT,
+        _tree_response(42),
+        _deps_response({42: {"blocked_by_nodes": blocking_nodes}}),
+    )
 
-    def fake_run_cmd(args: list[str]) -> str:
-        if args[:3] == ["gh", "repo", "view"]:
-            return _REPO_OUTPUT
-        return _api_response(blocking_nodes)
-
-    res = gibb.get_issue_base_branch(fake_run_cmd, "42")
+    res = gibb.get_issue_base_branch(run_cmd, "42")
     assert res["status"] == "multiple"
     assert res["base_branch"] is None
     assert len(res["candidates"]) == _EXPECTED_CANDIDATES_MULTIPLE
@@ -220,12 +228,12 @@ def test_main_prints_base_branch_single(
         lambda *_a, **_k: None,
     )
 
-    def fake_run_cmd(args: list[str]) -> str:
-        if args[:3] == ["gh", "repo", "view"]:
-            return _REPO_OUTPUT
-        return _api_response([])
-
-    monkeypatch.setattr(gibb, "_run_cmd", fake_run_cmd)
+    run_cmd = _sequenced_run_cmd(
+        _REPO_OUTPUT,
+        _tree_response(42),
+        _deps_response({42: {}}),
+    )
+    monkeypatch.setattr(gibb, "_run_cmd", run_cmd)
 
     gibb.main()
     assert capsys.readouterr().out == "main\n"

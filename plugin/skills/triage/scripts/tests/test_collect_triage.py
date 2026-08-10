@@ -155,11 +155,11 @@ def test_main_credits_a_pr_with_unblocking_via_the_closed_issues_own_blocking_ed
     assert pending[0]["blocking"] == "1 issue"
 
 
-def test_main_draft_prs_without_linked_issue_report_null(
+def test_main_draft_prs_without_linked_issue_report_empty_list(
     monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture[str],
 ) -> None:
-    """A draft with no closing issue reference reports linked_issue as null."""
+    """A draft with no closing issue reference reports linked_issues as empty."""
     draft_pr_number = 5
     your_prs = json.dumps(
         [_make_pr(num=draft_pr_number, title="Untouched draft", draft=True)],
@@ -171,7 +171,7 @@ def test_main_draft_prs_without_linked_issue_report_null(
 
     result = json.loads(capsys.readouterr().out)
     assert result["your_draft_prs"][0]["number"] == draft_pr_number
-    assert result["your_draft_prs"][0]["linked_issue"] is None
+    assert result["your_draft_prs"][0]["linked_issues"] == []
 
 
 def test_main_disambiguates_multiple_projects_by_repo_name(

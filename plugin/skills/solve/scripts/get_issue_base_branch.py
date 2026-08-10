@@ -26,7 +26,24 @@ def _load_blocking_prs() -> ModuleType:
 
 
 _blocking_prs = _load_blocking_prs()
-fetch_issue_dependencies = _blocking_prs.fetch_issue_dependencies
+fetch_issues_dependencies = _blocking_prs.fetch_issues_dependencies
+
+
+def _load_issue_tree() -> ModuleType:
+    shared_dir = Path(__file__).resolve().parent.parent.parent.parent / "shared"
+    module_path = shared_dir / "issue_tree.py"
+    spec = importlib.util.spec_from_file_location("issue_tree", module_path)
+    if spec is None or spec.loader is None:
+        msg = f"Cannot load issue_tree from {module_path}"
+        raise ImportError(msg)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+_issue_tree = _load_issue_tree()
+fetch_issue_tree = _issue_tree.fetch_issue_tree
+flatten_issue_numbers = _issue_tree.flatten_issue_numbers
 
 
 def _run_cmd(args: list[str]) -> str:
@@ -63,6 +80,12 @@ def get_issue_base_branch(
 ) -> dict[str, Any]:
     """Determine base branch candidates for a given issue ID.
 
+    Solving an issue means solving its full sub-issue tree in one pass, so
+    this checks the target issue *and every descendant* for open blockers,
+    not just the target issue itself: a block on any issue in the tree about
+    to be implemented is a real dependency, even if the top-level issue has
+    no direct blockers of its own.
+
     Returns a dict containing:
     - default_branch: str
     - status: "default" | "single" | "multiple"
@@ -78,7 +101,9 @@ def get_issue_base_branch(
     default_branch = repo_data.get("defaultBranchRef", {}).get("name") or "main"
 
     try:
-        deps = fetch_issue_dependencies(run_cmd, owner, repo_name, int(issue_id))
+        tree = fetch_issue_tree(run_cmd, owner, repo_name, int(issue_id))
+        numbers = flatten_issue_numbers(tree)
+        deps_by_number = fetch_issues_dependencies(run_cmd, owner, repo_name, numbers)
     except (
         subprocess.CalledProcessError,
         json.JSONDecodeError,
@@ -96,19 +121,20 @@ def get_issue_base_branch(
     open_pr_candidates = []
     seen_branches = set()
 
-    for item in deps.get("blocked_by", []):
-        pr = item.get("open_pr")
-        if pr and pr["branch_name"] not in seen_branches:
-            seen_branches.add(pr["branch_name"])
-            open_pr_candidates.append(
-                {
-                    "issue_number": item["number"],
-                    "pr_number": pr["number"],
-                    "pr_title": pr["title"],
-                    "branch_name": pr["branch_name"],
-                    "is_draft": pr["is_draft"],
-                },
-            )
+    for deps in deps_by_number.values():
+        for item in deps.get("blocked_by", []):
+            pr = item.get("open_pr")
+            if pr and pr["branch_name"] not in seen_branches:
+                seen_branches.add(pr["branch_name"])
+                open_pr_candidates.append(
+                    {
+                        "issue_number": item["number"],
+                        "pr_number": pr["number"],
+                        "pr_title": pr["title"],
+                        "branch_name": pr["branch_name"],
+                        "is_draft": pr["is_draft"],
+                    },
+                )
 
     if not open_pr_candidates:
         return {
