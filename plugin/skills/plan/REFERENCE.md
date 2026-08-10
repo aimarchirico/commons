@@ -56,13 +56,14 @@ Architecture decision records, one per technical choice.
 
 ## 5. docs/plan/specifications/
 
-Technical blueprints. Each states how to solve one or more requirements: the
-solution, not the problem. Detailed enough to derive an initial issue
-backlog.
+Technical blueprints. Each states how to solve, in whole or in part, one or
+more requirements: the solution, not the problem. Detailed enough to derive
+an initial issue backlog.
 
 - **index.md**: Index table of number, title, one-line approach, and link.
 - **NNNN-slug.md**: One per specification, zero-padded and sequenced:
-  - **Requirement**: The requirement(s) it fulfills.
+  - **Requirement**: The requirement(s) it addresses, and how much of each
+      (in full or in part).
   - **Approach**: One-line summary of the technical solution.
   - **Design**: The technical scope and approach: endpoints, data model,
       interfaces, or workstreams touched.
