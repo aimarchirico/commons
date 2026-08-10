@@ -19,16 +19,22 @@ argument-hint: "--issue <issue-id> [--draft] [--auto] [--skip-check]"
 
 1. Extract `<issue-id>` from the `--issue` flag in `$ARGUMENTS`. Prompt the
    user if it was not provided.
-2. Fetch the issue details and assign it:
+2. Fetch the issue's full tree and assign it:
 
    ```bash
-   gh issue view <issue-id> --json title,body
-   python3 "${CLAUDE_PLUGIN_ROOT}/skills/solve/scripts/get_issue_type.py" <issue-id>
-   gh issue edit <issue-id> --add-assignee @me
+   python3 "${CLAUDE_PLUGIN_ROOT}/skills/solve/scripts/get_issue_tree.py" <issue-id>
    ```
 
-   This retrieves the title, body, and linked project Type field, and assigns
-   the issue to the current user.
+   This recursively fetches the title, body, and linked project Type field
+   for `<issue-id>` and every descendant sub-issue. Then, for every issue
+   number found anywhere in the tree (the parent and all descendants, not
+   just the parent), assign it to the current user:
+
+   ```bash
+   gh issue edit <n> --add-assignee @me
+   ```
+
+   Solving a parent issue means solving everything beneath it in one pass.
 3. Determine `<branch-name>` following the naming rules in
    `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md`, resolve `<base-branch>`,
    and set up the worktree:
@@ -45,8 +51,8 @@ argument-hint: "--issue <issue-id> [--draft] [--auto] [--skip-check]"
    This creates the branch off the up-to-date remote base branch in an isolated
    worktree, where `<worktree-path>` is `../<branch-name>` (a sibling of the
    repository root).
-4. Delegate to the `implementation-planner` agent, passing the issue's title,
-   body, type, and `<worktree-path>`, to draft an implementation plan.
+4. Delegate to the `implementation-planner` agent, passing the full fetched
+   issue tree and `<worktree-path>`, to draft an implementation plan.
 5. Present the drafted plan, and wait for explicit user approval. Skip this
    step if the `--auto` flag is set, and proceed directly with the drafted
    plan.
@@ -63,7 +69,9 @@ argument-hint: "--issue <issue-id> [--draft] [--auto] [--skip-check]"
    `commons:pr` skill to open a pull request (its own title/body approval is
    the final review), passing `--base <base-branch>` (if `<base-branch>` is
    set and differs from the default branch), along with `--draft` and `--auto`
-   flags if provided by the user.
+   flags if provided by the user, and the full list of issue numbers from the
+   tree fetched in step 2 (the parent and all descendants) as the related
+   issue IDs to close.
 8. Remove the isolated worktree:
 
    ```bash
