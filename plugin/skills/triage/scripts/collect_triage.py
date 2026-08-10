@@ -92,7 +92,7 @@ def main() -> None:
         prs_to_review = fetch_prs_to_review(all_open_prs, login)
 
         all_your_prs = pr_data["your_open_prs"] + pr_data["your_draft_prs"]
-        apply_pr_blocking(all_your_prs, backlog_data["backlog_issues"])
+        apply_pr_blocking(all_your_prs, backlog_data["leaf_issues"])
 
         linked_issue_numbers = {
             closing["number"]
@@ -142,7 +142,7 @@ def main() -> None:
             "prs_to_review": prs_to_review,
             "your_open_prs": pr_data["your_open_prs"],
             "your_draft_prs": pr_data["your_draft_prs"],
-            "backlog_issues": backlog_data["backlog_issues"],
+            "leaf_issues": backlog_data["leaf_issues"],
             "assigned_to_others_count": backlog_data["assigned_to_others_count"],
             "fully_blocked_count": backlog_data["fully_blocked_count"],
         }

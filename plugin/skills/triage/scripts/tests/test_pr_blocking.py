@@ -12,7 +12,7 @@ def test_apply_pr_blocking_credits_pr_closing_a_blocker_of_a_fully_blocked_issue
     itself is excluded from the display buckets because another blocker
     still has no open PR (this reproduces the bios repo #159/#219-#225 bug).
     """
-    backlog_issues = [
+    leaf_issues = [
         {
             "number": 1,
             "_blocked_by_items": [
@@ -29,6 +29,6 @@ def test_apply_pr_blocking_credits_pr_closing_a_blocker_of_a_fully_blocked_issue
         },
     ]
 
-    apply_pr_blocking(pr_entries, backlog_issues)
+    apply_pr_blocking(pr_entries, leaf_issues)
 
     assert pr_entries[0]["blocking"] == "1 issue"

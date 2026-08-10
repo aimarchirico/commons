@@ -161,7 +161,7 @@ def fetch_backlog_issues(
     Only leaf issues (no children of their own) are considered, since those
     are the ones that get their own PR. An issue is stackable only if every
     blocker resolves to the same single open PR; anything else stays in
-    `backlog_issues` for bookkeeping (e.g. `apply_pr_blocking`) but is
+    `leaf_issues` for bookkeeping (e.g. `apply_pr_blocking`) but is
     excluded from the display buckets and counted in `fully_blocked_count`.
     """
     owner, repo_name = repo
@@ -202,7 +202,7 @@ def fetch_backlog_issues(
     for bucket in buckets.values():
         bucket.sort(key=sort_key)
 
-    all_backlog = sorted(
+    all_leaves = sorted(
         entries,
         key=lambda i: (
             0 if i["assignee"] == ASSIGNEE_YOU else 1,
@@ -212,7 +212,7 @@ def fetch_backlog_issues(
     )
 
     return {
-        "backlog_issues": all_backlog,
+        "leaf_issues": all_leaves,
         "assigned_ready": buckets["assigned_ready"],
         "assigned_stackable": buckets["assigned_stackable"],
         "available_ready": buckets["available_ready"],

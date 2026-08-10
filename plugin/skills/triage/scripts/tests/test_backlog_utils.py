@@ -95,7 +95,7 @@ def test_fetch_backlog_issues_filters_by_type_status_and_assignee() -> None:
         _LOGIN,
     )
 
-    issues = result["backlog_issues"]
+    issues = result["leaf_issues"]
     assert [issue["number"] for issue in issues] == [1, 2]
     assert issues[0]["assignee"] == "You"
     assert issues[1]["assignee"] == "Unassigned"
@@ -178,7 +178,7 @@ def test_fetch_backlog_issues_batches_dependency_lookups_in_one_call() -> None:
     assert "i1: issue(number: 1)" in graphql_calls[0][4]
     assert "i2: issue(number: 2)" in graphql_calls[0][4]
 
-    issues = result["backlog_issues"]
+    issues = result["leaf_issues"]
     assert sorted(issue["number"] for issue in issues) == [1, 2]
     assert result["fully_blocked_count"] == 1
     for bucket in (
@@ -217,5 +217,5 @@ def test_fetch_backlog_issues_renders_null_priority_as_unset() -> None:
         return _empty_deps_graphql()
 
     result = bu.fetch_backlog_issues(fake_run_cmd, _REPO, "acme", _PROJECT_NUM, _LOGIN)
-    issues = result["backlog_issues"]
+    issues = result["leaf_issues"]
     assert issues[0]["priority"] == "Unset"

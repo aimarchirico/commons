@@ -54,26 +54,26 @@ def _format_blocking(pr_count: int, issue_count: int) -> str:
 
 def apply_pr_blocking(
     pr_entries: list[dict[str, Any]],
-    backlog_issues: list[dict[str, Any]],
+    leaf_issues: list[dict[str, Any]],
 ) -> None:
     """Populate the 'blocking' field on each PR entry in-place.
 
     For a PR that closes issues C1, C2, ...:
-    - downstream  = union of open issues blocked by any Ci (from backlog data)
-    - blocked_backlog = backlog issues that list this PR in their blocked_by items
-    - all_blocked = downstream U blocked_backlog
+    - downstream  = union of open issues blocked by any Ci (from leaf data)
+    - blocked_leaves = leaf issues that list this PR in their blocked_by items
+    - all_blocked = downstream U blocked_leaves
     - blocking PRs = other open PRs that close any all_blocked issue
     - issue count  = all_blocked issues not already closed by a blocking PR
 
     Sets 'blocking' to "None" if both counts are zero.
 
-    `backlog_issues` may include fully-blocked entries that are hidden from
+    `leaf_issues` may include fully-blocked entries that are hidden from
     the display buckets but still carry `_blocked_by_items`/`_blocking_items`
     needed here.
     """
     issue_to_downstream: dict[int, list[dict[str, Any]]] = {
         issue["number"]: issue.get("_blocking_items", [])
-        for issue in backlog_issues
+        for issue in leaf_issues
         if issue.get("number") is not None
     }
 
@@ -82,14 +82,14 @@ def apply_pr_blocking(
         for ci in pr.get("_closing_issues", []):
             issue_to_closing_prs.setdefault(ci["number"], []).append(pr["number"])
 
-    pr_to_blocked_backlog: dict[int, set[int]] = {}
-    for issue in backlog_issues:
+    pr_to_blocked_leaves: dict[int, set[int]] = {}
+    for issue in leaf_issues:
         for blocker in issue.get("_blocked_by_items", []):
             open_pr = blocker.get("open_pr")
             if open_pr is not None:
                 pr_num = open_pr.get("number")
                 if pr_num is not None:
-                    pr_to_blocked_backlog.setdefault(pr_num, set()).add(issue["number"])
+                    pr_to_blocked_leaves.setdefault(pr_num, set()).add(issue["number"])
 
     for pr in pr_entries:
         closing_nums = {ci["number"] for ci in pr.get("_closing_issues", [])}
@@ -98,8 +98,8 @@ def apply_pr_blocking(
             continue
 
         downstream = _downstream_issues(closing_nums, issue_to_downstream)
-        blocked_backlog = pr_to_blocked_backlog.get(pr["number"], set())
-        all_blocked = set(downstream.keys()) | blocked_backlog
+        blocked_leaves = pr_to_blocked_leaves.get(pr["number"], set())
+        all_blocked = set(downstream.keys()) | blocked_leaves
         blocking_pr_nums = _blocking_prs_for(
             pr["number"], {n: {} for n in all_blocked}, issue_to_closing_prs,
         )

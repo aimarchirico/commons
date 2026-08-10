@@ -150,7 +150,7 @@ def test_fetch_backlog_issues_excludes_non_leaf_issues() -> None:
 
     result = bu.fetch_backlog_issues(fake_run_cmd, _REPO, "acme", _PROJECT_NUM, _LOGIN)
 
-    assert result["backlog_issues"] == []
+    assert result["leaf_issues"] == []
     assert result["fully_blocked_count"] == 0
 
 
