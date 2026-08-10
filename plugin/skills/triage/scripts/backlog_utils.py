@@ -8,12 +8,12 @@ from pathlib import Path
 from types import ModuleType
 from typing import Any
 
-SOLVABLE_ISSUE_TYPES = {"Story", "Task", "Bug"}
+SOLVABLE_ISSUE_TYPES = {"Story", "Task", "Bug", "Subtask"}
 PRIORITY_RANK = {"High": 0, "Medium": 1, "Low": 2, "Unset": 3}
 ASSIGNEE_YOU = "You"
 ASSIGNEE_UNASSIGNED = "Unassigned"
 NO_BLOCKERS = "None"
-_EMPTY_DEPS = {"blocked_by": [], "blocking": []}
+_EMPTY_DEPS = {"blocked_by": [], "blocking": [], "has_children": False}
 
 
 def _load_blocking_prs() -> ModuleType:
@@ -32,27 +32,37 @@ _blocking_prs = _load_blocking_prs()
 fetch_issues_dependencies = _blocking_prs.fetch_issues_dependencies
 
 
-def _format_blocked_by(
-    blocked_by_items: list[dict[str, Any]],
-) -> str:
+def _format_blocked_by(blocked_by_items: list[dict[str, Any]]) -> str:
     if not blocked_by_items:
         return NO_BLOCKERS
 
     formatted = []
-    for idx, b in enumerate(blocked_by_items):
+    for b in blocked_by_items:
         pr = b.get("open_pr")
         item = pr or b
+        kind = "PR" if pr else "Issue"
         num = str(item["number"])
         url = item.get("url")
         link = f"[#{num}]({url})" if url else f"#{num}"
-        prefix = "PR " if idx == 0 else ""
-        formatted.append(f"{prefix}{link}")
+        suffix = " (via parent)" if b.get("via_parent") else ""
+        formatted.append(f"{kind} {link}{suffix}")
     return ", ".join(formatted)
 
 
 def _format_blocking_issues(count: int) -> str:
     suffix = "s" if count != 1 else ""
     return f"{count} issue{suffix}"
+
+
+def _is_leaf(deps: dict[str, Any]) -> bool:
+    return not deps.get("has_children")
+
+
+def _stackable_on(blocked_by_items: list[dict[str, Any]]) -> bool:
+    if not all(b.get("open_pr") for b in blocked_by_items):
+        return False
+    pr_numbers = {b["open_pr"]["number"] for b in blocked_by_items}
+    return len(pr_numbers) == 1
 
 
 _BacklogCandidate = tuple[dict[str, Any], dict[str, Any], int, bool]
@@ -104,12 +114,11 @@ def _build_backlog_entries(
 
     for item, content, number, is_mine in candidates:
         deps = deps_by_number.get(number, _EMPTY_DEPS)
+        if not _is_leaf(deps):
+            continue
+
         blocked_by_items = deps.get("blocked_by", [])
         blocking_items = deps.get("blocking", [])
-
-        is_fully_blocked = any(
-            b.get("open_pr") is None for b in blocked_by_items
-        )
 
         blocking_count = len(blocking_items)
         entry = {
@@ -128,19 +137,14 @@ def _build_backlog_entries(
         }
         entries.append(entry)
 
-        if is_fully_blocked:
-            fully_blocked_count += 1
-            continue
-
-        is_blocked = bool(blocked_by_items)
-        if is_mine:
-            buckets["assigned_stackable" if is_blocked else "assigned_ready"].append(
+        if not blocked_by_items:
+            buckets["assigned_ready" if is_mine else "available_ready"].append(entry)
+        elif _stackable_on(blocked_by_items):
+            buckets["assigned_stackable" if is_mine else "available_stackable"].append(
                 entry,
             )
         else:
-            buckets["available_stackable" if is_blocked else "available_ready"].append(
-                entry,
-            )
+            fully_blocked_count += 1
 
     return entries, buckets, fully_blocked_count
 
@@ -154,14 +158,11 @@ def fetch_backlog_issues(
 ) -> dict[str, Any]:
     """Fetch Todo backlog issues assigned to or unassigned for `login`.
 
-    Issues blocked by an open issue that lacks an open PR are still included
-    in `backlog_issues` (so their `_blocked_by_items` remain visible for
-    PR-blocking bookkeeping, e.g. `apply_pr_blocking`), but are excluded from
-    the four display buckets and counted in `fully_blocked_count` instead.
-    Issues blocked only by open issues with attached open PRs are included
-    in the display buckets.
-    Returns a dict with `backlog_issues`, categorized sub-lists,
-    `assigned_to_others_count`, and `fully_blocked_count`.
+    Only leaf issues (no children of their own) are considered, since those
+    are the ones that get their own PR. An issue is stackable only if every
+    blocker resolves to the same single open PR; anything else stays in
+    `backlog_issues` for bookkeeping (e.g. `apply_pr_blocking`) but is
+    excluded from the display buckets and counted in `fully_blocked_count`.
     """
     owner, repo_name = repo
     item_output = run_cmd(
@@ -229,7 +230,6 @@ def fetch_in_progress_issues(
 ) -> list[dict[str, Any]]:
     """Fetch In Progress issues assigned to the caller, sorted by priority.
 
-    Each entry's `blocking` count mirrors `fetch_backlog_issues`' format.
     Callers are responsible for excluding issues already covered by an open PR.
     """
     owner, repo_name = repo
@@ -275,7 +275,11 @@ def fetch_in_progress_issues(
 
     entries: list[dict[str, Any]] = []
     for item, content, number in candidates:
-        blocking_count = len(deps_by_number.get(number, _EMPTY_DEPS)["blocking"])
+        deps = deps_by_number.get(number, _EMPTY_DEPS)
+        if not _is_leaf(deps):
+            continue
+
+        blocking_count = len(deps["blocking"])
 
         entries.append(
             {
