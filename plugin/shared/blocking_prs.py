@@ -1,10 +1,33 @@
 """Shared utility for fetching issue dependencies and attached open PRs."""
 
+import importlib.util
 import json
 from collections.abc import Callable
+from pathlib import Path
+from types import ModuleType
 from typing import Any
 
 _EMPTY_DEPS = {"blocked_by": [], "blocking": [], "has_children": False}
+
+
+def _load_project_preflight() -> ModuleType:
+    module_path = Path(__file__).resolve().parent / "project_preflight.py"
+    spec = importlib.util.spec_from_file_location("project_preflight", module_path)
+    if spec is None or spec.loader is None:
+        msg = f"Cannot load project_preflight from {module_path}"
+        raise ImportError(msg)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def _max_type_depth(child_types: dict[str, set[str]]) -> int:
+    def depth(type_name: str) -> int:
+        children = (depth(c) for c in child_types.get(type_name, set()))
+        return 1 + max(children, default=-1)
+
+    return max(depth(t) for t in child_types)
+
 
 _BLOCKED_BY_FIELD = """
       blockedBy(first: 10) {
@@ -48,7 +71,7 @@ _BLOCKING_FIELD = """
       }
 """
 
-_ANCESTOR_MAX_DEPTH = 2
+_ANCESTOR_MAX_DEPTH = _max_type_depth(_load_project_preflight().ALLOWED_CHILD_TYPES)
 
 
 def _ancestor_fields(depth: int) -> str:
@@ -184,42 +207,16 @@ def fetch_issue_dependencies(
 ) -> dict[str, Any]:
     """Fetch an issue's dependencies plus attached open PR details.
 
-    `blocked_by` includes the issue's own blockers and, separately flagged
-    via `via_parent`, every ancestor's own direct blockers (a block on a
-    containing Story or Epic blocks everything beneath it). Edges between
-    siblings are not folded away: they're real, direct blockers on whichever
-    sibling they name.
+    `blocked_by` includes the issue's own blockers and, tagged `via_parent`,
+    every ancestor's own direct blockers (a block on a containing Story or
+    Epic blocks everything beneath it). Sibling edges are not folded away.
 
-    `blocking` is the issue's own direct outbound edges only, since a block
-    on an ancestor already covers its descendants via `via_parent` above -
-    no traversal needed from this side.
+    `blocking` is the issue's own direct outbound edges only - ancestor
+    propagation on the `blocked_by` side above already covers descendants.
 
-    Returns a dict containing:
-    - blocked_by: list of open blocking issues:
-        [
-            {
-                "number": int,
-                "url": str,
-                "title": str,
-                "via_parent": bool,
-                "open_pr": {
-                    "number": int,
-                    "url": str,
-                    "title": str,
-                    "branch_name": str,
-                    "is_draft": bool,
-                } | None
-            }
-        ]
-    - blocking: list of open downstream issues:
-        [
-            {
-                "number": int,
-                "url": str,
-                "title": str,
-            }
-        ]
-    - has_children: bool, whether this issue has any open or closed sub-issues
+    Returns a dict with `blocked_by` (open blocker dicts: `number`, `url`,
+    `title`, `via_parent`, `open_pr`), `blocking` (open downstream issue
+    dicts: `number`, `url`, `title`), and `has_children` (bool).
     """
     args = [
         "gh",
