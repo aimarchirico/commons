@@ -45,8 +45,11 @@ argument-hint: "--issue <issue-id> [--draft] [--auto] [--skip-check]"
    git worktree add -b <branch-name> <worktree-path> origin/<base-branch>
    ```
 
-   If the script reports multiple candidate branches (because the issue is
-   blocked by multiple open PRs), prompt the user to select their desired base
+   This checks `<issue-id>` and every descendant sub-issue for open blockers,
+   not just `<issue-id>` itself, since solving it means solving its whole
+   tree. If the script reports multiple candidate branches (because the issue
+   or a descendant is blocked by multiple open PRs), prompt the user to
+   select their desired base
    branch from the candidate PR branches or the repository default branch.
    This creates the branch off the up-to-date remote base branch in an isolated
    worktree, where `<worktree-path>` is `../<branch-name>` (a sibling of the
