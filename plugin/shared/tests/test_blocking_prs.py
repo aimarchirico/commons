@@ -5,104 +5,189 @@ import json
 from shared.blocking_prs import fetch_issue_dependencies, fetch_issues_dependencies
 
 
-def test_fetch_issue_dependencies_parses_open_blockers_and_prs() -> None:
-    """Extracts open blocking issues, open PR details, and open downstream items."""
-    api_response = json.dumps(
-        {
-            "data": {
-                "repository": {
-                    "issue": {
-                        "blockedBy": {
-                            "nodes": [
-                                {
-                                    "number": 10,
-                                    "url": "https://github.com/owner/repo/issues/10",
-                                    "state": "OPEN",
-                                    "title": "Setup auth API",
-                                    "timelineItems": {
-                                        "nodes": [
-                                            {
-                                                "willCloseTarget": True,
-                                                "source": {
-                                                    "number": 25,
-                                                    "url": "https://github.com/owner/repo/pull/25",
-                                                    "title": "Add auth API endpoint",
-                                                    "headRefName": "feature/auth-api",
-                                                    "state": "OPEN",
-                                                    "isDraft": False,
-                                                },
-                                            },
-                                        ],
-                                    },
-                                },
-                                {
-                                    "number": 13,
-                                    "url": "https://github.com/owner/repo/issues/13",
-                                    "state": "OPEN",
-                                    "title": "Setup database",
-                                    "timelineItems": {
-                                        "nodes": [
-                                            {
-                                                "willCloseTarget": False,
-                                                "source": {
-                                                    "number": 26,
-                                                    "url": "https://github.com/owner/repo/pull/26",
-                                                    "title": "Just a mention",
-                                                    "headRefName": "feature/mention",
-                                                    "state": "OPEN",
-                                                    "isDraft": False,
-                                                },
-                                            },
-                                        ],
-                                    },
-                                },
-                                {
-                                    "number": 5,
-                                    "url": "https://github.com/owner/repo/issues/5",
-                                    "state": "CLOSED",
-                                    "title": "Old task",
-                                    "timelineItems": {"nodes": []},
-                                },
-                            ],
-                        },
-                        "blocking": {
-                            "nodes": [
-                                {
-                                    "number": 12,
-                                    "url": "https://github.com/owner/repo/issues/12",
-                                    "state": "OPEN",
-                                    "title": "Auth UI",
-                                },
-                            ],
-                        },
-                    },
+def _timeline(pr_num: int | None, *, will_close: bool = True) -> dict:
+    if pr_num is None:
+        return {"nodes": []}
+    return {
+        "nodes": [
+            {
+                "willCloseTarget": will_close,
+                "source": {
+                    "number": pr_num,
+                    "url": f"https://github.com/owner/repo/pull/{pr_num}",
+                    "title": f"PR {pr_num}",
+                    "headRefName": f"pr-{pr_num}",
+                    "state": "OPEN",
+                    "isDraft": False,
                 },
             },
-        },
+        ],
+    }
+
+
+def _blocker(number: int, *, state: str = "OPEN", pr_num: int | None = None) -> dict:
+    return {
+        "number": number,
+        "url": f"https://github.com/owner/repo/issues/{number}",
+        "state": state,
+        "title": f"Issue {number}",
+        "timelineItems": _timeline(pr_num),
+    }
+
+
+def _issue(
+    number: int,
+    *,
+    blocked_by: list[dict] | None = None,
+    blocking: list[dict] | None = None,
+    parent: dict | None = None,
+    children: int = 0,
+) -> dict:
+    node = {
+        "number": number,
+        "subIssuesSummary": {"total": children},
+        "blockedBy": {"nodes": blocked_by or []},
+        "blocking": {"nodes": blocking or []},
+    }
+    if parent is not None:
+        node["parent"] = parent
+    return node
+
+
+def test_fetch_issue_dependencies_parses_open_blockers_and_prs() -> None:
+    """Extracts open blocking issues, open PR details, and open downstream items."""
+    root = _issue(
+        11,
+        blocked_by=[
+            _blocker(10, pr_num=25),
+            _blocker(13, pr_num=None),
+            _blocker(5, state="CLOSED"),
+        ],
+        blocking=[_blocker(12)],
     )
+    api_response = json.dumps({"data": {"repository": {"issue": root}}})
 
     def mock_run_cmd(_args: list[str]) -> str:
         return api_response
 
     res = fetch_issue_dependencies(mock_run_cmd, "owner", "repo", 11)
-    expected_blocked_by_count = 2
-    expected_blocker_1 = 10
-    expected_blocker_2 = 13
-    expected_blocking_1 = 12
-    assert len(res["blocked_by"]) == expected_blocked_by_count
-    assert res["blocked_by"][0]["number"] == expected_blocker_1
+
+    assert [b["number"] for b in res["blocked_by"]] == [10, 13]
+    assert res["blocked_by"][0]["via_parent"] is False
     assert res["blocked_by"][0]["open_pr"] == {
         "number": 25,
         "url": "https://github.com/owner/repo/pull/25",
-        "title": "Add auth API endpoint",
-        "branch_name": "feature/auth-api",
+        "title": "PR 25",
+        "branch_name": "pr-25",
         "is_draft": False,
     }
-    assert res["blocked_by"][1]["number"] == expected_blocker_2
     assert res["blocked_by"][1]["open_pr"] is None
+    assert [b["number"] for b in res["blocking"]] == [12]
+    assert res["has_children"] is False
 
-    assert len(res["blocking"]) == 1
-    assert res["blocking"][0]["number"] == expected_blocking_1
+
+def test_fetch_issue_dependencies_ignores_mentions_that_wont_close() -> None:
+    """A cross-reference without the closing keyword doesn't count as an open PR."""
+    root = _issue(11, blocked_by=[_blocker(10, pr_num=None)])
+    root["blockedBy"]["nodes"][0]["timelineItems"] = _timeline(26, will_close=False)
+    api_response = json.dumps({"data": {"repository": {"issue": root}}})
+
+    def mock_run_cmd(_args: list[str]) -> str:
+        return api_response
+
+    res = fetch_issue_dependencies(mock_run_cmd, "owner", "repo", 11)
+
+    assert res["blocked_by"][0]["open_pr"] is None
+
+
+def test_fetch_issue_dependencies_reports_has_children() -> None:
+    """A non-zero subIssuesSummary total marks the issue as not a leaf."""
+    root = _issue(100, children=2)
+    api_response = json.dumps({"data": {"repository": {"issue": root}}})
+
+    def mock_run_cmd(_args: list[str]) -> str:
+        return api_response
+
+    res = fetch_issue_dependencies(mock_run_cmd, "owner", "repo", 100)
+
+    assert res["has_children"] is True
+
+
+def test_fetch_issue_dependencies_includes_ancestors_own_blockers() -> None:
+    """A block directly on a parent surfaces on the leaf, tagged via_parent."""
+    root = _issue(
+        102,
+        blocked_by=[_blocker(999)],
+        parent=_issue(101, blocked_by=[_blocker(1)]),
+    )
+    api_response = json.dumps({"data": {"repository": {"issue": root}}})
+
+    def mock_run_cmd(_args: list[str]) -> str:
+        return api_response
+
+    res = fetch_issue_dependencies(mock_run_cmd, "owner", "repo", 102)
+
+    by_number = {b["number"]: b for b in res["blocked_by"]}
+    assert by_number.keys() == {999, 1}
+    assert by_number[999]["via_parent"] is False
+    assert by_number[1]["via_parent"] is True
+
+
+def test_fetch_issue_dependencies_includes_grandparent_blockers() -> None:
+    """A block on a grandparent (e.g. an Epic) still reaches the leaf."""
+    root = _issue(
+        103,
+        parent=_issue(
+            102,
+            parent=_issue(101, blocked_by=[_blocker(1)]),
+        ),
+    )
+    api_response = json.dumps({"data": {"repository": {"issue": root}}})
+
+    def mock_run_cmd(_args: list[str]) -> str:
+        return api_response
+
+    res = fetch_issue_dependencies(mock_run_cmd, "owner", "repo", 103)
+
+    assert [b["number"] for b in res["blocked_by"]] == [1]
+    assert res["blocked_by"][0]["via_parent"] is True
+
+
+def test_fetch_issue_dependencies_deduplicates_same_blocker_at_multiple_levels() -> (
+    None
+):
+    """An issue blocking both a leaf and its parent only appears once."""
+    root = _issue(
+        202,
+        blocked_by=[_blocker(999)],
+        parent=_issue(201, blocked_by=[_blocker(999)]),
+    )
+    api_response = json.dumps({"data": {"repository": {"issue": root}}})
+
+    def mock_run_cmd(_args: list[str]) -> str:
+        return api_response
+
+    res = fetch_issue_dependencies(mock_run_cmd, "owner", "repo", 202)
+
+    assert [b["number"] for b in res["blocked_by"]] == [999]
+    assert res["blocked_by"][0]["via_parent"] is False
+
+
+def test_fetch_issue_dependencies_does_not_fold_blocking_across_ancestors() -> None:
+    """Outbound `blocking` is the issue's own direct edges only, no traversal."""
+    root = _issue(
+        300,
+        blocking=[_blocker(888)],
+        parent=_issue(299, blocking=[_blocker(777)]),
+    )
+    api_response = json.dumps({"data": {"repository": {"issue": root}}})
+
+    def mock_run_cmd(_args: list[str]) -> str:
+        return api_response
+
+    res = fetch_issue_dependencies(mock_run_cmd, "owner", "repo", 300)
+
+    assert [b["number"] for b in res["blocking"]] == [888]
 
 
 def test_fetch_issues_dependencies_batches_multiple_numbers_in_one_call() -> None:
@@ -111,20 +196,8 @@ def test_fetch_issues_dependencies_batches_multiple_numbers_in_one_call() -> Non
         {
             "data": {
                 "repository": {
-                    "i7": {
-                        "blockedBy": {"nodes": []},
-                        "blocking": {
-                            "nodes": [
-                                {
-                                    "number": 12,
-                                    "url": "u12",
-                                    "state": "OPEN",
-                                    "title": "Downstream",
-                                },
-                            ],
-                        },
-                    },
-                    "i8": {"blockedBy": {"nodes": []}, "blocking": {"nodes": []}},
+                    "i7": _issue(7, blocking=[_blocker(12)]),
+                    "i8": _issue(8),
                 },
             },
         },
@@ -141,7 +214,7 @@ def test_fetch_issues_dependencies_batches_multiple_numbers_in_one_call() -> Non
     assert "i7: issue(number: 7)" in calls[0][4]
     assert "i8: issue(number: 8)" in calls[0][4]
     assert [b["number"] for b in res[7]["blocking"]] == [12]
-    assert res[8] == {"blocked_by": [], "blocking": []}
+    assert res[8] == {"blocked_by": [], "blocking": [], "has_children": False}
 
 
 def test_fetch_issues_dependencies_returns_empty_dict_for_no_numbers() -> None:
@@ -154,92 +227,3 @@ def test_fetch_issues_dependencies_returns_empty_dict_for_no_numbers() -> None:
 
     assert fetch_issues_dependencies(mock_run_cmd, "owner", "repo", []) == {}
     assert calls == []
-
-
-def _dep_node(
-    number: int,
-    *,
-    blocked_by: list[int] | None = None,
-    blocking: list[int] | None = None,
-    sub_issues: list[dict] | None = None,
-) -> dict:
-    def edge(other_number: int) -> dict:
-        return {
-            "number": other_number,
-            "url": f"https://github.com/owner/repo/issues/{other_number}",
-            "state": "OPEN",
-            "title": f"Issue {other_number}",
-            "timelineItems": {"nodes": []},
-        }
-
-    node = {
-        "number": number,
-        "blockedBy": {"nodes": [edge(n) for n in (blocked_by or [])]},
-        "blocking": {"nodes": [edge(n) for n in (blocking or [])]},
-    }
-    if sub_issues is not None:
-        node["subIssues"] = {"nodes": sub_issues}
-    return node
-
-
-def test_fetch_issue_dependencies_surfaces_descendant_subtask_blocker() -> None:
-    """A Subtask's blocker surfaces as if it blocked the root Story directly."""
-    root = _dep_node(
-        100,
-        sub_issues=[
-            _dep_node(101),
-            _dep_node(102, blocked_by=[999]),
-        ],
-    )
-    api_response = json.dumps(
-        {"data": {"repository": {"issue": root}}},
-    )
-
-    def mock_run_cmd(_args: list[str]) -> str:
-        return api_response
-
-    res = fetch_issue_dependencies(mock_run_cmd, "owner", "repo", 100)
-
-    assert [b["number"] for b in res["blocked_by"]] == [999]
-
-
-def test_fetch_issue_dependencies_excludes_edges_within_same_subtree() -> None:
-    """Sibling Subtasks ordered against each other are internal notes."""
-    root = _dep_node(
-        200,
-        sub_issues=[
-            _dep_node(201, blocked_by=[202]),
-            _dep_node(202),
-        ],
-    )
-    api_response = json.dumps(
-        {"data": {"repository": {"issue": root}}},
-    )
-
-    def mock_run_cmd(_args: list[str]) -> str:
-        return api_response
-
-    res = fetch_issue_dependencies(mock_run_cmd, "owner", "repo", 200)
-
-    assert res["blocked_by"] == []
-    assert res["blocking"] == []
-
-
-def test_fetch_issue_dependencies_rolls_up_descendant_blocking_edges() -> None:
-    """A Subtask's outbound `blocking` edge credits the root Story too."""
-    root = _dep_node(
-        300,
-        sub_issues=[
-            _dep_node(301, blocking=[888]),
-        ],
-    )
-    api_response = json.dumps(
-        {"data": {"repository": {"issue": root}}},
-    )
-
-    def mock_run_cmd(_args: list[str]) -> str:
-        return api_response
-
-    res = fetch_issue_dependencies(mock_run_cmd, "owner", "repo", 300)
-
-    assert [b["number"] for b in res["blocking"]] == [888]
