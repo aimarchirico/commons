@@ -171,13 +171,7 @@ def test_fetch_backlog_issues_batches_dependency_lookups_in_one_call() -> None:
             return project_items
         return combined_deps_graphql
 
-    result = bu.fetch_backlog_issues(
-        fake_run_cmd,
-        _REPO,
-        "acme",
-        _PROJECT_NUM,
-        _LOGIN,
-    )
+    result = bu.fetch_backlog_issues(fake_run_cmd, _REPO, "acme", _PROJECT_NUM, _LOGIN)
 
     graphql_calls = [c for c in calls if c[:3] == ["gh", "api", "graphql"]]
     assert len(graphql_calls) == 1
@@ -187,12 +181,13 @@ def test_fetch_backlog_issues_batches_dependency_lookups_in_one_call() -> None:
     issues = result["backlog_issues"]
     assert sorted(issue["number"] for issue in issues) == [1, 2]
     assert result["fully_blocked_count"] == 1
-    bucketed = {
-        issue["number"]
-        for key in ("assigned_ready", "assigned_stackable", "available_ready", "available_stackable")
-        for issue in result[key]
-    }
-    assert 1 not in bucketed
+    for bucket in (
+        "assigned_ready",
+        "assigned_stackable",
+        "available_ready",
+        "available_stackable",
+    ):
+        assert 1 not in {i["number"] for i in result[bucket]}
 
 
 def test_fetch_backlog_issues_includes_issue_blocked_by_open_pr() -> None:
