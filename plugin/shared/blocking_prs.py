@@ -43,21 +43,10 @@ _ISSUE_DEPENDENCY_FIELDS = """
       }
 """
 
-# A Story/Task/Bug's own subIssues are always Subtasks (the hierarchy's
-# fixed 3 tiers per CONTRIBUTING.md), which never have children of their
-# own, so two levels of nesting (Epic -> Story/Task/Bug -> Subtask) is
-# always enough to cover the whole subtree.
-_MAX_SUBTREE_DEPTH = 2
+_EPIC_TO_SUBTASK_SUBTREE_DEPTH = 2
 
 
 def _dependency_tree_fields(depth: int) -> str:
-    """Build a GraphQL field selection nesting `subIssues` `depth` levels deep.
-
-    Each level requests `number` plus the issue's own blockedBy/blocking
-    edges, so the response carries enough data to fold descendant edges
-    into the root while still being able to tell which edges point back
-    within the same subtree.
-    """
     fields = f"""
       number
       {_ISSUE_DEPENDENCY_FIELDS}
@@ -73,7 +62,9 @@ def _dependency_tree_fields(depth: int) -> str:
     return fields
 
 
-_ISSUE_DEPENDENCY_TREE_FIELDS = _dependency_tree_fields(_MAX_SUBTREE_DEPTH)
+_ISSUE_DEPENDENCY_TREE_FIELDS = _dependency_tree_fields(
+    _EPIC_TO_SUBTASK_SUBTREE_DEPTH,
+)
 
 BLOCKING_PRS_QUERY = f"""
 query($owner: String!, $repo: String!, $number: Int!) {{
@@ -139,7 +130,6 @@ def _parse_issue_dependencies(issue_data: dict[str, Any]) -> dict[str, Any]:
 
 
 def _collect_subtree_numbers(issue_data: dict[str, Any]) -> set[int]:
-    """Collect an issue's own number plus every descendant Subtask's number."""
     numbers = set()
     number = issue_data.get("number")
     if number is not None:
@@ -162,15 +152,6 @@ def _dedupe_by_number(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 
 def _fold_issue_dependencies(issue_data: dict[str, Any]) -> dict[str, Any]:
-    """Merge blocked_by/blocking across an issue and its whole subIssues tree.
-
-    A PR is scoped to a whole Story/Task/Bug including all its Subtasks, so
-    the issue is genuinely blocked/blocking whenever any descendant Subtask
-    is. Edges that point at another issue within the same subtree (e.g. one
-    sibling Subtask ordered before another) are purely internal
-    implementation-order notes for that single PR's scope, not real external
-    blockers, and are excluded from the result.
-    """
     subtree_numbers = _collect_subtree_numbers(issue_data)
 
     def walk(node: dict[str, Any]) -> dict[str, Any]:

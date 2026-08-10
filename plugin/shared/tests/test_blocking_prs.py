@@ -159,12 +159,10 @@ def test_fetch_issues_dependencies_returns_empty_dict_for_no_numbers() -> None:
 def _dep_node(
     number: int,
     *,
-    blocked_by: list[dict] | None = None,
-    blocking: list[dict] | None = None,
+    blocked_by: list[int] | None = None,
+    blocking: list[int] | None = None,
     sub_issues: list[dict] | None = None,
 ) -> dict:
-    """Build a single node of the nested subIssues tree the real query returns."""
-
     def edge(other_number: int) -> dict:
         return {
             "number": other_number,
@@ -206,7 +204,7 @@ def test_fetch_issue_dependencies_surfaces_descendant_subtask_blocker() -> None:
 
 
 def test_fetch_issue_dependencies_excludes_edges_within_same_subtree() -> None:
-    """Sibling Subtasks ordered against each other are internal notes, not real blockers."""
+    """Sibling Subtasks ordered against each other are internal notes."""
     root = _dep_node(
         200,
         sub_issues=[

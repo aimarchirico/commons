@@ -57,9 +57,9 @@ def _open_issue_with_pr(number: int, pr_num: int) -> dict:
 
 
 def test_fetch_backlog_issues_hides_story_blocked_via_descendant_subtask() -> None:
-    """A Story is fully-blocked when a Subtask under it is blocked by a Subtask
-    belonging to a completely different Story, even though the Story's own
-    blockedBy is empty.
+    """A Story is fully-blocked via a Subtask blocked by another Story's Subtask.
+
+    This holds even though the Story's own blockedBy is empty.
     """
     project_items = json.dumps({"items": [_project_item(1, is_mine=True)]})
 
@@ -142,8 +142,9 @@ def test_fetch_backlog_issues_rolls_up_descendant_blocking_credit() -> None:
 
 
 def test_fetch_backlog_issues_stackable_when_descendant_blocker_has_open_pr() -> None:
-    """A Story is stackable, not fully-blocked, once a descendant Subtask's
-    blocker has an attached open PR.
+    """A Story is stackable once a descendant Subtask's blocker gets an open PR.
+
+    It must not stay counted as fully-blocked at that point.
     """
     project_items = json.dumps({"items": [_project_item(3, is_mine=True)]})
 

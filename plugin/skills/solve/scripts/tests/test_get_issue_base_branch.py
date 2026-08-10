@@ -17,6 +17,7 @@ _REPO_OUTPUT = json.dumps(
 _EXPECTED_CANDIDATES_SINGLE = 1
 _EXPECTED_CANDIDATES_MULTIPLE = 2
 _EXPECTED_PR_NUMBER = 15
+_EXPECTED_BLOCKER_ISSUE_NUMBER = 10
 
 
 def _api_response(nodes: list[dict]) -> str:
@@ -86,8 +87,9 @@ def test_get_issue_base_branch_single_pr() -> None:
 
 
 def test_get_issue_base_branch_blocker_on_descendant_subtask() -> None:
-    """Uses a blocking PR's branch when the dependency is on a descendant
-    Subtask rather than the target issue itself.
+    """Uses a blocking PR's branch when the dependency is on a descendant Subtask.
+
+    The blocker sits on a Subtask rather than the target issue itself.
     """
     subtask_blocked_by = {
         "number": 10,
@@ -139,7 +141,7 @@ def test_get_issue_base_branch_blocker_on_descendant_subtask() -> None:
     res = gibb.get_issue_base_branch(fake_run_cmd, "42")
     assert res["status"] == "single"
     assert res["base_branch"] == "feature/blocker-fix"
-    assert res["candidates"][0]["issue_number"] == 10
+    assert res["candidates"][0]["issue_number"] == _EXPECTED_BLOCKER_ISSUE_NUMBER
 
 
 def test_get_issue_base_branch_multiple_prs() -> None:
