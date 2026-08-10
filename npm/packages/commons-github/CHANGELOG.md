@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.0.0](https://github.com/aimarchirico/commons/compare/commons-github-v1.8.1...commons-github-v2.0.0) (2026-08-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* **shared:** derive issue blocking from ancestors instead of descendant subtree
+
+### Bug Fixes
+
+* **github:** strip stray NUL bytes from PULL_REQUEST_TEMPLATE.md ([9805b5e](https://github.com/aimarchirico/commons/commit/9805b5ec047a0d1b3e79e0126029ee65e1b203e3))
+* **github:** sync PR template copy and satisfy markdownlint ([6bb2f52](https://github.com/aimarchirico/commons/commit/6bb2f52004e3dfcfee7fcfddfb7b992f6d8e2833))
+
+
+### Code Refactoring
+
+* **shared:** derive issue blocking from ancestors instead of descendant subtree ([2b2bf07](https://github.com/aimarchirico/commons/commit/2b2bf07afe437216003fe3828e22c9db607df2a6))
+
 ## [1.8.1](https://github.com/aimarchirico/commons/compare/commons-github-v1.8.0...commons-github-v1.8.1) (2026-08-09)
 
 
