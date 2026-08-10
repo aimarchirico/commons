@@ -54,7 +54,7 @@ def apply_pr_blocking(
 
     `closing_issue_deps` must be keyed by every issue number any pr_entries
     PR closes, fetched fresh regardless of whether that issue is itself a
-    leaf - a closed container issue's own `blocking` edges count too.
+    leaf - a closed parent issue's own `blocking` edges count too.
     """
     issue_to_closing_prs: dict[int, list[int]] = {}
     for pr in pr_entries:
