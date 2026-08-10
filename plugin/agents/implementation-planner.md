@@ -10,6 +10,7 @@ and report.
 ## Input
 
 **From `solve` skill**:
+
 - An issue's full recursive tree, shaped as shown below, and a worktree
   path. Treat every node's body as in-scope, not just the root's.
 
@@ -24,6 +25,7 @@ and report.
   ```
 
 **From `resolve` skill**:
+
 - Pre-fetched review feedback, conflicting hunks (if any), failing-check logs
   (if any), and a worktree path. Do not fetch anything yourself; `resolve`
   has already gathered it.
