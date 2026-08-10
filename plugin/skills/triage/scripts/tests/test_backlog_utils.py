@@ -276,8 +276,11 @@ def test_fetch_backlog_issues_includes_issue_blocked_by_open_pr() -> None:
 
 
 def test_fetch_backlog_issues_fully_blocked_issue_keeps_all_blocked_by_items() -> None:
-    """A fully-blocked issue (mix of PR-backed and PR-less blockers) stays in
-    backlog_issues with all its blockers intact, but is hidden from buckets."""
+    """A fully-blocked issue keeps all its blockers intact.
+
+    A mix of PR-backed and PR-less blockers stays in backlog_issues, but is
+    hidden from buckets.
+    """
 
     def blocking_issue_node(num: int, pr_num: int | None) -> dict:
         timeline_nodes = (
