@@ -1,7 +1,7 @@
 # Triage Reference
 
-See `GLOSSARY.md` for the terms used throughout this document (leaf issue,
-container issue, via parent, stackable, fully blocked).
+See `${CLAUDE_PLUGIN_ROOT}/skills/triage/GLOSSARY.md` for the terms used throughout this document (leaf issue,
+parent issue, via parent, stackable, fully blocked).
 
 Start the output with a summary header:
 
@@ -29,7 +29,7 @@ own `blocked_by` plus any blocker on its ancestors, each rendered as
 `PR #<n>`/`Issue #<n>`, with `(via parent)` appended when inherited from an
 ancestor rather than set directly on the leaf.
 
-`fully_blocked_count` counts fully-blocked leaves. They remain tracked (so
+`fully_blocked_count` counts fully blocked leaves. They remain tracked (so
 PRs closing one of their blockers still get credited in `<blocking>`), but
 are hidden from the Actionable Items and Unassigned Issues tables below.
 
