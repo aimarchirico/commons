@@ -1,7 +1,8 @@
 # Triage Glossary
 
 Background concepts behind the triage skill's issue-dependency
-classification, referenced by `REFERENCE.md`.
+classification, referenced by
+`${CLAUDE_PLUGIN_ROOT}/skills/triage/REFERENCE.md`.
 
 - **Leaf issue**: An issue with no sub-issues of its own. Represents the
   smallest unit of work. Only leaves are ever listed as `<item>` in triage
