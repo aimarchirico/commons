@@ -27,7 +27,10 @@ argument-hint: "[--draft] [--auto]"
    - **PR Commits**: Summarize recent commits on the branch using `git log`.
 
 3. Request related issue IDs if they were not successfully extracted in the
-   previous step.
+   previous step. If the branch's issue has children (Subtasks, or a Story's
+   further descendants), this PR must close all of them explicitly too:
+   list a `Closes #<number>` line for the issue itself and every descendant,
+   since nothing cascades that automatically.
 4. Draft the PR description by populating
    `${CLAUDE_PLUGIN_ROOT}/.github/PULL_REQUEST_TEMPLATE.md` using the
    gathered context.

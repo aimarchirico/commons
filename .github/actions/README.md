@@ -16,13 +16,9 @@ wiring one in.
 Each directory is a standalone reusable action:
 
 - `android-release/`: Builds and releases an Android application.
-- `assign-sub-issues/`: Cascades newly-added assignees to nested sub-issues.
-- `close-sub-issues/`: Cascade closes nested sub-issues.
 - `cloudflare-deploy/`: Deploys applications to Cloudflare.
 - `docker-release/`: Builds and pushes Docker images.
 - `java-task/`: Reusable Java CI tasks.
-- `move-sub-issues-in-progress/`: Cascades the board's In Progress status to
-  nested sub-issues.
 - `node-task/`: Reusable Node.js CI tasks.
 - `self-review-signal/`: Submits a real review matching a posted verdict comment.
 - `vps-deploy/`: Deploys applications to a VPS.
