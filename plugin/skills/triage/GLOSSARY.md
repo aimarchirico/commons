@@ -11,11 +11,15 @@ classification, referenced by
   triage row; a block placed directly on it still reaches all its leaf
   descendants (see "via parent").
 - **Blocked by**: What an item still needs resolved before it unblocks.
-  Shown on issue rows only (PR rows use "blocking" instead). For a leaf
-  issue this is the union of the issues named by its own `blocked_by` field
-  and any issue named by an ancestor's own `blocked_by` field (see "via
-  parent"). Rendered as `PR #<n>` when the blocker has an attached open PR,
-  or `Issue #<n>` otherwise.
+  Shown on issue rows only (PR rows use "blocking" instead). The underlying
+  relationship is always issue-to-issue: GitHub's `blocked_by` field only
+  ever names other Issues, never PRs. For a leaf issue this is the union of
+  the issues named by its own `blocked_by` field and any issue named by an
+  ancestor's own `blocked_by` field (see "via parent"). Each blocking issue
+  is rendered as `PR #<n>` if it already has an attached open PR (a
+  shorthand for "that issue's open branch is here"), or as `Issue #<n>` if
+  it doesn't yet. The PR itself is never the blocker, only what the
+  blocking issue's resolution currently looks like.
 - **Via parent**: Marks a blocker inherited from an ancestor's own
   `blocked_by` rather than set directly on the issue itself. Rendered as
   `(via parent)` after the blocker reference.
