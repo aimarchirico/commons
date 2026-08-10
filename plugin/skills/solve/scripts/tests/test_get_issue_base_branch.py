@@ -86,12 +86,12 @@ def test_get_issue_base_branch_single_pr() -> None:
     assert res["candidates"][0]["pr_number"] == _EXPECTED_PR_NUMBER
 
 
-def test_get_issue_base_branch_blocker_on_descendant_subtask() -> None:
-    """Uses a blocking PR's branch when the dependency is on a descendant Subtask.
+def test_get_issue_base_branch_blocker_on_parent() -> None:
+    """Uses a blocking PR's branch when the dependency is on the parent Story.
 
-    The blocker sits on a Subtask rather than the target issue itself.
+    A block directly on the parent reaches the Subtask being solved too.
     """
-    subtask_blocked_by = {
+    parent_blocked_by = {
         "number": 10,
         "state": "OPEN",
         "title": "Blocker",
@@ -115,17 +115,12 @@ def test_get_issue_base_branch_blocker_on_descendant_subtask() -> None:
             "data": {
                 "repository": {
                     "issue": {
-                        "number": 42,
+                        "number": 43,
                         "blockedBy": {"nodes": []},
                         "blocking": {"nodes": []},
-                        "subIssues": {
-                            "nodes": [
-                                {
-                                    "number": 43,
-                                    "blockedBy": {"nodes": [subtask_blocked_by]},
-                                    "blocking": {"nodes": []},
-                                },
-                            ],
+                        "parent": {
+                            "number": 42,
+                            "blockedBy": {"nodes": [parent_blocked_by]},
                         },
                     },
                 },
@@ -138,7 +133,7 @@ def test_get_issue_base_branch_blocker_on_descendant_subtask() -> None:
             return _REPO_OUTPUT
         return api_response
 
-    res = gibb.get_issue_base_branch(fake_run_cmd, "42")
+    res = gibb.get_issue_base_branch(fake_run_cmd, "43")
     assert res["status"] == "single"
     assert res["base_branch"] == "feature/blocker-fix"
     assert res["candidates"][0]["issue_number"] == _EXPECTED_BLOCKER_ISSUE_NUMBER
