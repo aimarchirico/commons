@@ -66,6 +66,10 @@ def apply_pr_blocking(
     - issue count  = all_blocked issues not already closed by a blocking PR
 
     Sets 'blocking' to "None" if both counts are zero.
+
+    `backlog_issues` may include fully-blocked entries that are hidden from
+    the display buckets but still carry `_blocked_by_items`/`_blocking_items`
+    needed here.
     """
     issue_to_downstream: dict[int, list[dict[str, Any]]] = {
         issue["number"]: issue.get("_blocking_items", [])
