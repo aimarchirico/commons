@@ -79,8 +79,7 @@ gh pr diff <pr-number>
 ```
 
 Judge whether the implementation looks complete against the combined scope of
-the parent and any descendant sub-issues, since a closing issue may itself be
-a Task/Story/Bug whose real scope lives in its Subtasks, rendering Suggestion
+the parent and any descendant sub-issues, rendering Suggestion
 as "Continue implementing" or "Mark ready for review". If `linked_issues` is
 empty, say plainly there is no linked issue to check completeness against.
 
