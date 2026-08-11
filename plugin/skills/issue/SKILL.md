@@ -21,7 +21,7 @@ argument-hint: "[--auto]"
    conventions defined in `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md#issues`
    and `${CLAUDE_PLUGIN_ROOT}/.github/ISSUE_TEMPLATE/`. Automatically infer any
    required logical sub-issues to completely represent the hierarchy of
-   work. Each issue must be an atomic, self-contained unit of work. 
+   work. Each issue must be an atomic, self-contained unit of work.
   Ensure each issue is assigned its type and priority in their
    respective fields based on the definitions in
    `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md`. Also identify any issues
