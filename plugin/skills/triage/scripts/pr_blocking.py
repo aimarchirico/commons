@@ -46,7 +46,8 @@ def apply_pr_blocking(
     """Populate the 'blocking' field on each PR entry in-place.
 
     For a PR that closes issues C1, C2, ...:
-    - all_blocked = union of each Ci's own direct `blocking` edges
+    - all_blocked = union of each Ci's own direct `blocking` edges, excluding
+      any of C1, C2, ... themselves (the same PR resolves those simultaneously)
     - blocking PRs = other open PRs that also close any all_blocked issue
     - issue count = all_blocked issues not already closed by a blocking PR
 
@@ -71,6 +72,7 @@ def apply_pr_blocking(
         for cnum in closing_nums:
             deps = closing_issue_deps.get(cnum) or {}
             all_blocked.update(b["number"] for b in deps.get("blocking", []))
+        all_blocked -= closing_nums
 
         blocking_pr_nums = _blocking_prs_for(
             pr["number"], all_blocked, issue_to_closing_prs,

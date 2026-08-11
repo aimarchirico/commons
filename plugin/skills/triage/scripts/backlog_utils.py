@@ -50,6 +50,8 @@ def _format_blocked_by(blocked_by_items: list[dict[str, Any]]) -> str:
 
 
 def _format_blocking_issues(count: int) -> str:
+    if count == 0:
+        return "None"
     suffix = "s" if count != 1 else ""
     return f"{count} issue{suffix}"
 

@@ -24,10 +24,11 @@ classification, referenced by
 - **Blocking**: What an item's resolution would unblock. Shown on both
   issue rows and PR rows, computed differently for each. On an issue row
   it's the direct, non-transitive count of open issues that issue's own
-  `blocking` relationship names, rendered as `N issue(s)`. On a PR row it's
-  the count of open issues the PR's closed issues directly block, with
-  other open PRs that also close one of those blocked issues credited instead of
-  double-counted, rendered as `N PR(s), N issue(s)`.
+  `blocking` relationship names, rendered as `N issue(s)`, or `None` when
+  the count is zero. On a PR row it's the count of open issues the PR's
+  closed issues directly block, with other open PRs that also close one of
+  those blocked issues credited instead of double-counted, rendered as
+  `N PR(s), N issue(s)`.
 - **Stackable**: An open issue is stackable when every one of its blockers
   resolves to the same single open PR, one unambiguous base branch to
   build on top of.

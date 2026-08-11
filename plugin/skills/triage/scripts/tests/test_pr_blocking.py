@@ -37,3 +37,22 @@ def test_apply_pr_blocking_credits_another_pr_instead_of_double_counting() -> No
     apply_pr_blocking(pr_entries, closing_issue_deps)
 
     assert pr_entries[0]["blocking"] == "1 PR"
+
+
+def test_apply_pr_blocking_excludes_issues_closed_by_the_same_pr() -> None:
+    """A PR closing two issues where one blocks the other isn't credited.
+
+    Neither issue should count as blocked, since the same PR resolves both
+    simultaneously.
+    """
+    closing_issue_deps = {
+        10: {"blocking": [{"number": 11}]},
+        11: {"blocking": []},
+    }
+    pr_entries = [
+        {"number": 25, "_closing_issues": [{"number": 10}, {"number": 11}]},
+    ]
+
+    apply_pr_blocking(pr_entries, closing_issue_deps)
+
+    assert pr_entries[0]["blocking"] == "None"
