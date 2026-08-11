@@ -85,7 +85,7 @@ def test_fetch_backlog_issues_stackable_when_blockers_share_one_open_pr() -> Non
         "PR [#25](https://github.com/acme/repo/pull/25), "
         "PR [#25](https://github.com/acme/repo/pull/25)"
     )
-    assert entry["blocking"] == "0 issues"
+    assert entry["blocking"] == "None"
 
 
 def test_fetch_backlog_issues_hides_when_blockers_span_multiple_open_prs() -> None:
