@@ -37,4 +37,17 @@ export default defineConfig([
       'check-file/filename-naming-convention': 'off',
     },
   },
+  {
+    rules: {
+      'no-restricted-properties': [
+        'error',
+        {
+          object: 'StyleSheet',
+          property: 'create',
+          message:
+            'StyleSheet.create is banned. Use NativeWind className instead.',
+        },
+      ],
+    },
+  },
 ]);
