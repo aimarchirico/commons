@@ -41,7 +41,7 @@
     "eslint": "^9.39.2",
     "expo": "*",
     "react": "*",
-    "typescript": "^6.0.3",
+    "typescript": "^7.0.2",
     "vitest": "^3.2.4"
   },
   "peerDependencies": {
@@ -49,7 +49,7 @@
     "eslint": "^9.39.2",
     "expo": "*",
     "react": "*",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2"
   },
   "peerDependenciesMeta": {
     "eas-cli": {
