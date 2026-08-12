@@ -41,7 +41,7 @@ describe('eslint-core', () => {
         object: 'StyleSheet',
         property: 'create',
         message:
-          'StyleSheet.create is banned. Use nativewind className instead.',
+          'StyleSheet.create is banned. Use Nativewind className instead.',
       },
     ]);
   });
