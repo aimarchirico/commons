@@ -52,8 +52,9 @@ argument-hint: "--issue <issue-id> [--draft] [--auto] [--skip-check]"
    select their desired base
    branch from the candidate PR branches or the repository default branch.
    This creates the branch off the up-to-date remote base branch in an isolated
-   worktree, where `<worktree-path>` is `../<branch-name>` (a sibling of the
-   repository root).
+   worktree, where `<worktree-path>` is `../worktrees/<branch-name>` (nested
+   under a `worktrees/` directory that is itself a sibling of the repository
+   root).
 4. Delegate to the `implementation-planner` agent, passing the full fetched
    issue tree and `<worktree-path>`, to draft an implementation plan.
 5. Present the drafted plan, and wait for explicit user approval. Skip this
