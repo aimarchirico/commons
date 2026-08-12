@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.7.0](https://github.com/aimarchirico/commons/compare/commons-expo-v4.6.0...commons-expo-v4.7.0) (2026-08-12)
+
+
+### Features
+
+* **eslint:** ban StyleSheet.create in commons-expo core config ([f7de081](https://github.com/aimarchirico/commons/commit/f7de081123de5e18358c8fcdb121283942b34704))
+* **eslint:** ban StyleSheet.create in commons-expo core config ([490a331](https://github.com/aimarchirico/commons/commit/490a331369dd7b9015ad00bb370c555957551f8b))
+
+
+### Bug Fixes
+
+* **eslint-core.ts:** fix casing ([69c88f6](https://github.com/aimarchirico/commons/commit/69c88f66fa2451035ba72c2d87041bef05841369))
+
 ## [4.6.0](https://github.com/aimarchirico/commons/compare/commons-expo-v4.5.2...commons-expo-v4.6.0) (2026-08-09)
 
 
