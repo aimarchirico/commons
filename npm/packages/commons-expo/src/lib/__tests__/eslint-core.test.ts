@@ -18,9 +18,32 @@ describe('eslint-core', () => {
   });
 
   it('appends the web/android filename override', () => {
-    const last = config[config.length - 1];
-    expect(last.files).toEqual(['**/*.{web,android}.ts']);
-    expect(last.rules?.['check-file/filename-naming-convention']).toBe('off');
+    const block = config.find(b =>
+      (b.files as string[] | undefined)?.includes('**/*.{web,android}.ts'),
+    );
+    expect(block?.rules?.['check-file/filename-naming-convention']).toBe('off');
+  });
+
+  it('bans StyleSheet.create via no-restricted-properties', () => {
+    const block = config.find(
+      b =>
+        Array.isArray(b.rules?.['no-restricted-properties']) &&
+        (b.rules['no-restricted-properties'] as unknown[]).some(
+          entry =>
+            typeof entry === 'object' &&
+            entry !== null &&
+            (entry as {object?: string}).object === 'StyleSheet',
+        ),
+    );
+    expect(block?.rules?.['no-restricted-properties']).toEqual([
+      'error',
+      {
+        object: 'StyleSheet',
+        property: 'create',
+        message:
+          'StyleSheet.create is banned. Use Nativewind className instead.',
+      },
+    ]);
   });
 
   it('dedups the @typescript-eslint plugin instance across merged configs', () => {
