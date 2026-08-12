@@ -23,8 +23,9 @@ argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
    `<branch-name>`, then `git fetch origin` and
    `git worktree add <worktree-path> <branch-name>` to check the pull
    request's existing branch out into an isolated worktree at its
-   up-to-date remote state, where `<worktree-path>` is `../<branch-name>` (a
-   sibling of the repository root).
+   up-to-date remote state, where `<worktree-path>` is
+   `../worktrees/<branch-name>` (nested under a `worktrees/` directory that
+   is itself a sibling of the repository root).
 3. Execute:
 
    ```bash
