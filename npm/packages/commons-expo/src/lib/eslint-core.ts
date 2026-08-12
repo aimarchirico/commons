@@ -45,7 +45,7 @@ export default defineConfig([
           object: 'StyleSheet',
           property: 'create',
           message:
-            'StyleSheet.create is banned. Use NativeWind className instead.',
+            'StyleSheet.create is banned. Use Nativewind className instead.',
         },
       ],
     },
