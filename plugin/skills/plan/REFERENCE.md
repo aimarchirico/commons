@@ -8,8 +8,8 @@ system design phases of a project.
 Every entry-point file below opens with this notice, verbatim:
 
 > **Archived.** Snapshot from planning and system design, not maintained
-> once issues are cut. Source of truth is the issue tracker, `docs/`, and
-> the code itself.
+> once issues are cut. Source of truth is the issue tracker, the rest of
+> `docs/`, and the code itself.
 
 ## 1. docs/plan/PRD.md
 
