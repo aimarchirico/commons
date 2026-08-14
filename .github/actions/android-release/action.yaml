@@ -28,6 +28,14 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - name: Free Disk Space
+      shell: bash
+      run: |
+        sudo rm -rf /usr/share/dotnet
+        sudo rm -rf /usr/local/share/boost
+        sudo rm -rf /opt/ghc
+        sudo rm -rf /usr/share/swift
+        sudo docker system prune -af || true
     - name: Set Up Java
       uses: actions/setup-java@v5
       with:
