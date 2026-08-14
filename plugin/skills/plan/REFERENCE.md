@@ -11,8 +11,7 @@ this notice, verbatim:
 ## 1. docs/plan/PRD.md
 
 Written once, during the initial planning pass. A snapshot of the product
-idea at that time; unlike the files under `docs/`, it is not maintained as
-scope evolves afterward.
+idea at that time.
 
 Opens with the notice above.
 
