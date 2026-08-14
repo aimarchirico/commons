@@ -3,11 +3,21 @@
 This is the file set drafted under `docs/plan/`, covering the planning and
 system design phases of a project.
 
+## Archived Notice
+
+Every entry-point file below opens with this notice, verbatim:
+
+> **Archived.** Snapshot from planning and system design, not maintained
+> once issues are cut. Source of truth is the issue tracker, `docs/`, and
+> the code itself.
+
 ## 1. docs/plan/PRD.md
 
 Written once, during the initial planning pass. A snapshot of the product
 idea at that time; unlike the files under `docs/`, it is not maintained as
 scope evolves afterward.
+
+Opens with the [Archived Notice](#archived-notice).
 
 - **Objective**: Context on the project and what it aims to achieve.
 - **Success Metrics**: The metrics used to judge success.
@@ -22,7 +32,8 @@ scope evolves afterward.
 Actionable requirements. Each states the problem: what is needed, not how
 it gets built.
 
-- **index.md**: Index table of number, title, priority, and link.
+- **index.md**: Opens with the [Archived Notice](#archived-notice). Index
+    table of number, title, priority, and link.
 - **NNNN-slug.md**: One per requirement, zero-padded and sequenced:
   - **Motivation**: Why this requirement matters, tied to the PRD's
       Objective and Success Metrics.
@@ -37,7 +48,8 @@ it gets built.
 Domain investigations and technical benchmarks gathered before locking in a
 decision.
 
-- **index.md**: Index table of number, title, focus area, and link.
+- **index.md**: Opens with the [Archived Notice](#archived-notice). Index
+    table of number, title, focus area, and link.
 - **NNNN-slug.md**: One per investigation, zero-padded and sequenced:
   - **Context**: The uncertainty driving the investigation.
   - **Findings**: Results from framework or approach comparisons.
@@ -47,7 +59,8 @@ decision.
 
 Architecture decision records, one per technical choice.
 
-- **index.md**: Index table of number, title, status, and link.
+- **index.md**: Opens with the [Archived Notice](#archived-notice). Index
+    table of number, title, status, and link.
 - **NNNN-slug.md**: One per decision, zero-padded and sequenced:
   - **Status**: `Proposed` / `Accepted` / `Rejected` / `Superseded`.
   - **Context**: The architectural question and research findings.
@@ -60,7 +73,8 @@ Technical blueprints. Each states how to solve, in whole or in part, one or
 more requirements: the solution, not the problem. Detailed enough to derive
 an initial issue backlog.
 
-- **index.md**: Index table of number, title, one-line approach, and link.
+- **index.md**: Opens with the [Archived Notice](#archived-notice). Index
+    table of number, title, one-line approach, and link.
 - **NNNN-slug.md**: One per specification, zero-padded and sequenced:
   - **Requirement**: The requirement(s) it addresses, and how much of each
       (in full or in part).
