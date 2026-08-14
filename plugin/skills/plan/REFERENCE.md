@@ -4,9 +4,9 @@ This is the file set drafted under `docs/plan/`, covering the planning and
 system design phases of a project. Every entry-point file below opens with
 this notice, verbatim:
 
-> **Archived.** Snapshot from planning and system design, not maintained
-> once issues are cut. Source of truth is the issue tracker, the rest of
-> `docs/`, and the code itself.
+> **Archived.** Snapshot from planning and system design. Once issues are
+> cut, the issue tracker, the rest of `docs/`, and the code itself become
+> the source of truth instead.
 
 ## 1. docs/plan/PRD.md
 
