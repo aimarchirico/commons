@@ -1,5 +1,5 @@
 {
-  "maven/commons-convention": "3.0.0",
+  "maven/commons-convention": "3.1.0",
   "maven/commons-security": "3.2.0",
   "maven/commons-test": "3.2.0",
   "maven/commons-firebase-admin": "2.2.0",
