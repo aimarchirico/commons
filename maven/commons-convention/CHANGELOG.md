@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.1.0](https://github.com/aimarchirico/commons/compare/commons-convention-v3.0.0...commons-convention-v3.1.0) (2026-08-16)
+
+
+### Features
+
+* **commons-convention:** fail check when main sources lack tests ([aec6efc](https://github.com/aimarchirico/commons/commit/aec6efc6ceeb3a2c8ef449cad0b5d38273758565))
+* **commons-convention:** fail check when main sources lack tests ([5b64592](https://github.com/aimarchirico/commons/commit/5b64592793fea5e8206720d9df4588a207b96ac8))
+
+
+### Bug Fixes
+
+* **commons-convention:** resolve SourceSetContainer at project scope ([0acc17d](https://github.com/aimarchirico/commons/commit/0acc17d9dedfd508165c7a4f1b00bcaf516a24b4))
+
 ## [3.0.0](https://github.com/aimarchirico/commons/compare/commons-convention-v2.3.0...commons-convention-v3.0.0) (2026-08-03)
 
 
