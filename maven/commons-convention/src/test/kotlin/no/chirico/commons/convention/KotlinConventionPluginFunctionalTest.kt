@@ -42,14 +42,73 @@ class KotlinConventionPluginFunctionalTest {
           "test",
           "jacocoTestReport",
           "jacocoTestCoverageVerification",
+          "verifyTestSourcesPresent",
           "--stacktrace",
         )
         .build()
 
-    listOf(":ktfmtCheck", ":test", ":jacocoTestReport", ":jacocoTestCoverageVerification")
+    listOf(
+        ":ktfmtCheck",
+        ":test",
+        ":jacocoTestReport",
+        ":jacocoTestCoverageVerification",
+        ":verifyTestSourcesPresent",
+      )
       .forEach { task ->
         assertThat(result.task(task)?.outcome).`as`(task).isEqualTo(TaskOutcome.SUCCESS)
       }
+  }
+
+  @Test
+  fun `applying the plugin fails when a module has main sources but no tests`() {
+    writeSettingsFile()
+    writeBuildFile()
+    writeMainSource()
+
+    val result =
+      GradleRunner.create()
+        .withProjectDir(projectDir.toFile())
+        .withPluginClasspath()
+        .withDebug(true)
+        .withArguments("verifyTestSourcesPresent", "--stacktrace")
+        .buildAndFail()
+
+    assertThat(result.output).contains("fixture").contains("no tests")
+  }
+
+  @Test
+  fun `applying the plugin does not fail when a module has no main sources`() {
+    writeSettingsFile()
+    writeBuildFile()
+
+    val result =
+      GradleRunner.create()
+        .withProjectDir(projectDir.toFile())
+        .withPluginClasspath()
+        .withDebug(true)
+        .withArguments("verifyTestSourcesPresent", "--stacktrace")
+        .build()
+
+    assertThat(result.task(":verifyTestSourcesPresent")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
+  }
+
+  @Test
+  fun `applying the plugin does not fail when main has only resources`() {
+    writeSettingsFile()
+    writeBuildFile()
+    val resources = projectDir.resolve("src/main/resources")
+    resources.createDirectories()
+    resources.resolve("sample.properties").writeText("greeting=Hello")
+
+    val result =
+      GradleRunner.create()
+        .withProjectDir(projectDir.toFile())
+        .withPluginClasspath()
+        .withDebug(true)
+        .withArguments("verifyTestSourcesPresent", "--stacktrace")
+        .build()
+
+    assertThat(result.task(":verifyTestSourcesPresent")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
   }
 
   private fun writeSettingsFile() {
