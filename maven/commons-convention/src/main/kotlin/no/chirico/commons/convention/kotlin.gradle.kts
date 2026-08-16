@@ -95,11 +95,11 @@ tasks.named<JacocoCoverageVerification>("jacocoTestCoverageVerification") {
   }
 }
 
-val verifyTestSourcesPresent by
-  tasks.registering {
+val verifyTestSourcesPresent =
+  tasks.register("verifyTestSourcesPresent") {
     group = "verification"
     description = "Fails if this module has main sources but no test sources."
-    val sourceSets = the<org.gradle.api.plugins.SourceSetContainer>()
+    val sourceSets = project.the<org.gradle.api.tasks.SourceSetContainer>()
     val mainSources =
       sourceSets.getByName("main").allSource.filter { it.extension == "kt" || it.extension == "java" }
     val testSources =
