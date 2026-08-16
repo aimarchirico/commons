@@ -81,7 +81,9 @@ maven/
 - **Conventions**: PascalCase naming (`commons/FileNaming`) and 300-line
   per-file limit under `src/main` (`commons/FileLength`).
 - **Testing & Coverage**: JaCoCo enforcing 80% line and branch coverage per
-  module (`jacocoTestCoverageVerification`).
+  module (`jacocoTestCoverageVerification`); modules with `src/main`
+  Kotlin/Java sources must have `src/test` sources
+  (`verifyTestSourcesPresent`).
 - **Architecture**: ArchUnit module-dependency rules enforced at Gradle
   configuration time (`no.chirico.commons.convention.architecture`).
 

@@ -95,4 +95,26 @@ tasks.named<JacocoCoverageVerification>("jacocoTestCoverageVerification") {
   }
 }
 
-tasks.named("check") { dependsOn("ktfmtCheck", "detekt", "jacocoTestCoverageVerification") }
+val verifyTestSourcesPresent =
+  tasks.register("verifyTestSourcesPresent") {
+    group = "verification"
+    description = "Fails if this module has main sources but no test sources."
+    val sourceSets = project.the<org.gradle.api.tasks.SourceSetContainer>()
+    val sourceExtensions = setOf("kt", "java")
+    val mainSources =
+      sourceSets.getByName("main").allSource.filter { it.extension in sourceExtensions }
+    val testSources =
+      sourceSets.getByName("test").allSource.filter { it.extension in sourceExtensions }
+    inputs.files(mainSources).withPropertyName("mainSources").ignoreEmptyDirectories()
+    inputs.files(testSources).withPropertyName("testSources").ignoreEmptyDirectories()
+    val moduleName = project.name
+    doLast {
+      if (!mainSources.isEmpty && testSources.isEmpty) {
+        throw GradleException("Module '$moduleName' has main sources but no tests.")
+      }
+    }
+  }
+
+tasks.named("check") {
+  dependsOn("ktfmtCheck", "detekt", "jacocoTestCoverageVerification", verifyTestSourcesPresent)
+}
