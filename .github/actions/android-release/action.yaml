@@ -41,7 +41,6 @@ runs:
       with:
         distribution: temurin
         java-version: '17'
-        cache: gradle
     - name: Run CI Build for Android
       uses: aimarchirico/commons/.github/actions/node-task@main
       with:
