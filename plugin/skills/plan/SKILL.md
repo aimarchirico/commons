@@ -13,21 +13,19 @@ argument-hint: "[--draft] [--auto] [--skip-check] [--no-pr]"
 | Flag           | Required | Description                                                                                                                                                  |
 | :------------- | :------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `--draft`      | No       | Create the resulting pull request as a draft.                                                                                                                |
-| `--auto`       | No       | Skip approval steps in this skill and the `commons:pr` skill's own approval prompt.                                                                          |
+| `--auto`       | No       | Ask the user nothing: skip the approval steps in this skill and the `commons:pr` skill's own approval prompt, drafting from context alone.                   |
 | `--skip-check` | No       | Skip the `commons:check` verification step before pushing.                                                                                                   |
 | `--no-pr`      | No       | Stop once the document is committed, reporting the branch and worktree instead of opening a pull request, for a caller that lands the design in a later one. |
 
 ## Workflow
 
-### Warrant
+### Scope
 
 1. Identify the work to be designed from the user's prompt or context,
-   asking for anything unclear. Then establish whether it warrants a design
-   document at all, against the criteria in the `docs/design-docs/` entry in
-   `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md#documentation`. If it does
-   not, report which criteria do not hold, recommend the `commons:issue`
-   skill instead, and stop.
-1. Inspect `docs/design-docs/` and decide, per that same entry, whether
+   asking for anything unclear. Under `--auto`, derive it from context
+   instead of asking.
+1. Inspect `docs/design-docs/` and decide, per the entry for it in
+   `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md#documentation`, whether
    this work amends an existing document or starts a new one. When amending,
    read the document into context first and flag any conflict with new input
    instead of silently overwriting.
@@ -41,7 +39,10 @@ argument-hint: "[--draft] [--auto] [--skip-check] [--no-pr]"
 1. Grill the user until *Context and Scope* and *Goals and Non-Goals* can be
    written. Establish what already exists and what constrains the work, then
    press hardest on non-goals: every capability left implicit is scope that
-   expands later.
+   expands later. Under `--auto`, ask nothing: derive both sections from the
+   codebase and the user's description, and state every assumption that
+   stands in for an unanswered question in *Context and Scope*, so the
+   pull request review is what settles it.
 1. For research on external systems, third-party integrations, or other
    technical unknowns feeding into the design, delegate per-system lookups
    to parallel `general-purpose` agents when substantial, so raw fetched
