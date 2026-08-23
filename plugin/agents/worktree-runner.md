@@ -24,12 +24,10 @@ be skipped.
    complete. Always run this step, don't pre-judge whether docs need
    updating, that is what `commons:docs` itself checks by inspecting the
    diff.
-5. Unless checks were requested to be skipped, invoke the `commons:check`
-   skill. If it fails, fix the reported failures like any other
-   implementation issue, commit the fix via `commons:commit --auto`, and run
-   `commons:check` once more. If it still fails after that one retry, stop
-   retrying, and report the failure and what you tried instead of
-   fabricating a pass.
+5. Unless checks were requested to be skipped, verify per
+   `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#verification`, treating any
+   reported failure like any other implementation issue. Your `--auto`
+   behavior there is always `--auto`, since you run unattended.
 
 ## Output
 

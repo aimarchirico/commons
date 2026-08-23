@@ -20,12 +20,9 @@ argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
 1. Extract `<pr-number>` from the `--pr` flag in `$ARGUMENTS`. Prompt the user
    if it was not provided.
 2. Execute `gh pr view <pr-number> --json headRefName` to resolve
-   `<branch-name>`, then `git fetch origin` and
-   `git worktree add <worktree-path> <branch-name>` to check the pull
-   request's existing branch out into an isolated worktree at its
-   up-to-date remote state, where `<worktree-path>` is
-   `../worktrees/<branch-name>` (nested under a `worktrees/` directory that
-   is itself a sibling of the repository root).
+   `<branch-name>`, then check that existing branch out into an isolated
+   worktree at its up-to-date remote state, per
+   `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#worktrees`.
 3. Execute:
 
    ```bash
@@ -42,8 +39,9 @@ argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
 
 4. If all four fields from step 3 are empty/false (`threads` is empty,
    `comments` is empty, `conflicting` is `false`, and `failing_checks` is
-   empty), execute `git worktree remove <worktree-path>` to clean up the
-   isolated worktree, then report to the user:
+   empty), remove the isolated worktree per
+   `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#worktrees`, then report to
+   the user:
 
    > Nothing to resolve: the PR has no unresolved threads, comments,
    > conflicts, or failing checks.
@@ -109,6 +107,5 @@ argument-hint: "--pr <pr-number> [--auto] [--skip-check]"
     owns the exact format; see its docstring), then requests re-review from
     the pull request's prior reviewers, excluding the user (who can't be a
     reviewer of their own PR). It deletes the temporary file on completion.
-12. Execute `git worktree remove <worktree-path>` to remove the isolated
-    worktree; `<branch-name>` and its commits remain intact in the repository
-    and on the remote.
+12. Remove the isolated worktree per
+    `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#worktrees`.
