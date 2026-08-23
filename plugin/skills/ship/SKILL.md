@@ -36,22 +36,28 @@ argument-hint: "[--draft] [--auto] [--review] [--skip-check]"
    through if it was provided, to draft and create the issue hierarchy (its
    own hierarchy-approval step surfaces normally unless `--auto` is set).
 5. Capture the ids of the top-level issues `commons:issue` created.
-6. Invoke the `commons:solve` skill once with every captured id,
-   `--issue <issue-ids>`, adding `--branch <branch-name>` if step 3 produced
-   a design branch, and passing `--auto`, `--draft`, and `--skip-check`
+6. If step 3 produced a design branch, rename it and its worktree to the
+   name `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#branch-setup` derives
+   from those issues, which `commons:plan` could not know when it had to
+   settle for type `chore`. Nothing has been pushed yet, so this rewrites
+   nothing anyone else holds.
+7. Invoke the `commons:solve` skill once with every captured id,
+   `--issue <issue-ids>`, adding `--branch <branch-name>` under the name
+   step 6 settled on if step 3 produced a design branch, and passing
+   `--auto`, `--draft`, and `--skip-check`
    through if they were provided, to implement them in one pass and open a
    pull request carrying the design documents and every implementation (its
    own plan-approval and the `commons:pr` approval steps surface normally
    unless `--auto` is set).
-7. If `--review` was not provided, stop here. Otherwise, capture the pull
+8. If `--review` was not provided, stop here. Otherwise, capture the pull
    request number that `commons:pr` reported creating (surfaced through
    `commons:solve`).
-8. Invoke the `commons:review` skill with `--pr <pr-number>`, passing
+9. Invoke the `commons:review` skill with `--pr <pr-number>`, passing
    `--auto` through if it was provided, to get findings on the opened pull
    request and, on approval (or automatically under `--auto`), post them as
    PR review comments.
-9. If `commons:review` posted any findings, invoke the `commons:resolve`
-   skill with `--pr <pr-number>`, passing `--auto` and `--skip-check` through
-   if they were provided, to fix them and reply on the pull request. Run at
-   most this one review-and-fix pass; do not re-invoke `commons:review`
-   afterward.
+10. If `commons:review` posted any findings, invoke the `commons:resolve`
+    skill with `--pr <pr-number>`, passing `--auto` and `--skip-check`
+    through if they were provided, to fix them and reply on the pull request.
+    Run at most this one review-and-fix pass; do not re-invoke
+    `commons:review` afterward.
