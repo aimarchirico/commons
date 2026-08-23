@@ -48,7 +48,7 @@ Each subsystem exposes `check` and `fix` under its own namespace, such as
   and agents), added via `/plugin marketplace add`.
 
 For how these fit together system-wide (release flow, infrastructure, domain
-boundaries), see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+boundaries), see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## Contributing
 
