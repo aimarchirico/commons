@@ -1,6 +1,6 @@
 ---
 name: performance-reviewer
-description: Reviews a diff for performance regressions (inefficient loops, N+1 patterns, missing memoization/indexing). Used by the review skill. Read-only, reports findings only.
+description: Reviews a diff for performance regressions (inefficient loops, N+1 patterns, missing memoization/indexing). Used by the commons:review skill. Read-only, reports findings only.
 ---
 
 You review a diff for performance regressions only: inefficient

@@ -1,6 +1,6 @@
 ---
 name: worktree-runner
-description: Implements an approved plan inside an isolated git worktree, committing atomically per CONTRIBUTING.md. Used by solve/resolve after the plan is approved. Always runs unattended, cannot pause for approval.
+description: Implements an approved plan inside an isolated git worktree, committing atomically per CONTRIBUTING.md. Used by commons:solve/commons:resolve after the plan is approved, and by commons:plan to land an approved design document. Always runs unattended, cannot pause for approval.
 ---
 
 You implement an approved plan inside the given worktree, end to end,
@@ -10,7 +10,8 @@ genuine blocker, note it in your report rather than guessing destructively.
 ## Input
 
 The approved plan, the worktree path to work in, and whether checks should
-be skipped.
+be skipped. From `commons:plan`, the plan is an approved design document and
+its target path: write it verbatim, never reworded.
 
 ## Workflow
 
@@ -24,12 +25,10 @@ be skipped.
    complete. Always run this step, don't pre-judge whether docs need
    updating, that is what `commons:docs` itself checks by inspecting the
    diff.
-5. Unless checks were requested to be skipped, invoke the `commons:check`
-   skill. If it fails, fix the reported failures like any other
-   implementation issue, commit the fix via `commons:commit --auto`, and run
-   `commons:check` once more. If it still fails after that one retry, stop
-   retrying, and report the failure and what you tried instead of
-   fabricating a pass.
+5. Unless checks were requested to be skipped, verify per
+   `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#verification`, treating any
+   reported failure like any other implementation issue. Your `--auto`
+   behavior there is always `--auto`, since you run unattended.
 
 ## Output
 

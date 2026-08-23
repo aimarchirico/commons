@@ -25,8 +25,7 @@ judgment rather than dogma.
 ### Behavior
 
 - **Principle of Least Astonishment**: Make code behave the way a reader
-  expects, starting with names that state intent. Reserve comments for
-  non-obvious reasoning.
+  expects, starting with names that state intent.
 - **Fail Fast**: Surface errors immediately and loudly instead of degrading
   silently.
 - **Tell, Don't Ask**: Ask a collaborator to do the work rather than querying
@@ -59,32 +58,47 @@ contract, never around it; shared code never depends on a slice.
 
 We adapt the
 [Google documentation guide](https://google.github.io/styleguide/docguide/) and
-split documentation by audience:
+keep documentation concise. Say what the code cannot say for itself, and no more.
 
-- **README.md and docs/** (System-level): Project overview, how components
-  connect, what infrastructure they run on, external dependencies. Nothing
-  implementation-specific.
-- **Module READMEs** (Implementation-level): Everything a developer needs to
-  work on that part.
+### Code Documentation
 
-### 1. README files
+- **Public Code Contracts** (Declaration documentation): Structured
+  documentation attached to exported declarations and public members. Defines
+  the behavioral contract for callers (what it does, parameters, return values,
+  thrown errors, and restrictions). Avoid explaining internal implementation
+  mechanics here.
+- **Inline Comments** (Implementation context): Targeted comments co-located
+  with code inside function or method bodies. Reserve for non-obvious reasoning,
+  subtle invariants, bug workarounds, and business constraints. Never restate
+  what the code clearly does, and avoid leaving dead or commented-out code.
+
+### Markdown Documentation
+
+#### 1. README files
 
 We follow the
 [Standard Readme](https://github.com/RichardLitt/standard-readme)
 specification for README files.
 
+- **Root README** (`README.md`): High-level project overview, prerequisites,
+  quickstart, and workspace structure. Nothing implementation-specific.
+- **Module READMEs** (`<module>/README.md`): Everything a developer needs to
+  work on a specific module.
+
+Sections:
+
 - **Title**: The name, followed by a description of what it does.
 - **Install**: Prerequisites, environment variables, and installation steps.
 - **Usage**: Available runtime commands and interaction flows.
-- **Development** (Modules only): Tech stack, directory tree, and code
-  quality.
+- **Development** (Modules only, if applicable): Tech stack, directory tree,
+  and code quality.
 - **Deployment** (Modules only, if applicable): CI/CD pipelines, deployment
   targets, and hosting details.
 - **Contributing**: A link to the contributing guidelines in
   `CONTRIBUTING.md`.
 - **License**: A link to the legal license governing use.
 
-### 2. docs/ARCHITECTURE.md
+#### 2. docs/ARCHITECTURE.md
 
 We follow the
 [matklad ARCHITECTURE.md](https://matklad.github.io/2021/02/06/ARCHITECTURE.md.html)
@@ -96,11 +110,11 @@ approach. High-level system structure documentation.
   architectural invariants.
 - **Cross-Cutting Concerns**: System-wide patterns and shared mechanics.
 
-### 3. docs/API.md (if applicable)
+#### 3. docs/API.md (if applicable)
 
 We follow the [OpenAPI](https://swagger.io/specification/) specification.
-Technical reference for external interfaces. Applies only if the project
-exposes an API surface.
+Technical reference for external network interfaces and HTTP endpoints.
+Applies only if the project exposes an HTTP API.
 
 - **Version**: The current API version number, containing subsections for
   servers and available authorizations.
@@ -108,7 +122,7 @@ exposes an API surface.
   endpoint with parameters, request body, and responses.
 - **Schemas**: Tabular definitions of request objects and response objects.
 
-### 4. docs/DESIGN.md (if applicable)
+#### 4. docs/DESIGN.md (if applicable)
 
 We follow the
 [Google DESIGN.md](https://github.com/google-labs-code/design.md)
@@ -116,7 +130,7 @@ specification. Standards for UI, UX, and visual identity. Applies only if the
 project has a UI.
 
 - **Frontmatter**: Machine-readable YAML design tokens.
-- **Overview**: Brand summary, core visual style, and key user flows.
+- **Overview**: Brand summary, core visual style, and key user flow diagrams.
 - **Colors**: Color palette definitions.
 - **Typography**: Font families and sizing scales.
 - **Layout**: Spacing and structural rules.
@@ -124,6 +138,42 @@ project has a UI.
 - **Shapes**: Rounded corners and geometric styles.
 - **Components**: Definitions and diagrams for specific UI elements.
 - **Do's and Don'ts**: Best practices for usage.
+
+#### 5. docs/design-docs/ (if applicable)
+
+We follow the
+[Design Docs at Google](https://www.industrialempathy.com/posts/design-docs-at-google/)
+approach. One `<slug>.md` per system or change designed, written before
+implementation to collect feedback on it. Warranted when three or more of
+these hold:
+
+- The right design approach is uncertain.
+- Getting the design wrong would be expensive to unwind.
+- The design is ambiguous or contentious.
+- It touches cross-cutting concerns that would otherwise be skipped.
+- High-level documentation of an existing or legacy system is needed.
+
+A design carrying more decisions than one review can settle is split into
+sub-problems, each with its own document; a broader document is read for
+context, never extended.
+
+Unlike the documentation above, these are not maintained. A document is
+updated until every issue cut from it is closed, then left as-is: an archive
+of the decision, not a description of the current system. Design that
+changes it goes in a new document linking back to it.
+
+- **Context and Scope**: Objective background on the landscape the work
+  lands in and what is being built. Facts, not argument.
+- **Goals and Non-Goals**: What the system achieves, and what it explicitly
+  will not.
+- **System Design**: The design itself, overview first and detail after,
+  emphasizing the trade-offs made. Diagrams, API sketches, and data storage
+  belong here when the design needs them.
+- **Alternatives Considered**: Other viable designs, and why each was
+  rejected.
+- **Cross-Cutting Concerns**: Security, privacy, observability, and the
+  like, including migration and backwards compatibility when the work
+  touches an existing system.
 
 ---
 
@@ -135,7 +185,7 @@ for issues.
 
 ### Issue Types
 
-Each issue type has has a provided template.
+Each issue type has a provided template.
 
 | Type      | Purpose                   |
 | :-------- | :------------------------ |

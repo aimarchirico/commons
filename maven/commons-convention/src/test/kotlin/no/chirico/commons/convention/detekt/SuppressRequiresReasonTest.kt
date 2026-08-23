@@ -106,4 +106,40 @@ class SuppressRequiresReasonTest {
 
     assertThat(lint(code)).hasSize(1)
   }
+
+  /** A `@Suppress` annotation preceded by another non-comment sibling is flagged. */
+  @Test
+  fun `flags a suppress annotation preceded by another annotation without reason`() {
+    val code =
+      """
+      package foo
+
+      class Foo {
+        @JvmStatic @Suppress("unused")
+        fun bar() = Unit
+      }
+      """
+        .trimIndent()
+
+    assertThat(lint(code)).hasSize(1)
+  }
+
+  /** A `@Suppress` on a parameter preceded by a reason comment is allowed. */
+  @Test
+  fun `allows a suppress annotation on parameter preceded by reason comment`() {
+    val code =
+      """
+      package foo
+
+      class Foo {
+        fun bar(
+          // suppressed: reason explaining suppression on param
+          @Suppress("unused") x: Int
+        ) = Unit
+      }
+      """
+        .trimIndent()
+
+    assertThat(lint(code)).isEmpty()
+  }
 }

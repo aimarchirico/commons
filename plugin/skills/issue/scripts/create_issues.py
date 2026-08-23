@@ -179,6 +179,35 @@ def create_issue_recursive(
         )
 
 
+def resolve_blocker(
+    run_cmd: Callable[[list[str]], str],
+    id_map: dict[str, str],
+    entry: str,
+    issue_id: str,
+) -> str | None:
+    """Resolve a blocked_by entry to an issue number, or None if unusable."""
+    if blocker_id := id_map.get(entry):
+        return blocker_id
+
+    number = entry.lstrip("#")
+    if not number.isdigit():
+        sys.stderr.write(
+            f"Warning: blocked_by id '{entry}' for issue {issue_id} does "
+            "not match any created issue; skipping.\n",
+        )
+        return None
+
+    try:
+        run_cmd(["gh", "issue", "view", number, "--json", "number"])
+    except subprocess.CalledProcessError:
+        sys.stderr.write(
+            f"Warning: blocked_by issue {entry} for issue {issue_id} could "
+            "not be found; skipping.\n",
+        )
+        return None
+    return number
+
+
 def wire_blocked_by(
     run_cmd: Callable[[list[str]], str],
     id_map: dict[str, str],
@@ -186,16 +215,11 @@ def wire_blocked_by(
 ) -> None:
     """Edit created GitHub issues to add blocked-by relationships."""
     for issue_id, blocked_by in pending_deps:
-        numbers = []
-        for local_id in blocked_by:
-            blocker_id = id_map.get(local_id)
-            if blocker_id is None:
-                sys.stderr.write(
-                    f"Warning: blocked_by id '{local_id}' for issue {issue_id} does "
-                    "not match any created issue; skipping.\n",
-                )
-                continue
-            numbers.append(blocker_id)
+        numbers = [
+            number
+            for entry in blocked_by
+            if (number := resolve_blocker(run_cmd, id_map, entry, issue_id))
+        ]
 
         if not numbers:
             continue

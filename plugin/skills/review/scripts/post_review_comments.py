@@ -59,17 +59,13 @@ def _render_unresolvable_line(finding: dict[str, Any]) -> str:
 
 
 def build_review(findings: list[dict[str, Any]]) -> dict[str, Any]:
-    """Render merged findings into a PR review body and inline comments array.
+    r"""Render merged findings into a PR review body and inline comments array.
 
-    Findings with a resolvable ``file``/``line`` become inline comments; the
-    rest are listed in the summary body. If there are any findings, the
-    body leads with a ``## Review summary`` header, then the explicit
-    verdict as its own line, verbatim: ``Approved.`` if ``findings`` is
-    empty (with no header, since there's nothing to summarize), otherwise
-    ``Changes requested.`` (if the repo has the self-review-signal GitHub
-    Action configured, it skips leading blank/header lines to find this
-    verdict, then may submit a real review on the user's behalf, since the
-    user can't approve or request changes on their own PR).
+    Findings with a resolvable ``file`` and ``line`` become inline comments;
+    the rest are listed in the summary body. Returns a dict containing ``body``
+    (the review summary string, leading with ``Approved.`` when findings is empty,
+    or ``## Review summary\n\nChanges requested.`` otherwise) and ``comments``
+    (a list of inline comment dicts with ``path``, ``line``, and ``body``).
     """
 
     def _is_resolvable(finding: dict[str, Any]) -> bool:
