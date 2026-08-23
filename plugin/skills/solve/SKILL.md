@@ -3,17 +3,18 @@ name: solve
 description:
   Orchestrate the development lifecycle starting from an existing issue. Use
   when the user asks to solve or implement an issue.
-argument-hint: "--issue <issue-id> [--draft] [--auto] [--skip-check]"
+argument-hint: "--issue <issue-id> [--branch <branch-name>] [--draft] [--auto] [--skip-check]"
 ---
 
 ## Arguments
 
-| Flag           | Required | Description                                                                                                                          |
-| :------------- | :------- | :----------------------------------------------------------------------------------------------------------------------------------- |
-| `--issue`      | Yes      | The ID of the existing GitHub issue.                                                                                                 |
-| `--draft`      | No       | Create the resulting pull request as a draft.                                                                                        |
-| `--auto`       | No       | Skip the plan-approval step in this skill and the `commons:pr` skill's own approval prompt, running the full lifecycle autonomously. |
-| `--skip-check` | No       | Skip the `commons:check` verification step that `worktree-runner` would otherwise run.                                               |
+| Flag           | Required | Description                                                                                                                                   |
+| :------------- | :------- | :-------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--issue`      | Yes      | The ID of the existing GitHub issue.                                                                                                          |
+| `--branch`     | No       | Implement onto this existing branch and its worktree instead of creating one, so the pull request also carries what the branch already holds. |
+| `--draft`      | No       | Create the resulting pull request as a draft.                                                                                                 |
+| `--auto`       | No       | Skip the plan-approval step in this skill and the `commons:pr` skill's own approval prompt, running the full lifecycle autonomously.          |
+| `--skip-check` | No       | Skip the `commons:check` verification step that `worktree-runner` would otherwise run.                                                        |
 
 ## Workflow
 
@@ -35,7 +36,8 @@ argument-hint: "--issue <issue-id> [--draft] [--auto] [--skip-check]"
    ```
 
    Solving a parent issue means solving everything beneath it in one pass.
-3. Set up the branch per
+3. If `--branch <branch-name>` was given, use that branch and its existing
+   worktree, and skip the rest of this step. Otherwise set up the branch per
    `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#branch-setup`, resolving
    `<base-branch>` with:
 

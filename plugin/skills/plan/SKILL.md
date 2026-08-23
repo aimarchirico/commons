@@ -5,16 +5,17 @@ description:
   a pull request so the design is reviewed before any issues are cut. Use
   when the user asks to plan, design, or scope a project or a significant
   change.
-argument-hint: "[--draft] [--auto] [--skip-check]"
+argument-hint: "[--draft] [--auto] [--skip-check] [--no-pr]"
 ---
 
 ## Arguments
 
-| Flag           | Required | Description                                                                         |
-| :------------- | :------- | :---------------------------------------------------------------------------------- |
-| `--draft`      | No       | Create the resulting pull request as a draft.                                       |
-| `--auto`       | No       | Skip approval steps in this skill and the `commons:pr` skill's own approval prompt. |
-| `--skip-check` | No       | Skip the `commons:check` verification step before pushing.                          |
+| Flag           | Required | Description                                                                                                                                                  |
+| :------------- | :------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--draft`      | No       | Create the resulting pull request as a draft.                                                                                                                |
+| `--auto`       | No       | Skip approval steps in this skill and the `commons:pr` skill's own approval prompt.                                                                          |
+| `--skip-check` | No       | Skip the `commons:check` verification step before pushing.                                                                                                   |
+| `--no-pr`      | No       | Stop once the document is committed, reporting the branch and worktree instead of opening a pull request, for a caller that lands the design in a later one. |
 
 ## Workflow
 
@@ -65,6 +66,9 @@ argument-hint: "[--draft] [--auto] [--skip-check]"
    `--skip-check` was set. The document is written as approved, never
    reworded (it invokes `commons:commit` and `commons:docs` itself as it
    goes).
+1. If `--no-pr` was set, stop here, leaving the branch and its worktree in
+   place for the caller to build on. Nothing is pushed, since
+   `commons:pr` owns pushing.
 1. Open the pull request per
    `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#opening-the-pull-request`.
 1. Remove the isolated worktree per
@@ -74,4 +78,5 @@ argument-hint: "[--draft] [--auto] [--skip-check]"
 
 The path of the drafted design document, plus the pull request number and
 URL reported by `commons:pr`, so a caller that invoked this skill can act on
-both.
+both. Under `--no-pr`, the branch name and worktree path instead of the pull
+request.
