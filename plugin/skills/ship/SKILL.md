@@ -36,19 +36,16 @@ argument-hint: "[--draft] [--auto] [--review] [--skip-check]"
    through if it was provided, to draft and create the issue hierarchy (its
    own hierarchy-approval step surfaces normally unless `--auto` is set).
 5. Capture the ids of the top-level issues `commons:issue` created.
-6. Invoke the `commons:solve` skill once per captured id with
-   `--issue <issue-id>`, in blocked-by order, passing `--auto`, `--draft`,
-   and `--skip-check` through if they were provided, to implement each issue
-   end-to-end (its own plan-approval and the `commons:pr` approval steps
-   surface normally unless `--auto` is set). Every invocation shares one
-   branch, so the design documents and every implementation land in a single
-   pull request: pass `--branch <branch-name>` from step 3 when it produced a
-   design branch, and otherwise let the first invocation create the branch
-   and pass the name it reports to the rest. Solving in blocked-by order is
-   what puts a blocker's work on that branch before the issue it blocks.
+6. Invoke the `commons:solve` skill once with every captured id,
+   `--issue <issue-ids>`, adding `--branch <branch-name>` if step 3 produced
+   a design branch, and passing `--auto`, `--draft`, and `--skip-check`
+   through if they were provided, to implement them in one pass and open a
+   pull request carrying the design documents and every implementation (its
+   own plan-approval and the `commons:pr` approval steps surface normally
+   unless `--auto` is set).
 7. If `--review` was not provided, stop here. Otherwise, capture the pull
-   request number `commons:pr` reported (surfaced through `commons:solve`),
-   which is the same one for every invocation.
+   request number that `commons:pr` reported creating (surfaced through
+   `commons:solve`).
 8. Invoke the `commons:review` skill with `--pr <pr-number>`, passing
    `--auto` through if it was provided, to get findings on the opened pull
    request and, on approval (or automatically under `--auto`), post them as

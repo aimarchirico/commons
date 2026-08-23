@@ -3,14 +3,14 @@ name: solve
 description:
   Orchestrate the development lifecycle starting from an existing issue. Use
   when the user asks to solve or implement an issue.
-argument-hint: "--issue <issue-id> [--branch <branch-name>] [--draft] [--auto] [--skip-check]"
+argument-hint: "--issue <issue-ids> [--branch <branch-name>] [--draft] [--auto] [--skip-check]"
 ---
 
 ## Arguments
 
 | Flag           | Required | Description                                                                                                                                   |
 | :------------- | :------- | :-------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--issue`      | Yes      | The ID of the existing GitHub issue.                                                                                                          |
+| `--issue`      | Yes      | The ids of the existing GitHub issues to solve, comma-separated for more than one.                                                            |
 | `--branch`     | No       | Implement onto this existing branch and its worktree instead of creating one, so the pull request also carries what the branch already holds. |
 | `--draft`      | No       | Create the resulting pull request as a draft.                                                                                                 |
 | `--auto`       | No       | Skip the plan-approval step in this skill and the `commons:pr` skill's own approval prompt, running the full lifecycle autonomously.          |
@@ -18,9 +18,9 @@ argument-hint: "--issue <issue-id> [--branch <branch-name>] [--draft] [--auto] [
 
 ## Workflow
 
-1. Extract `<issue-id>` from the `--issue` flag in `$ARGUMENTS`. Prompt the
+1. Extract `<issue-ids>` from the `--issue` flag in `$ARGUMENTS`. Prompt the
    user if it was not provided.
-2. Fetch the issue's full tree and assign it:
+2. Fetch each id's full tree and assign it, once per id:
 
    ```bash
    python3 "${CLAUDE_PLUGIN_ROOT}/skills/solve/scripts/get_issue_tree.py" <issue-id>
@@ -28,15 +28,16 @@ argument-hint: "--issue <issue-id> [--branch <branch-name>] [--draft] [--auto] [
 
    This recursively fetches the title, body, and linked project Type field
    for `<issue-id>` and every descendant sub-issue. Then, for every issue
-   number found anywhere in the tree (the parent and all descendants, not
-   just the parent), assign it to the current user:
+   number found anywhere in the trees (the parents and all descendants, not
+   just the parents), assign it to the current user:
 
    ```bash
    gh issue edit <n> --add-assignee @me
    ```
 
-   Solving a parent issue means solving everything beneath it in one pass.
-3. Resolve `<base-branch>`:
+   Solving an issue means solving everything beneath it in one pass, and
+   several ids are solved together in that same pass.
+3. Resolve `<base-branch>`, running this once per id:
 
    ```bash
    python3 "${CLAUDE_PLUGIN_ROOT}/skills/solve/scripts/get_issue_base_branch.py" <issue-id>
@@ -44,22 +45,25 @@ argument-hint: "--issue <issue-id> [--branch <branch-name>] [--draft] [--auto] [
 
    This checks `<issue-id>` and every descendant sub-issue for open blockers,
    not just `<issue-id>` itself, since solving it means solving its whole
-   tree.
+   tree. Ignore any candidate naming a branch for an id being solved in this
+   same invocation, since that work lands here rather than elsewhere, and
+   resolve what remains per
+   `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#branch-setup`.
 4. Without `--branch`, set up the branch per
    `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#branch-setup`, then create it
    and its worktree per
    `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#worktrees`.
 
-   With `--branch <branch-name>`, use that branch instead of creating one,
-   along with its existing worktree, or a worktree checked out per
-   `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#worktrees` when an earlier
-   run already removed it. Then check what the branch was cut from
+   With `--branch <branch-name>`, use that branch and its existing worktree
+   instead of creating either, and check what it was cut from
    (`git merge-base --fork-point`) against `<base-branch>`. If they differ,
    the branch predates a blocker this work depends on: rebase it onto
    `origin/<base-branch>` if it has never been pushed, and otherwise stop and
    report, rather than rewriting a branch others may already hold.
-5. Delegate to the `implementation-planner` agent, passing the full fetched
-   issue tree and `<worktree-path>`, to draft an implementation plan.
+5. Delegate to the `implementation-planner` agent, passing every fetched
+   issue tree and `<worktree-path>`, to draft one implementation plan
+   covering them all, sequenced so an issue's blockers are implemented
+   before it.
 6. Present the drafted plan, and wait for explicit user approval. Skip this
    step if the `--auto` flag is set, and proceed directly with the drafted
    plan.
@@ -68,12 +72,12 @@ argument-hint: "--issue <issue-id> [--branch <branch-name>] [--draft] [--auto] [
    (it invokes `commons:commit` and `commons:docs` itself as it goes).
 8. Open the pull request per
    `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#opening-the-pull-request`,
-   using the full list of issue numbers from the tree fetched in step 2 (the
-   parent and all descendants) as the related issue IDs to close.
+   using the full list of issue numbers from the trees fetched in step 2 (the
+   parents and all descendants) as the related issue IDs to close.
 9. Remove the isolated worktree per
    `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#worktrees`.
 
 ## Output
 
-The pull request number and URL reported by `commons:pr`, plus the branch
-the work landed on, so a caller that invoked this skill can act on both.
+The pull request number and URL reported by `commons:pr`, so a caller that
+invoked this skill can act on it.
