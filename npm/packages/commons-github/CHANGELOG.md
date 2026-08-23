@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.1.0](https://github.com/aimarchirico/commons/compare/commons-github-v2.0.0...commons-github-v2.1.0) (2026-08-23)
+
+
+### Features
+
+* adopt design document standard and chain it through the skill lifecycle ([f150d66](https://github.com/aimarchirico/commons/commit/f150d668342dea626ce22b02dd251c91aadbf1b4))
+* **commons-github:** update contributing guidelines asset ([6fdd2d3](https://github.com/aimarchirico/commons/commit/6fdd2d31ba52ef8cf41529f61132187d69a8dc65))
+* permit inline comments and disambiguate service api from public code contracts ([2233015](https://github.com/aimarchirico/commons/commit/22330152bf191a1f91d37d6ca6759f36d6954a3c))
+
 ## [2.0.0](https://github.com/aimarchirico/commons/compare/commons-github-v1.8.1...commons-github-v2.0.0) (2026-08-10)
 
 

@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.5.0](https://github.com/aimarchirico/commons/compare/commons-ts-v3.4.5...commons-ts-v3.5.0) (2026-08-23)
+
+
+### Features
+
+* adopt design document standard and chain it through the skill lifecycle ([f150d66](https://github.com/aimarchirico/commons/commit/f150d668342dea626ce22b02dd251c91aadbf1b4))
+* **commons-ts:** permit inline comments and remove public-jsdoc-only ([d5aecf0](https://github.com/aimarchirico/commons/commit/d5aecf0c853edfdcbb78415e284682e7e78a749f))
+* permit inline comments and disambiguate service api from public code contracts ([2233015](https://github.com/aimarchirico/commons/commit/22330152bf191a1f91d37d6ca6759f36d6954a3c))
+
 ## [3.4.5](https://github.com/aimarchirico/commons/compare/commons-ts-v3.4.4...commons-ts-v3.4.5) (2026-08-07)
 
 
