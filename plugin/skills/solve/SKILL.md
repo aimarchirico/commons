@@ -36,10 +36,7 @@ argument-hint: "--issue <issue-id> [--branch <branch-name>] [--draft] [--auto] [
    ```
 
    Solving a parent issue means solving everything beneath it in one pass.
-3. If `--branch <branch-name>` was given, use that branch and its existing
-   worktree, and skip the rest of this step. Otherwise set up the branch per
-   `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#branch-setup`, resolving
-   `<base-branch>` with:
+3. Resolve `<base-branch>`:
 
    ```bash
    python3 "${CLAUDE_PLUGIN_ROOT}/skills/solve/scripts/get_issue_base_branch.py" <issue-id>
@@ -47,21 +44,31 @@ argument-hint: "--issue <issue-id> [--branch <branch-name>] [--draft] [--auto] [
 
    This checks `<issue-id>` and every descendant sub-issue for open blockers,
    not just `<issue-id>` itself, since solving it means solving its whole
-   tree. Then create the branch and its worktree per
+   tree.
+4. Without `--branch`, set up the branch per
+   `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#branch-setup`, then create it
+   and its worktree per
    `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#worktrees`.
-4. Delegate to the `implementation-planner` agent, passing the full fetched
+
+   With `--branch <branch-name>`, use that branch and its existing worktree
+   instead of creating either, and check what it was cut from
+   (`git merge-base --fork-point`) against `<base-branch>`. If they differ,
+   the branch predates a blocker this work depends on: rebase it onto
+   `origin/<base-branch>` if it has never been pushed, and otherwise stop and
+   report, rather than rewriting a branch others may already hold.
+5. Delegate to the `implementation-planner` agent, passing the full fetched
    issue tree and `<worktree-path>`, to draft an implementation plan.
-5. Present the drafted plan, and wait for explicit user approval. Skip this
+6. Present the drafted plan, and wait for explicit user approval. Skip this
    step if the `--auto` flag is set, and proceed directly with the drafted
    plan.
-6. Delegate to the `worktree-runner` agent, passing the approved plan,
+7. Delegate to the `worktree-runner` agent, passing the approved plan,
    `<worktree-path>`, and whether `--skip-check` was set, to implement it
    (it invokes `commons:commit` and `commons:docs` itself as it goes).
-7. Open the pull request per
+8. Open the pull request per
    `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#opening-the-pull-request`,
    using the full list of issue numbers from the tree fetched in step 2 (the
    parent and all descendants) as the related issue IDs to close.
-8. Remove the isolated worktree per
+9. Remove the isolated worktree per
    `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#worktrees`.
 
 ## Output
