@@ -22,10 +22,12 @@ argument-hint: "[--draft] [--auto] [--review] [--skip-check]"
    context. Ask the user for clarification if it's not already clear.
 2. Establish whether that work warrants a design document, against the
    criteria in the `docs/design-docs/` entry in
-   `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md#documentation`. If it does
-   not, report which criteria do not hold and ask whether to design it
-   anyway, skipping to step 4 unless the user confirms. Under `--auto`, skip
-   to step 4 without asking.
+   `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md#documentation`. When they
+   hold, continue to step 3. When they do not, report which ones fail and ask
+   whether to design it anyway: continue to step 3 if the user confirms, and
+   skip to step 4 otherwise. Under `--auto` that question goes unasked and
+   its answer is taken as no, which skips the design only where it was
+   already unwarranted.
 3. Invoke the `commons:plan` skill with `--no-pr`, passing `--auto` and
    `--skip-check` through if they were provided, and capture the branch name
    it reports.
