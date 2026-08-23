@@ -75,6 +75,55 @@ def test_wire_blocked_by_warns_and_skips_unresolved_ids(
     assert "does not match any created issue" in capsys.readouterr().err
 
 
+def test_wire_blocked_by_accepts_existing_issue_numbers() -> None:
+    """A numeric entry with no local id is wired as an existing issue."""
+    calls: list[list[str]] = []
+
+    def fake_run_cmd(args: list[str]) -> str:
+        calls.append(args)
+        return ""
+
+    ci.wire_blocked_by(
+        fake_run_cmd,
+        {"migration": "100"},
+        [("101", ["#412", "migration"])],
+    )
+
+    assert calls == [
+        ["gh", "issue", "view", "412", "--json", "number"],
+        ["gh", "issue", "edit", "101", "--add-blocked-by", "412,100"],
+    ]
+
+
+def test_wire_blocked_by_prefers_local_ids_over_issue_numbers() -> None:
+    """A batch id shadows an issue of the same number, never the other way."""
+    calls: list[list[str]] = []
+
+    def fake_run_cmd(args: list[str]) -> str:
+        calls.append(args)
+        return ""
+
+    ci.wire_blocked_by(fake_run_cmd, {"42": "100"}, [("101", ["42"])])
+
+    assert calls == [["gh", "issue", "edit", "101", "--add-blocked-by", "100"]]
+
+
+def test_wire_blocked_by_warns_when_existing_issue_is_missing(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """A numeric entry that no issue matches is skipped with a warning."""
+    calls: list[list[str]] = []
+
+    def fake_run_cmd(args: list[str]) -> str:
+        calls.append(args)
+        raise subprocess.CalledProcessError(1, args)
+
+    ci.wire_blocked_by(fake_run_cmd, {}, [("101", ["999"])])
+
+    assert calls == [["gh", "issue", "view", "999", "--json", "number"]]
+    assert "could not be found" in capsys.readouterr().err
+
+
 def test_wire_blocked_by_warns_when_gh_edit_fails(
     capsys: pytest.CaptureFixture[str],
 ) -> None:
