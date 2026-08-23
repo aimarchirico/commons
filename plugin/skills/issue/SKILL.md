@@ -80,5 +80,5 @@ argument-hint: "[--auto]"
 
 ## Output
 
-The id of the top-level (root) issue created, so a caller that invoked
-this skill can act on it.
+The ids of the top-level issues created, so a caller that invoked this skill
+can act on them.

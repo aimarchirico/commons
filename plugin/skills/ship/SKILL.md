@@ -13,7 +13,7 @@ argument-hint: "[--draft] [--auto] [--review] [--skip-check]"
 | :------------- | :------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `--draft`      | No       | Passed through to the `commons:plan` and `commons:solve` skills (and their `commons:pr` skill) to open the resulting PRs as drafts.                             |
 | `--auto`       | No       | Run the full lifecycle autonomously without prompting for approvals across every sub-skill invoked (including during a `--review` pass if set).                 |
-| `--review`     | No       | After the pull request is opened, run one review-and-fix pass over it via the `commons:review` and `commons:resolve` skills.                                    |
+| `--review`     | No       | Once the pull requests are opened, run one review-and-fix pass over each via the `commons:review` and `commons:resolve` skills.                                 |
 | `--skip-check` | No       | Passed through to the `commons:plan` and `commons:solve` skills, and to `commons:resolve` during a `--review` pass if set, to skip their `commons:check` steps. |
 
 ## Workflow
@@ -35,23 +35,24 @@ argument-hint: "[--draft] [--auto] [--review] [--skip-check]"
    step 3 produced any, and the identified work otherwise, passing `--auto`
    through if it was provided, to draft and create the issue hierarchy (its
    own hierarchy-approval step surfaces normally unless `--auto` is set).
-5. Capture the top-level issue id created by `commons:issue` (the id of the
-   root item in the created hierarchy).
-6. Invoke the `commons:solve` skill with `--issue <issue-id>`, adding
-   `--branch <branch-name>` if step 3 produced a design branch, and passing
-   `--auto`, `--draft`, and `--skip-check` through if they were provided, to
-   implement the issue end-to-end and open a pull request carrying both the
-   design documents and their implementation (its own plan-approval and the
-   `commons:pr` approval steps surface normally unless `--auto` is set).
+5. Capture the ids of the top-level issues `commons:issue` created.
+6. Invoke the `commons:solve` skill once per captured id with
+   `--issue <issue-id>`, in blocked-by order, passing `--auto`, `--draft`,
+   and `--skip-check` through if they were provided, to implement each issue
+   end-to-end and open its pull request (its own plan-approval and the
+   `commons:pr` approval steps surface normally unless `--auto` is set). If
+   step 3 produced a design branch, add `--branch <branch-name>` to the first
+   invocation only, so the design documents land once rather than in every
+   pull request.
 7. If `--review` was not provided, stop here. Otherwise, capture the pull
-   request number that `commons:pr` reported creating (surfaced through
+   request number `commons:pr` reported for each invocation (surfaced through
    `commons:solve`).
-8. Invoke the `commons:review` skill with `--pr <pr-number>`, passing
-   `--auto` through if it was provided, to get findings on the opened pull
-   request and, on approval (or automatically under `--auto`), post them as
-   PR review comments.
-9. If `commons:review` posted any findings, invoke the `commons:resolve`
-   skill with `--pr <pr-number>`, passing `--auto` and `--skip-check` through
-   if they were provided, to fix them and reply on the pull request. Run at
-   most this one review-and-fix pass; do not re-invoke `commons:review`
-   afterward.
+8. Invoke the `commons:review` skill with `--pr <pr-number>` for each of
+   those pull requests, passing `--auto` through if it was provided, to get
+   findings on it and, on approval (or automatically under `--auto`), post
+   them as PR review comments.
+9. For each pull request `commons:review` posted findings on, invoke the
+   `commons:resolve` skill with `--pr <pr-number>`, passing `--auto` and
+   `--skip-check` through if they were provided, to fix them and reply on the
+   pull request. Run at most this one review-and-fix pass per pull request;
+   do not re-invoke `commons:review` afterward.
