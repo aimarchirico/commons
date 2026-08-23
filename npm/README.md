@@ -161,7 +161,7 @@ touches the matching `npm/packages/*` path. Publishing runs
 
 ## Contributing
 
-See [CONTRIBUTING.md](../.github/CONTRIBUTING.md).
+See [`.github/CONTRIBUTING.md`](../.github/CONTRIBUTING.md).
 
 ## License
 

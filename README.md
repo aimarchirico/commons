@@ -52,7 +52,7 @@ boundaries), see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 ## Contributing
 
-See [CONTRIBUTING.md](.github/CONTRIBUTING.md).
+See [`.github/CONTRIBUTING.md`](.github/CONTRIBUTING.md).
 
 ## License
 

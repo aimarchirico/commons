@@ -44,7 +44,7 @@ tag).
 
 ## Contributing
 
-See [CONTRIBUTING.md](../../.github/CONTRIBUTING.md).
+See [`.github/CONTRIBUTING.md`](../../.github/CONTRIBUTING.md).
 
 ## License
 

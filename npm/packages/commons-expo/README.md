@@ -81,7 +81,7 @@ registry when a release touches this package's path.
 
 ## Contributing
 
-See [CONTRIBUTING.md](../../../.github/CONTRIBUTING.md).
+See [`.github/CONTRIBUTING.md`](../../../.github/CONTRIBUTING.md).
 
 ## License
 
