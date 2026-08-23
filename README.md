@@ -41,8 +41,7 @@ domain boundaries), see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 ## Contributing
 
-See [CONTRIBUTING.md](.github/CONTRIBUTING.md) for principles, documentation,
-issue, branch, commit, and pull request conventions.
+See [CONTRIBUTING.md](.github/CONTRIBUTING.md).
 
 ## License
 
