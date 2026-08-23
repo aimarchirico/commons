@@ -1,28 +1,39 @@
 # Commons
 
-Commons is a monorepo of shared building blocks for downstream software
-projects: published Kotlin/Maven libraries, TypeScript/npm configuration
-packages and provisioning CLIs, Python tooling, reusable GitHub Actions, and
-a Claude Code agent-skill plugin covering the development lifecycle. Every
-piece encodes the same conventions (see CONTRIBUTING.md), so a downstream
-repository, such as the service template, inherits them instead of
-re-implementing them project by project. The audience is developers building
-or maintaining projects on top of it.
+Shared building blocks for downstream software projects: published
+libraries, configuration packages, provisioning CLIs, reusable GitHub
+Actions, and a Claude Code plugin. Every piece encodes the same
+[conventions](.github/CONTRIBUTING.md), so a downstream repository inherits
+them instead of re-implementing them project by project.
 
 ## Install
 
-Commons is not installed as a whole; contributing to it requires
-[Task](https://taskfile.dev), and each subsystem is instead consumed
-individually, as an independently published unit that a downstream
-repository pins as a dependency (or, for `plugin/`, installs directly). See
-Usage below for the install method and prerequisites of each.
+Commons is not installed as a whole. Each subsystem is published separately
+and pinned as a dependency downstream (or, for `plugin/`, installed
+directly); its own README documents how.
+
+To work on this repository, install [Task](https://taskfile.dev), then run
+`pnpm install` in `tools/` to fetch the shared linting tooling.
+
+Each subsystem needs its own toolchain, but only to work on that subsystem:
+Java 25 for `maven/`, Node 20+ and PNPM 11.9 for `npm/`, and Python 3.13 for
+`python/`.
 
 ## Usage
 
-Commons has no runnable UI of its own: it is a collection of published
-libraries, configuration packages, and agent skills. What each subsystem
-provides, how to install it, and how to consume it is documented in its own
-README:
+Run `task` from the repository root to list every available task. The
+repository-wide ones:
+
+| Command              | Description                             |
+| :------------------- | :-------------------------------------- |
+| `task docs:check`    | Lint Markdown files.                    |
+| `task config:check`  | Lint configuration files.               |
+| `task commit:check`  | Lint commit messages.                   |
+
+Each subsystem exposes `check` and `fix` under its own namespace, such as
+`task maven:check` or `task npm:fix`.
+
+### Workspace
 
 - [`tools/`](tools/README.md): shared linting configs and release tooling.
 - [`.github/actions/`](.github/actions/README.md): shared GitHub Actions for
@@ -36,8 +47,8 @@ README:
 - [`plugin/`](plugin/README.md): the `commons` Claude Code plugin (skills
   and agents), added via `/plugin marketplace add`.
 
-For how these pieces fit together system-wide (release flow, infrastructure,
-domain boundaries), see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+For how these fit together system-wide (release flow, infrastructure, domain
+boundaries), see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 ## Contributing
 
