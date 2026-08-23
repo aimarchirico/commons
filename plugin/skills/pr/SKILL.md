@@ -28,10 +28,10 @@ argument-hint: "[--draft] [--auto]"
    gh pr view --json number,url,state
    ```
 
-   If it does, run only step 7 to push the commits it is missing, then
-   report it as this skill's output. Nothing is drafted, approved, or
-   created: a caller invoking this skill repeatedly on one branch is adding
-   to that pull request, not opening another.
+   If it does, this run updates that pull request rather than opening a
+   second. Everything below still runs: the analysis is scoped to the whole
+   branch, so the title and body it drafts describe every commit on it, not
+   only the ones this run added.
 
 4. Analyze the current branch against `<base-branch>`:
 
@@ -53,7 +53,8 @@ argument-hint: "[--draft] [--auto]"
 
 5. Request related issue IDs if they were not successfully extracted in the
    previous step. If the branch's issue has sub-issues, close every one of
-   them explicitly.
+   them explicitly. When updating an existing pull request, carry over the
+   issues its body already closes rather than dropping them.
 6. Draft the PR description by populating
    `${CLAUDE_PLUGIN_ROOT}/.github/PULL_REQUEST_TEMPLATE.md` using the
    gathered context.
@@ -82,6 +83,13 @@ argument-hint: "[--draft] [--auto]"
 
    Pass `--draft` if the `--draft` flag was set, and `--base <base-branch>`
    if `<base-branch>` differs from the repository default branch.
+
+   When step 3 found an open pull request, update that one instead, so its
+   title and body describe the branch as it now stands:
+
+   ```bash
+   gh pr edit <number> --title "<title>" --body "<body>"
+   ```
 
 ## Output
 
