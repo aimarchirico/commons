@@ -46,4 +46,4 @@ issue, branch, commit, and pull request conventions.
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE) © Aimár A. Chirico
