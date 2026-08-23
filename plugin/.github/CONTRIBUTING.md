@@ -59,13 +59,30 @@ contract, never around it; shared code never depends on a slice.
 
 We adapt the
 [Google documentation guide](https://google.github.io/styleguide/docguide/) and
-split documentation by audience:
+split documentation between file-level references and source code annotations:
 
-- **README.md and docs/** (System-level): Project overview, how components
-  connect, what infrastructure they run on, external dependencies. Nothing
-  implementation-specific.
-- **Module READMEs** (Implementation-level): Everything a developer needs to
-  work on that part.
+### File-Level Documentation
+
+- **README.md and docs/** (System-level): Project overview, architecture, and
+  external dependencies. Nothing implementation-specific.
+- **Module READMEs** (Module-level): Everything a developer needs to work on a
+  specific module.
+- **docs/API.md** (Service API, if applicable): OpenAPI reference for external
+  network interfaces and HTTP endpoints.
+- **docs/DESIGN.md** (UI/UX, if applicable): Visual identity tokens and UI
+  component specifications.
+
+### Source Code Documentation
+
+- **Public Code Contracts** (Declaration docstrings): Docstrings and header
+  comments attached to exported declarations and public members. Defines the
+  behavioral contract for callers (what it does, parameters, return values,
+  thrown errors, and restrictions). Avoid explaining internal implementation
+  mechanics here.
+- **Inline Comments** (Implementation context): Targeted comments co-located
+  with code inside function or method bodies. Reserve for non-obvious reasoning,
+  subtle invariants, bug workarounds, and business constraints. Never restate
+  what the code clearly does, and avoid leaving dead or commented-out code.
 
 ### 1. README files
 
@@ -96,11 +113,11 @@ approach. High-level system structure documentation.
   architectural invariants.
 - **Cross-Cutting Concerns**: System-wide patterns and shared mechanics.
 
-### 3. docs/API.md (if applicable)
+### 3. docs/API.md (Service API, if applicable)
 
 We follow the [OpenAPI](https://swagger.io/specification/) specification.
-Technical reference for external interfaces. Applies only if the project
-exposes an API surface.
+Technical reference for external network interfaces and HTTP endpoints.
+Applies only if the project exposes a service API.
 
 - **Version**: The current API version number, containing subsections for
   servers and available authorizations.
