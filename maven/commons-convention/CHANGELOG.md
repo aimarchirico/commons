@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.2.0](https://github.com/aimarchirico/commons/compare/commons-convention-v3.1.0...commons-convention-v3.2.0) (2026-08-23)
+
+
+### Features
+
+* adopt design document standard and chain it through the skill lifecycle ([f150d66](https://github.com/aimarchirico/commons/commit/f150d668342dea626ce22b02dd251c91aadbf1b4))
+* **commons-convention:** permit inline comments and remove PublicKDocOnly ([1cca91b](https://github.com/aimarchirico/commons/commit/1cca91b4162045c39d50bb80ee084bb66cd6c6fb))
+* permit inline comments and disambiguate service api from public code contracts ([2233015](https://github.com/aimarchirico/commons/commit/22330152bf191a1f91d37d6ca6759f36d6954a3c))
+
+
+### Bug Fixes
+
+* **commons-convention:** align detekt rule kdoc with contract standard and expand test coverage ([b7e9538](https://github.com/aimarchirico/commons/commit/b7e9538ea6517f3690681b775e12f1b35c6f8697))
+
 ## [3.1.0](https://github.com/aimarchirico/commons/compare/commons-convention-v3.0.0...commons-convention-v3.1.0) (2026-08-16)
 
 

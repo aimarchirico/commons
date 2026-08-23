@@ -1,14 +1,14 @@
 {
-  "maven/commons-convention": "3.1.0",
+  "maven/commons-convention": "3.2.0",
   "maven/commons-security": "3.2.0",
   "maven/commons-test": "3.2.0",
   "maven/commons-firebase-admin": "2.2.0",
   "npm/packages/commons-cloudflare": "3.7.0",
   "npm/packages/commons-expo": "4.7.0",
   "npm/packages/commons-firebase-client": "3.4.1",
-  "npm/packages/commons-github": "2.0.0",
+  "npm/packages/commons-github": "2.1.0",
   "npm/packages/commons-google-signin": "4.3.1",
   "npm/packages/commons-openapi": "2.6.1",
   "npm/packages/commons-project": "1.4.0",
-  "npm/packages/commons-ts": "3.4.5"
+  "npm/packages/commons-ts": "3.5.0"
 }
