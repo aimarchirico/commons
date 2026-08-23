@@ -74,8 +74,7 @@ maven/
 - **Static Analysis**: detekt with custom rules for documentation and file
   limits (`task maven:check`).
 - **Documentation & Comments**: KDoc required for public members
-  (`OutdatedDocumentation`); line comments and non-public KDoc disallowed
-  (`commons/PublicKDocOnly`).
+  (`OutdatedDocumentation`, `UndocumentedPublic*`).
 - **Suppression Discipline**: `// suppressed: <reason>` comment of at least
   10 characters required for `@Suppress` (`commons/SuppressRequiresReason`).
 - **Conventions**: PascalCase naming (`commons/FileNaming`) and 300-line
