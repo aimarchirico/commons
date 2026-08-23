@@ -107,7 +107,7 @@ graph TD
 plugin/
 ├── .claude-plugin/plugin.json   # plugin manifest
 ├── .github/                     # bundled conventions (CONTRIBUTING.md, issue/PR templates)
-├── shared/                      # shared script utilities (pr_feedback.py)
+├── shared/                      # shared orchestration conventions (CONVENTIONS.md) & script utilities (pr_feedback.py)
 ├── skills/
 │   ├── check/SKILL.md           # verify the tree against the project's own PR-gating CI checks
 │   ├── commit/SKILL.md          # create logical, atomic commits
@@ -132,6 +132,15 @@ plugin/
 Complex skills pair their `SKILL.md` prompt with deterministic Python scripts
 (`skills/*/scripts/`) for GitHub API operations, state tracking, and git
 worktree management.
+
+**Shared Conventions** (`shared/CONVENTIONS.md`): the single definition of the
+orchestration policies more than one skill depends on, referenced by anchor the
+same way skills reference `CONTRIBUTING.md` sections. `.github/CONTRIBUTING.md`
+governs how code and history are authored; `CONVENTIONS.md` governs how skills
+run: `#branch-setup`, `#worktrees`, `#verification`, and
+`#opening-the-pull-request`. Policies that must not drift between skills (the
+worktree path, the check-retry count, who owns pushing) live here rather than
+being restated per skill.
 
 **Shared Feedback State** (`shared/pr_feedback.py`): dynamically loaded by
 script path to provide a single authoritative definition for open PR review
