@@ -29,10 +29,11 @@ argument-hint: "[--draft] [--auto] [--skip-check] [--no-pr]"
    this work amends an existing document or starts a new one. When amending,
    read the document into context first and flag any conflict with new input
    instead of silently overwriting.
-1. If the work carries more decisions than one review can settle, narrow
-   this document to the sub-problem being designed now, and report the
-   remaining sub-problems as later documents of their own rather than
-   designing them here.
+1. If the work carries more decisions than one review can settle, split it
+   into a sub-problem per document rather than one sprawling document, and
+   draft them all. Each stays open to revision until the issues cut from it
+   close, so one whose design rests on another's is still drafted now and
+   revised as that review resolves.
 
 ### Draft
 
@@ -48,25 +49,28 @@ argument-hint: "[--draft] [--auto] [--skip-check] [--no-pr]"
    to parallel `general-purpose` agents when substantial, so raw fetched
    documentation stays out of the main conversation and only distilled
    findings return, never written up as their own artifact.
-1. Draft the remaining sections. Spend length on what is genuinely
-   uncertain, never on restating what the implementation will obviously do.
-1. Present the drafted document for approval, and wait for explicit user
+1. Draft the remaining sections of each document. Spend length on what is
+   genuinely uncertain, never on restating what the implementation will
+   obviously do. Where one document's design rests on another's, link to it
+   for context instead of restating the design it carries.
+1. Present every drafted document for approval, and wait for explicit user
    approval. Skip this step if the `--auto` flag is set, and proceed
-   directly with the drafted document.
+   directly with the drafted documents.
 
 ### Handoff
 
 1. Set up the branch per
    `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#branch-setup`, using type
    `chore` (there is no issue to key off yet) and deriving the description
-   from the document's slug. Then create the branch and its worktree per
+   from the document's slug, or from the work the set of them covers when
+   there are several. Then create the branch and its worktree per
    `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#worktrees`.
-1. Delegate to the `worktree-runner` agent, passing the approved document
-   verbatim, its target path `docs/design-docs/<slug>.md` where `<slug>`
-   names the system or change being designed, `<worktree-path>`, and whether
-   `--skip-check` was set. The document is written as approved, never
+1. Delegate to the `worktree-runner` agent, passing every approved document
+   verbatim, each one's target path `docs/design-docs/<slug>.md` where
+   `<slug>` names the system or change it designs, `<worktree-path>`, and
+   whether `--skip-check` was set. Documents are written as approved, never
    reworded (it invokes `commons:commit` and `commons:docs` itself as it
-   goes).
+   goes, committing one document at a time).
 1. If `--no-pr` was set, stop here, leaving the branch and its worktree in
    place for the caller to build on. Nothing is pushed, since
    `commons:pr` owns pushing.
@@ -77,7 +81,7 @@ argument-hint: "[--draft] [--auto] [--skip-check] [--no-pr]"
 
 ## Output
 
-The path of the drafted design document, plus the pull request number and
+The path of every drafted design document, plus the pull request number and
 URL reported by `commons:pr`, so a caller that invoked this skill can act on
 both. Under `--no-pr`, the branch name and worktree path instead of the pull
 request.

@@ -29,8 +29,8 @@ argument-hint: "[--draft] [--auto] [--review] [--skip-check]"
 3. Invoke the `commons:plan` skill with `--no-pr`, passing `--auto` and
    `--skip-check` through if they were provided, and capture the branch name
    it reports.
-4. Invoke the `commons:issue` skill with the approved design document when
-   step 3 produced one, and the identified work otherwise, passing `--auto`
+4. Invoke the `commons:issue` skill with the approved design documents when
+   step 3 produced any, and the identified work otherwise, passing `--auto`
    through if it was provided, to draft and create the issue hierarchy (its
    own hierarchy-approval step surfaces normally unless `--auto` is set).
 5. Capture the top-level issue id created by `commons:issue` (the id of the
@@ -39,7 +39,7 @@ argument-hint: "[--draft] [--auto] [--review] [--skip-check]"
    `--branch <branch-name>` if step 3 produced a design branch, and passing
    `--auto`, `--draft`, and `--skip-check` through if they were provided, to
    implement the issue end-to-end and open a pull request carrying both the
-   design document and its implementation (its own plan-approval and the
+   design documents and their implementation (its own plan-approval and the
    `commons:pr` approval steps surface normally unless `--auto` is set).
 7. If `--review` was not provided, stop here. Otherwise, capture the pull
    request number that `commons:pr` reported creating (surfaced through
