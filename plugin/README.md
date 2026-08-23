@@ -23,14 +23,16 @@ interface and workflow, invoked as a Claude Code slash command (e.g.
 `/commons:solve`). Skills rely on the bundled conventions in `.github/`
 rather than on each other, except for:
 
-- `solve` / `resolve` delegating to `implementation-planner` and
-  `worktree-runner` in `agents/` (which in turn invokes `check` before
-  handing back).
-- `review` delegating to `logic-reviewer`, `performance-reviewer`,
+- `commons:solve` / `commons:resolve` delegating to
+  `implementation-planner` and `worktree-runner` in `agents/` (which in turn
+  invokes `commons:check` before handing back).
+- `commons:review` delegating to `logic-reviewer`, `performance-reviewer`,
   `security-reviewer`, and `compliance-reviewer`.
-- `ship` delegating to the `issue`, `solve`, `review`, and `resolve` skills.
-- `plan` delegating to parallel `general-purpose` agents for external
-  research, and to the `commit`, `check`, and `pr` skills.
+- `commons:ship` delegating to the `commons:issue`, `commons:solve`,
+  `commons:review`, and `commons:resolve` skills.
+- `commons:plan` delegating to parallel `general-purpose` agents for external
+  research, and to the `commons:commit`, `commons:check`, and `commons:pr`
+  skills.
 
 Agent skills delegate task execution to specialized subagents or
 deterministic Python scripts, which execute GitHub GraphQL/REST operations
@@ -143,7 +145,7 @@ being restated per skill.
 
 **Shared Feedback State** (`shared/pr_feedback.py`): dynamically loaded by
 script path to provide a single authoritative definition for open PR review
-feedback across `triage` and `resolve`:
+feedback across `commons:triage` and `commons:resolve`:
 
 - `unresolved_threads`: Identifies review threads where `isResolved` is false.
 - `comments_since_checkpoint`: Tracks comments created after the most recent
@@ -151,17 +153,17 @@ feedback across `triage` and `resolve`:
 
 **Skill Script Mechanics**:
 
-- **`review`** (`skills/review/scripts/post_review_comments.py`): Separates
+- **`commons:review`** (`skills/review/scripts/post_review_comments.py`): Separates
   inline diff findings (with `file` and `line`) from unresolvable summary
   items, posting a single atomic GitHub PR review with a verdict
   (`Approved.` vs `Changes requested.`).
-- **`resolve`** (`skills/resolve/scripts/`): `fetch_pr_problems.py` uses
+- **`commons:resolve`** (`skills/resolve/scripts/`): `fetch_pr_problems.py` uses
   GraphQL and `pr_feedback.py` to extract open review items, plus `gh pr
   view`/`gh pr checks` for conflict and failing-check state;
   `post_pr_replies.py` replies to inline comments, resolves threads via
   GraphQL mutations (`resolveReviewThread`), posts a top-level `Resolved.`
   checkpoint, and re-requests review.
-- **`triage`** (`skills/triage/scripts/`): `collect_triage.py` surveys
+- **`commons:triage`** (`skills/triage/scripts/`): `collect_triage.py` surveys
   assigned PRs, user PRs, and project backlog items. Uses `review_state.py`
   to compute PR action buckets (`merge`, `resolve_then_merge`, `resolve`,
   `self_review`, `draft`) and `backlog_utils.py` to filter out blocked items

@@ -9,12 +9,12 @@ argument-hint: "[--draft] [--auto] [--review] [--skip-check]"
 
 ## Arguments
 
-| Flag           | Required | Description                                                                                                                                        |
-| :------------- | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--draft`      | No       | Passed through to the `solve` skill (and its `pr` skill) to open the resulting PR as a draft.                                                      |
-| `--auto`       | No       | Run the full lifecycle autonomously without prompting for approvals across every sub-skill invoked (including during a `--review` pass if set).    |
-| `--review`     | No       | After the pull request is opened, run one review-and-fix pass over it via the `review` and `resolve` skills.                                       |
-| `--skip-check` | No       | Passed through to the `solve` skill, and to the `resolve` skill during a `--review` pass if set, to skip their `commons:check` verification steps. |
+| Flag           | Required | Description                                                                                                                                                        |
+| :------------- | :------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--draft`      | No       | Passed through to the `commons:solve` skill (and its `commons:pr` skill) to open the resulting PR as a draft.                                                      |
+| `--auto`       | No       | Run the full lifecycle autonomously without prompting for approvals across every sub-skill invoked (including during a `--review` pass if set).                    |
+| `--review`     | No       | After the pull request is opened, run one review-and-fix pass over it via the `commons:review` and `commons:resolve` skills.                                       |
+| `--skip-check` | No       | Passed through to the `commons:solve` skill, and to the `commons:resolve` skill during a `--review` pass if set, to skip their `commons:check` verification steps. |
 
 ## Workflow
 

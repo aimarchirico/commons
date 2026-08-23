@@ -94,20 +94,15 @@ def fetch_issue_tree(
     repo_name: str,
     number: int,
 ) -> dict[str, Any]:
-    """Recursively fetch title/body/type for an issue and its sub-issue tree.
+    """Recursively fetch title, body, and type for an issue and its sub-issues.
 
-    Recurses into GitHub's native sub-issues, up to the same maximum nesting
-    depth as the project's allowed issue type hierarchy (Epic -> Story/Task/
-    Bug -> Subtask). Returns `{number, title, body, type, children: [...]}`,
-    where `type` is the linked project item's Type field value (or None if
-    unset), and `children` holds the same shape recursively for every direct
-    sub-issue.
+    Recurses into GitHub's native sub-issues up to the project's maximum
+    hierarchy depth. Returns a dict containing ``number``, ``title``,
+    ``body``, ``type``, and ``children`` (a list of child issue dicts with the
+    same structure).
 
-    Unlike `blocking_prs.fetch_issue_dependencies`, this lets exceptions
-    (malformed API responses, missing fields) propagate rather than falling
-    back to an empty result: a missing title or body is essential input for
-    planning and assignment, so callers should fail loudly instead of
-    silently planning against incomplete data.
+    Raises ``KeyError``, ``json.JSONDecodeError``, or ``subprocess.CalledProcessError``
+    if the issue cannot be retrieved or parsed.
     """
     args = [
         "gh",

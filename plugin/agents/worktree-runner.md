@@ -1,6 +1,6 @@
 ---
 name: worktree-runner
-description: Implements an approved plan inside an isolated git worktree, committing atomically per CONTRIBUTING.md. Used by solve/resolve after the plan is approved. Always runs unattended, cannot pause for approval.
+description: Implements an approved plan inside an isolated git worktree, committing atomically per CONTRIBUTING.md. Used by commons:solve/commons:resolve after the plan is approved. Always runs unattended, cannot pause for approval.
 ---
 
 You implement an approved plan inside the given worktree, end to end,

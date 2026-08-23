@@ -8,12 +8,12 @@ argument-hint: "--issue <issue-id> [--draft] [--auto] [--skip-check]"
 
 ## Arguments
 
-| Flag           | Required | Description                                                                                                                  |
-| :------------- | :------- | :--------------------------------------------------------------------------------------------------------------------------- |
-| `--issue`      | Yes      | The ID of the existing GitHub issue.                                                                                         |
-| `--draft`      | No       | Create the resulting pull request as a draft.                                                                                |
-| `--auto`       | No       | Skip the plan-approval step in this skill and the `pr` skill's own approval prompt, running the full lifecycle autonomously. |
-| `--skip-check` | No       | Skip the `commons:check` verification step that `worktree-runner` would otherwise run.                                       |
+| Flag           | Required | Description                                                                                                                          |
+| :------------- | :------- | :----------------------------------------------------------------------------------------------------------------------------------- |
+| `--issue`      | Yes      | The ID of the existing GitHub issue.                                                                                                 |
+| `--draft`      | No       | Create the resulting pull request as a draft.                                                                                        |
+| `--auto`       | No       | Skip the plan-approval step in this skill and the `commons:pr` skill's own approval prompt, running the full lifecycle autonomously. |
+| `--skip-check` | No       | Skip the `commons:check` verification step that `worktree-runner` would otherwise run.                                               |
 
 ## Workflow
 

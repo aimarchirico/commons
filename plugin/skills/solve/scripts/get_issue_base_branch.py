@@ -78,13 +78,7 @@ def get_issue_base_branch(
     run_cmd: Callable[[list[str]], str],
     issue_id: str,
 ) -> dict[str, Any]:
-    """Determine base branch candidates for a given issue ID.
-
-    Solving an issue means solving its full sub-issue tree in one pass, so
-    this checks the target issue *and every descendant* for open blockers,
-    not just the target issue itself: a block on any issue in the tree about
-    to be implemented is a real dependency, even if the top-level issue has
-    no direct blockers of its own.
+    """Determine base branch candidates for an issue and all its descendants.
 
     Returns a dict containing:
     - default_branch: str

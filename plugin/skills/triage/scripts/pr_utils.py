@@ -48,11 +48,7 @@ REV_BLOCKER_RANK = {
 
 
 def fetch_all_open_prs(run_cmd: Callable[[list[str]], str]) -> list[dict[str, Any]]:
-    """Fetch every open PR in the repo in one call; callers split by author.
-
-    Combines what used to be two separate `gh pr list` searches (yours vs.
-    others') into one, since both only differ by a client-side author check.
-    """
+    """Fetch every open PR in the repository, returning raw PR dictionaries."""
     fields = (
         "number,title,url,author,reviewRequests,reviewDecision,isDraft,"
         "closingIssuesReferences,headRefName,baseRefName"

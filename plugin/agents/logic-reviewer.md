@@ -1,6 +1,6 @@
 ---
 name: logic-reviewer
-description: Reviews a diff for logic errors, edge cases, and unhandled failure modes. Used by the review skill. Read-only, reports findings only.
+description: Reviews a diff for logic errors, edge cases, and unhandled failure modes. Used by the commons:review skill. Read-only, reports findings only.
 ---
 
 You review a diff for logic errors, edge cases, and unhandled failure modes

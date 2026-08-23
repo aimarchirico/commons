@@ -10,11 +10,11 @@ argument-hint: "[--draft] [--auto] [--skip-check]"
 
 ## Arguments
 
-| Flag           | Required | Description                                                                           |
-| :------------- | :------- | :------------------------------------------------------------------------------------ |
-| `--draft`      | No       | Create the resulting pull request as a draft.                                         |
-| `--auto`       | No       | Skip approval steps in this skill and the `commit`/`pr` skills' own approval prompts. |
-| `--skip-check` | No       | Skip the `commons:check` verification step before pushing.                            |
+| Flag           | Required | Description                                                                                           |
+| :------------- | :------- | :---------------------------------------------------------------------------------------------------- |
+| `--draft`      | No       | Create the resulting pull request as a draft.                                                         |
+| `--auto`       | No       | Skip approval steps in this skill and the `commons:commit`/`commons:pr` skills' own approval prompts. |
+| `--skip-check` | No       | Skip the `commons:check` verification step before pushing.                                            |
 
 ## Workflow
 
@@ -43,30 +43,30 @@ argument-hint: "[--draft] [--auto] [--skip-check]"
 
 ### Draft
 
-3. Grill the user until **Context and Scope** and **Goals and Non-Goals**
+1. Grill the user until **Context and Scope** and **Goals and Non-Goals**
    can be written. Establish what already exists and what genuinely
    constrains the work, then press hardest on non-goals: every capability
    left implicit is scope that expands later.
-4. For research on external systems, third-party integrations, or other
+2. For research on external systems, third-party integrations, or other
    technical unknowns feeding into the design, delegate per-system lookups
    to parallel `general-purpose` agents when substantial, so raw fetched
    documentation stays out of the main conversation and only distilled
    findings return. Findings feed the design and its alternatives; they are
    never written up as their own artifact.
-5. Draft the remaining sections, following the `docs/design-docs/` entry in
+3. Draft the remaining sections, following the `docs/design-docs/` entry in
    `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md#documentation`. Target 1
    to 3 pages for a change to an existing system and 10 to 20 for a whole
    new one. Spend that length where the design is genuinely uncertain, and
    never on restating what the implementation will obviously do.
-6. Present the drafted doc for approval, and wait for explicit user
+4. Present the drafted doc for approval, and wait for explicit user
    approval. Skip this step if the `--auto` flag is set, and proceed
    directly with the drafted doc.
-7. Write the approved doc to `docs/design-docs/<slug>.md`, where `<slug>`
+5. Write the approved doc to `docs/design-docs/<slug>.md`, where `<slug>`
    names the system or change being designed.
 
 ### Handoff
 
-8. Set up the branch per
+1. Set up the branch per
    `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#branch-setup`, using type
    `chore` (there is no issue to key off yet) and deriving the description
    from the doc's slug. This skill works in the current tree rather than a
@@ -76,12 +76,12 @@ argument-hint: "[--draft] [--auto] [--skip-check]"
    git checkout -b <branch-name> origin/<base-branch>
    ```
 
-9. Invoke the `commons:commit` skill, passing `--auto` through if it was
+2. Invoke the `commons:commit` skill, passing `--auto` through if it was
    provided, to commit the drafted doc.
-10. Unless `--skip-check` was set, verify per
-    `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#verification`.
-11. Open the pull request per
-    `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#opening-the-pull-request`.
+3. Unless `--skip-check` was set, verify per
+   `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#verification`.
+4. Open the pull request per
+   `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#opening-the-pull-request`.
 
 This skill creates no issues. Decomposition happens through the
 `commons:issue` skill once the pull request has merged, so the design is
