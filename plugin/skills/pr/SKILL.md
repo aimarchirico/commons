@@ -22,18 +22,7 @@ argument-hint: "[--draft] [--auto]"
    the repository default branch from
    `gh repo view --json defaultBranchRef`. Everything below is scoped to it,
    so resolve it before analyzing anything.
-3. Check whether the branch already has an open pull request:
-
-   ```bash
-   gh pr view --json number,url,state
-   ```
-
-   If it does, this run updates that pull request rather than opening a
-   second. Everything below still runs: the analysis is scoped to the whole
-   branch, so the title and body it drafts describe every commit on it, not
-   only the ones this run added.
-
-4. Analyze the current branch against `<base-branch>`:
+3. Analyze the current branch against `<base-branch>`:
 
    - **Branch Naming**: Extract the type and issue ID from the branch name
      according to `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md#branching`.
@@ -51,14 +40,13 @@ argument-hint: "[--draft] [--auto]"
    alone: messages state intent, and anything a message glossed over is
    still in the PR.
 
-5. Request related issue IDs if they were not successfully extracted in the
+4. Request related issue IDs if they were not successfully extracted in the
    previous step. If the branch's issue has sub-issues, close every one of
-   them explicitly. When updating an existing pull request, carry over the
-   issues its body already closes rather than dropping them.
-6. Draft the PR description by populating
+   them explicitly.
+5. Draft the PR description by populating
    `${CLAUDE_PLUGIN_ROOT}/.github/PULL_REQUEST_TEMPLATE.md` using the
    gathered context.
-7. Verify remote state. This skill owns pushing, so callers invoke it without
+6. Verify remote state. This skill owns pushing, so callers invoke it without
    pushing first:
 
    - Execute `git status --porcelain`. If the working tree is dirty, those
@@ -72,10 +60,10 @@ argument-hint: "[--draft] [--auto]"
    - Otherwise, if the branch has commits the remote does not, execute
      `git push`. An existing upstream does not imply the branch is current.
 
-8. Present the proposed PR Title and Body, and wait for explicit user approval.
+7. Present the proposed PR Title and Body, and wait for explicit user approval.
    Skip this step if the `--auto` flag is set, and proceed directly with the
    drafted title and body.
-9. Create the pull request:
+8. Create the pull request:
 
    ```bash
    gh pr create --title "<title>" --body "<body>"
@@ -84,15 +72,7 @@ argument-hint: "[--draft] [--auto]"
    Pass `--draft` if the `--draft` flag was set, and `--base <base-branch>`
    if `<base-branch>` differs from the repository default branch.
 
-   When step 3 found an open pull request, update that one instead, so its
-   title and body describe the branch as it now stands:
-
-   ```bash
-   gh pr edit <number> --title "<title>" --body "<body>"
-   ```
-
 ## Output
 
-The pull request's number and URL, parsed from `gh pr create`'s output or
-from the existing pull request found in step 3, so a caller that invoked
-this skill can act on it.
+The created pull request's number and URL, parsed from `gh pr create`'s
+output, so a caller that invoked this skill can act on it.
