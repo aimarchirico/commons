@@ -82,4 +82,4 @@ See [CONTRIBUTING.md](../.github/CONTRIBUTING.md).
 
 ## License
 
-[MIT](../LICENSE)
+[MIT](../LICENSE) © Aimár A. Chirico
