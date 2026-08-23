@@ -6,12 +6,7 @@ import dev.detekt.api.Finding
 import dev.detekt.api.Rule
 import org.jetbrains.kotlin.psi.KtFile
 
-/**
- * Requires every Kotlin file name to be PascalCase.
- *
- * A predictable file name lets a reader jump straight from an import to the file that declares it,
- * without detouring through the package to find a differently cased match.
- */
+/** Requires every Kotlin file name to match PascalCase. */
 class FileNaming(config: Config) : Rule(config, "Kotlin file names must be PascalCase.") {
 
   override fun visitKtFile(file: KtFile) {

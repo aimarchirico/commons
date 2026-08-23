@@ -7,10 +7,9 @@ import dev.detekt.api.Rule
 import org.jetbrains.kotlin.psi.KtFile
 
 /**
- * Caps every Kotlin file at a configurable line count.
+ * Reports Kotlin source files that exceed the configured maximum line count.
  *
- * A file that keeps growing is a file that has taken on more than one responsibility. Splitting it
- * once it crosses the threshold keeps each file reviewable and its purpose obvious at a glance.
+ * Configurable via `maxLines` (defaults to 300).
  */
 class FileLength(config: Config) :
   Rule(config, "Kotlin files must not exceed the configured line count.") {

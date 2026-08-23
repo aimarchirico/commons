@@ -171,4 +171,60 @@ class ArchitectureConventionPluginFunctionalTest {
 
     assertThat(result.output).contains("Architecture violation: :impl may not depend on :app")
   }
+
+  /** An `:app` module depending on `:core` follows the allowed direction. */
+  @Test
+  fun `app depending on core builds cleanly`() {
+    projectDir
+      .resolve("settings.gradle.kts")
+      .writeText(
+        """
+        rootProject.name = "fixture"
+        include(":app", ":core")
+        """
+          .trimIndent()
+      )
+    projectDir.resolve("app").createDirectories()
+    projectDir.resolve("app/build.gradle.kts").writeText(moduleBuildFile(dependsOn = ":core"))
+    projectDir.resolve("core").createDirectories()
+    projectDir.resolve("core/build.gradle.kts").writeText(moduleBuildFile())
+
+    val result =
+      GradleRunner.create()
+        .withProjectDir(projectDir.toFile())
+        .withPluginClasspath()
+        .withDebug(true)
+        .withArguments(":app:jar", ":core:jar", "--stacktrace")
+        .build()
+
+    assertThat(result.task(":app:jar")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
+  }
+
+  /** An `:api` module depending on `:core` follows the allowed direction. */
+  @Test
+  fun `api depending on core builds cleanly`() {
+    projectDir
+      .resolve("settings.gradle.kts")
+      .writeText(
+        """
+        rootProject.name = "fixture"
+        include(":api", ":core")
+        """
+          .trimIndent()
+      )
+    projectDir.resolve("api").createDirectories()
+    projectDir.resolve("api/build.gradle.kts").writeText(moduleBuildFile(dependsOn = ":core"))
+    projectDir.resolve("core").createDirectories()
+    projectDir.resolve("core/build.gradle.kts").writeText(moduleBuildFile())
+
+    val result =
+      GradleRunner.create()
+        .withProjectDir(projectDir.toFile())
+        .withPluginClasspath()
+        .withDebug(true)
+        .withArguments(":api:jar", ":core:jar", "--stacktrace")
+        .build()
+
+    assertThat(result.task(":api:jar")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
+  }
 }

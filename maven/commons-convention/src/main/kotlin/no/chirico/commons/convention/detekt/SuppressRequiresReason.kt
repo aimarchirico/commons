@@ -11,12 +11,9 @@ import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtFile
 
 /**
- * Requires every `@Suppress` annotation to be preceded by a `// suppressed: <reason>` comment
- * explaining why the suppression is necessary, mirroring the reason
- * `@eslint-community/eslint-comments/require-description` demands of a suppressing `eslint-disable`
- * comment on the TypeScript side.
+ * Requires every `@Suppress` annotation to be preceded by a `// suppressed: <reason>` comment.
  *
- * The reason must be at least 10 characters.
+ * The reason must be at least 10 characters long.
  */
 class SuppressRequiresReason(config: Config) :
   Rule(
@@ -40,7 +37,7 @@ class SuppressRequiresReason(config: Config) :
     return when {
       sibling is PsiComment -> sibling
       sibling != null -> null
-      parent == null || parent is KtFile -> null
+      parent is KtFile || parent == null -> null
       else -> findPrecedingComment(parent)
     }
   }
