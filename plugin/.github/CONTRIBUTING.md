@@ -58,24 +58,9 @@ contract, never around it; shared code never depends on a slice.
 
 We adapt the
 [Google documentation guide](https://google.github.io/styleguide/docguide/) and
-split documentation between Markdown files and source code annotations:
+keep documentation concise. Say what the code cannot say for itself, and no more.
 
-### Markdown Documentation
-
-- **README.md and docs/** (System-level): Project overview, architecture, and
-  external dependencies. Nothing implementation-specific.
-- **Module READMEs** (Module-level): Everything a developer needs to work on a
-  specific module.
-- **docs/API.md** (Service API, if applicable): OpenAPI reference for external
-  network interfaces and HTTP endpoints.
-- **docs/DESIGN.md** (UI/UX, if applicable): Visual identity tokens and UI
-  component specifications.
-- **docs/design-docs/** (Archived, if applicable): Design decisions recorded
-  before implementation. The only documentation here that is not maintained.
-
-### Source Code Documentation
-
-Keep both concise. Say what the code cannot say for itself, and no more.
+### Code Documentation
 
 - **Public Code Contracts** (Declaration documentation): Structured
   documentation attached to exported declarations and public members. Defines
@@ -87,24 +72,33 @@ Keep both concise. Say what the code cannot say for itself, and no more.
   subtle invariants, bug workarounds, and business constraints. Never restate
   what the code clearly does, and avoid leaving dead or commented-out code.
 
-### 1. README files
+### Markdown Documentation
+
+#### 1. README files
 
 We follow the
 [Standard Readme](https://github.com/RichardLitt/standard-readme)
 specification for README files.
 
+- **Root README** (`README.md`): High-level project overview, prerequisites,
+  quickstart, and workspace structure. Nothing implementation-specific.
+- **Module READMEs** (`<module>/README.md`): Everything a developer needs to
+  work on a specific module.
+
+Sections:
+
 - **Title**: The name, followed by a description of what it does.
 - **Install**: Prerequisites, environment variables, and installation steps.
 - **Usage**: Available runtime commands and interaction flows.
-- **Development** (Modules only): Tech stack, directory tree, and code
-  quality.
+- **Development** (Modules only, if applicable): Tech stack, directory tree,
+  and code quality.
 - **Deployment** (Modules only, if applicable): CI/CD pipelines, deployment
   targets, and hosting details.
 - **Contributing**: A link to the contributing guidelines in
   `CONTRIBUTING.md`.
 - **License**: A link to the legal license governing use.
 
-### 2. docs/ARCHITECTURE.md
+#### 2. docs/ARCHITECTURE.md
 
 We follow the
 [matklad ARCHITECTURE.md](https://matklad.github.io/2021/02/06/ARCHITECTURE.md.html)
@@ -116,11 +110,11 @@ approach. High-level system structure documentation.
   architectural invariants.
 - **Cross-Cutting Concerns**: System-wide patterns and shared mechanics.
 
-### 3. docs/API.md (Service API, if applicable)
+#### 3. docs/API.md (if applicable)
 
 We follow the [OpenAPI](https://swagger.io/specification/) specification.
 Technical reference for external network interfaces and HTTP endpoints.
-Applies only if the project exposes a service API.
+Applies only if the project exposes an HTTP API.
 
 - **Version**: The current API version number, containing subsections for
   servers and available authorizations.
@@ -128,7 +122,7 @@ Applies only if the project exposes a service API.
   endpoint with parameters, request body, and responses.
 - **Schemas**: Tabular definitions of request objects and response objects.
 
-### 4. docs/DESIGN.md (if applicable)
+#### 4. docs/DESIGN.md (if applicable)
 
 We follow the
 [Google DESIGN.md](https://github.com/google-labs-code/design.md)
@@ -136,7 +130,7 @@ specification. Standards for UI, UX, and visual identity. Applies only if the
 project has a UI.
 
 - **Frontmatter**: Machine-readable YAML design tokens.
-- **Overview**: Brand summary, core visual style, and key user flows.
+- **Overview**: Brand summary, core visual style, and key user flow diagrams.
 - **Colors**: Color palette definitions.
 - **Typography**: Font families and sizing scales.
 - **Layout**: Spacing and structural rules.
@@ -145,20 +139,28 @@ project has a UI.
 - **Components**: Definitions and diagrams for specific UI elements.
 - **Do's and Don'ts**: Best practices for usage.
 
-### 5. docs/design-docs/ (if applicable)
+#### 5. docs/design-docs/ (if applicable)
 
 We follow the
 [Design Docs at Google](https://www.industrialempathy.com/posts/design-docs-at-google/)
-approach. One `<slug>.md` per design decision, written before implementation
-to collect feedback on it. Applies only when the design is uncertain enough
-to be worth arguing about.
+approach. One `<slug>.md` per system or change designed, written before
+implementation to collect feedback on it. Warranted when three or more of
+these hold:
 
-Unlike the documentation above, these are **not maintained**. A doc is
-updated while its system is still being built, then left as-is: a record of
-a decision at a point in time, not a description of the current system. The
-code, `docs/ARCHITECTURE.md`, and the issue tracker remain the source of
-truth for how things work now. Design that changes a shipped doc goes in a
-new doc rather than editing the old one.
+- The right design approach is uncertain.
+- Getting the design wrong would be expensive to unwind.
+- The design is ambiguous or contentious.
+- It touches cross-cutting concerns that would otherwise be skipped.
+- High-level documentation of an existing or legacy system is needed.
+
+A design carrying more decisions than one review can settle is split into
+sub-problems, each with its own document; a broader document is read for
+context, never extended.
+
+Unlike the documentation above, these are not maintained. A document is
+updated until every issue cut from it is closed, then left as-is: an archive
+of the decision, not a description of the current system. Design that
+changes it goes in a new document linking back to it.
 
 - **Context and Scope**: Objective background on the landscape the work
   lands in and what is being built. Facts, not argument.
