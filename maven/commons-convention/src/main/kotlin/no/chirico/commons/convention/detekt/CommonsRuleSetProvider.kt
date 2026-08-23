@@ -12,6 +12,6 @@ class CommonsRuleSetProvider : RuleSetProvider {
   override fun instance(): RuleSet =
     RuleSet(
       ruleSetId,
-      listOf(::PublicKDocOnly, ::SuppressRequiresReason, ::FileLength, ::FileNaming),
+      listOf(::SuppressRequiresReason, ::FileLength, ::FileNaming),
     )
 }

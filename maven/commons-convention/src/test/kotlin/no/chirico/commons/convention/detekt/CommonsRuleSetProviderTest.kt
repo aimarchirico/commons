@@ -8,12 +8,12 @@ import org.junit.jupiter.api.Test
  */
 class CommonsRuleSetProviderTest {
 
-  /** All four rules are published under the `commons` rule set id. */
+  /** All three rules are published under the `commons` rule set id. */
   @Test
-  fun `publishes the four commons rules under the commons rule set id`() {
+  fun `publishes the three commons rules under the commons rule set id`() {
     val provider = CommonsRuleSetProvider()
 
     assertThat(provider.ruleSetId.value).isEqualTo("commons")
-    assertThat(provider.instance().rules).hasSize(4)
+    assertThat(provider.instance().rules).hasSize(3)
   }
 }

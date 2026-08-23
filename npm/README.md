@@ -141,8 +141,8 @@ and `tsc`; the runtime helpers the provisioning commands share live in
 
 - **Linting**: ESLint 9 flat config extending `@aimarchirico/commons-ts`.
 - **Types**: `tsc` against shared `tsconfig.json`.
-- **Documentation & Comments**: JSDoc required for all public exports; line
-  comments and non-exported JSDoc disallowed (`commons/public-jsdoc-only`).
+- **Documentation & Comments**: JSDoc required for all public exports
+  (`jsdoc/require-jsdoc`).
 - **Suppression Discipline**: Descriptions required for suppressions
   (`eslint-disable`, `@ts-expect-error`); `@ts-ignore` and `@ts-nocheck`
   banned.

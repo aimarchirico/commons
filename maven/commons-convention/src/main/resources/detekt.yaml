@@ -1,7 +1,5 @@
 commons:
   active: true
-  PublicKDocOnly:
-    active: true
   SuppressRequiresReason:
     active: true
   FileLength:

@@ -55,7 +55,6 @@ export default defineConfig([
     },
     rules: {
       'import/no-default-export': ['error'],
-      'commons/public-jsdoc-only': ['error'],
       'jsdoc/require-jsdoc': [
         'error',
         {
