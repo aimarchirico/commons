@@ -50,8 +50,10 @@ argument-hint: "--issue <issue-id> [--branch <branch-name>] [--draft] [--auto] [
    and its worktree per
    `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#worktrees`.
 
-   With `--branch <branch-name>`, use that branch and its existing worktree
-   instead of creating either, and check what it was cut from
+   With `--branch <branch-name>`, use that branch instead of creating one,
+   along with its existing worktree, or a worktree checked out per
+   `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#worktrees` when an earlier
+   run already removed it. Then check what the branch was cut from
    (`git merge-base --fork-point`) against `<base-branch>`. If they differ,
    the branch predates a blocker this work depends on: rebase it onto
    `origin/<base-branch>` if it has never been pushed, and otherwise stop and
@@ -73,5 +75,5 @@ argument-hint: "--issue <issue-id> [--branch <branch-name>] [--draft] [--auto] [
 
 ## Output
 
-The pull request number and URL reported by `commons:pr`, so a caller that
-invoked this skill can act on it.
+The pull request number and URL reported by `commons:pr`, plus the branch
+the work landed on, so a caller that invoked this skill can act on both.

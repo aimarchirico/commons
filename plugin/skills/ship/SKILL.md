@@ -13,7 +13,7 @@ argument-hint: "[--draft] [--auto] [--review] [--skip-check]"
 | :------------- | :------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `--draft`      | No       | Passed through to the `commons:plan` and `commons:solve` skills (and their `commons:pr` skill) to open the resulting PRs as drafts.                             |
 | `--auto`       | No       | Run the full lifecycle autonomously without prompting for approvals across every sub-skill invoked (including during a `--review` pass if set).                 |
-| `--review`     | No       | Once the pull requests are opened, run one review-and-fix pass over each via the `commons:review` and `commons:resolve` skills.                                 |
+| `--review`     | No       | After the pull request is opened, run one review-and-fix pass over it via the `commons:review` and `commons:resolve` skills.                                    |
 | `--skip-check` | No       | Passed through to the `commons:plan` and `commons:solve` skills, and to `commons:resolve` during a `--review` pass if set, to skip their `commons:check` steps. |
 
 ## Workflow
@@ -39,20 +39,22 @@ argument-hint: "[--draft] [--auto] [--review] [--skip-check]"
 6. Invoke the `commons:solve` skill once per captured id with
    `--issue <issue-id>`, in blocked-by order, passing `--auto`, `--draft`,
    and `--skip-check` through if they were provided, to implement each issue
-   end-to-end and open its pull request (its own plan-approval and the
-   `commons:pr` approval steps surface normally unless `--auto` is set). If
-   step 3 produced a design branch, add `--branch <branch-name>` to the first
-   invocation only, so the design documents land once rather than in every
-   pull request.
+   end-to-end (its own plan-approval and the `commons:pr` approval steps
+   surface normally unless `--auto` is set). Every invocation shares one
+   branch, so the design documents and every implementation land in a single
+   pull request: pass `--branch <branch-name>` from step 3 when it produced a
+   design branch, and otherwise let the first invocation create the branch
+   and pass the name it reports to the rest. Solving in blocked-by order is
+   what puts a blocker's work on that branch before the issue it blocks.
 7. If `--review` was not provided, stop here. Otherwise, capture the pull
-   request number `commons:pr` reported for each invocation (surfaced through
-   `commons:solve`).
-8. Invoke the `commons:review` skill with `--pr <pr-number>` for each of
-   those pull requests, passing `--auto` through if it was provided, to get
-   findings on it and, on approval (or automatically under `--auto`), post
-   them as PR review comments.
-9. For each pull request `commons:review` posted findings on, invoke the
-   `commons:resolve` skill with `--pr <pr-number>`, passing `--auto` and
-   `--skip-check` through if they were provided, to fix them and reply on the
-   pull request. Run at most this one review-and-fix pass per pull request;
-   do not re-invoke `commons:review` afterward.
+   request number `commons:pr` reported (surfaced through `commons:solve`),
+   which is the same one for every invocation.
+8. Invoke the `commons:review` skill with `--pr <pr-number>`, passing
+   `--auto` through if it was provided, to get findings on the opened pull
+   request and, on approval (or automatically under `--auto`), post them as
+   PR review comments.
+9. If `commons:review` posted any findings, invoke the `commons:resolve`
+   skill with `--pr <pr-number>`, passing `--auto` and `--skip-check` through
+   if they were provided, to fix them and reply on the pull request. Run at
+   most this one review-and-fix pass; do not re-invoke `commons:review`
+   afterward.
