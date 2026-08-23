@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.6.1](https://github.com/aimarchirico/commons/compare/commons-ts-v3.6.0...commons-ts-v3.6.1) (2026-08-23)
+
+
+### Bug Fixes
+
+* **commons-ts:** declare the repository in the package manifest ([fad6c48](https://github.com/aimarchirico/commons/commit/fad6c48f97e35163c08787cd74e54f9d4ab35e9e))
+* **commons-ts:** declare the repository in the package manifest ([3b3fb09](https://github.com/aimarchirico/commons/commit/3b3fb09d403f88c8fbc002088245d890aefb04c7))
+
 ## [3.6.0](https://github.com/aimarchirico/commons/compare/commons-ts-v3.5.0...commons-ts-v3.6.0) (2026-08-23)
 
 
