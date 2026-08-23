@@ -10,7 +10,7 @@ from typing import Any
 
 import tomli_w
 
-from commons_python import comments, line_length
+from commons_python import line_length, suppressions
 
 
 def _run_wrapped(
@@ -72,7 +72,7 @@ def main() -> None:
     arguments untouched to the respective tool, with the bundled config
     injected. ``ruff`` additionally layers a ``ruff.toml`` from the current
     directory on top of the bundled config, if one exists. ``commons check``
-    runs the native Python checks (line length and comments).
+    runs the native checks (line length and suppression reasons).
     """
     tool, *rest = sys.argv[1:] or [""]
 
@@ -81,8 +81,8 @@ def main() -> None:
         paths = rest[1:] or ["."]
         if subcommand == "check":
             line_length_rc = line_length.check_line_length(paths)
-            comments_rc = comments.check_comments(paths)
-            sys.exit(1 if (line_length_rc or comments_rc) else 0)
+            suppressions_rc = suppressions.check_suppressions(paths)
+            sys.exit(1 if (line_length_rc or suppressions_rc) else 0)
     if tool == "ruff":
         sys.exit(_run_ruff(rest))
     if tool == "ty":

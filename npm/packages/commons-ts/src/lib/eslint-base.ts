@@ -57,8 +57,6 @@ export default defineConfig([
       'jsdoc/require-jsdoc': [
         'error',
         {
-          // `require` only accepts these six node types; every other
-          // documented declaration has to go through `contexts`.
           require: {
             ArrowFunctionExpression: true,
             ClassDeclaration: true,
@@ -67,17 +65,6 @@ export default defineConfig([
             FunctionExpression: true,
             MethodDefinition: true,
           },
-          contexts: [
-            'TSInterfaceDeclaration',
-            'TSTypeAliasDeclaration',
-            'TSEnumDeclaration',
-            'VariableDeclarator',
-            'PropertyDefinition',
-            'TSAbstractMethodDefinition',
-            'TSAbstractPropertyDefinition',
-            'ExportDefaultDeclaration > CallExpression',
-            'ExportDefaultDeclaration > ObjectExpression',
-          ],
           publicOnly: true,
           enableFixer: false,
         },
