@@ -142,19 +142,27 @@ def test_dispatches_pytest(monkeypatch: pytest.MonkeyPatch) -> None:
     assert command[4:] == ["-v"]
 
 
-def test_commons_check_runs_the_line_length_check(
+def test_commons_check_dispatches_to_native_checks(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """``commons check`` runs the line-length check and forwards its paths."""
+    """``commons check`` runs both checks, exiting non-zero if either fails."""
     calls: dict[str, list[str]] = {}
 
     def fake_line_length(paths: list[str]) -> int:
         calls["line_length"] = paths
+        return 0
+
+    def fake_suppressions(paths: list[str]) -> int:
+        calls["suppressions"] = paths
         return 1
 
     monkeypatch.setattr(
         "commons_python.line_length.check_line_length",
         fake_line_length,
+    )
+    monkeypatch.setattr(
+        "commons_python.suppressions.check_suppressions",
+        fake_suppressions,
     )
     monkeypatch.setattr(sys, "argv", ["commons-python", "commons", "check", "src"])
 
@@ -163,14 +171,19 @@ def test_commons_check_runs_the_line_length_check(
 
     assert exc_info.value.code == 1
     assert calls["line_length"] == ["src"]
+    assert calls["suppressions"] == ["src"]
 
 
-def test_commons_check_passes_when_the_check_succeeds(
+def test_commons_check_passes_when_both_succeed(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """``commons check`` exits 0 when the line-length check succeeds."""
+    """``commons check`` exits 0 when both native checks succeed."""
     monkeypatch.setattr(
         "commons_python.line_length.check_line_length",
+        lambda _paths: 0,
+    )
+    monkeypatch.setattr(
+        "commons_python.suppressions.check_suppressions",
         lambda _paths: 0,
     )
     monkeypatch.setattr(sys, "argv", ["commons-python", "commons", "check"])

@@ -5,38 +5,11 @@ that convention on top of the bundled ruff config.
 """
 
 import sys
-from collections.abc import Iterator
 from pathlib import Path
 
+from commons_python.files import iter_python_files
+
 MAX_LINES = 300
-
-EXCLUDED_DIRS = {
-    ".venv",
-    "__pycache__",
-    ".git",
-    "build",
-    "dist",
-    "node_modules",
-    ".pnpm",
-    ".task",
-    ".ruff_cache",
-}
-
-
-def _is_excluded(path: Path) -> bool:
-    return any(
-        part in EXCLUDED_DIRS or part.endswith(".egg-info") for part in path.parts
-    )
-
-
-def _iter_python_files(root: Path) -> Iterator[Path]:
-    if root.is_file():
-        if root.suffix == ".py" and not _is_excluded(root):
-            yield root
-        return
-    for path in root.rglob("*.py"):
-        if not _is_excluded(path):
-            yield path
 
 
 def check_line_length(paths: list[str]) -> int:
@@ -47,7 +20,7 @@ def check_line_length(paths: list[str]) -> int:
     violations: list[str] = []
 
     for arg in paths:
-        for file in _iter_python_files(Path(arg)):
+        for file in iter_python_files(Path(arg)):
             line_count = sum(1 for _ in file.open(encoding="utf-8"))
             if line_count > MAX_LINES:
                 violations.append(f"{file}: {line_count} lines (max {MAX_LINES})")
