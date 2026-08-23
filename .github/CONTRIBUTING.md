@@ -25,8 +25,7 @@ judgment rather than dogma.
 ### Behavior
 
 - **Principle of Least Astonishment**: Make code behave the way a reader
-  expects, starting with names that state intent. Reserve comments for
-  non-obvious reasoning.
+  expects, starting with names that state intent.
 - **Fail Fast**: Surface errors immediately and loudly instead of degrading
   silently.
 - **Tell, Don't Ask**: Ask a collaborator to do the work rather than querying
@@ -59,9 +58,9 @@ contract, never around it; shared code never depends on a slice.
 
 We adapt the
 [Google documentation guide](https://google.github.io/styleguide/docguide/) and
-split documentation between file-level references and source code annotations:
+split documentation between Markdown files and source code annotations:
 
-### File-Level Documentation
+### Markdown Documentation
 
 - **README.md and docs/** (System-level): Project overview, architecture, and
   external dependencies. Nothing implementation-specific.
@@ -76,9 +75,11 @@ split documentation between file-level references and source code annotations:
 
 ### Source Code Documentation
 
-- **Public Code Contracts** (Declaration docstrings): Docstrings and header
-  comments attached to exported declarations and public members. Defines the
-  behavioral contract for callers (what it does, parameters, return values,
+Keep both concise. Say what the code cannot say for itself, and no more.
+
+- **Public Code Contracts** (Declaration documentation): Structured
+  documentation attached to exported declarations and public members. Defines
+  the behavioral contract for callers (what it does, parameters, return values,
   thrown errors, and restrictions). Avoid explaining internal implementation
   mechanics here.
 - **Inline Comments** (Implementation context): Targeted comments co-located
@@ -182,7 +183,7 @@ for issues.
 
 ### Issue Types
 
-Each issue type has has a provided template.
+Each issue type has a provided template.
 
 | Type      | Purpose                   |
 | :-------- | :------------------------ |
