@@ -71,6 +71,8 @@ split documentation between file-level references and source code annotations:
   network interfaces and HTTP endpoints.
 - **docs/DESIGN.md** (UI/UX, if applicable): Visual identity tokens and UI
   component specifications.
+- **docs/design-docs/** (Archived, if applicable): Design decisions recorded
+  before implementation. The only documentation here that is not maintained.
 
 ### Source Code Documentation
 
@@ -141,6 +143,34 @@ project has a UI.
 - **Shapes**: Rounded corners and geometric styles.
 - **Components**: Definitions and diagrams for specific UI elements.
 - **Do's and Don'ts**: Best practices for usage.
+
+### 5. docs/design-docs/ (if applicable)
+
+We follow the
+[Design Docs at Google](https://www.industrialempathy.com/posts/design-docs-at-google/)
+approach. One `<slug>.md` per design decision, written before implementation
+to collect feedback on it. Applies only when the design is uncertain enough
+to be worth arguing about.
+
+Unlike the documentation above, these are **not maintained**. A doc is
+updated while its system is still being built, then left as-is: a record of
+a decision at a point in time, not a description of the current system. The
+code, `docs/ARCHITECTURE.md`, and the issue tracker remain the source of
+truth for how things work now. Design that changes a shipped doc goes in a
+new doc rather than editing the old one.
+
+- **Context and Scope**: Objective background on the landscape the work
+  lands in and what is being built. Facts, not argument.
+- **Goals and Non-Goals**: What the system achieves, and what it explicitly
+  will not.
+- **System Design**: The design itself, overview first and detail after,
+  emphasizing the trade-offs made. Diagrams, API sketches, and data storage
+  belong here when the design needs them.
+- **Alternatives Considered**: Other viable designs, and why each was
+  rejected.
+- **Cross-Cutting Concerns**: Security, privacy, observability, and the
+  like, including migration and backwards compatibility when the work
+  touches an existing system.
 
 ---
 
