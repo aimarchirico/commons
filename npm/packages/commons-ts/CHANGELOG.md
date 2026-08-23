@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.6.0](https://github.com/aimarchirico/commons/compare/commons-ts-v3.5.0...commons-ts-v3.6.0) (2026-08-23)
+
+
+### Features
+
+* **commons-ts:** require jsdoc only on the supported node types ([52d8ae3](https://github.com/aimarchirico/commons/commit/52d8ae3ae688ab67f320b0f17b31b9a22758ed08))
+* stop requiring documentation the guide prohibits writing ([85db739](https://github.com/aimarchirico/commons/commit/85db739678f52def46c421b8ea4fa53e50970b4e))
+
 ## [3.5.0](https://github.com/aimarchirico/commons/compare/commons-ts-v3.4.5...commons-ts-v3.5.0) (2026-08-23)
 
 
