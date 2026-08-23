@@ -41,7 +41,6 @@ python/
     ├── src/commons_python/
     │   ├── __init__.py
     │   ├── cli.py              # `commons-python` entry point, dispatches on first arg
-    │   ├── comments.py         # comments check (part of `commons-python commons check`)
     │   ├── line_length.py      # line-length check (part of `commons-python commons check`)
     │   └── assets/
     │       ├── __init__.py
@@ -64,8 +63,7 @@ whether the package is installed from a wheel, sdist, or editable install.
 - **Linting**: ruff with bundled `assets/ruff.toml` (`commons-python ruff`).
 - **Types**: ty with bundled `assets/ty.toml` (`commons-python ty`).
 - **Documentation & Comments**: Google-style docstrings for public
-  declarations; line comments and comments on internal declarations
-  disallowed (`commons-python commons check`).
+  declarations (ruff pydocstyle).
 - **File Length**: 300-line maximum per file (`commons-python commons check`).
 - **Testing & Coverage**: pytest and pytest-cov enforcing an 80% coverage
   threshold (`commons-python pytest`).
