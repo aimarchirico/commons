@@ -58,11 +58,11 @@ through merge:
 
 ```mermaid
 graph TD
-    start_proj["Design Risk"] --> plan["/commons:plan<br/>Draft Design Doc"]
+    start_proj["Design Risk"] --> plan["/commons:plan<br/>Draft Design Document"]
     plan -.->|invokes, in order| commit["/commons:commit<br/>Create Atomic Commits"]
     commit -.->|invokes, in order| check["/commons:check<br/>Verify CI Gates"]
     check -.->|invokes, in order| pr["/commons:pr<br/>Create Pull Request"]
-    plan -->|design doc merged| issue["/commons:issue<br/>Create Issue Hierarchy"]
+    plan -->|design document merged| issue["/commons:issue<br/>Create Issue Hierarchy"]
 
     survey["Survey Work"] --> triage["/commons:triage<br/>Survey PRs & Backlog"]
     triage -->|suggests: New Task/Story| issue
@@ -114,7 +114,7 @@ plugin/
 │   ├── commit/SKILL.md          # create logical, atomic commits
 │   ├── docs/SKILL.md            # update project documentation
 │   ├── issue/SKILL.md           # create hierarchical issues
-│   ├── plan/SKILL.md            # draft a design doc for work carrying design risk
+│   ├── plan/SKILL.md            # draft a design document for design risk
 │   ├── pr/SKILL.md              # create a standardized pull request
 │   ├── resolve/SKILL.md         # orchestrate the lifecycle from PR review feedback
 │   ├── review/SKILL.md          # review a pull request via parallel reviewer agents

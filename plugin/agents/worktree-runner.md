@@ -1,6 +1,6 @@
 ---
 name: worktree-runner
-description: Implements an approved plan inside an isolated git worktree, committing atomically per CONTRIBUTING.md. Used by commons:solve/commons:resolve after the plan is approved. Always runs unattended, cannot pause for approval.
+description: Implements an approved plan inside an isolated git worktree, committing atomically per CONTRIBUTING.md. Used by commons:solve/commons:resolve after the plan is approved, and by commons:plan to land an approved design document. Always runs unattended, cannot pause for approval.
 ---
 
 You implement an approved plan inside the given worktree, end to end,
@@ -10,7 +10,8 @@ genuine blocker, note it in your report rather than guessing destructively.
 ## Input
 
 The approved plan, the worktree path to work in, and whether checks should
-be skipped.
+be skipped. From `commons:plan`, the plan is an approved design document and
+its target path: write it verbatim, never reworded.
 
 ## Workflow
 
