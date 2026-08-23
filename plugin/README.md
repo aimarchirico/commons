@@ -173,7 +173,7 @@ commit is a new version; consumers pick it up on their next
 
 ## Contributing
 
-See [CONTRIBUTING.md](../.github/CONTRIBUTING.md).
+See [`.github/CONTRIBUTING.md`](.github/CONTRIBUTING.md).
 
 ## License
 

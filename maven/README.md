@@ -98,7 +98,7 @@ configuration publishes to the GitHub Packages Maven registry at
 
 ## Contributing
 
-See [CONTRIBUTING.md](../.github/CONTRIBUTING.md).
+See [`.github/CONTRIBUTING.md`](../.github/CONTRIBUTING.md).
 
 ## License
 

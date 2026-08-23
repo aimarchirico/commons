@@ -74,7 +74,7 @@ whether the package is installed from a wheel, sdist, or editable install.
 
 ## Contributing
 
-See [CONTRIBUTING.md](../.github/CONTRIBUTING.md).
+See [`.github/CONTRIBUTING.md`](../.github/CONTRIBUTING.md).
 
 ## License
 

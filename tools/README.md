@@ -78,7 +78,7 @@ versioning and changelogs for releases via `release-please-config.json` and
 
 ## Contributing
 
-See [CONTRIBUTING.md](../.github/CONTRIBUTING.md).
+See [`.github/CONTRIBUTING.md`](../.github/CONTRIBUTING.md).
 
 ## License
 
