@@ -1,9 +1,10 @@
 ---
 name: plan
 description:
-  Draft a project's planning and system design artifacts under docs/plan/.
-  Use when the user asks to plan, design, or scope a project, or to add a
-  new requirement to an already-planned one.
+  Draft a design doc for work that carries design risk, and open it as a
+  pull request so the design is reviewed before any issues are cut. Use
+  when the user asks to plan, design, or scope a project or a significant
+  change.
 argument-hint: "[--draft] [--auto] [--skip-check]"
 ---
 
@@ -17,91 +18,78 @@ argument-hint: "[--draft] [--auto] [--skip-check]"
 
 ## Workflow
 
-### Resume
+### Warrant
 
-1. Inspect `docs/plan/` for existing files to determine where to resume, and
-   read whatever is found into context to treat as the current draft rather
-   than a blank slate; flag any conflict between it and new input instead of
-   silently overwriting:
+1. Identify the work to be designed from the user's prompt or context,
+   asking for anything unclear. Then establish whether it warrants a design
+   doc at all, counting how many of these hold:
 
-   | State of `docs/plan/`                                                                                                         | Resume at                                                                                                                          |
-   | :---------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------- |
-   | No `PRD.md`                                                                                                                   | New plan. Start at **Phase 1**.                                                                                                    |
-   | `PRD.md` exists, but the user is introducing new requirement(s) to an already-planned project                                 | `PRD.md` is written once and never revisited. Skip Phase 1's step 1, start at Phase 1's step 2, scoped to just those requirements. |
-   | `PRD.md` exists and `requirements/` is drafted, but `decisions/`, `research/`, or `specifications/` are missing or incomplete | **Phase 1** is done. Resume at **Phase 2**.                                                                                        |
-   | Everything through `specifications/` already exists for the requirement(s) in scope                                           | Both phases done. Skip straight to **Handoff**.                                                                                    |
+   - The right design approach is uncertain.
+   - Getting the design wrong would be expensive to unwind.
+   - The design is ambiguous or contentious.
+   - It touches cross-cutting concerns (security, privacy, observability)
+     that would otherwise be skipped.
+   - High-level documentation of an existing or legacy system is needed.
 
-### Phase 1: Planning
+   Fewer than three means the design is not ambiguous enough to be worth
+   documenting. Report which ones do not hold, recommend the
+   `commons:issue` skill instead, and stop.
 
-1. Identify the product concept from the user's prompt or context, asking
-   for anything unclear. Draft `docs/plan/PRD.md` per
-   `${CLAUDE_PLUGIN_ROOT}/skills/plan/REFERENCE.md`.
-1. Extract actionable requirements (from the PRD, or from the user's prompt
-   directly when adding new requirements) and draft
-   `docs/plan/requirements/index.md` and the individual
-   `docs/plan/requirements/NNNN-slug.md` files per
-   `${CLAUDE_PLUGIN_ROOT}/skills/plan/REFERENCE.md`.
-1. Present the Phase 1 files for approval, and wait for explicit user
-   approval. Skip this step if the `--auto` flag is set, and proceed
-   directly with the drafted files.
+2. Inspect `docs/design-docs/` for a doc already covering this work. If one
+   exists and its system has not shipped, read it into context and amend it
+   rather than starting a new doc, flagging any conflict with new input
+   instead of silently overwriting. A doc whose system has shipped is never
+   edited; design that changes it belongs in a new doc.
 
-### Phase 2: System Design
+### Draft
 
-1. For research on external systems, third-party integrations, or other
+3. Grill the user until **Context and Scope** and **Goals and Non-Goals**
+   can be written. Establish what already exists and what genuinely
+   constrains the work, then press hardest on non-goals: every capability
+   left implicit is scope that expands later.
+4. For research on external systems, third-party integrations, or other
    technical unknowns feeding into the design, delegate per-system lookups
    to parallel `general-purpose` agents when substantial, so raw fetched
    documentation stays out of the main conversation and only distilled
-   findings return. Log findings in `docs/plan/research/`, per
-   `${CLAUDE_PLUGIN_ROOT}/skills/plan/REFERENCE.md`.
-1. Record architectural choices in `docs/plan/decisions/`, per
-   `${CLAUDE_PLUGIN_ROOT}/skills/plan/REFERENCE.md`.
-1. Invoke the `commons:docs` skill, passing `--auto` through if it was
-   provided, to draft the applicable system-level documentation directly in
-   its final location (its own approval step surfaces normally unless
-   `--auto` is set).
-1. Draft `docs/plan/specifications/index.md` and the individual
-   `docs/plan/specifications/NNNN-slug.md` files per
-   `${CLAUDE_PLUGIN_ROOT}/skills/plan/REFERENCE.md`, each
-   referencing the requirement(s) it fulfills.
-1. Present the `research/`, `decisions/`, and `specifications/` files for
-   approval, and wait for explicit user approval. Skip this step if the
-   `--auto` flag is set, and proceed directly with the drafted files.
-1. Write the approved files under `docs/plan/`.
+   findings return. Findings feed the design and its alternatives; they are
+   never written up as their own artifact.
+5. Draft the remaining sections, following the `docs/design-docs/` entry in
+   `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md#documentation`. Target 1
+   to 3 pages for a change to an existing system and 10 to 20 for a whole
+   new one. Spend that length where the design is genuinely uncertain, and
+   never on restating what the implementation will obviously do.
+6. Present the drafted doc for approval, and wait for explicit user
+   approval. Skip this step if the `--auto` flag is set, and proceed
+   directly with the drafted doc.
+7. Write the approved doc to `docs/design-docs/<slug>.md`, where `<slug>`
+   names the system or change being designed.
 
 ### Handoff
 
-1. Ask the user whether to commit, push, and open a pull request for the
-   drafted files now, or leave them uncommitted for later. Skip this
-   question if the `--auto` flag is set, and proceed directly with the rest
-   of this phase. If the user declines, stop here: the files remain written
-   under `docs/plan/` but uncommitted.
-2. Set up the branch per
+8. Set up the branch per
    `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#branch-setup`, using type
    `chore` (there is no issue to key off yet) and deriving the description
-   from the PRD's project name, or from the scoped requirement(s) when
-   adding to an already-planned project. This skill works in the current
-   tree rather than a worktree, so check the branch out directly:
+   from the doc's slug. This skill works in the current tree rather than a
+   worktree, so check the branch out directly:
 
    ```bash
    git checkout -b <branch-name> origin/<base-branch>
    ```
 
-3. Invoke the `commons:commit` skill, passing `--auto` through if it was
-   provided, to commit the files written under `docs/plan/` (and any files
-   written by `commons:docs`) as logical units.
-4. Unless `--skip-check` was set, verify per
-   `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#verification`.
-5. Open the pull request per
-   `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#opening-the-pull-request`.
-6. Ask the user whether to derive the initial issue backlog from
-   `docs/plan/specifications/` now. If so, invoke the `commons:issue`
-   skill, instructing it to make each resulting issue self-contained:
-   include all the relevant information and concrete steps for all
-   specifications so the issues stand on their own once created. Pass
-   `--auto` through if it was provided.
+9. Invoke the `commons:commit` skill, passing `--auto` through if it was
+   provided, to commit the drafted doc.
+10. Unless `--skip-check` was set, verify per
+    `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#verification`.
+11. Open the pull request per
+    `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#opening-the-pull-request`.
+
+This skill creates no issues. Decomposition happens through the
+`commons:issue` skill once the pull request has merged, so the design is
+agreed before any work is committed to the tracker, and the issues it
+creates stand on their own rather than referencing the doc.
 
 ## Output
 
-The pull request number and URL reported by `commons:pr`, plus the issue(s)
-created by `commons:issue` if that step ran, so a caller that invoked this
-skill can act on both.
+The path of the drafted design doc, plus the pull request number and URL
+reported by `commons:pr`, so a caller that invoked this skill can act on
+both.

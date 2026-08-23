@@ -30,7 +30,7 @@ rather than on each other, except for:
   `security-reviewer`, and `compliance-reviewer`.
 - `ship` delegating to the `issue`, `solve`, `review`, and `resolve` skills.
 - `plan` delegating to parallel `general-purpose` agents for external
-  research, and to the `docs`, `commit`, `check`, `pr`, and `issue` skills.
+  research, and to the `commit`, `check`, and `pr` skills.
 
 Agent skills delegate task execution to specialized subagents or
 deterministic Python scripts, which execute GitHub GraphQL/REST operations
@@ -56,12 +56,11 @@ through merge:
 
 ```mermaid
 graph TD
-    start_proj["Brand-New Project"] --> plan["/commons:plan<br/>Draft Planning & Design Artifacts"]
-    plan -.->|invokes, in order| docs["/commons:docs<br/>Update Documentation"]
-    plan -.->|invokes, optional, in order| commit["/commons:commit<br/>Create Atomic Commits"]
+    start_proj["Design Risk"] --> plan["/commons:plan<br/>Draft Design Doc"]
+    plan -.->|invokes, in order| commit["/commons:commit<br/>Create Atomic Commits"]
     commit -.->|invokes, in order| check["/commons:check<br/>Verify CI Gates"]
     check -.->|invokes, in order| pr["/commons:pr<br/>Create Pull Request"]
-    plan -.->|invokes, optional| issue["/commons:issue<br/>Create Issue Hierarchy"]
+    plan -->|design doc merged| issue["/commons:issue<br/>Create Issue Hierarchy"]
 
     survey["Survey Work"] --> triage["/commons:triage<br/>Survey PRs & Backlog"]
     triage -->|suggests: New Task/Story| issue
@@ -113,7 +112,7 @@ plugin/
 │   ├── commit/SKILL.md          # create logical, atomic commits
 │   ├── docs/SKILL.md            # update project documentation
 │   ├── issue/SKILL.md           # create hierarchical issues
-│   ├── plan/SKILL.md            # draft planning & system design artifacts for a project
+│   ├── plan/SKILL.md            # draft a design doc for work carrying design risk
 │   ├── pr/SKILL.md              # create a standardized pull request
 │   ├── resolve/SKILL.md         # orchestrate the lifecycle from PR review feedback
 │   ├── review/SKILL.md          # review a pull request via parallel reviewer agents
