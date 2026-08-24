@@ -267,6 +267,31 @@ importers:
         specifier: ^3.2.4
         version: 3.2.7(@types/node@26.0.1)(jiti@2.7.0)(jsdom@26.1.0)(lightningcss@1.32.0)(supports-color@8.1.1)(terser@5.48.0)(yaml@2.9.0)
 
+  packages/commons-ssh:
+    dependencies:
+      '@aimarchirico/commons-project':
+        specifier: workspace:^
+        version: link:../commons-project
+    devDependencies:
+      '@aimarchirico/commons-ts':
+        specifier: workspace:^
+        version: link:../commons-ts
+      '@types/node':
+        specifier: ^26.0.1
+        version: 26.0.1
+      '@vitest/coverage-v8':
+        specifier: ^3.2.4
+        version: 3.2.7(supports-color@8.1.1)(vitest@3.2.7(@types/node@26.0.1)(jiti@2.7.0)(jsdom@26.1.0)(lightningcss@1.32.0)(supports-color@8.1.1)(terser@5.48.0)(yaml@2.9.0))
+      eslint:
+        specifier: ^9.39.2
+        version: 9.39.4(jiti@2.7.0)
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.7(@types/node@26.0.1)(jiti@2.7.0)(jsdom@26.1.0)(lightningcss@1.32.0)(supports-color@8.1.1)(terser@5.48.0)(yaml@2.9.0)
+
   packages/commons-ts:
     dependencies:
       '@eslint-community/eslint-plugin-eslint-comments':

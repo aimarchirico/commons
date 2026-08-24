@@ -1,0 +1,36 @@
+{
+  "name": "@aimarchirico/commons-ssh",
+  "version": "1.0.0",
+  "private": false,
+  "type": "module",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aimarchirico/commons.git"
+  },
+  "bin": {
+    "commons-ssh": "dist/bin/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "check": "eslint && tsc && vitest run",
+    "fix": "eslint --fix",
+    "build": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "pnpm build"
+  },
+  "dependencies": {
+    "@aimarchirico/commons-project": "workspace:^"
+  },
+  "devDependencies": {
+    "@aimarchirico/commons-ts": "workspace:^",
+    "@types/node": "^26.0.1",
+    "@vitest/coverage-v8": "^3.2.4",
+    "eslint": "^9.39.2",
+    "typescript": "^6.0.3",
+    "vitest": "^3.2.4"
+  }
+}
