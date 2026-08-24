@@ -40,9 +40,10 @@ argument-hint: "[--draft] [--auto]"
    alone: messages state intent, and anything a message glossed over is
    still in the PR.
 
-4. Request related issue IDs if they were not successfully extracted in the
-   previous step. If the branch's issue has sub-issues, close every one of
-   them explicitly.
+4. Resolve the related issue IDs: those the invoking skill passed in or the
+   prompt and context carry, otherwise the one step 3 extracted from the
+   branch name, otherwise ask the user. If an issue has sub-issues, close
+   every one of them explicitly.
 5. Draft the PR description by populating
    `${CLAUDE_PLUGIN_ROOT}/.github/PULL_REQUEST_TEMPLATE.md` using the
    gathered context.
