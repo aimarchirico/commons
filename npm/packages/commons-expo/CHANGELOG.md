@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.7.1](https://github.com/aimarchirico/commons/compare/commons-expo-v4.7.0...commons-expo-v4.7.1) (2026-08-24)
+
+
+### Bug Fixes
+
+* **commons-expo:** let import-keystore read credentials.json from a caller-supplied path ([2ab365d](https://github.com/aimarchirico/commons/commit/2ab365d482d81db3e51a7dd3b0c4f6e458b9d4c7))
+
 ## [4.7.0](https://github.com/aimarchirico/commons/compare/commons-expo-v4.6.0...commons-expo-v4.7.0) (2026-08-12)
 
 
