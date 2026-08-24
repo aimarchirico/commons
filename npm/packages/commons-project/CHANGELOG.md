@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.3](https://github.com/aimarchirico/commons/compare/commons-project-v1.4.2...commons-project-v1.4.3) (2026-08-24)
+
+
+### Bug Fixes
+
+* **commons-project:** resolve rename-project's paths against a configurable root ([64402fd](https://github.com/aimarchirico/commons/commit/64402fd1050169228946f05a05e5ba569c6859b8))
+* **commons-project:** resolve rename-project's paths against a configurable root ([2812fb5](https://github.com/aimarchirico/commons/commit/2812fb58cb4241c65609de657ea1487bca44b17d))
+
 ## [1.4.2](https://github.com/aimarchirico/commons/compare/commons-project-v1.4.1...commons-project-v1.4.2) (2026-08-24)
 
 
