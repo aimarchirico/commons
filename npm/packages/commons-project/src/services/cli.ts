@@ -27,18 +27,23 @@ function name(command: Command): string {
  * @param command The command name or command config.
  * @param args The arguments to pass.
  * @param input Optional stdin input.
+ * @param options
+ * @param options.shell Defaults to `true` on Windows, `false` elsewhere. Pass
+ * `false` when an argument carries shell metacharacters that must reach the
+ * executable verbatim rather than being reinterpreted by `cmd.exe`.
  * @returns The command execution results.
  */
 export function run(
   command: Command,
   args: string[],
   input?: string,
+  options?: {shell?: boolean},
 ): CliResult {
   const [executable, ...prefix] = argv(command);
   const result = spawnSync(executable, [...prefix, ...args], {
     encoding: 'utf8',
     input,
-    shell: process.platform === 'win32',
+    shell: options?.shell ?? process.platform === 'win32',
   });
   if (result.error) {
     throw new Error(
@@ -89,13 +94,19 @@ export function runJson<T>(command: Command, args: string[]): T {
  * learns only the exit status.
  * @param command
  * @param args
+ * @param options
+ * @param options.shell See {@link run}.
  * @returns The process exit status.
  */
-export function runStreamed(command: Command, args: string[]): number {
+export function runStreamed(
+  command: Command,
+  args: string[],
+  options?: {shell?: boolean},
+): number {
   const [executable, ...prefix] = argv(command);
   const result = spawnSync(executable, [...prefix, ...args], {
     stdio: 'inherit',
-    shell: process.platform === 'win32',
+    shell: options?.shell ?? process.platform === 'win32',
   });
   if (result.error) {
     throw new Error(
