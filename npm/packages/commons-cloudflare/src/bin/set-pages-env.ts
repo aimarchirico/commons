@@ -16,20 +16,29 @@ type Project = {
   >;
 };
 
+function parseNames(list?: string): string[] {
+  return (list ?? '')
+    .split(/[,\s]+/)
+    .map(name => name.trim())
+    .filter(Boolean);
+}
+
 /**
- * Sync Cloudflare Pages production environment variables.
+ * Sync Cloudflare Pages production environment variables and secrets.
+ * Secrets use Cloudflare's secret_text type, which the API never returns a
+ * value for on read, so a secret's "changed" state can't be diffed the way a
+ * plain_text variable's can - it is written every run instead.
  */
 export async function setPagesEnv(): Promise<void> {
   const env = resolveEnv(
     ['CLOUDFLARE_API_TOKEN', 'PAGES_PROJECT_NAME', 'PAGES_VARIABLES'],
-    ['CLOUDFLARE_ACCOUNT_ID'],
+    ['CLOUDFLARE_ACCOUNT_ID', 'PAGES_SECRETS'],
   );
 
   const cf = api(env.CLOUDFLARE_API_TOKEN);
   const target = 'production';
-  const names = env.PAGES_VARIABLES.split(/[,\s]+/)
-    .map(name => name.trim())
-    .filter(Boolean);
+  const variableNames = parseNames(env.PAGES_VARIABLES);
+  const secretNames = parseNames(env.PAGES_SECRETS);
 
   try {
     const account = await resolveAccount(cf, env.CLOUDFLARE_ACCOUNT_ID);
@@ -45,7 +54,7 @@ export async function setPagesEnv(): Promise<void> {
     const existing = current.deployment_configs?.[target]?.env_vars ?? {};
     const changes: Record<string, EnvVar> = {};
 
-    for (const name of names) {
+    for (const name of variableNames) {
       const value = process.env[name];
       if (value === undefined || value === '') {
         report(
@@ -62,6 +71,24 @@ export async function setPagesEnv(): Promise<void> {
       }
       changes[name] = {type: 'plain_text', value};
       report(`pages ${target} ${name}`, before ? 'updated' : 'created');
+    }
+
+    for (const name of secretNames) {
+      const value = process.env[name];
+      if (value === undefined || value === '') {
+        report(
+          `pages ${target} ${name}`,
+          'skipped',
+          'not set in the environment',
+        );
+        continue;
+      }
+      changes[name] = {type: 'secret_text', value};
+      report(
+        `pages ${target} ${name}`,
+        existing[name] ? 'updated' : 'created',
+        'secret value cannot be diffed, written unconditionally',
+      );
     }
 
     if (Object.keys(changes).length) {
