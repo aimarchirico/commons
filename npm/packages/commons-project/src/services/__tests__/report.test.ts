@@ -96,6 +96,14 @@ describe('report service', () => {
     expect(output).toContain('no changes');
   });
 
+  it('printSummary does not report "no changes" when something was written', async () => {
+    const {report, printSummary} = await freshReportModule();
+    report('secret', 'written');
+    printSummary('Written');
+    const output = logSpy.mock.calls.map(call => call.join(' ')).join('\n');
+    expect(output).not.toContain('no changes');
+  });
+
   it('fail logs the message and exits', async () => {
     const {fail} = await freshReportModule();
     expect(() => fail('nope')).not.toThrow();

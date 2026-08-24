@@ -110,7 +110,10 @@ export function printSummary(title: string): void {
     .filter(outcome => counts[outcome])
     .map(outcome => `${counts[outcome]} ${LABELS[outcome]}`);
   const changed = entries.some(
-    entry => entry.outcome === 'created' || entry.outcome === 'updated',
+    entry =>
+      entry.outcome === 'created' ||
+      entry.outcome === 'updated' ||
+      entry.outcome === 'written',
   );
   const settled = !changed && !instructions.length;
   console.log(
