@@ -153,9 +153,9 @@ these hold:
 - It touches cross-cutting concerns that would otherwise be skipped.
 - High-level documentation of an existing or legacy system is needed.
 
-A design carrying more decisions than one review can settle is split into
-sub-problems, each with its own document; a broader document is read for
-context, never extended.
+Work that could ship in independent pieces gets a document per piece,
+including any whose design rests on an earlier one. A document links to
+the design it rests on rather than restating it.
 
 Unlike the documentation above, these are not maintained. A document is
 updated until every issue cut from it is closed, then left as-is: an archive
