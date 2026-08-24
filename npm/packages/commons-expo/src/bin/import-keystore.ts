@@ -36,8 +36,8 @@ const STEPS = [
  * environment outputs, then shred the local copies.
  */
 export function importKeystore(): void {
-  const env = resolveEnv([], ['ANDROID_KEYSTORE_BASE64']);
-  const file = 'credentials.json';
+  const env = resolveEnv([], ['ANDROID_KEYSTORE_BASE64', 'CREDENTIALS_FILE']);
+  const file = env.CREDENTIALS_FILE || 'credentials.json';
   const resource = 'android signing key';
 
   if (env.ANDROID_KEYSTORE_BASE64) {
@@ -55,15 +55,16 @@ export function importKeystore(): void {
   try {
     const parsed = JSON.parse(fs.readFileSync(file, 'utf8')) as CredentialsJson;
     const keystore = parsed.android?.keystore;
-    const keystorePath = keystore?.keystorePath;
+    const keystoreEntry = keystore?.keystorePath;
 
-    if (!keystore || !keystorePath) {
+    if (!keystore || !keystoreEntry) {
       fail(
         `${file} has no "android.keystore" entry. Download it again:\n  ${STEPS.join('\n  ')}`,
       );
     }
+    const keystorePath = path.join(path.dirname(file), keystoreEntry);
     if (!fs.existsSync(keystorePath)) {
-      fail(`${file} points at ${keystorePath}, which does not exist.`);
+      fail(`${file} points at ${keystoreEntry}, which does not exist.`);
     }
     if (!keystore.keystorePassword || !keystore.keyAlias) {
       fail(`${file} is missing the keystore password or key alias.`);
