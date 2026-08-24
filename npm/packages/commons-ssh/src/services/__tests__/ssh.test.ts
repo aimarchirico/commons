@@ -31,6 +31,7 @@ describe('sshRun', () => {
         'echo hi',
       ],
       undefined,
+      {shell: false},
     );
     expect(result).toEqual({status: 0, stdout: 'ok', stderr: ''});
   });
@@ -44,7 +45,18 @@ describe('sshRun', () => {
       'ssh',
       expect.arrayContaining(['cat > file']),
       'contents',
+      {shell: false},
     );
+  });
+
+  it('runs without a shell so remote metacharacters reach ssh verbatim', () => {
+    run.mockReturnValue({status: 0, stdout: '', stderr: ''});
+
+    sshRun(target, 'mkdir -p ~/app && cat > ~/app/.env');
+
+    expect(run).toHaveBeenCalledWith('ssh', expect.any(Array), undefined, {
+      shell: false,
+    });
   });
 });
 
@@ -54,15 +66,19 @@ describe('scpFiles', () => {
 
     const status = scpFiles(target, ['a.txt', 'b.txt'], '~/docker/app');
 
-    expect(runStreamed).toHaveBeenCalledWith('scp', [
-      '-i',
-      '/keys/id',
-      '-o',
-      'StrictHostKeyChecking=accept-new',
-      'a.txt',
-      'b.txt',
-      'deploy@vps.example.com:~/docker/app/',
-    ]);
+    expect(runStreamed).toHaveBeenCalledWith(
+      'scp',
+      [
+        '-i',
+        '/keys/id',
+        '-o',
+        'StrictHostKeyChecking=accept-new',
+        'a.txt',
+        'b.txt',
+        'deploy@vps.example.com:~/docker/app/',
+      ],
+      {shell: false},
+    );
     expect(status).toBe(0);
   });
 });

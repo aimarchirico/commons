@@ -22,10 +22,15 @@ export function sshRun(
   command: string,
   input?: string,
 ): {status: number; stdout: string; stderr: string} {
+  // shell:false: ssh.exe is a real binary on every platform, so no shell is
+  // needed to resolve it, and one must be avoided here regardless, since
+  // cmd.exe parses `&&`/`>`/etc. in `command` before ssh ever sees it,
+  // running fragments of the remote command locally on Windows.
   return run(
     'ssh',
     [...sshArgs(target), `${target.user}@${target.host}`, command],
     input,
+    {shell: false},
   );
 }
 
@@ -42,9 +47,13 @@ export function scpFiles(
   localFiles: string[],
   remoteDir: string,
 ): number {
-  return runStreamed('scp', [
-    ...sshArgs(target),
-    ...localFiles,
-    `${target.user}@${target.host}:${remoteDir}/`,
-  ]);
+  return runStreamed(
+    'scp',
+    [
+      ...sshArgs(target),
+      ...localFiles,
+      `${target.user}@${target.host}:${remoteDir}/`,
+    ],
+    {shell: false},
+  );
 }
