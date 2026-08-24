@@ -72,7 +72,7 @@ describe('import-keystore.ts', () => {
       'present',
       'ANDROID_KEYSTORE_BASE64 already set',
     );
-    expect(printSummary).toHaveBeenCalledWith('import-keystore');
+    expect(printSummary).toHaveBeenCalledWith('commons-expo import-keystore');
     expect(existsSync).not.toHaveBeenCalled();
   });
 
@@ -87,7 +87,7 @@ describe('import-keystore.ts', () => {
       'no credentials.json found',
       expect.any(Array),
     );
-    expect(printSummary).toHaveBeenCalledWith('import-keystore');
+    expect(printSummary).toHaveBeenCalledWith('commons-expo import-keystore');
   });
 
   it('fails when credentials.json has no android.keystore entry', () => {
@@ -165,7 +165,7 @@ describe('import-keystore.ts', () => {
     );
     expect(rmSync).toHaveBeenCalledWith('credentials.json', {force: true});
     expect(rmdirSync).toHaveBeenCalledWith(path.join('android', 'app'));
-    expect(printSummary).toHaveBeenCalledWith('import-keystore');
+    expect(printSummary).toHaveBeenCalledWith('commons-expo import-keystore');
   });
 
   it('falls back to keystorePassword when keyPassword is absent', () => {

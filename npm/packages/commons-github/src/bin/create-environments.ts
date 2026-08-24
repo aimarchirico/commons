@@ -35,5 +35,5 @@ export function createEnvironments(): void {
     fail(error instanceof Error ? error.message : String(error));
   }
 
-  printSummary('create-environments');
+  printSummary('commons-github create-environments');
 }

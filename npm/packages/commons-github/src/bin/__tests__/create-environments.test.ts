@@ -67,7 +67,9 @@ describe('create-environments.ts', () => {
       'repos/owner/repo/environments/prod',
     );
     expect(report).toHaveBeenCalledWith('environment prod', 'created');
-    expect(printSummary).toHaveBeenCalledWith('create-environments');
+    expect(printSummary).toHaveBeenCalledWith(
+      'commons-github create-environments',
+    );
   });
 
   it('catches non-Error exceptions and calls fail', () => {

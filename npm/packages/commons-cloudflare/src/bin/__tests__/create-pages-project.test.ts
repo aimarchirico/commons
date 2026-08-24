@@ -82,7 +82,9 @@ describe('create-pages-project.ts', () => {
       'created',
       'automatic DNS requested',
     );
-    expect(printSummary).toHaveBeenCalledWith('create-pages-project');
+    expect(printSummary).toHaveBeenCalledWith(
+      'commons-cloudflare create-pages-project',
+    );
   });
 
   it('falls back to main when there is no derived default branch', async () => {

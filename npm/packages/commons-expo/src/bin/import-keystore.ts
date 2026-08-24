@@ -42,13 +42,13 @@ export function importKeystore(): void {
 
   if (env.ANDROID_KEYSTORE_BASE64) {
     report(resource, 'present', 'ANDROID_KEYSTORE_BASE64 already set');
-    printSummary('import-keystore');
+    printSummary('commons-expo import-keystore');
     return;
   }
 
   if (!fs.existsSync(file)) {
     instruct(resource, `no ${file} found`, STEPS);
-    printSummary('import-keystore');
+    printSummary('commons-expo import-keystore');
     return;
   }
 
@@ -89,5 +89,5 @@ export function importKeystore(): void {
     fail(error instanceof Error ? error.message : String(error));
   }
 
-  printSummary('import-keystore');
+  printSummary('commons-expo import-keystore');
 }

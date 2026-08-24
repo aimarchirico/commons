@@ -51,7 +51,7 @@ describe('create-project.ts', () => {
       'proj-1',
     );
     expect(writeOutputs).toHaveBeenCalledWith({EAS_PROJECT_ID: 'proj-1'});
-    expect(printSummary).toHaveBeenCalledWith('create-project');
+    expect(printSummary).toHaveBeenCalledWith('commons-expo create-project');
   });
 
   it('reports present for an already-linked project', () => {

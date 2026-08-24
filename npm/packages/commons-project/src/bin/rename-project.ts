@@ -31,7 +31,7 @@ async function run(): Promise<void> {
     report(`delete ${target}`, outcome === 'deleted' ? 'updated' : 'present');
   }
 
-  printSummary('rename-project');
+  printSummary('commons-project rename-project');
 }
 
 run().catch((error: unknown) => {

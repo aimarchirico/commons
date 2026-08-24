@@ -49,5 +49,5 @@ export function setSecrets(): void {
     fail(error instanceof Error ? error.message : String(error));
   }
 
-  printSummary('set-secrets');
+  printSummary('commons-github set-secrets');
 }

@@ -64,5 +64,5 @@ export async function createPagesProject(): Promise<void> {
     fail(error instanceof Error ? error.message : String(error));
   }
 
-  printSummary('create-pages-project');
+  printSummary('commons-cloudflare create-pages-project');
 }

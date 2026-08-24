@@ -87,5 +87,5 @@ export async function createServiceToken(): Promise<void> {
     fail(error instanceof Error ? error.message : String(error));
   }
 
-  printSummary('create-service-token');
+  printSummary('commons-cloudflare create-service-token');
 }
