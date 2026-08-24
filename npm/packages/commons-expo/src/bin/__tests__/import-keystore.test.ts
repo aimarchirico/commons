@@ -1,3 +1,4 @@
+import path from 'path';
 import {
   fail,
   instruct,
@@ -158,11 +159,12 @@ describe('import-keystore.ts', () => {
       'written',
       'imported from credentials.json',
     );
-    expect(rmSync).toHaveBeenCalledWith('android/app/release.keystore', {
-      force: true,
-    });
+    expect(rmSync).toHaveBeenCalledWith(
+      path.join('android', 'app', 'release.keystore'),
+      {force: true},
+    );
     expect(rmSync).toHaveBeenCalledWith('credentials.json', {force: true});
-    expect(rmdirSync).toHaveBeenCalledWith('android/app');
+    expect(rmdirSync).toHaveBeenCalledWith(path.join('android', 'app'));
     expect(printSummary).toHaveBeenCalledWith('import-keystore');
   });
 
@@ -190,6 +192,46 @@ describe('import-keystore.ts', () => {
       expect.objectContaining({ANDROID_KEY_PASSWORD: 'pw'}),
     );
     expect(rmdirSync).not.toHaveBeenCalled();
+  });
+
+  it('resolves credentials.json and its keystore from a CREDENTIALS_FILE override', () => {
+    const file = path.join('frontend', 'apps', 'expo', 'credentials.json');
+    vi.mocked(resolveEnv).mockReturnValue({CREDENTIALS_FILE: file});
+    existsSync.mockReturnValue(true);
+    readdirSync.mockReturnValue([]);
+    readFileSync
+      .mockReturnValueOnce(
+        JSON.stringify({
+          android: {
+            keystore: {
+              keystorePath: path.join('credentials', 'android', 'keystore.jks'),
+              keystorePassword: 'pw',
+              keyAlias: 'alias',
+              keyPassword: 'keypw',
+            },
+          },
+        }),
+      )
+      .mockReturnValueOnce(Buffer.from('binary-keystore'));
+
+    importKeystore();
+
+    const expectedKeystorePath = path.join(
+      'frontend',
+      'apps',
+      'expo',
+      'credentials',
+      'android',
+      'keystore.jks',
+    );
+    expect(existsSync).toHaveBeenCalledWith(expectedKeystorePath);
+    expect(rmSync).toHaveBeenCalledWith(expectedKeystorePath, {force: true});
+    expect(rmSync).toHaveBeenCalledWith(file, {force: true});
+    expect(report).toHaveBeenCalledWith(
+      'android signing key',
+      'written',
+      `imported from ${file}`,
+    );
   });
 
   it('catches non-Error exceptions and calls fail', () => {
