@@ -134,3 +134,52 @@ describe('applyDelete', () => {
     expect(applyDelete('missing.txt')).toBe('skipped');
   });
 });
+
+describe('root override', () => {
+  let root: string;
+
+  beforeEach(() => {
+    root = fs.mkdtempSync(path.join(os.tmpdir(), 'commons-project-root-'));
+  });
+
+  afterEach(() => {
+    fs.rmSync(root, {recursive: true, force: true});
+  });
+
+  it('applyReplacement resolves file patterns against root, not cwd', async () => {
+    fs.writeFileSync(path.join(root, 'a.txt'), 'Hello Template!');
+
+    const changed = await applyReplacement(
+      {value: 'name', files: ['*.txt']},
+      manifest,
+      root,
+    );
+
+    expect(changed).toBe(1);
+    expect(fs.readFileSync(path.join(root, 'a.txt'), 'utf8')).toBe(
+      'Hello My App!',
+    );
+  });
+
+  it('applyMove resolves from/to against root, not cwd', () => {
+    fs.mkdirSync(path.join(root, 'src'), {recursive: true});
+    fs.writeFileSync(path.join(root, 'src/file.txt'), 'content');
+
+    const result = applyMove(
+      {from: 'src/file.txt', to: 'dest/file.txt'},
+      {values: {}},
+      root,
+    );
+
+    expect(result.moved).toBe(true);
+    expect(fs.existsSync(path.join(root, 'dest/file.txt'))).toBe(true);
+    expect(fs.existsSync('dest/file.txt')).toBe(false);
+  });
+
+  it('applyDelete resolves target against root, not cwd', () => {
+    fs.writeFileSync(path.join(root, 'gone.txt'), 'bye');
+
+    expect(applyDelete('gone.txt', root)).toBe('deleted');
+    expect(fs.existsSync(path.join(root, 'gone.txt'))).toBe(false);
+  });
+});

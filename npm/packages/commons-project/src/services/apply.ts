@@ -53,16 +53,24 @@ function pairs(replacement: ManifestReplacement, manifest: Manifest): Pair[] {
  * Apply a replacement rule to the matched files.
  * @param replacement The replacement config.
  * @param manifest The project manifest.
+ * @param root Directory the replacement's file patterns resolve against.
+ *   Defaults to the current working directory.
  * @returns The number of files changed.
  */
 export async function applyReplacement(
   replacement: ManifestReplacement,
   manifest: Manifest,
+  root: string = process.cwd(),
 ): Promise<number> {
   const replacements = pairs(replacement, manifest);
   if (!replacements.length) return 0;
 
-  const files = await glob(replacement.files, {ignore: IGNORE, dot: true});
+  const files = await glob(replacement.files, {
+    cwd: root,
+    ignore: IGNORE,
+    dot: true,
+    absolute: true,
+  });
   let changed = 0;
 
   for (const file of files) {
@@ -94,34 +102,45 @@ function pruneEmptyParents(from: string, stopAt: string): void {
  * Move a file or directory.
  * @param move The move instruction config.
  * @param manifest The project manifest.
- * @returns The status and final paths.
+ * @param root Directory from/to resolve against. Defaults to the current
+ *   working directory.
+ * @returns The status and final paths, reported relative to `root`.
  */
 export function applyMove(
   move: ManifestMove,
   manifest: Manifest,
+  root: string = process.cwd(),
 ): {moved: boolean; from: string; to: string} {
   const from = interpolate(move.from, 'from', manifest.values);
   const to = interpolate(move.to, 'to', manifest.values);
   const unchanged = {moved: false, from, to};
 
-  if (path.resolve(from) === path.resolve(to)) return unchanged;
-  if (!fs.existsSync(from)) return unchanged;
+  const fromPath = path.join(root, from);
+  const toPath = path.join(root, to);
+  if (path.resolve(fromPath) === path.resolve(toPath)) return unchanged;
+  if (!fs.existsSync(fromPath)) return unchanged;
 
-  const parent = path.dirname(to);
+  const parent = path.dirname(toPath);
   if (parent) fs.mkdirSync(parent, {recursive: true});
-  if (fs.existsSync(to)) fs.rmSync(to, {recursive: true, force: true});
-  fs.renameSync(from, to);
-  pruneEmptyParents(from, process.cwd());
+  if (fs.existsSync(toPath)) fs.rmSync(toPath, {recursive: true, force: true});
+  fs.renameSync(fromPath, toPath);
+  pruneEmptyParents(fromPath, root);
   return {moved: true, from, to};
 }
 
 /**
  * Delete a file or directory.
  * @param target The target path to delete.
+ * @param root Directory target resolves against. Defaults to the current
+ *   working directory.
  * @returns The outcome status.
  */
-export function applyDelete(target: string): 'deleted' | 'skipped' {
-  if (!fs.existsSync(target)) return 'skipped';
-  fs.rmSync(target, {recursive: true, force: true});
+export function applyDelete(
+  target: string,
+  root: string = process.cwd(),
+): 'deleted' | 'skipped' {
+  const targetPath = path.join(root, target);
+  if (!fs.existsSync(targetPath)) return 'skipped';
+  fs.rmSync(targetPath, {recursive: true, force: true});
   return 'deleted';
 }
