@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.1](https://github.com/aimarchirico/commons/compare/commons-project-v1.4.0...commons-project-v1.4.1) (2026-08-24)
+
+
+### Bug Fixes
+
+* **cli:** prefix printSummary tallies with the package name ([1a71b90](https://github.com/aimarchirico/commons/commit/1a71b90291c3422a109f79837c8a701b71856e7b))
+* **cli:** prefix printSummary tallies with the package name ([77c5daa](https://github.com/aimarchirico/commons/commit/77c5daac47540940627766708706ff51f44c9a37))
+
 ## [1.4.0](https://github.com/aimarchirico/commons/compare/commons-project-v1.3.1...commons-project-v1.4.0) (2026-08-09)
 
 
