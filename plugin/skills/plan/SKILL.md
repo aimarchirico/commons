@@ -29,9 +29,9 @@ argument-hint: "[--draft] [--auto] [--skip-check] [--no-pr]"
    this work amends an existing document or starts a new one. When amending,
    read the document into context first and flag any conflict with new input
    instead of silently overwriting.
-1. If the work carries more decisions than one review can settle, split it
-   into a sub-problem per document and draft them all, including any whose
-   design rests on another's.
+1. Draft a document per piece of the work that could ship independently,
+   including any whose design rests on another's. Keep it as one document
+   only when the work has no such seam.
 
 ### Draft
 
