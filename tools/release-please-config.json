@@ -43,6 +43,9 @@
     "npm/packages/commons-project": {
       "release-type": "node"
     },
+    "npm/packages/commons-ssh": {
+      "release-type": "node"
+    },
     "npm/packages/commons-ts": {
       "release-type": "node"
     }
