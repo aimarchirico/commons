@@ -20,8 +20,8 @@ Then resolve `<base-branch>`:
 - When solving issues, `<base-branch>` comes from their open blockers (see the
   invoking skill for the script that resolves it). If multiple candidate
   branches are reported, prompt the user to pick one, offering the candidate
-  PR branches and the repository default branch. Under `--auto`, take the
-  repository default branch and report the choice.
+  PR branches and the repository default branch, or under `--auto` take the
+  repository default branch instead of prompting.
 - Otherwise `<base-branch>` is the repository default branch, resolved via
   `gh repo view --json defaultBranchRef`.
 

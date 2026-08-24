@@ -42,8 +42,8 @@ argument-hint: "[--draft] [--auto]"
 
 4. Resolve the related issue IDs: those the invoking skill passed in or the
    prompt and context carry, otherwise the one step 3 extracted from the
-   branch name, otherwise ask the user. Under `--auto`, continue without
-   them, reporting the omission in the output. If an issue has sub-issues,
+   branch name, otherwise ask the user, or under `--auto` continue without
+   any and report the omission in the output. If an issue has sub-issues,
    close every one of them explicitly.
 5. Draft the PR description by populating
    `${CLAUDE_PLUGIN_ROOT}/.github/PULL_REQUEST_TEMPLATE.md` using the
