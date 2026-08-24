@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.7.1](https://github.com/aimarchirico/commons/compare/commons-cloudflare-v3.7.0...commons-cloudflare-v3.7.1) (2026-08-24)
+
+
+### Bug Fixes
+
+* **commons-cloudflare:** push Pages secrets as secret_text, not plain_text ([1980d7d](https://github.com/aimarchirico/commons/commit/1980d7d2b075b9a83034a66f399f78294b196813))
+* **commons-cloudflare:** push Pages secrets as secret_text, not plain_text ([06976f9](https://github.com/aimarchirico/commons/commit/06976f9b78371fee3bcb0ff85fc882d6d6bb5f1a))
+
 ## [3.7.0](https://github.com/aimarchirico/commons/compare/commons-cloudflare-v3.6.2...commons-cloudflare-v3.7.0) (2026-08-09)
 
 

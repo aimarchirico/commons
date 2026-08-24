@@ -3,7 +3,7 @@
   "maven/commons-security": "3.2.0",
   "maven/commons-test": "3.2.0",
   "maven/commons-firebase-admin": "2.2.0",
-  "npm/packages/commons-cloudflare": "3.7.0",
+  "npm/packages/commons-cloudflare": "3.7.1",
   "npm/packages/commons-expo": "4.7.1",
   "npm/packages/commons-firebase-client": "3.4.1",
   "npm/packages/commons-github": "2.1.0",
