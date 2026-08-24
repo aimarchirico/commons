@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.2](https://github.com/aimarchirico/commons/compare/commons-github-v2.1.1...commons-github-v2.1.2) (2026-08-24)
+
+
+### Bug Fixes
+
+* **commons-github:** default the design-doc rule to splitting on shippable seams ([c453324](https://github.com/aimarchirico/commons/commit/c45332420165943aa8b9e294d9e7f8d90d1de246))
+
 ## [2.1.1](https://github.com/aimarchirico/commons/compare/commons-github-v2.1.0...commons-github-v2.1.1) (2026-08-24)
 
 
