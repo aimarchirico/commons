@@ -8,11 +8,11 @@ argument-hint: "[--draft] [--auto]"
 
 ## Arguments
 
-| Flag      | Required | Description                                                            |
-| :-------- | :------- | :--------------------------------------------------------------------- |
-| `--draft` | No       | Submit the pull request as a draft.                                    |
-| `--auto`  | No       | Skip the approval step and create the drafted PR directly.             |
-| `--base`  | No       | Target base branch for the PR (defaults to repo's default branch).     |
+| Flag      | Required | Description                                                                      |
+| :-------- | :------- | :------------------------------------------------------------------------------- |
+| `--draft` | No       | Submit the pull request as a draft.                                              |
+| `--auto`  | No       | Ask the user nothing: skip the approval step and create the drafted PR directly. |
+| `--base`  | No       | Target base branch for the PR (defaults to repo's default branch).               |
 
 ## Workflow
 
@@ -40,9 +40,11 @@ argument-hint: "[--draft] [--auto]"
    alone: messages state intent, and anything a message glossed over is
    still in the PR.
 
-4. Request related issue IDs if they were not successfully extracted in the
-   previous step. If the branch's issue has sub-issues, close every one of
-   them explicitly.
+4. Resolve the related issue IDs: those the invoking skill passed in or the
+   prompt and context carry, otherwise the one step 3 extracted from the
+   branch name, otherwise ask the user, or under `--auto` continue without
+   any and report the omission in the output. If an issue has sub-issues,
+   close every one of them explicitly.
 5. Draft the PR description by populating
    `${CLAUDE_PLUGIN_ROOT}/.github/PULL_REQUEST_TEMPLATE.md` using the
    gathered context.

@@ -8,9 +8,9 @@ argument-hint: "[--auto]"
 
 ## Arguments
 
-| Flag     | Required | Description                                                     |
-| :------- | :------- | :-------------------------------------------------------------- |
-| `--auto` | No       | Skip the approval step and apply the proposed updates directly. |
+| Flag     | Required | Description                                                                           |
+| :------- | :------- | :------------------------------------------------------------------------------------ |
+| `--auto` | No       | Ask the user nothing: skip the approval step and apply the proposed updates directly. |
 
 ## Workflow
 
@@ -18,7 +18,8 @@ argument-hint: "[--auto]"
    caller already supplied the content and context, use
    that directly. Otherwise, if these details are not already clear from the
    user's prompt or context, inspect the codebase, recent commits, and
-   `git diff`, and ask the user for clarification if needed.
+   `git diff`, and ask the user for clarification if needed. Under `--auto`,
+   derive them from context instead of asking.
 1. Present proposed updates strictly following the structure and conventions
    defined in `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md#documentation`,
    and wait for explicit user approval. Skip this step if the `--auto` flag is

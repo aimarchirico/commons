@@ -12,40 +12,50 @@ argument-hint: "[--draft] [--auto] [--review] [--skip-check]"
 | Flag           | Required | Description                                                                                                                                                     |
 | :------------- | :------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `--draft`      | No       | Passed through to the `commons:plan` and `commons:solve` skills (and their `commons:pr` skill) to open the resulting PRs as drafts.                             |
-| `--auto`       | No       | Run the full lifecycle autonomously without prompting for approvals across every sub-skill invoked (including during a `--review` pass if set).                 |
+| `--auto`       | No       | Run the full lifecycle autonomously, asking the user nothing across every sub-skill invoked (including during a `--review` pass if set).                        |
 | `--review`     | No       | After the pull request is opened, run one review-and-fix pass over it via the `commons:review` and `commons:resolve` skills.                                    |
 | `--skip-check` | No       | Passed through to the `commons:plan` and `commons:solve` skills, and to `commons:resolve` during a `--review` pass if set, to skip their `commons:check` steps. |
 
 ## Workflow
 
 1. Identify the description of work to ship from the user's prompt or
-   context. Ask the user for clarification if it's not already clear.
-2. Invoke the `commons:plan` skill with `--no-pr`, passing `--auto` and
+   context. Ask the user for clarification if it's not already clear. Under
+   `--auto`, derive it from context instead of asking.
+2. Establish whether that work warrants a design document, against the
+   criteria in the `docs/design-docs/` entry in
+   `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md#documentation`. When they
+   hold, continue to step 3. When they do not, report which ones fail and ask
+   whether to design it anyway: continue to step 3 if the user confirms, and
+   skip to step 4 otherwise. Under `--auto` that question goes unasked and
+   its answer is taken as no.
+3. Invoke the `commons:plan` skill with `--no-pr`, passing `--auto` and
    `--skip-check` through if they were provided, and capture the branch name
-   it reports. It applies its own warrant criteria and stops without a
-   branch when a design document is not called for, in which case the steps
-   below run without one.
-3. Invoke the `commons:issue` skill with the approved design document when
-   step 2 produced one, and the identified work otherwise, passing `--auto`
+   it reports.
+4. Invoke the `commons:issue` skill with the approved design documents when
+   step 3 produced any, and the identified work otherwise, passing `--auto`
    through if it was provided, to draft and create the issue hierarchy (its
    own hierarchy-approval step surfaces normally unless `--auto` is set).
-4. Capture the top-level issue id created by `commons:issue` (the id of the
-   root item in the created hierarchy).
-5. Invoke the `commons:solve` skill with `--issue <issue-id>`, adding
-   `--branch <branch-name>` if step 2 produced a design branch, and passing
-   `--auto`, `--draft`, and `--skip-check` through if they were provided, to
-   implement the issue end-to-end and open a pull request carrying both the
-   design document and its implementation (its own plan-approval and the
-   `commons:pr` approval steps surface normally unless `--auto` is set).
-6. If `--review` was not provided, stop here. Otherwise, capture the pull
+5. Capture the ids of the top-level issues `commons:issue` created.
+6. If step 3 produced a design branch, rename it and its worktree to the
+   name `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#branch-setup` derives
+   from those issues. It has not been pushed yet.
+7. Invoke the `commons:solve` skill once with every captured id,
+   `--issue <issue-ids>`, adding `--branch <branch-name>` under the name
+   step 6 settled on if step 3 produced a design branch, and passing
+   `--auto`, `--draft`, and `--skip-check`
+   through if they were provided, to implement them in one pass and open a
+   pull request carrying the design documents and every implementation (its
+   own plan-approval and the `commons:pr` approval steps surface normally
+   unless `--auto` is set).
+8. If `--review` was not provided, stop here. Otherwise, capture the pull
    request number that `commons:pr` reported creating (surfaced through
    `commons:solve`).
-7. Invoke the `commons:review` skill with `--pr <pr-number>`, passing
+9. Invoke the `commons:review` skill with `--pr <pr-number>`, passing
    `--auto` through if it was provided, to get findings on the opened pull
    request and, on approval (or automatically under `--auto`), post them as
    PR review comments.
-8. If `commons:review` posted any findings, invoke the `commons:resolve`
-   skill with `--pr <pr-number>`, passing `--auto` and `--skip-check` through
-   if they were provided, to fix them and reply on the pull request. Run at
-   most this one review-and-fix pass; do not re-invoke `commons:review`
-   afterward.
+10. If `commons:review` posted any findings, invoke the `commons:resolve`
+    skill with `--pr <pr-number>`, passing `--auto` and `--skip-check`
+    through if they were provided, to fix them and reply on the pull request.
+    Run at most this one review-and-fix pass; do not re-invoke
+    `commons:review` afterward.

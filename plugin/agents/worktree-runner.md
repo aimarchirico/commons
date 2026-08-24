@@ -10,8 +10,8 @@ genuine blocker, note it in your report rather than guessing destructively.
 ## Input
 
 The approved plan, the worktree path to work in, and whether checks should
-be skipped. From `commons:plan`, the plan is an approved design document and
-its target path: write it verbatim, never reworded.
+be skipped. From `commons:plan`, the plan is one or more approved design
+documents and their target paths: write each verbatim, never reworded.
 
 ## Workflow
 

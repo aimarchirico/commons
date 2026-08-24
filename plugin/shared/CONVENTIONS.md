@@ -11,13 +11,17 @@ skill the same way CONTRIBUTING sections are referenced, for example
 ## Branch Setup
 
 Determine `<branch-name>` following the naming rules in
-`${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md#branches`, and resolve
-`<base-branch>`:
+`${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md#branches`. Several issues
+solved together share one branch, named after the work as a whole rather than
+any one of them.
 
-- When solving an issue, `<base-branch>` comes from the issue's open blockers
-  (see the invoking skill for the script that resolves it). If multiple
-  candidate branches are reported, prompt the user to pick one, offering the
-  candidate PR branches and the repository default branch.
+Then resolve `<base-branch>`:
+
+- When solving issues, `<base-branch>` comes from their open blockers (see the
+  invoking skill for the script that resolves it). If multiple candidate
+  branches are reported, prompt the user to pick one, offering the candidate
+  PR branches and the repository default branch, or under `--auto` take the
+  repository default branch instead of prompting.
 - Otherwise `<base-branch>` is the repository default branch, resolved via
   `gh repo view --json defaultBranchRef`.
 
