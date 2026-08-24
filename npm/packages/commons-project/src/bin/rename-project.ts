@@ -1,15 +1,22 @@
 #!/usr/bin/env node
 
-import {fail, printSummary, report} from '@aimarchirico/commons-project';
+import {
+  fail,
+  printSummary,
+  report,
+  resolveEnv,
+} from '@aimarchirico/commons-project';
 import {applyDelete, applyMove, applyReplacement} from '../services/apply.js';
 import {loadManifest, manifestPath} from '../services/manifest.js';
 
 async function run(): Promise<void> {
+  const env = resolveEnv([], ['PROJECT_ROOT']);
+  const root = env.PROJECT_ROOT || process.cwd();
   const manifest = loadManifest();
   console.log(`Applying ${manifestPath()}\n`);
 
   for (const replacement of manifest.replacements ?? []) {
-    const changed = await applyReplacement(replacement, manifest);
+    const changed = await applyReplacement(replacement, manifest, root);
     report(
       `replace ${replacement.value}`,
       changed ? 'updated' : 'present',
@@ -18,7 +25,7 @@ async function run(): Promise<void> {
   }
 
   for (const move of manifest.moves ?? []) {
-    const {moved, from, to} = applyMove(move, manifest);
+    const {moved, from, to} = applyMove(move, manifest, root);
     report(
       `move ${from}`,
       moved ? 'updated' : 'present',
@@ -27,7 +34,7 @@ async function run(): Promise<void> {
   }
 
   for (const target of manifest.deletes ?? []) {
-    const outcome = applyDelete(target);
+    const outcome = applyDelete(target, root);
     report(`delete ${target}`, outcome === 'deleted' ? 'updated' : 'present');
   }
 
