@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.4](https://github.com/aimarchirico/commons/compare/commons-project-v1.4.3...commons-project-v1.4.4) (2026-08-24)
+
+
+### Bug Fixes
+
+* **commons-project:** let run()/runStreamed() opt out of the Windows shell ([314cfdd](https://github.com/aimarchirico/commons/commit/314cfdd09e8f479f377d5c74781c5e26486dfb00))
+* stop reinterpreting remote shell commands through cmd.exe on Windows ([3f46fc6](https://github.com/aimarchirico/commons/commit/3f46fc67a42e6f012488e81db1389d822001f8a8))
+
 ## [1.4.3](https://github.com/aimarchirico/commons/compare/commons-project-v1.4.2...commons-project-v1.4.3) (2026-08-24)
 
 
