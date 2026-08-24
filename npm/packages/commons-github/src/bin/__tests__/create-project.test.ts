@@ -58,7 +58,7 @@ describe('create-project.ts', () => {
       'present',
       '#42 linked to my-owner/my-repo',
     );
-    expect(printSummary).toHaveBeenCalledWith('create-project');
+    expect(printSummary).toHaveBeenCalledWith('commons-github create-project');
   });
 
   it('reports present if project is already linked (using Nodes uppercase)', () => {

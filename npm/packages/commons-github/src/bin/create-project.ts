@@ -96,5 +96,5 @@ export function createProject(): void {
     fail(error instanceof Error ? error.message : String(error));
   }
 
-  printSummary('create-project');
+  printSummary('commons-github create-project');
 }

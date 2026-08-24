@@ -125,7 +125,9 @@ describe('set-pages-env.ts', () => {
         },
       },
     );
-    expect(printSummary).toHaveBeenCalledWith('set-pages-env');
+    expect(printSummary).toHaveBeenCalledWith(
+      'commons-cloudflare set-pages-env',
+    );
   });
 
   it('catches non-Error exceptions and calls fail', async () => {

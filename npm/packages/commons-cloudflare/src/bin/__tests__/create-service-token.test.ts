@@ -80,7 +80,9 @@ describe('create-service-token.ts', () => {
       'updated',
       'includes my-token',
     );
-    expect(printSummary).toHaveBeenCalledWith('create-service-token');
+    expect(printSummary).toHaveBeenCalledWith(
+      'commons-cloudflare create-service-token',
+    );
   });
 
   it('reuses an existing token and reports it cannot be re-read', async () => {

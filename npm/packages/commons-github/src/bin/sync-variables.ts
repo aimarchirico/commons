@@ -60,5 +60,5 @@ export function syncVariables(): void {
     fail(error instanceof Error ? error.message : String(error));
   }
 
-  printSummary('sync-variables');
+  printSummary('commons-github sync-variables');
 }

@@ -153,7 +153,7 @@ describe('sync-variables.ts', () => {
       {name: 'ENV_VAR', value: 'env-val'},
     );
     expect(report).toHaveBeenCalledWith('staging variable ENV_VAR', 'created');
-    expect(printSummary).toHaveBeenCalledWith('sync-variables');
+    expect(printSummary).toHaveBeenCalledWith('commons-github sync-variables');
   });
 
   it('catches non-Error exceptions and calls fail', () => {

@@ -100,5 +100,5 @@ export async function setPagesEnv(): Promise<void> {
     fail(error instanceof Error ? error.message : String(error));
   }
 
-  printSummary('set-pages-env');
+  printSummary('commons-cloudflare set-pages-env');
 }

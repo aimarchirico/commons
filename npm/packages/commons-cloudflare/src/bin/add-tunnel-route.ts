@@ -74,5 +74,5 @@ export async function addTunnelRoute(): Promise<void> {
     fail(error instanceof Error ? error.message : String(error));
   }
 
-  printSummary('add-tunnel-route');
+  printSummary('commons-cloudflare add-tunnel-route');
 }

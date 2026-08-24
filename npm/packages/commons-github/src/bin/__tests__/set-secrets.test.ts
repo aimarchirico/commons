@@ -70,7 +70,7 @@ describe('set-secrets.ts', () => {
       'env-val',
     );
     expect(report).toHaveBeenCalledWith('prod secret ENV_SECRET', 'written');
-    expect(printSummary).toHaveBeenCalledWith('set-secrets');
+    expect(printSummary).toHaveBeenCalledWith('commons-github set-secrets');
   });
 
   it('skips secrets when not set or empty in process.env', () => {
