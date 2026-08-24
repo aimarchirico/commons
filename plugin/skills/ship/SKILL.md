@@ -26,8 +26,7 @@ argument-hint: "[--draft] [--auto] [--review] [--skip-check]"
    hold, continue to step 3. When they do not, report which ones fail and ask
    whether to design it anyway: continue to step 3 if the user confirms, and
    skip to step 4 otherwise. Under `--auto` that question goes unasked and
-   its answer is taken as no, which skips the design only where it was
-   already unwarranted.
+   its answer is taken as no.
 3. Invoke the `commons:plan` skill with `--no-pr`, passing `--auto` and
    `--skip-check` through if they were provided, and capture the branch name
    it reports.
@@ -38,9 +37,7 @@ argument-hint: "[--draft] [--auto] [--review] [--skip-check]"
 5. Capture the ids of the top-level issues `commons:issue` created.
 6. If step 3 produced a design branch, rename it and its worktree to the
    name `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#branch-setup` derives
-   from those issues, which `commons:plan` could not know when it had to
-   settle for type `chore`. Nothing has been pushed yet, so this rewrites
-   nothing anyone else holds.
+   from those issues. It has not been pushed yet.
 7. Invoke the `commons:solve` skill once with every captured id,
    `--issue <issue-ids>`, adding `--branch <branch-name>` under the name
    step 6 settled on if step 3 produced a design branch, and passing

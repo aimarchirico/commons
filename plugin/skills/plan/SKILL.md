@@ -30,10 +30,8 @@ argument-hint: "[--draft] [--auto] [--skip-check] [--no-pr]"
    read the document into context first and flag any conflict with new input
    instead of silently overwriting.
 1. If the work carries more decisions than one review can settle, split it
-   into a sub-problem per document rather than one sprawling document, and
-   draft them all. Each stays open to revision until the issues cut from it
-   close, so one whose design rests on another's is still drafted now and
-   revised as that review resolves.
+   into a sub-problem per document and draft them all, including any whose
+   design rests on another's.
 
 ### Draft
 
@@ -41,9 +39,8 @@ argument-hint: "[--draft] [--auto] [--skip-check] [--no-pr]"
    written. Establish what already exists and what constrains the work, then
    press hardest on non-goals: every capability left implicit is scope that
    expands later. Under `--auto`, ask nothing: derive both sections from the
-   codebase and the user's description, and state every assumption that
-   stands in for an unanswered question in *Context and Scope*, so the
-   pull request review is what settles it.
+   codebase and the user's description, and state every assumption standing
+   in for an unanswered question in *Context and Scope*.
 1. For research on external systems, third-party integrations, or other
    technical unknowns feeding into the design, delegate per-system lookups
    to parallel `general-purpose` agents when substantial, so raw fetched

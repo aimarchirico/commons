@@ -46,9 +46,8 @@ argument-hint: "--issue <issue-ids> [--branch <branch-name>] [--draft] [--auto] 
    This checks `<issue-id>` and every descendant sub-issue for open blockers,
    not just `<issue-id>` itself, since solving it means solving its whole
    tree. Ignore any candidate naming a branch for an id being solved in this
-   same invocation, since that work lands here rather than elsewhere, but
-   report it: that id already has a pull request open against it, and solving
-   it again here may not be intended. Resolve what remains per
+   same invocation, reporting that it already has a pull request open against
+   it, and resolve what remains per
    `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#branch-setup`.
 4. Without `--branch`, set up the branch per
    `${CLAUDE_PLUGIN_ROOT}/shared/CONVENTIONS.md#branch-setup`, then create it
