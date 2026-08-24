@@ -8,15 +8,16 @@ argument-hint: "[--auto]"
 
 ## Arguments
 
-| Flag     | Required | Description                                                       |
-| :------- | :------- | :---------------------------------------------------------------- |
-| `--auto` | No       | Skip the approval step and create the drafted hierarchy directly. |
+| Flag     | Required | Description                                                                             |
+| :------- | :------- | :-------------------------------------------------------------------------------------- |
+| `--auto` | No       | Ask the user nothing: skip the approval step and create the drafted hierarchy directly. |
 
 ## Workflow
 
 1. Identify the details and context of the issues to create. If these details
    are not already clear from the user's prompt or context, ask the user for
-   clarification.
+   clarification. Under `--auto`, derive them from context instead of
+   asking.
 2. Search the tracker for open issues covering the same work, or that this
    work depends on:
 

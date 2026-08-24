@@ -12,14 +12,15 @@ argument-hint: "[--draft] [--auto] [--review] [--skip-check]"
 | Flag           | Required | Description                                                                                                                                                     |
 | :------------- | :------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `--draft`      | No       | Passed through to the `commons:plan` and `commons:solve` skills (and their `commons:pr` skill) to open the resulting PRs as drafts.                             |
-| `--auto`       | No       | Run the full lifecycle autonomously without prompting for approvals across every sub-skill invoked (including during a `--review` pass if set).                 |
+| `--auto`       | No       | Run the full lifecycle autonomously, asking the user nothing across every sub-skill invoked (including during a `--review` pass if set).                        |
 | `--review`     | No       | After the pull request is opened, run one review-and-fix pass over it via the `commons:review` and `commons:resolve` skills.                                    |
 | `--skip-check` | No       | Passed through to the `commons:plan` and `commons:solve` skills, and to `commons:resolve` during a `--review` pass if set, to skip their `commons:check` steps. |
 
 ## Workflow
 
 1. Identify the description of work to ship from the user's prompt or
-   context. Ask the user for clarification if it's not already clear.
+   context. Ask the user for clarification if it's not already clear. Under
+   `--auto`, derive it from context instead of asking.
 2. Establish whether that work warrants a design document, against the
    criteria in the `docs/design-docs/` entry in
    `${CLAUDE_PLUGIN_ROOT}/.github/CONTRIBUTING.md#documentation`. When they
