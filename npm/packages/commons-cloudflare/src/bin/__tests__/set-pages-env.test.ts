@@ -134,4 +134,67 @@ describe('set-pages-env.ts', () => {
     await expect(setPagesEnv()).rejects.toThrow('fail: boom');
     expect(fail).toHaveBeenCalledWith('boom');
   });
+
+  it('writes secrets as secret_text and skips unset ones', async () => {
+    vi.mocked(resolveEnv).mockReturnValue({
+      CLOUDFLARE_API_TOKEN: 'token',
+      PAGES_PROJECT_NAME: 'my-project',
+      PAGES_VARIABLES: '',
+      PAGES_SECRETS: 'SECRET_ONE,SECRET_TWO',
+    });
+    process.env.SECRET_ONE = 'secret-value';
+    delete process.env.SECRET_TWO;
+    get.mockResolvedValue({
+      deployment_configs: {
+        production: {
+          env_vars: {SECRET_ONE: {type: 'secret_text', value: null}},
+        },
+      },
+    });
+
+    await setPagesEnv();
+
+    expect(report).toHaveBeenCalledWith(
+      'pages production SECRET_TWO',
+      'skipped',
+      'not set in the environment',
+    );
+    expect(report).toHaveBeenCalledWith(
+      'pages production SECRET_ONE',
+      'updated',
+      'secret value cannot be diffed, written unconditionally',
+    );
+    expect(send).toHaveBeenCalledWith(
+      'PATCH',
+      '/accounts/account-1/pages/projects/my-project',
+      {
+        deployment_configs: {
+          production: {
+            env_vars: {
+              SECRET_ONE: {type: 'secret_text', value: 'secret-value'},
+            },
+          },
+        },
+      },
+    );
+  });
+
+  it('reports a new secret as created when none exists yet', async () => {
+    vi.mocked(resolveEnv).mockReturnValue({
+      CLOUDFLARE_API_TOKEN: 'token',
+      PAGES_PROJECT_NAME: 'my-project',
+      PAGES_VARIABLES: '',
+      PAGES_SECRETS: 'PROXY_SECRET',
+    });
+    process.env.PROXY_SECRET = 'shared-secret';
+    get.mockResolvedValue({deployment_configs: {}});
+
+    await setPagesEnv();
+
+    expect(report).toHaveBeenCalledWith(
+      'pages production PROXY_SECRET',
+      'created',
+      'secret value cannot be diffed, written unconditionally',
+    );
+  });
 });
