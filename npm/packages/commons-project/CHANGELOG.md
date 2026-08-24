@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.2](https://github.com/aimarchirico/commons/compare/commons-project-v1.4.1...commons-project-v1.4.2) (2026-08-24)
+
+
+### Bug Fixes
+
+* **commons-project:** count a written outcome as a change in printSummary ([c1678b3](https://github.com/aimarchirico/commons/commit/c1678b3435be4e1622b9941045d7bd1d36128b08))
+* **commons-project:** count a written outcome as a change in printSummary ([d4fef51](https://github.com/aimarchirico/commons/commit/d4fef51e4dce87f1d6dae3a04dbf336bef626dfc))
+
 ## [1.4.1](https://github.com/aimarchirico/commons/compare/commons-project-v1.4.0...commons-project-v1.4.1) (2026-08-24)
 
 
