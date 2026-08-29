@@ -24,7 +24,7 @@
     "@aimarchirico/commons-firebase-client": "workspace:^"
   },
   "devDependencies": {
-    "@testing-library/react": "^16.3.0",
+    "@testing-library/react": "^16.3.3",
     "react-native-nitro-google-signin": "*",
     "react-native-nitro-modules": "*",
     "@types/react": "^19.0.0",
@@ -33,7 +33,7 @@
     "expo": "*",
     "jsdom": "^26.0.0",
     "react": "*",
-    "react-dom": "19.2.7",
+    "react-dom": "19.2.8",
     "react-native": "*",
     "typescript": "^6.0.3",
     "vitest": "^3.2.4",
