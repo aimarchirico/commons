@@ -36,7 +36,7 @@
     "react-dom": "19.2.7",
     "react-native": "*",
     "typescript": "^6.0.3",
-    "vitest": "^3.2.4",
+    "vitest": "^5.0.2",
     "@aimarchirico/commons-expo": "workspace:^",
     "@aimarchirico/commons-ts": "workspace:^"
   },
