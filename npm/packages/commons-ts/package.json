@@ -46,11 +46,11 @@
     "eslint": "^9.39.2",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.65.0",
-    "vitest": "^3.2.4"
+    "vitest": "^5.0.1"
   },
   "peerDependencies": {
     "eslint": "^9.39.2",
     "typescript": "^6.0.3",
-    "vitest": "^3.2.4"
+    "vitest": "^5.0.1"
   }
 }
