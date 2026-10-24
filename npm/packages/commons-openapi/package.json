@@ -24,11 +24,11 @@
   },
   "dependencies": {
     "@aimarchirico/commons-project": "workspace:^",
-    "@openapitools/openapi-generator-cli": "^2.39.1",
-    "swagger-markdown": "^3.1.1"
+    "@openapitools/openapi-generator-cli": "^2.42.0",
+    "swagger-markdown": "^3.2.0"
   },
   "devDependencies": {
-    "@types/node": "^26.0.1",
+    "@types/node": "^26.6.5",
     "@vitest/coverage-v8": "^3.2.4",
     "eslint": "^9.39.2",
     "typescript": "^6.0.3",
